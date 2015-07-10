@@ -34,11 +34,11 @@
             <pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
         </layout>
     </appender>
-    <appender name="logfile-service"
+    <appender name="logfile-com.huobanplus.erpservice.datacenter.service"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator name="myEval_service">
-                <expression>message.contains("service.impl")</expression>
+                <expression>message.contains("com.huobanplus.erpservice.datacenter.service.impl")</expression>
             </evaluator>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
@@ -76,7 +76,7 @@
         <ProviderURL>tcp://192.168.1.120:61616</ProviderURL>
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator name="myEval_service">
-                <expression>message.contains("service.impl")</expression>
+                <expression>message.contains("com.huobanplus.erpservice.datacenter.service.impl")</expression>
             </evaluator>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
@@ -123,7 +123,7 @@
         <!--<appender-ref ref="stdout" />
         -->
         <appender-ref ref="logfile-dao"/>
-        <appender-ref ref="logfile-service"/>
+        <appender-ref ref="logfile-com.huobanplus.erpservice.datacenter.service"/>
         <appender-ref ref="jms_dao"/>
         <appender-ref ref="jms_service"/>
     </root>
