@@ -111,12 +111,10 @@ public class HTNetService extends BaseService {
             managerParams.setSoTimeout(120000);    // 设置读数据超时时间(单位毫秒)
             int statusCode = client.executeMethod(postMethod);// 执行postMethod
             //HttpClient对于要求接受后继服务的请求，象POST和PUT等不能自动处理转发
-            if(HttpStatus.SC_OK == statusCode)
-            {
+            if (HttpStatus.SC_OK == statusCode) {
                 //请求成功
                 return new String(postMethod.getResponseBody(), "UTF-8");
-            }
-            else{
+            } else {
                 //请求失败
                 return null;
             }
