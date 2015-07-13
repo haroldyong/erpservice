@@ -11,119 +11,119 @@ import java.util.Date;
 @Table(name = "Mall_Payments")
 public class MallPermentBean {
     /**
-     * ¸¶¿îµ¥ºÅ
+     * ä»˜æ¬¾å•å·
      */
     @Id
     @Column(name = "Payment_Id")
     private String paymentId;
     /**
-     * ¶©µ¥ºÅ
+     * è®¢å•å·
      */
     @ManyToOne
     @JoinColumn(name = "Order_Id")
     private MallOrderBean order;
     /**
-     * »áÔ±Id
+     * ä¼šå‘˜Id
      */
     @Column(name = "Member_Id")
     private int memberId;
     /**
-     * ÊÕ¿îÕËºÅ
+     * æ”¶æ¬¾è´¦å·
      */
     @Column(name = "Account")
     private String account;
     /**
-     * ÊÕ¿îÒøĞĞ
+     * æ”¶æ¬¾é“¶è¡Œ
      */
     @Column(name = "Bank")
     private String bank;
     /**
-     * Ö§¸¶ÕË»§
+     * æ”¯ä»˜è´¦æˆ·
      */
     @Column(name = "Pay_Account")
     private String payAccount;
     /**
-     * »õ±Ò
+     * è´§å¸
      */
     @Column(name = "Currency")
     private String currency;
     /**
-     * Ö§¸¶½ğ¶î
+     * æ”¯ä»˜é‡‘é¢
      */
     @Column(name = "Money")
     private BigDecimal money;
     /**
-     * Ö§¸¶Íø¹Ø·ÑÓÃ
+     * æ”¯ä»˜ç½‘å…³è´¹ç”¨
      */
     @Column(name = "Paycost")
     private BigDecimal payCost;
     /**
-     * µ±Ç°»õ±ÒÀàĞÍ¶ÔÓ¦µÄ½ğÇ®Êı
+     * å½“å‰è´§å¸ç±»å‹å¯¹åº”çš„é‡‘é’±æ•°
      */
     @Column(name = "Cur_Money")
     private BigDecimal curMoney;
     /**
-     * ¸¶¿îÀàĞÍ
+     * ä»˜æ¬¾ç±»å‹
      */
     @Column(name = "Pay_Type")
     private int payType;
     /**
-     * Ö§¸¶·½Ê½Ãû³Æ
+     * æ”¯ä»˜æ–¹å¼åç§°
      */
     @Column(name = "Paymethod")
     private String payMethod;
     /**
-     * ¸¶¿îIP
+     * ä»˜æ¬¾IP
      */
     @Column(name = "Ip")
     private String ip;
     /**
-     * Ö§¸¶¿ªÊ¼Ê±¼ä
+     * æ”¯ä»˜å¼€å§‹æ—¶é—´
      */
     @Column(name = "T_Begin")
     private Date beginTime;
     /**
-     * Ö§¸¶½áÊøÊ±¼ä
+     * æ”¯ä»˜ç»“æŸæ—¶é—´
      */
     @Column(name = "T_End")
     private Date endTime;
     /**
-     * ×´Ì¬
+     * çŠ¶æ€
      */
     @Column(name = "Status")
     private String status;
     /**
-     * ±¸×¢
+     * å¤‡æ³¨
      */
     @Column(name = "Memo")
     private String memo;
     /**
-     * Íâ²¿½»Ò×ºÅ
+     * å¤–éƒ¨äº¤æ˜“å·
      */
     @Column(name = "Trade_No")
     private String tradeNo;
     /**
-     * ÉÌ»§ID
+     * å•†æˆ·ID
      */
     @Column(name = "Customer_Id")
     private int customerId;
     /**
-     * Î¢ĞÅOpenId
+     * å¾®ä¿¡OpenId
      */
     @Column(name = "Wx_OpenID")
     private String wxOpenId;
     /**
-     * Î¢ĞÅÊÇ·ñ¹Ø×¢
+     * å¾®ä¿¡æ˜¯å¦å…³æ³¨
      */
     @Column(name = "Wx_IsSubscribe")
     private int wxIsSubscribe;
     /**
-     * ÔÚÏßÖ§¸¶·½Ê½
+     * åœ¨çº¿æ”¯ä»˜æ–¹å¼
      */
     @Column(name = "Online_PayType")
     private int onlinePayType;
     /**
-     * ´ú¸¶ÈËId
+     * ä»£ä»˜äººId
      */
     @Column(name = "Op_MemberId")
     private int payAgentId;

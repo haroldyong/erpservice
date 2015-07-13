@@ -10,84 +10,84 @@ import java.math.BigDecimal;
 @Table(name = "Mall_Order_Items")
 public class MallProductBean {
     /**
-     * Ö÷¼üid
+     * ä¸»é”®id
      */
     @Id
     @Column(name = "Item_Id")
     private long id;
     /**
-     * ¶©µ¥ºÅ
+     * è®¢å•å·
      */
     @ManyToOne
     @JoinColumn(name = "Order_Id")
     private MallOrderBean order;
     /**
-     * »õÆ·ID
+     * è´§å“ID
      */
     @Column(name = "Product_Id")
     private int productId;
     /**
-     * ÅäËÍ×´Ì¬
+     * é…é€çŠ¶æ€
      */
     @Column(name = "Dly_Status")
     private String deliverStatus;
     /**
-     * ÉÌÆ·ÀàĞÍ
+     * å•†å“ç±»å‹
      */
     @Column(name = "Type_Id")
     private int typeId;
     /**
-     * »õºÅ
+     * è´§å·
      */
     @Column(name = "Bn")
     private String bn;
     /**
-     * »õÆ·Ãû³Æ
+     * è´§å“åç§°
      */
     @Column(name = "Name")
     private String name;
     /**
-     * ³É±¾
+     * æˆæœ¬
      */
     @Column(name = "Cost")
     private BigDecimal cost;
     /**
-     * µ¥¼Û
+     * å•ä»·
      */
     @Column(name = "Price")
     private BigDecimal price;
     /**
-     * ×Ü½ğ¶î
+     * æ€»é‡‘é¢
      */
     @Column(name = "Amount")
     private BigDecimal amount;
     /**
-     * ÊıÁ¿
+     * æ•°é‡
      */
     @Column(name = "Nums")
     private int nums;
     /**
-     * ÒÑ·¢ÊıÁ¿
+     * å·²å‘æ•°é‡
      */
     @Column(name = "Sendnum")
     private int sendNum;
     /**
-     * ÀàĞÍ
+     * ç±»å‹
      */
     @Column(name = "Is_Type")
     private String isType;
     /**
-     * ¹©»õÉÌId
+     * ä¾›è´§å•†Id
      */
     @Column(name = "Supplier_Id")
     private int supplierId;
     /**
-     * ÉÌ»§Id
+     * å•†æˆ·Id
      */
     @Column(name = "Customer_Id")
     private int customerId;
     /**
-     * ÉÌÆ·Id
+     * å•†å“Id
      */
     @Column(name = "Goods_Id")
     private int goodId;

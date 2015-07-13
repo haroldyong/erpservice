@@ -5,293 +5,293 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * ¶©µ¥ÊµÌå
+ * è®¢å•å®ä½“
  * Created by allan on 2015/7/10.
  */
 @Entity
 @Table(name = "Mall_Orders")
 public class MallOrderBean {
     /**
-     * ¶©µ¥id
+     * è®¢å•id
      */
     @Id
     @Column(name = "Order_Id")
     private String orderId;
     /**
-     * Í¬²½±ê¼Ç£¬1±íÊ¾ÒÑ×¥È¡
+     * åŒæ­¥æ ‡è®°ï¼Œ1è¡¨ç¤ºå·²æŠ“å–
      */
     @Column(name = "Sync_Status")
     private int syncStatus;
     /**
-     * »áÔ±id
+     * ä¼šå‘˜id
      */
     @Column(name = "Member_Id")
     private int memberId;
     /**
-     * ¶©µ¥×´Ì¬
+     * è®¢å•çŠ¶æ€
      */
     @Column(name = "Status")
     private int orderStatus;
     /**
-     * Ö§¸¶×´Ì¬
+     * æ”¯ä»˜çŠ¶æ€
      */
     @Column(name = "Pay_Status")
     private int payStatus;
     /**
-     * ·¢»õ×´Ì¬
+     * å‘è´§çŠ¶æ€
      */
     @Column(name = "Ship_Status")
     private int shipStatus;
     /**
-     * ÓÃ»§×´Ì¬
+     * ç”¨æˆ·çŠ¶æ€
      */
     @Column(name = "User_Status")
     private int memberStatus;
     /**
-     * ÊÇ·ñĞèÒª·¢»õ
+     * æ˜¯å¦éœ€è¦å‘è´§
      */
     @Column(name = "Is_Delivery")
     private int isDelivery;
     /**
-     * ÅäËÍ·½Ê½id
+     * é…é€æ–¹å¼id
      */
     @Column(name = "Shipping_Id")
     private int deliverMethodId;
     /**
-     * ÅäËÍ·½Ê½
+     * é…é€æ–¹å¼
      */
     @Column(name = "Shipping")
     private String deliverMethod;
     /**
-     * ÅäËÍÇøÓò
+     * é…é€åŒºåŸŸ
      */
     @Column(name = "Shipping_Area")
     private String deliverArea;
     /**
-     * ÖØÁ¿
+     * é‡é‡
      */
     @Column(name = "Weight")
     private float weight;
     /**
-     * ¶©µ¥Ãû³Æ
+     * è®¢å•åç§°
      */
     @Column(name = "Order_Name")
     private String orderName;
     /**
-     * ÉÌÆ·ÊıÁ¿
+     * å•†å“æ•°é‡
      */
     @Column(name = "Itemnum")
     private int itemNum;
     /**
-     * »î¶¯Ê±¼ä
+     * æ´»åŠ¨æ—¶é—´
      */
     @Column(name = "Acttime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date actTime;
     /**
-     * ´´½¨Ê±¼ä
+     * åˆ›å»ºæ—¶é—´
      */
     @Column(name = "Createtime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
     /**
-     * ´´½¨ip
+     * åˆ›å»ºip
      */
     @Column(name = "Ip")
     private String createIP;
     /**
-     * ÊÕ»õÈË
+     * æ”¶è´§äºº
      */
     @Column(name = "Ship_Name")
     private String shipName;
     /**
-     * ÊÕ»õÈËÇøÓò
+     * æ”¶è´§äººåŒºåŸŸ
      */
     @Column(name = "Ship_Area")
     private String shipArea;
     /**
-     * ÊÕ»õÈËµØÖ·
+     * æ”¶è´§äººåœ°å€
      */
     @Column(name = "Ship_Addr")
     private String shipAddr;
     /**
-     * ÊÕ»õÈËÓÊ±à
+     * æ”¶è´§äººé‚®ç¼–
      */
     @Column(name = "Ship_Zip")
     private String shipZip;
     /**
-     * ÊÕ»õÈËµç»°
+     * æ”¶è´§äººç”µè¯
      */
     @Column(name = "Ship_Tel")
     private String shipTel;
     /**
-     * ÊÕ»õÈËÓÊÏä
+     * æ”¶è´§äººé‚®ç®±
      */
     @Column(name = "Ship_Email")
     private String shipEmail;
     /**
-     * ÊÕ»õÈË½¨ÒéËÍ»õÊ±¼ä
+     * æ”¶è´§äººå»ºè®®é€è´§æ—¶é—´
      */
     @Column(name = "Ship_Time")
     private String shipTime;
     /**
-     * ÊÕ»õÈËÊÖ»ú
+     * æ”¶è´§äººæ‰‹æœº
      */
     @Column(name = "Ship_Mobile")
     private String shipMobile;
     /**
-     * ÉÌÆ·×Ü½ğ¶î
+     * å•†å“æ€»é‡‘é¢
      */
     @Column(name = "Cost_Item")
     private BigDecimal costItem;
     /**
-     * ÊÇ·ñ¿ª·¢Æ±
+     * æ˜¯å¦å¼€å‘ç¥¨
      */
     @Column(name = "Is_Tax")
     private int isTax;
     /**
-     * Ë°½ğ
+     * ç¨é‡‘
      */
     @Column(name = "Cost_Tax")
     private BigDecimal costTax;
     /**
-     * ¿ªÆ±¹«Ë¾Ì§Í·
+     * å¼€ç¥¨å…¬å¸æŠ¬å¤´
      */
     @Column(name = "Tax_Company")
     private String taxCompany;
     /**
-     * ÅäËÍ·ÑÓÃ
+     * é…é€è´¹ç”¨
      */
     @Column(name = "Cost_Freight")
     private BigDecimal costFreight;
     /**
-     * ÊÇ·ñ±£¼Û
+     * æ˜¯å¦ä¿ä»·
      */
     @Column(name = "Is_Protect")
     private int isProtect;
     /**
-     * ±£¼Û·ÑÓÃ
+     * ä¿ä»·è´¹ç”¨
      */
     @Column(name = "Cost_Protect")
     private BigDecimal costProtect;
     /**
-     * Ö§¸¶ÊÖĞø·Ñ
+     * æ”¯ä»˜æ‰‹ç»­è´¹
      */
     @Column(name = "Cost_Payment")
     private BigDecimal costPayment;
     /**
-     * µÖÓÃ»ı·Ö
+     * æŠµç”¨ç§¯åˆ†
      */
     @Column(name = "Score_U")
     private BigDecimal scoreU;
     /**
-     * ÕÛ¿ÛÊ¡ÏÂµÄ½ğ¶î
+     * æŠ˜æ‰£çœä¸‹çš„é‡‘é¢
      */
     @Column(name = "Discount")
     private BigDecimal discount;
     /**
-     * ÊÇ·ñÊ¹ÓÃÓÅ»İ
+     * æ˜¯å¦ä½¿ç”¨ä¼˜æƒ 
      */
     @Column(name = "Use_Pmt")
     private String usePmt;
     /**
-     * ¶©µ¥×Ü½ğ¶î
+     * è®¢å•æ€»é‡‘é¢
      */
     @Column(name = "Total_Amount")
     private BigDecimal totalAmount;
     /**
-     * ×îÖÕ½ğ¶î
+     * æœ€ç»ˆé‡‘é¢
      */
     @Column(name = "Final_Amount")
     private BigDecimal finalAmount;
     /**
-     * ÓÅ»İ½ğ¶î
+     * ä¼˜æƒ é‡‘é¢
      */
     @Column(name = "Pmt_Amount")
     private BigDecimal pmtAmount;
     /**
-     * ÓÃÓà¶îÖ§¸¶µÄ½ğ¶î
+     * ç”¨ä½™é¢æ”¯ä»˜çš„é‡‘é¢
      */
     @Column(name = "Payed")
     private BigDecimal payed;
     /**
-     * ¶©µ¥±¸×¢
+     * è®¢å•å¤‡æ³¨
      */
     @Column(name = "Memo")
     private String memo;
     /**
-     * ×îºó±ä¶¯Ê±¼ä
+     * æœ€åå˜åŠ¨æ—¶é—´
      */
     @Column(name = "Last_Change_Time")
     private Date lastChangeTime;
     /**
-     * ÉÌ»§Id
+     * å•†æˆ·Id
      */
     @Column(name = "Customer_Id")
     private int customerId;
     /**
-     * ÊÇ·ñ»õµ½¸¶¿î
+     * æ˜¯å¦è´§åˆ°ä»˜æ¬¾
      */
     @Column(name = "Cash_OnDly")
     private int cashOnDly;
     /**
-     * ÔÚÏßÖ§¸¶·½Ê½
+     * åœ¨çº¿æ”¯ä»˜æ–¹å¼
      */
     @Column(name = "Online_PayType")
     private int onlinePayType;
     /**
-     * »ı·ÖµÖÓÃ½ğ¶î
+     * ç§¯åˆ†æŠµç”¨é‡‘é¢
      */
     @Column(name = "Score_U_Amount")
     private BigDecimal scoreUAmount;
     /**
-     * ´ú¸¶ÈËID
+     * ä»£ä»˜äººID
      */
     @Column(name = "Op_MemberId")
     private int payAgentId;
     /**
-     * ´ú¸¶»ı·Ö
+     * ä»£ä»˜ç§¯åˆ†
      */
     @Column(name = "Op_Score_U")
     private BigDecimal payAgentScore;
     /**
-     * ´ú¸¶»ı·Ö½ğ¶î
+     * ä»£ä»˜ç§¯åˆ†é‡‘é¢
      */
     @Column(name = "Op_Score_U_Amount")
     private BigDecimal payAgentScoreAmount;
     /**
-     * Óà¶î´ú¸¶
+     * ä½™é¢ä»£ä»˜
      */
     @Column(name = "Op_Payed")
     private BigDecimal payAgentPayed;
     /**
-     * ¶©µ¥ÒÑ¸¶½ğ¶î
+     * è®¢å•å·²ä»˜é‡‘é¢
      */
     @Column(name = "Has_Payed")
     private BigDecimal hasPayed;
     /**
-     * ¶©µ¥ÒÑ¸¶»ı·Ö
+     * è®¢å•å·²ä»˜ç§¯åˆ†
      */
     @Column(name = "Has_PayedScore")
     private BigDecimal hasPayedScore;
     /**
-     * ÔÚÏßÖ§¸¶½ğ¶î
+     * åœ¨çº¿æ”¯ä»˜é‡‘é¢
      */
     @Column(name = "Online_Amount")
     private BigDecimal onlineAmount;
     /**
-     * ºì°üµÖÓÃ½ğ¶î
+     * çº¢åŒ…æŠµç”¨é‡‘é¢
      */
     @Column(name = "Hongbao_Amount")
     private BigDecimal hongbaoAmount;
     /**
-     * Ö§¸¶Ê±¼ä
+     * æ”¯ä»˜æ—¶é—´
      */
     @Column(name = "Paytime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date payTime;
     /**
-     * ĞéÄâÉÌÆ·ÊÕ»õÊÖ»ú
+     * è™šæ‹Ÿå•†å“æ”¶è´§æ‰‹æœº
      */
     @Column(name = "Virtual_RecMobile")
     private String virtualRecMobile;
