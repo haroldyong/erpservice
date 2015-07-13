@@ -12,6 +12,7 @@
     <modules>
         <module>erpservice-datacenter</module>
         <module>erpservice-api</module>
+        <module>erpservice-eventHandler</module>
     </modules>
 
     <build>

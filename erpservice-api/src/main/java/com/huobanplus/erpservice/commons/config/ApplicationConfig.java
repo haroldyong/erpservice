@@ -9,6 +9,6 @@ import org.springframework.context.annotation.ImportResource;
  */
 @Configuration
 @ComponentScan(basePackages = "com.huobanplus.erpservice")
-@ImportResource({"classpath*:applicationContext-datacenter.xml"})
+@ImportResource({"classpath*:applicationContext-datacenter.xml", "classpath*:applicationContext-providers.xml"})
 public class ApplicationConfig {
 }
