@@ -23,7 +23,7 @@ public interface ERPHandler {
      * 处理事件
      *
      * @param event
-     * @return
+     * @return 事件处理结果
      * @throws IOException
      * @throws IllegalAccessException
      */
