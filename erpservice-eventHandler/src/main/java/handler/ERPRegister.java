@@ -1,5 +1,7 @@
 package handler;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import java.util.List;
  * <p>平台将根据事件中携带ERPInfo来分配到某一个erp-provider处理</p>
  * Created by allan on 2015/7/13.
  */
+@Component
 public class ERPRegister {
     List<ERPHandlerBuilder> handlerBuilders = new ArrayList<>();
 

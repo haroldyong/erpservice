@@ -1,6 +1,7 @@
 package com.huobanplus.erpservice.datacenter.bean;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -10,6 +11,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "Mall_Orders")
+@XmlRootElement
 public class MallOrderBean {
     /**
      * 订单id

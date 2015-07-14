@@ -10,24 +10,16 @@ import java.io.StringReader;
  */
 public class XMLParseUtil<T> {
 
-    public T parseXML(String xmlStr, T t)
+    public T parseXML(String xmlStr, T t) throws JAXBException
     {
         return parseXML(xmlStr, t, false);
     }
 
-    private T parseXML(String xmlStr, T t, boolean isType)
+    private T parseXML(String xmlStr, T t, boolean isType) throws JAXBException
     {
-        try {
             //解析xml，转换成bean
             JAXBContext context = JAXBContext.newInstance(t.getClass());
             Unmarshaller shaller = context.createUnmarshaller();
             return (T)shaller.unmarshal(new StringReader(xmlStr));
-        }
-        catch (JAXBException e)
-        {
-            //解析失败
-
-            return null;
-        }
     }
 }
