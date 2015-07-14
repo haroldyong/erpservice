@@ -1,6 +1,7 @@
 package handler;
 
 import org.springframework.stereotype.Component;
+import event.eventEnum.EventMethod;
 
 import java.util.ArrayList;
 import java.util.List;
