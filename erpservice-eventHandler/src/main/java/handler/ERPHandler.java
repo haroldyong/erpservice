@@ -1,7 +1,6 @@
 package handler;
 
 import event.ERPEvent;
-import event.eventEnum.EventMethod;
 import model.EventResult;
 
 import java.io.IOException;
@@ -24,10 +23,9 @@ public interface ERPHandler {
      * 处理事件
      *
      * @param event
-     * @param eventMethod 枚举方法
-     * @return
+     * @return 事件处理结果
      * @throws IOException
      * @throws IllegalAccessException
      */
-    EventResult handleEvent(ERPEvent event, EventMethod eventMethod) throws IOException, IllegalAccessException;
+    EventResult handleEvent(ERPEvent event) throws IOException, IllegalAccessException;
 }

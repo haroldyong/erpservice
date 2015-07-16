@@ -2,6 +2,7 @@ package handler;
 
 import org.springframework.stereotype.Component;
 import event.eventEnum.EventMethod;
+import model.ERPInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,5 +31,22 @@ public class ERPRegister {
      */
     public void addBuilders(ERPHandlerBuilder handlerBuilder) {
         this.handlerBuilders.add(handlerBuilder);
+    }
+
+    /**
+     * 根据erpinfo得到指定的erp事件处理器
+     *
+     * @param erpInfo erp信息
+     * @return
+     */
+    public ERPHandler getERPHandler(ERPInfo erpInfo) {
+        ERPHandler erpHandler;
+        for (ERPHandlerBuilder handlerBuilder : handlerBuilders) {
+            erpHandler = handlerBuilder.buildHandler(erpInfo);
+            if (erpHandler != null) {
+                return erpHandler;
+            }
+        }
+        return null;
     }
 }
