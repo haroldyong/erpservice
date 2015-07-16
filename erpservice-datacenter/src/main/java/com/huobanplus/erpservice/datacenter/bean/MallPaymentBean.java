@@ -5,11 +5,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * Created by allan on 2015/7/10.
+ * 付款单实体
  */
 @Entity
 @Table(name = "Mall_Payments")
-public class MallPermentBean {
+public class MallPaymentBean {
     /**
      * 付款单号
      */
@@ -19,9 +19,8 @@ public class MallPermentBean {
     /**
      * 订单号
      */
-    @ManyToOne
-    @JoinColumn(name = "Order_Id")
-    private MallOrderBean order;
+    @Column(name = "Order_Id")
+    private String orderId;
     /**
      * 会员Id
      */
@@ -51,17 +50,17 @@ public class MallPermentBean {
      * 支付金额
      */
     @Column(name = "Money")
-    private BigDecimal money;
+    private float money;
     /**
      * 支付网关费用
      */
     @Column(name = "Paycost")
-    private BigDecimal payCost;
+    private float payCost;
     /**
      * 当前货币类型对应的金钱数
      */
     @Column(name = "Cur_Money")
-    private BigDecimal curMoney;
+    private float curMoney;
     /**
      * 付款类型
      */
@@ -136,14 +135,12 @@ public class MallPermentBean {
         this.paymentId = paymentId;
     }
 
-    public MallOrderBean getOrder() {
-        return order;
+    public String getOrderId() {
+        return orderId;
     }
-
-    public void setOrder(MallOrderBean order) {
-        this.order = order;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
-
     public int getMemberId() {
         return memberId;
     }
@@ -184,27 +181,27 @@ public class MallPermentBean {
         this.currency = currency;
     }
 
-    public BigDecimal getMoney() {
+    public float getMoney() {
         return money;
     }
 
-    public void setMoney(BigDecimal money) {
+    public void setMoney(float money) {
         this.money = money;
     }
 
-    public BigDecimal getPayCost() {
+    public float getPayCost() {
         return payCost;
     }
 
-    public void setPayCost(BigDecimal payCost) {
+    public void setPayCost(float payCost) {
         this.payCost = payCost;
     }
 
-    public BigDecimal getCurMoney() {
+    public float getCurMoney() {
         return curMoney;
     }
 
-    public void setCurMoney(BigDecimal curMoney) {
+    public void setCurMoney(float curMoney) {
         this.curMoney = curMoney;
     }
 

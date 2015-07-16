@@ -145,7 +145,7 @@ public class MallOrderBean {
      * 商品总金额
      */
     @Column(name = "Cost_Item")
-    private BigDecimal costItem;
+    private float costItem;
     /**
      * 是否开发票
      */
@@ -155,7 +155,7 @@ public class MallOrderBean {
      * 税金
      */
     @Column(name = "Cost_Tax")
-    private BigDecimal costTax;
+    private float costTax;
     /**
      * 开票公司抬头
      */
@@ -165,7 +165,7 @@ public class MallOrderBean {
      * 配送费用
      */
     @Column(name = "Cost_Freight")
-    private BigDecimal costFreight;
+    private float costFreight;
     /**
      * 是否保价
      */
@@ -175,22 +175,22 @@ public class MallOrderBean {
      * 保价费用
      */
     @Column(name = "Cost_Protect")
-    private BigDecimal costProtect;
+    private float costProtect;
     /**
      * 支付手续费
      */
     @Column(name = "Cost_Payment")
-    private BigDecimal costPayment;
+    private float costPayment;
     /**
      * 抵用积分
      */
     @Column(name = "Score_U")
-    private BigDecimal scoreU;
+    private float scoreU;
     /**
      * 折扣省下的金额
      */
     @Column(name = "Discount")
-    private BigDecimal discount;
+    private float discount;
     /**
      * 是否使用优惠
      */
@@ -200,22 +200,22 @@ public class MallOrderBean {
      * 订单总金额
      */
     @Column(name = "Total_Amount")
-    private BigDecimal totalAmount;
+    private float totalAmount;
     /**
      * 最终金额
      */
     @Column(name = "Final_Amount")
-    private BigDecimal finalAmount;
+    private float finalAmount;
     /**
      * 优惠金额
      */
     @Column(name = "Pmt_Amount")
-    private BigDecimal pmtAmount;
+    private float pmtAmount;
     /**
      * 用余额支付的金额
      */
     @Column(name = "Payed")
-    private BigDecimal payed;
+    private float payed;
     /**
      * 订单备注
      */
@@ -245,7 +245,7 @@ public class MallOrderBean {
      * 积分抵用金额
      */
     @Column(name = "Score_U_Amount")
-    private BigDecimal scoreUAmount;
+    private float scoreUAmount;
     /**
      * 代付人ID
      */
@@ -255,37 +255,37 @@ public class MallOrderBean {
      * 代付积分
      */
     @Column(name = "Op_Score_U")
-    private BigDecimal payAgentScore;
+    private float payAgentScore;
     /**
      * 代付积分金额
      */
     @Column(name = "Op_Score_U_Amount")
-    private BigDecimal payAgentScoreAmount;
+    private float payAgentScoreAmount;
     /**
      * 余额代付
      */
     @Column(name = "Op_Payed")
-    private BigDecimal payAgentPayed;
+    private float payAgentPayed;
     /**
      * 订单已付金额
      */
     @Column(name = "Has_Payed")
-    private BigDecimal hasPayed;
+    private float hasPayed;
     /**
      * 订单已付积分
      */
     @Column(name = "Has_PayedScore")
-    private BigDecimal hasPayedScore;
+    private float hasPayedScore;
     /**
      * 在线支付金额
      */
     @Column(name = "Online_Amount")
-    private BigDecimal onlineAmount;
+    private float onlineAmount;
     /**
      * 红包抵用金额
      */
     @Column(name = "Hongbao_Amount")
-    private BigDecimal hongbaoAmount;
+    private float hongbaoAmount;
     /**
      * 支付时间
      */
@@ -498,11 +498,11 @@ public class MallOrderBean {
         this.shipMobile = shipMobile;
     }
 
-    public BigDecimal getCostItem() {
+    public float getCostItem() {
         return costItem;
     }
 
-    public void setCostItem(BigDecimal costItem) {
+    public void setCostItem(float costItem) {
         this.costItem = costItem;
     }
 
@@ -514,11 +514,11 @@ public class MallOrderBean {
         this.isTax = isTax;
     }
 
-    public BigDecimal getCostTax() {
+    public float getCostTax() {
         return costTax;
     }
 
-    public void setCostTax(BigDecimal costTax) {
+    public void setCostTax(float costTax) {
         this.costTax = costTax;
     }
 
@@ -530,11 +530,11 @@ public class MallOrderBean {
         this.taxCompany = taxCompany;
     }
 
-    public BigDecimal getCostFreight() {
+    public float getCostFreight() {
         return costFreight;
     }
 
-    public void setCostFreight(BigDecimal costFreight) {
+    public void setCostFreight(float costFreight) {
         this.costFreight = costFreight;
     }
 
@@ -546,35 +546,35 @@ public class MallOrderBean {
         this.isProtect = isProtect;
     }
 
-    public BigDecimal getCostProtect() {
+    public float getCostProtect() {
         return costProtect;
     }
 
-    public void setCostProtect(BigDecimal costProtect) {
+    public void setCostProtect(float costProtect) {
         this.costProtect = costProtect;
     }
 
-    public BigDecimal getCostPayment() {
+    public float getCostPayment() {
         return costPayment;
     }
 
-    public void setCostPayment(BigDecimal costPayment) {
+    public void setCostPayment(float costPayment) {
         this.costPayment = costPayment;
     }
 
-    public BigDecimal getScoreU() {
+    public float getScoreU() {
         return scoreU;
     }
 
-    public void setScoreU(BigDecimal scoreU) {
+    public void setScoreU(float scoreU) {
         this.scoreU = scoreU;
     }
 
-    public BigDecimal getDiscount() {
+    public float getDiscount() {
         return discount;
     }
 
-    public void setDiscount(BigDecimal discount) {
+    public void setDiscount(float discount) {
         this.discount = discount;
     }
 
@@ -586,35 +586,35 @@ public class MallOrderBean {
         this.usePmt = usePmt;
     }
 
-    public BigDecimal getTotalAmount() {
+    public float getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(BigDecimal totalAmount) {
+    public void setTotalAmount(float totalAmount) {
         this.totalAmount = totalAmount;
     }
 
-    public BigDecimal getFinalAmount() {
+    public float getFinalAmount() {
         return finalAmount;
     }
 
-    public void setFinalAmount(BigDecimal finalAmount) {
+    public void setFinalAmount(float finalAmount) {
         this.finalAmount = finalAmount;
     }
 
-    public BigDecimal getPmtAmount() {
+    public float getPmtAmount() {
         return pmtAmount;
     }
 
-    public void setPmtAmount(BigDecimal pmtAmount) {
+    public void setPmtAmount(float pmtAmount) {
         this.pmtAmount = pmtAmount;
     }
 
-    public BigDecimal getPayed() {
+    public float getPayed() {
         return payed;
     }
 
-    public void setPayed(BigDecimal payed) {
+    public void setPayed(float payed) {
         this.payed = payed;
     }
 
@@ -658,11 +658,11 @@ public class MallOrderBean {
         this.onlinePayType = onlinePayType;
     }
 
-    public BigDecimal getScoreUAmount() {
+    public float getScoreUAmount() {
         return scoreUAmount;
     }
 
-    public void setScoreUAmount(BigDecimal scoreUAmount) {
+    public void setScoreUAmount(float scoreUAmount) {
         this.scoreUAmount = scoreUAmount;
     }
 
@@ -674,59 +674,59 @@ public class MallOrderBean {
         this.payAgentId = payAgentId;
     }
 
-    public BigDecimal getPayAgentScore() {
+    public float getPayAgentScore() {
         return payAgentScore;
     }
 
-    public void setPayAgentScore(BigDecimal payAgentScore) {
+    public void setPayAgentScore(float payAgentScore) {
         this.payAgentScore = payAgentScore;
     }
 
-    public BigDecimal getPayAgentScoreAmount() {
+    public float getPayAgentScoreAmount() {
         return payAgentScoreAmount;
     }
 
-    public void setPayAgentScoreAmount(BigDecimal payAgentScoreAmount) {
+    public void setPayAgentScoreAmount(float payAgentScoreAmount) {
         this.payAgentScoreAmount = payAgentScoreAmount;
     }
 
-    public BigDecimal getPayAgentPayed() {
+    public float getPayAgentPayed() {
         return payAgentPayed;
     }
 
-    public void setPayAgentPayed(BigDecimal payAgentPayed) {
+    public void setPayAgentPayed(float payAgentPayed) {
         this.payAgentPayed = payAgentPayed;
     }
 
-    public BigDecimal getHasPayed() {
+    public float getHasPayed() {
         return hasPayed;
     }
 
-    public void setHasPayed(BigDecimal hasPayed) {
+    public void setHasPayed(float hasPayed) {
         this.hasPayed = hasPayed;
     }
 
-    public BigDecimal getHasPayedScore() {
+    public float getHasPayedScore() {
         return hasPayedScore;
     }
 
-    public void setHasPayedScore(BigDecimal hasPayedScore) {
+    public void setHasPayedScore(float hasPayedScore) {
         this.hasPayedScore = hasPayedScore;
     }
 
-    public BigDecimal getOnlineAmount() {
+    public float getOnlineAmount() {
         return onlineAmount;
     }
 
-    public void setOnlineAmount(BigDecimal onlineAmount) {
+    public void setOnlineAmount(float onlineAmount) {
         this.onlineAmount = onlineAmount;
     }
 
-    public BigDecimal getHongbaoAmount() {
+    public float getHongbaoAmount() {
         return hongbaoAmount;
     }
 
-    public void setHongbaoAmount(BigDecimal hongbaoAmount) {
+    public void setHongbaoAmount(float hongbaoAmount) {
         this.hongbaoAmount = hongbaoAmount;
     }
 

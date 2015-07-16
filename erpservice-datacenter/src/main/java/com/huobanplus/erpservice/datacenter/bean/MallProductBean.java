@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 /**
- * Created by allan on 2015/7/10.
+ * 商品实体
  */
 @Entity
 @Table(name = "Mall_Order_Items")
@@ -18,9 +18,8 @@ public class MallProductBean {
     /**
      * 订单号
      */
-    @ManyToOne
-    @JoinColumn(name = "Order_Id")
-    private MallOrderBean order;
+    @Column(name = "Order_Id")
+    private String orderId;
     /**
      * 货品ID
      */
@@ -50,17 +49,17 @@ public class MallProductBean {
      * 成本
      */
     @Column(name = "Cost")
-    private BigDecimal cost;
+    private float cost;
     /**
      * 单价
      */
     @Column(name = "Price")
-    private BigDecimal price;
+    private float price;
     /**
      * 总金额
      */
     @Column(name = "Amount")
-    private BigDecimal amount;
+    private float amount;
     /**
      * 数量
      */
@@ -100,12 +99,12 @@ public class MallProductBean {
         this.id = id;
     }
 
-    public MallOrderBean getOrder() {
-        return order;
+    public String getOrder() {
+        return orderId;
     }
 
-    public void setOrder(MallOrderBean order) {
-        this.order = order;
+    public void setOrder(String orderId) {
+        this.orderId = orderId;
     }
 
     public int getProductId() {
@@ -148,27 +147,27 @@ public class MallProductBean {
         this.name = name;
     }
 
-    public BigDecimal getCost() {
+    public float getCost() {
         return cost;
     }
 
-    public void setCost(BigDecimal cost) {
+    public void setCost(float cost) {
         this.cost = cost;
     }
 
-    public BigDecimal getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
-    public BigDecimal getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
