@@ -1,4 +1,4 @@
-package event.eventEnum;
+package com.huobanplus.erpservice.event.eventEnum;
 
 /**
  * 订单事件方法枚举

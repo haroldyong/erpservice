@@ -1,7 +1,6 @@
-package handler;
+package com.huobanplus.erpservice.event.handler;
 
-import event.eventEnum.EventMethod;
-import model.ERPInfo;
+import com.huobanplus.erpservice.event.model.ERPInfo;
 
 /**
  * ERP处理器生成器，由erp-provider具体实现

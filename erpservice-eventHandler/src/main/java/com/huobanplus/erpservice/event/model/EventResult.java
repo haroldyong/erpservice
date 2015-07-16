@@ -1,4 +1,4 @@
-package model;
+package com.huobanplus.erpservice.event.model;
 
 /**
  * erp 返回结果

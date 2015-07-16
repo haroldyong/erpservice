@@ -1,4 +1,4 @@
-package event;
+package com.huobanplus.erpservice.event;
 
 /**
  * 订单事件

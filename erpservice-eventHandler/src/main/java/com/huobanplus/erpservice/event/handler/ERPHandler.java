@@ -1,7 +1,7 @@
-package handler;
+package com.huobanplus.erpservice.event.handler;
 
-import event.ERPEvent;
-import model.EventResult;
+import com.huobanplus.erpservice.event.ERPEvent;
+import com.huobanplus.erpservice.event.model.EventResult;
 
 import java.io.IOException;
 

@@ -1,6 +1,6 @@
-package event;
+package com.huobanplus.erpservice.event;
 
-import model.ERPInfo;
+import com.huobanplus.erpservice.event.model.ERPInfo;
 
 /**
  * ERP事件父类，携带epr相关信息

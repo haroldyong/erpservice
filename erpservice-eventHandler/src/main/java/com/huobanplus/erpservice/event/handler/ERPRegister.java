@@ -1,8 +1,7 @@
-package handler;
+package com.huobanplus.erpservice.event.handler;
 
 import org.springframework.stereotype.Component;
-import event.eventEnum.EventMethod;
-import model.ERPInfo;
+import com.huobanplus.erpservice.event.model.ERPInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public class ERPRegister {
     }
 
     /**
-     * 添加(注册)一个erp handler builder
+     * 添加(注册)一个erp com.huobanplus.erpservice.event.handler builder
      *
      * @param handlerBuilder
      */

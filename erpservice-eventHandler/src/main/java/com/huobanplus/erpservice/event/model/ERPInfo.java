@@ -1,4 +1,4 @@
-package model;
+package com.huobanplus.erpservice.event.model;
 
 /**
  * 事件中携带的erp相关信息，用于erphandler选择合适的erp-provider处理
