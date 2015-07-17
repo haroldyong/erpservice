@@ -6,7 +6,7 @@ import com.huobanplus.erpservice.event.model.ERPInfo;
  * ERP事件父类，携带epr相关信息
  * Created by allan on 2015/7/13.
  */
-public class ERPEvent {
+public abstract class ERPEvent {
     private ERPInfo erpInfo;
 
     public ERPInfo getErpInfo() {
