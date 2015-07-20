@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 订单信息实体
  */
-public class OrderInfo implements Serializable {
+public class OrderInfo extends BaseBean {
 
     //订单编号
     private String orderCode;
@@ -25,7 +25,7 @@ public class OrderInfo implements Serializable {
     private String inSysTime;
     //商家编码
     private String chlidBarCode;
-    //数量
+    //订单数量
     private String num;
     //子节点
     private OrderInfo[] tradeNo;
@@ -459,5 +459,10 @@ public class OrderInfo implements Serializable {
     private String outBarCode;
     //产品简介
     private String productIntro;
+    //国家
+    private String country;
+    //客户备注
+    private String customerRemark;
+
 
 }

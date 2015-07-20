@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 售后信息
  */
-public class AfterSaleInfo implements Serializable {
+public class AfterSaleInfo extends BaseBean {
 
     //单据的日期类型,可选值有：创建日期、预退货日期、退货到货日期、退款申请日期、退款审核日期,最后修改日期.
     private String dateType;

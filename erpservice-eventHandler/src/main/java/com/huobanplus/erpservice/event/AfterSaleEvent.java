@@ -8,5 +8,5 @@ import com.huobanplus.erpservice.event.model.AfterSaleInfo;
  */
 public class AfterSaleEvent extends ERPEvent {
 
-    public AfterSaleInfo edbTradReturnGet(){return null;}
+    public AfterSaleInfo edbTradReturnGet(){return new AfterSaleInfo();}
 }

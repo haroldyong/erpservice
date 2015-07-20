@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 产品库存信息
  */
-public class ProudctInStock implements Serializable {
+public class ProudctInStock extends BaseBean {
 
     //产品分类
     private String productNo;

@@ -12,41 +12,35 @@ public class GoodEvent extends ERPEvent {
 
     /**
      * 更新产品明细信息
-     * @param productInfo
      */
-    public int edbProductDetailInfoUpdate(ProductInfo productInfo){return 0;}
+    public ProductInfo edbProductDetailInfoUpdate(){return new ProductInfo();}
 
     /**
      * 获取产品分类信息
-     * @param productClass
      */
-    public ProductClass edbProductClassGet(ProductClass productClass){return null;}
+    public ProductClass edbProductClassGet(){return new ProductClass();}
 
     /**
      * 获取产品库存信息
-     * @param proudctInStock
      * @return
      */
-    public ProudctInStock edbProductGet(ProudctInStock proudctInStock){return null;}
+    public ProudctInStock edbProductGet(){return new ProudctInStock();}
 
     /**
      * 更新主产品信息
-     * @param productInfo
      * @return
      */
-    public ProductInfo edbProductBaseInfoUpdate(ProductInfo productInfo){return null;}
+    public ProductInfo edbProductBaseInfoUpdate(){return new ProductInfo();}
 
     /**
      * 增加产品明细信息
-     * @param productInfo
      * @return
      */
-    public ProductInfo edbProductDetailAdd(ProductInfo productInfo){return null;}
+    public ProductInfo edbProductDetailAdd(){return new ProductInfo();}
 
     /**
      * 获取产品基本产品信息
-     * @param productInfo
      * @return
      */
-    public ProductInfo edbProductBaseInfoGet(ProductInfo productInfo){return null;}
+    public ProductInfo edbProductBaseInfoGet(){return new ProductInfo();}
 }

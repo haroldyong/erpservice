@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2015/7/16.
  */
-public class InventoryInfo implements Serializable {
+public class InventoryInfo extends BaseBean {
 
     //出库单号
     private String outStorageNo;

@@ -9,50 +9,49 @@ public class InventoryEvent extends ERPEvent {
 
     /**
      * 确认出库单
-     * @param inventoryInfo
      * @return
      */
-    public InventoryInfo edbOutStoreConfirm(InventoryInfo inventoryInfo){return null;}
+    public InventoryInfo edbOutStoreConfirm(){return new InventoryInfo();}
 
     /**
      * 确认入库单
      * @return
      */
-    public InventoryInfo edbInStoreConfirm(){return null;}
+    public InventoryInfo edbInStoreConfirm(){return new InventoryInfo();}
 
     /**
      * 入库单回写信息
      * @return
      */
-    public InventoryInfo edbInStoreWriteback(){return  null;}
+    public InventoryInfo edbInStoreWriteback(){return  new InventoryInfo();}
 
     /**
      * 出库单回写
      * @return
      */
-    public InventoryInfo edbOutStoreWriteback(){return null;}
+    public InventoryInfo edbOutStoreWriteback(){return new InventoryInfo();}
 
     /**
      * 获取入库单信息
      * @return
      */
-    public InventoryInfo edbInStoreGet(){return  null;}
+    public InventoryInfo edbInStoreGet(){return  new InventoryInfo();}
 
     /**
      * 增加入库单信息
      * @return
      */
-    public InventoryInfo edbInStoreAdd(){return  null;}
+    public InventoryInfo edbInStoreAdd(){return  new InventoryInfo();}
 
     /**
      *  增加出库单信息
      * @return
      */
-    public InventoryInfo edbOutStoreAdd(){return  null;}
+    public InventoryInfo edbOutStoreAdd(){return  new InventoryInfo();}
 
     /**
      * 获取出库单信息
      * @return
      */
-    public InventoryInfo edbOutStoreGet(){return  null;}
+    public InventoryInfo edbOutStoreGet(){return  new InventoryInfo();}
 }

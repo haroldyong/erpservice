@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by Administrator on 2015/7/16.
  * 产品类别
  */
-public class ProductClass implements Serializable {
+public class ProductClass extends BaseBean {
     //类型编码
     private String classCode;
     //类型名称

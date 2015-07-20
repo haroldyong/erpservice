@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 商品信息实体
  */
-public class ProductInfo implements Serializable {
+public class ProductInfo extends BaseBean {
 
     //商品编号
     private String productNo;
@@ -79,6 +79,8 @@ public class ProductInfo implements Serializable {
     private String sortName;
     //供应商
     private String supplier;
+    //商家编码
+    private String outerId;
     //市场价
     private String marketPrice;
     //产品介绍
@@ -147,6 +149,12 @@ public class ProductInfo implements Serializable {
     private String colorName;
     //自定义属性
     private String customAtt;
-    
+    //主商品系统ID
+    private String  itemId;
+    //主商品名称
+    private String itemName;
+    //是否为多规格
+    private String isSku;
+
 
 }
