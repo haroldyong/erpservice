@@ -130,4 +130,491 @@ public class InventoryInfo extends BaseBean {
     //出库类型名称
     private String outStoreTypeName;
 
+    public String getOutStorageNo() {
+        return outStorageNo;
+    }
+
+    public void setOutStorageNo(String outStorageNo) {
+        this.outStorageNo = outStorageNo;
+    }
+
+    public String getFreight() {
+        return freight;
+    }
+
+    public void setFreight(String freight) {
+        this.freight = freight;
+    }
+
+    public String getFreightAvgway() {
+        return freightAvgway;
+    }
+
+    public void setFreightAvgway(String freightAvgway) {
+        this.freightAvgway = freightAvgway;
+    }
+
+    public String getInStorageNo() {
+        return inStorageNo;
+    }
+
+    public void setInStorageNo(String inStorageNo) {
+        this.inStorageNo = inStorageNo;
+    }
+
+    public String getBarCode() {
+        return barCode;
+    }
+
+    public void setBarCode(String barCode) {
+        this.barCode = barCode;
+    }
+
+    public String getInstorageNum() {
+        return instorageNum;
+    }
+
+    public void setInstorageNum(String instorageNum) {
+        this.instorageNum = instorageNum;
+    }
+
+    public String getOutstorageNum() {
+        return outstorageNum;
+    }
+
+    public void setOutstorageNum(String outstorageNum) {
+        this.outstorageNum = outstorageNum;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getDateType() {
+        return dateType;
+    }
+
+    public void setDateType(String dateType) {
+        this.dateType = dateType;
+    }
+
+    public String getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(String beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getStorageName() {
+        return storageName;
+    }
+
+    public void setStorageName(String storageName) {
+        this.storageName = storageName;
+    }
+
+    public int getInstorageStatus() {
+        return instorageStatus;
+    }
+
+    public void setInstorageStatus(int instorageStatus) {
+        this.instorageStatus = instorageStatus;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public String getImportMark() {
+        return importMark;
+    }
+
+    public void setImportMark(String importMark) {
+        this.importMark = importMark;
+    }
+
+    public String getTypeNo() {
+        return typeNo;
+    }
+
+    public void setTypeNo(String typeNo) {
+        this.typeNo = typeNo;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public String getStorage() {
+        return storage;
+    }
+
+    public void setStorage(String storage) {
+        this.storage = storage;
+    }
+
+    public String getCreater() {
+        return creater;
+    }
+
+    public void setCreater(String creater) {
+        this.creater = creater;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getInTime() {
+        return inTime;
+    }
+
+    public void setInTime(String inTime) {
+        this.inTime = inTime;
+    }
+
+    public String getQualityInspctor() {
+        return qualityInspctor;
+    }
+
+    public void setQualityInspctor(String qualityInspctor) {
+        this.qualityInspctor = qualityInspctor;
+    }
+
+    public String getInspctTime() {
+        return inspctTime;
+    }
+
+    public void setInspctTime(String inspctTime) {
+        this.inspctTime = inspctTime;
+    }
+
+    public String getInspctResult() {
+        return inspctResult;
+    }
+
+    public void setInspctResult(String inspctResult) {
+        this.inspctResult = inspctResult;
+    }
+
+    public String getExaminer() {
+        return examiner;
+    }
+
+    public void setExaminer(String examiner) {
+        this.examiner = examiner;
+    }
+
+    public String getExamineTime() {
+        return examineTime;
+    }
+
+    public void setExamineTime(String examineTime) {
+        this.examineTime = examineTime;
+    }
+
+    public String getSendTid() {
+        return sendTid;
+    }
+
+    public void setSendTid(String sendTid) {
+        this.sendTid = sendTid;
+    }
+
+    public String getInReason() {
+        return inReason;
+    }
+
+    public void setInReason(String inReason) {
+        this.inReason = inReason;
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public void setCost(String cost) {
+        this.cost = cost;
+    }
+
+    public String getSourceTid() {
+        return SourceTid;
+    }
+
+    public void setSourceTid(String sourceTid) {
+        SourceTid = sourceTid;
+    }
+
+    public String getPurchaseFee() {
+        return purchaseFee;
+    }
+
+    public void setPurchaseFee(String purchaseFee) {
+        this.purchaseFee = purchaseFee;
+    }
+
+    public String getContractMoney() {
+        return contractMoney;
+    }
+
+    public void setContractMoney(String contractMoney) {
+        this.contractMoney = contractMoney;
+    }
+
+    public String getRelevantTid() {
+        return relevantTid;
+    }
+
+    public void setRelevantTid(String relevantTid) {
+        this.relevantTid = relevantTid;
+    }
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getOutContractTid() {
+        return outContractTid;
+    }
+
+    public void setOutContractTid(String outContractTid) {
+        this.outContractTid = outContractTid;
+    }
+
+    public String getLogistics() {
+        return logistics;
+    }
+
+    public void setLogistics(String logistics) {
+        this.logistics = logistics;
+    }
+
+    public String getExpressTid() {
+        return expressTid;
+    }
+
+    public void setExpressTid(String expressTid) {
+        this.expressTid = expressTid;
+    }
+
+    public String getFreightPayer() {
+        return freightPayer;
+    }
+
+    public void setFreightPayer(String freightPayer) {
+        this.freightPayer = freightPayer;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getFreightMode() {
+        return freightMode;
+    }
+
+    public void setFreightMode(String freightMode) {
+        this.freightMode = freightMode;
+    }
+
+    public String getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(String totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public InventoryInfo[] getInstoreTid() {
+        return instoreTid;
+    }
+
+    public void setInstoreTid(InventoryInfo[] instoreTid) {
+        this.instoreTid = instoreTid;
+    }
+
+    public String getStorageNo() {
+        return storageNo;
+    }
+
+    public void setStorageNo(String storageNo) {
+        this.storageNo = storageNo;
+    }
+
+    public String getListSource() {
+        return listSource;
+    }
+
+    public void setListSource(String listSource) {
+        this.listSource = listSource;
+    }
+
+    public String getOtherCost() {
+        return otherCost;
+    }
+
+    public void setOtherCost(String otherCost) {
+        this.otherCost = otherCost;
+    }
+
+    public String getOutPactNo() {
+        return outPactNo;
+    }
+
+    public void setOutPactNo(String outPactNo) {
+        this.outPactNo = outPactNo;
+    }
+
+    public String getProductItemNo() {
+        return productItemNo;
+    }
+
+    public void setProductItemNo(String productItemNo) {
+        this.productItemNo = productItemNo;
+    }
+
+    public String getLocationNo() {
+        return locationNo;
+    }
+
+    public void setLocationNo(String locationNo) {
+        this.locationNo = locationNo;
+    }
+
+    public String getBatch() {
+        return batch;
+    }
+
+    public void setBatch(String batch) {
+        this.batch = batch;
+    }
+
+    public String getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(String expireTime) {
+        this.expireTime = expireTime;
+    }
+
+    public String getOutstorageType() {
+        return outstorageType;
+    }
+
+    public void setOutstorageType(String outstorageType) {
+        this.outstorageType = outstorageType;
+    }
+
+    public String getOutstorageTime() {
+        return outstorageTime;
+    }
+
+    public void setOutstorageTime(String outstorageTime) {
+        this.outstorageTime = outstorageTime;
+    }
+
+    public String getSupplieNo() {
+        return supplieNo;
+    }
+
+    public void setSupplieNo(String supplieNo) {
+        this.supplieNo = supplieNo;
+    }
+
+    public String getYSInstorageNo() {
+        return YSInstorageNo;
+    }
+
+    public void setYSInstorageNo(String YSInstorageNo) {
+        this.YSInstorageNo = YSInstorageNo;
+    }
+
+    public String getOutStorageRemark() {
+        return outStorageRemark;
+    }
+
+    public void setOutStorageRemark(String outStorageRemark) {
+        this.outStorageRemark = outStorageRemark;
+    }
+
+    public String getOutstoragePrice() {
+        return outstoragePrice;
+    }
+
+    public void setOutstoragePrice(String outstoragePrice) {
+        this.outstoragePrice = outstoragePrice;
+    }
+
+    public String getFreightAvg() {
+        return freightAvg;
+    }
+
+    public void setFreightAvg(String freightAvg) {
+        this.freightAvg = freightAvg;
+    }
+
+    public String getOutstorageStatus() {
+        return outstorageStatus;
+    }
+
+    public void setOutstorageStatus(String outstorageStatus) {
+        this.outstorageStatus = outstorageStatus;
+    }
+
+    public String getOutStoreTypeName() {
+        return outStoreTypeName;
+    }
+
+    public void setOutStoreTypeName(String outStoreTypeName) {
+        this.outStoreTypeName = outStoreTypeName;
+    }
 }

@@ -464,5 +464,1827 @@ public class OrderInfo extends BaseBean {
     //客户备注
     private String customerRemark;
 
+    public String getOrderCode() {
+        return orderCode;
+    }
 
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
+    }
+
+    public String getNumId() {
+        return numId;
+    }
+
+    public void setNumId(String numId) {
+        this.numId = numId;
+    }
+
+    public String getTidType() {
+        return tidType;
+    }
+
+    public void setTidType(String tidType) {
+        this.tidType = tidType;
+    }
+
+    public String getImportMark() {
+        return importMark;
+    }
+
+    public void setImportMark(String importMark) {
+        this.importMark = importMark;
+    }
+
+    public String getTid() {
+        return tid;
+    }
+
+    public void setTid(String tid) {
+        this.tid = tid;
+    }
+
+    public String getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(String orderTime) {
+        this.orderTime = orderTime;
+    }
+
+    public String getPayTime() {
+        return payTime;
+    }
+
+    public void setPayTime(String payTime) {
+        this.payTime = payTime;
+    }
+
+    public String getInSysTime() {
+        return inSysTime;
+    }
+
+    public void setInSysTime(String inSysTime) {
+        this.inSysTime = inSysTime;
+    }
+
+    public String getChlidBarCode() {
+        return chlidBarCode;
+    }
+
+    public void setChlidBarCode(String chlidBarCode) {
+        this.chlidBarCode = chlidBarCode;
+    }
+
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+
+    public OrderInfo[] getTradeNo() {
+        return tradeNo;
+    }
+
+    public void setTradeNo(OrderInfo[] tradeNo) {
+        this.tradeNo = tradeNo;
+    }
+
+    public String getExpressNo() {
+        return expressNo;
+    }
+
+    public void setExpressNo(String expressNo) {
+        this.expressNo = expressNo;
+    }
+
+    public String getExpress() {
+        return express;
+    }
+
+    public void setExpress(String express) {
+        this.express = express;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getBuyerMessage() {
+        return buyerMessage;
+    }
+
+    public void setBuyerMessage(String buyerMessage) {
+        this.buyerMessage = buyerMessage;
+    }
+
+    public String getServiceRemarks() {
+        return serviceRemarks;
+    }
+
+    public void setServiceRemarks(String serviceRemarks) {
+        this.serviceRemarks = serviceRemarks;
+    }
+
+    public String getOutTid() {
+        return outTid;
+    }
+
+    public void setOutTid(String outTid) {
+        this.outTid = outTid;
+    }
+
+    public String getBarCode() {
+        return barCode;
+    }
+
+    public void setBarCode(String barCode) {
+        this.barCode = barCode;
+    }
+
+    public String getProductTitle() {
+        return productTitle;
+    }
+
+    public void setProductTitle(String productTitle) {
+        this.productTitle = productTitle;
+    }
+
+    public String getStandard() {
+        return standard;
+    }
+
+    public void setStandard(String standard) {
+        this.standard = standard;
+    }
+
+    public String getProType() {
+        return proType;
+    }
+
+    public void setProType(String proType) {
+        this.proType = proType;
+    }
+
+    public int getOrderGoodsNum() {
+        return orderGoodsNum;
+    }
+
+    public void setOrderGoodsNum(int orderGoodsNum) {
+        this.orderGoodsNum = orderGoodsNum;
+    }
+
+    public double getCostPrice() {
+        return costPrice;
+    }
+
+    public void setCostPrice(double costPrice) {
+        this.costPrice = costPrice;
+    }
+
+    public String getExpressCode() {
+        return expressCode;
+    }
+
+    public void setExpressCode(String expressCode) {
+        this.expressCode = expressCode;
+    }
+
+    public String getPrinter() {
+        return printer;
+    }
+
+    public void setPrinter(String printer) {
+        this.printer = printer;
+    }
+
+    public String getCargoOperator() {
+        return cargoOperator;
+    }
+
+    public void setCargoOperator(String cargoOperator) {
+        this.cargoOperator = cargoOperator;
+    }
+
+    public String getCargoTime() {
+        return cargoTime;
+    }
+
+    public void setCargoTime(String cargoTime) {
+        this.cargoTime = cargoTime;
+    }
+
+    public String getPrintTime() {
+        return printTime;
+    }
+
+    public void setPrintTime(String printTime) {
+        this.printTime = printTime;
+    }
+
+    public String getInspecter() {
+        return inspecter;
+    }
+
+    public void setInspecter(String inspecter) {
+        this.inspecter = inspecter;
+    }
+
+    public String getIsInspectDelivery() {
+        return isInspectDelivery;
+    }
+
+    public void setIsInspectDelivery(String isInspectDelivery) {
+        this.isInspectDelivery = isInspectDelivery;
+    }
+
+    public String getDeliveryOperator() {
+        return deliveryOperator;
+    }
+
+    public void setDeliveryOperator(String deliveryOperator) {
+        this.deliveryOperator = deliveryOperator;
+    }
+
+    public String getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(String deliveryTime) {
+        this.deliveryTime = deliveryTime;
+    }
+
+    public float getGrossWeight() {
+        return grossWeight;
+    }
+
+    public void setGrossWeight(float grossWeight) {
+        this.grossWeight = grossWeight;
+    }
+
+    public String getInternalNote() {
+        return internalNote;
+    }
+
+    public void setInternalNote(String internalNote) {
+        this.internalNote = internalNote;
+    }
+
+    public String getOriginCode() {
+        return originCode;
+    }
+
+    public void setOriginCode(String originCode) {
+        this.originCode = originCode;
+    }
+
+    public String getDestCode() {
+        return destCode;
+    }
+
+    public void setDestCode(String destCode) {
+        this.destCode = destCode;
+    }
+
+    public String getInspectionNum() {
+        return inspectionNum;
+    }
+
+    public void setInspectionNum(String inspectionNum) {
+        this.inspectionNum = inspectionNum;
+    }
+
+    public int getIsCover() {
+        return isCover;
+    }
+
+    public void setIsCover(int isCover) {
+        this.isCover = isCover;
+    }
+
+    public String getDateType() {
+        return dateType;
+    }
+
+    public void setDateType(String dateType) {
+        this.dateType = dateType;
+    }
+
+    public String getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(String beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public String getProceStatus() {
+        return proceStatus;
+    }
+
+    public void setProceStatus(String proceStatus) {
+        this.proceStatus = proceStatus;
+    }
+
+    public String getPlatformStatus() {
+        return platformStatus;
+    }
+
+    public void setPlatformStatus(String platformStatus) {
+        this.platformStatus = platformStatus;
+    }
+
+    public String getStorageId() {
+        return storageId;
+    }
+
+    public void setStorageId(String storageId) {
+        this.storageId = storageId;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getInvoiceIsprint() {
+        return invoiceIsprint;
+    }
+
+    public void setInvoiceIsprint(String invoiceIsprint) {
+        this.invoiceIsprint = invoiceIsprint;
+    }
+
+    public String getInvoiceIsopen() {
+        return invoiceIsopen;
+    }
+
+    public void setInvoiceIsopen(String invoiceIsopen) {
+        this.invoiceIsopen = invoiceIsopen;
+    }
+
+    public String getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(String pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public String getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(String pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getProductInfoType() {
+        return productInfoType;
+    }
+
+    public void setProductInfoType(int productInfoType) {
+        this.productInfoType = productInfoType;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getDistributorId() {
+        return distributorId;
+    }
+
+    public void setDistributorId(String distributorId) {
+        this.distributorId = distributorId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getOutPayTid() {
+        return outPayTid;
+    }
+
+    public void setOutPayTid(String outPayTid) {
+        this.outPayTid = outPayTid;
+    }
+
+    public String getVoucherId() {
+        return voucherId;
+    }
+
+    public void setVoucherId(String voucherId) {
+        this.voucherId = voucherId;
+    }
+
+    public String getSerialNum() {
+        return serialNum;
+    }
+
+    public void setSerialNum(String serialNum) {
+        this.serialNum = serialNum;
+    }
+
+    public String getOrderChannel() {
+        return orderChannel;
+    }
+
+    public void setOrderChannel(String orderChannel) {
+        this.orderChannel = orderChannel;
+    }
+
+    public String getOrderFrom() {
+        return orderFrom;
+    }
+
+    public void setOrderFrom(String orderFrom) {
+        this.orderFrom = orderFrom;
+    }
+
+    public String getBuyerId() {
+        return buyerId;
+    }
+
+    public void setBuyerId(String buyerId) {
+        this.buyerId = buyerId;
+    }
+
+    public String getBuyerName() {
+        return buyerName;
+    }
+
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getAbnormalStatus() {
+        return abnormalStatus;
+    }
+
+    public void setAbnormalStatus(String abnormalStatus) {
+        this.abnormalStatus = abnormalStatus;
+    }
+
+    public String getMergeStatus() {
+        return mergeStatus;
+    }
+
+    public void setMergeStatus(String mergeStatus) {
+        this.mergeStatus = mergeStatus;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
+
+    public String getReceiverMobile() {
+        return receiverMobile;
+    }
+
+    public void setReceiverMobile(String receiverMobile) {
+        this.receiverMobile = receiverMobile;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getPost() {
+        return post;
+    }
+
+    public void setPost(String post) {
+        this.post = post;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getInvoiceName() {
+        return invoiceName;
+    }
+
+    public void setInvoiceName(String invoiceName) {
+        this.invoiceName = invoiceName;
+    }
+
+    public String getInvoiceSituation() {
+        return invoiceSituation;
+    }
+
+    public void setInvoiceSituation(String invoiceSituation) {
+        this.invoiceSituation = invoiceSituation;
+    }
+
+    public String getInvoiceTitle() {
+        return invoiceTitle;
+    }
+
+    public void setInvoiceTitle(String invoiceTitle) {
+        this.invoiceTitle = invoiceTitle;
+    }
+
+    public String getInvoiceType() {
+        return invoiceType;
+    }
+
+    public void setInvoiceType(String invoiceType) {
+        this.invoiceType = invoiceType;
+    }
+
+    public String getInvoiceContent() {
+        return invoiceContent;
+    }
+
+    public void setInvoiceContent(String invoiceContent) {
+        this.invoiceContent = invoiceContent;
+    }
+
+    public String getProTotalFee() {
+        return proTotalFee;
+    }
+
+    public void setProTotalFee(String proTotalFee) {
+        this.proTotalFee = proTotalFee;
+    }
+
+    public String getOrderTotalFee() {
+        return orderTotalFee;
+    }
+
+    public void setOrderTotalFee(String orderTotalFee) {
+        this.orderTotalFee = orderTotalFee;
+    }
+
+    public String getReferencePricePaid() {
+        return referencePricePaid;
+    }
+
+    public void setReferencePricePaid(String referencePricePaid) {
+        this.referencePricePaid = referencePricePaid;
+    }
+
+    public String getInvoiceFee() {
+        return invoiceFee;
+    }
+
+    public void setInvoiceFee(String invoiceFee) {
+        this.invoiceFee = invoiceFee;
+    }
+
+    public String getCodFee() {
+        return codFee;
+    }
+
+    public void setCodFee(String codFee) {
+        this.codFee = codFee;
+    }
+
+    public String getOtherFee() {
+        return otherFee;
+    }
+
+    public void setOtherFee(String otherFee) {
+        this.otherFee = otherFee;
+    }
+
+    public String getRefundTotalFee() {
+        return refundTotalFee;
+    }
+
+    public void setRefundTotalFee(String refundTotalFee) {
+        this.refundTotalFee = refundTotalFee;
+    }
+
+    public String getDiscountFee() {
+        return discountFee;
+    }
+
+    public void setDiscountFee(String discountFee) {
+        this.discountFee = discountFee;
+    }
+
+    public String getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(String discount) {
+        this.discount = discount;
+    }
+
+    public String getChannelDisfee() {
+        return channelDisfee;
+    }
+
+    public void setChannelDisfee(String channelDisfee) {
+        this.channelDisfee = channelDisfee;
+    }
+
+    public String getMerchantDisFee() {
+        return merchantDisFee;
+    }
+
+    public void setMerchantDisFee(String merchantDisFee) {
+        this.merchantDisFee = merchantDisFee;
+    }
+
+    public String getOrderDisfee() {
+        return orderDisfee;
+    }
+
+    public void setOrderDisfee(String orderDisfee) {
+        this.orderDisfee = orderDisfee;
+    }
+
+    public String getCommissionFee() {
+        return commissionFee;
+    }
+
+    public void setCommissionFee(String commissionFee) {
+        this.commissionFee = commissionFee;
+    }
+
+    public String getIsCod() {
+        return isCod;
+    }
+
+    public void setIsCod(String isCod) {
+        this.isCod = isCod;
+    }
+
+    public String getPointPay() {
+        return pointPay;
+    }
+
+    public void setPointPay(String pointPay) {
+        this.pointPay = pointPay;
+    }
+
+    public String getCostPoint() {
+        return costPoint;
+    }
+
+    public void setCostPoint(String costPoint) {
+        this.costPoint = costPoint;
+    }
+
+    public String getPoint() {
+        return point;
+    }
+
+    public void setPoint(String point) {
+        this.point = point;
+    }
+
+    public String getSuperiorPoint() {
+        return superiorPoint;
+    }
+
+    public void setSuperiorPoint(String superiorPoint) {
+        this.superiorPoint = superiorPoint;
+    }
+
+    public String getRoyaltyFee() {
+        return royaltyFee;
+    }
+
+    public void setRoyaltyFee(String royaltyFee) {
+        this.royaltyFee = royaltyFee;
+    }
+
+    public String getExternalPoint() {
+        return externalPoint;
+    }
+
+    public void setExternalPoint(String externalPoint) {
+        this.externalPoint = externalPoint;
+    }
+
+    public String getOnlineExpress() {
+        return onlineExpress;
+    }
+
+    public void setOnlineExpress(String onlineExpress) {
+        this.onlineExpress = onlineExpress;
+    }
+
+    public String getSendingType() {
+        return sendingType;
+    }
+
+    public void setSendingType(String sendingType) {
+        this.sendingType = sendingType;
+    }
+
+    public String getRealIncomefreight() {
+        return realIncomefreight;
+    }
+
+    public void setRealIncomefreight(String realIncomefreight) {
+        this.realIncomefreight = realIncomefreight;
+    }
+
+    public String getRealPayFreight() {
+        return realPayFreight;
+    }
+
+    public void setRealPayFreight(String realPayFreight) {
+        this.realPayFreight = realPayFreight;
+    }
+
+    public String getGrossWeightFreight() {
+        return grossWeightFreight;
+    }
+
+    public void setGrossWeightFreight(String grossWeightFreight) {
+        this.grossWeightFreight = grossWeightFreight;
+    }
+
+    public String getNetWeightWreight() {
+        return netWeightWreight;
+    }
+
+    public void setNetWeightWreight(String netWeightWreight) {
+        this.netWeightWreight = netWeightWreight;
+    }
+
+    public String getFreightExplain() {
+        return freightExplain;
+    }
+
+    public void setFreightExplain(String freightExplain) {
+        this.freightExplain = freightExplain;
+    }
+
+    public String getTotalWeight() {
+        return totalWeight;
+    }
+
+    public void setTotalWeight(String totalWeight) {
+        this.totalWeight = totalWeight;
+    }
+
+    public String getTidTime() {
+        return tidTime;
+    }
+
+    public void setTidTime(String tidTime) {
+        this.tidTime = tidTime;
+    }
+
+    public String getGetTime() {
+        return getTime;
+    }
+
+    public void setGetTime(String getTime) {
+        this.getTime = getTime;
+    }
+
+    public String getOrderCreater() {
+        return orderCreater;
+    }
+
+    public void setOrderCreater(String orderCreater) {
+        this.orderCreater = orderCreater;
+    }
+
+    public String getBusinessMan() {
+        return businessMan;
+    }
+
+    public void setBusinessMan(String businessMan) {
+        this.businessMan = businessMan;
+    }
+
+    public String getPaymentReceivedOperator() {
+        return paymentReceivedOperator;
+    }
+
+    public void setPaymentReceivedOperator(String paymentReceivedOperator) {
+        this.paymentReceivedOperator = paymentReceivedOperator;
+    }
+
+    public String getPaymentReceivedTime() {
+        return paymentReceivedTime;
+    }
+
+    public void setPaymentReceivedTime(String paymentReceivedTime) {
+        this.paymentReceivedTime = paymentReceivedTime;
+    }
+
+    public String getReviewOrdersOperator() {
+        return reviewOrdersOperator;
+    }
+
+    public void setReviewOrdersOperator(String reviewOrdersOperator) {
+        this.reviewOrdersOperator = reviewOrdersOperator;
+    }
+
+    public String getReviewOrdersTime() {
+        return reviewOrdersTime;
+    }
+
+    public void setReviewOrdersTime(String reviewOrdersTime) {
+        this.reviewOrdersTime = reviewOrdersTime;
+    }
+
+    public String getFinanceReviewOperator() {
+        return financeReviewOperator;
+    }
+
+    public void setFinanceReviewOperator(String financeReviewOperator) {
+        this.financeReviewOperator = financeReviewOperator;
+    }
+
+    public String getFinanceReviewTime() {
+        return financeReviewTime;
+    }
+
+    public void setFinanceReviewTime(String financeReviewTime) {
+        this.financeReviewTime = financeReviewTime;
+    }
+
+    public String getAdvancePrinter() {
+        return advancePrinter;
+    }
+
+    public void setAdvancePrinter(String advancePrinter) {
+        this.advancePrinter = advancePrinter;
+    }
+
+    public String getIsPrint() {
+        return isPrint;
+    }
+
+    public void setIsPrint(String isPrint) {
+        this.isPrint = isPrint;
+    }
+
+    public String getAdvDistributer() {
+        return advDistributer;
+    }
+
+    public void setAdvDistributer(String advDistributer) {
+        this.advDistributer = advDistributer;
+    }
+
+    public String getAdvDistributTime() {
+        return advDistributTime;
+    }
+
+    public void setAdvDistributTime(String advDistributTime) {
+        this.advDistributTime = advDistributTime;
+    }
+
+    public String getCancelOperator() {
+        return cancelOperator;
+    }
+
+    public void setCancelOperator(String cancelOperator) {
+        this.cancelOperator = cancelOperator;
+    }
+
+    public String getCancelTime() {
+        return cancelTime;
+    }
+
+    public void setCancelTime(String cancelTime) {
+        this.cancelTime = cancelTime;
+    }
+
+    public String getRevokeCanceler() {
+        return revokeCanceler;
+    }
+
+    public void setRevokeCanceler(String revokeCanceler) {
+        this.revokeCanceler = revokeCanceler;
+    }
+
+    public String getRevokeCancelTime() {
+        return revokeCancelTime;
+    }
+
+    public void setRevokeCancelTime(String revokeCancelTime) {
+        this.revokeCancelTime = revokeCancelTime;
+    }
+
+    public String getPackager() {
+        return packager;
+    }
+
+    public void setPackager(String packager) {
+        this.packager = packager;
+    }
+
+    public String getPackTime() {
+        return packTime;
+    }
+
+    public void setPackTime(String packTime) {
+        this.packTime = packTime;
+    }
+
+    public String getWeighOperator() {
+        return weighOperator;
+    }
+
+    public void setWeighOperator(String weighOperator) {
+        this.weighOperator = weighOperator;
+    }
+
+    public String getWeighTime() {
+        return weighTime;
+    }
+
+    public void setWeighTime(String weighTime) {
+        this.weighTime = weighTime;
+    }
+
+    public String getBookDeliveryTime() {
+        return bookDeliveryTime;
+    }
+
+    public void setBookDeliveryTime(String bookDeliveryTime) {
+        this.bookDeliveryTime = bookDeliveryTime;
+    }
+
+    public String getLocker() {
+        return locker;
+    }
+
+    public void setLocker(String locker) {
+        this.locker = locker;
+    }
+
+    public String getLockTime() {
+        return lockTime;
+    }
+
+    public void setLockTime(String lockTime) {
+        this.lockTime = lockTime;
+    }
+
+    public String getBookFileTime() {
+        return bookFileTime;
+    }
+
+    public void setBookFileTime(String bookFileTime) {
+        this.bookFileTime = bookFileTime;
+    }
+
+    public String getFileOperator() {
+        return fileOperator;
+    }
+
+    public void setFileOperator(String fileOperator) {
+        this.fileOperator = fileOperator;
+    }
+
+    public String getFileTime() {
+        return fileTime;
+    }
+
+    public void setFileTime(String fileTime) {
+        this.fileTime = fileTime;
+    }
+
+    public String getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(String finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    public String getModityTime() {
+        return modityTime;
+    }
+
+    public void setModityTime(String modityTime) {
+        this.modityTime = modityTime;
+    }
+
+    public String getIsPromotion() {
+        return isPromotion;
+    }
+
+    public void setIsPromotion(String isPromotion) {
+        this.isPromotion = isPromotion;
+    }
+
+    public String getPromotionPlan() {
+        return promotionPlan;
+    }
+
+    public void setPromotionPlan(String promotionPlan) {
+        this.promotionPlan = promotionPlan;
+    }
+
+    public String getOutPromotionDetail() {
+        return outPromotionDetail;
+    }
+
+    public void setOutPromotionDetail(String outPromotionDetail) {
+        this.outPromotionDetail = outPromotionDetail;
+    }
+
+    public String getGoodReceiveTime() {
+        return goodReceiveTime;
+    }
+
+    public void setGoodReceiveTime(String goodReceiveTime) {
+        this.goodReceiveTime = goodReceiveTime;
+    }
+
+    public String getReceiveTime() {
+        return receiveTime;
+    }
+
+    public void setReceiveTime(String receiveTime) {
+        this.receiveTime = receiveTime;
+    }
+
+    public String getVerificatyTime() {
+        return verificatyTime;
+    }
+
+    public void setVerificatyTime(String verificatyTime) {
+        this.verificatyTime = verificatyTime;
+    }
+
+    public String getEnableInteStoTime() {
+        return enableInteStoTime;
+    }
+
+    public void setEnableInteStoTime(String enableInteStoTime) {
+        this.enableInteStoTime = enableInteStoTime;
+    }
+
+    public String getEnableInteDeliveryTime() {
+        return enableInteDeliveryTime;
+    }
+
+    public void setEnableInteDeliveryTime(String enableInteDeliveryTime) {
+        this.enableInteDeliveryTime = enableInteDeliveryTime;
+    }
+
+    public String getAlipayId() {
+        return alipayId;
+    }
+
+    public void setAlipayId(String alipayId) {
+        this.alipayId = alipayId;
+    }
+
+    public String getAlipayStatus() {
+        return alipayStatus;
+    }
+
+    public void setAlipayStatus(String alipayStatus) {
+        this.alipayStatus = alipayStatus;
+    }
+
+    public String getPayMothed() {
+        return payMothed;
+    }
+
+    public void setPayMothed(String payMothed) {
+        this.payMothed = payMothed;
+    }
+
+    public String getPayStatus() {
+        return payStatus;
+    }
+
+    public void setPayStatus(String payStatus) {
+        this.payStatus = payStatus;
+    }
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(String deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
+
+    public String getDistributorMark() {
+        return distributorMark;
+    }
+
+    public void setDistributorMark(String distributorMark) {
+        this.distributorMark = distributorMark;
+    }
+
+    public String getSystemRemarks() {
+        return systemRemarks;
+    }
+
+    public void setSystemRemarks(String systemRemarks) {
+        this.systemRemarks = systemRemarks;
+    }
+
+    public String getOtherRemarks() {
+        return otherRemarks;
+    }
+
+    public void setOtherRemarks(String otherRemarks) {
+        this.otherRemarks = otherRemarks;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessageTime() {
+        return messageTime;
+    }
+
+    public void setMessageTime(String messageTime) {
+        this.messageTime = messageTime;
+    }
+
+    public String getIsStock() {
+        return isStock;
+    }
+
+    public void setIsStock(String isStock) {
+        this.isStock = isStock;
+    }
+
+    public String getRelatedOrders() {
+        return relatedOrders;
+    }
+
+    public void setRelatedOrders(String relatedOrders) {
+        this.relatedOrders = relatedOrders;
+    }
+
+    public String getRelatedOrdersType() {
+        return relatedOrdersType;
+    }
+
+    public void setRelatedOrdersType(String relatedOrdersType) {
+        this.relatedOrdersType = relatedOrdersType;
+    }
+
+    public String getDeliveryName() {
+        return deliveryName;
+    }
+
+    public void setDeliveryName(String deliveryName) {
+        this.deliveryName = deliveryName;
+    }
+
+    public String getIsNewCustomer() {
+        return isNewCustomer;
+    }
+
+    public void setIsNewCustomer(String isNewCustomer) {
+        this.isNewCustomer = isNewCustomer;
+    }
+
+    public String getDistributorLevel() {
+        return distributorLevel;
+    }
+
+    public void setDistributorLevel(String distributorLevel) {
+        this.distributorLevel = distributorLevel;
+    }
+
+    public String getCodServiceFee() {
+        return codServiceFee;
+    }
+
+    public void setCodServiceFee(String codServiceFee) {
+        this.codServiceFee = codServiceFee;
+    }
+
+    public String getExpressColFee() {
+        return expressColFee;
+    }
+
+    public void setExpressColFee(String expressColFee) {
+        this.expressColFee = expressColFee;
+    }
+
+    public String getProductNum() {
+        return productNum;
+    }
+
+    public void setProductNum(String productNum) {
+        this.productNum = productNum;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+    public String getItemNum() {
+        return itemNum;
+    }
+
+    public void setItemNum(String itemNum) {
+        this.itemNum = itemNum;
+    }
+
+    public String getSingleNum() {
+        return singleNum;
+    }
+
+    public void setSingleNum(String singleNum) {
+        this.singleNum = singleNum;
+    }
+
+    public String getFlagColor() {
+        return flagColor;
+    }
+
+    public void setFlagColor(String flagColor) {
+        this.flagColor = flagColor;
+    }
+
+    public String getIsFlag() {
+        return isFlag;
+    }
+
+    public void setIsFlag(String isFlag) {
+        this.isFlag = isFlag;
+    }
+
+    public String getTaobaoDeliveryOrderStatus() {
+        return taobaoDeliveryOrderStatus;
+    }
+
+    public void setTaobaoDeliveryOrderStatus(String taobaoDeliveryOrderStatus) {
+        this.taobaoDeliveryOrderStatus = taobaoDeliveryOrderStatus;
+    }
+
+    public String getTaobaoDeliveryStatus() {
+        return taobaoDeliveryStatus;
+    }
+
+    public void setTaobaoDeliveryStatus(String taobaoDeliveryStatus) {
+        this.taobaoDeliveryStatus = taobaoDeliveryStatus;
+    }
+
+    public String getTaobaoDeliveryMethod() {
+        return taobaoDeliveryMethod;
+    }
+
+    public void setTaobaoDeliveryMethod(String taobaoDeliveryMethod) {
+        this.taobaoDeliveryMethod = taobaoDeliveryMethod;
+    }
+
+    public String getOrderProcessTime() {
+        return orderProcessTime;
+    }
+
+    public void setOrderProcessTime(String orderProcessTime) {
+        this.orderProcessTime = orderProcessTime;
+    }
+
+    public String getIsBreak() {
+        return isBreak;
+    }
+
+    public void setIsBreak(String isBreak) {
+        this.isBreak = isBreak;
+    }
+
+    public String getBreaker() {
+        return breaker;
+    }
+
+    public void setBreaker(String breaker) {
+        this.breaker = breaker;
+    }
+
+    public String getBreakTime() {
+        return breakTime;
+    }
+
+    public void setBreakTime(String breakTime) {
+        this.breakTime = breakTime;
+    }
+
+    public String getBreakExplain() {
+        return breakExplain;
+    }
+
+    public void setBreakExplain(String breakExplain) {
+        this.breakExplain = breakExplain;
+    }
+
+    public String getPlatSendStatus() {
+        return platSendStatus;
+    }
+
+    public void setPlatSendStatus(String platSendStatus) {
+        this.platSendStatus = platSendStatus;
+    }
+
+    public String getPlatType() {
+        return platType;
+    }
+
+    public void setPlatType(String platType) {
+        this.platType = platType;
+    }
+
+    public String getIsAdvSale() {
+        return isAdvSale;
+    }
+
+    public void setIsAdvSale(String isAdvSale) {
+        this.isAdvSale = isAdvSale;
+    }
+
+    public String getProvincCode() {
+        return provincCode;
+    }
+
+    public void setProvincCode(String provincCode) {
+        this.provincCode = provincCode;
+    }
+
+    public String getCityCode() {
+        return cityCode;
+    }
+
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    public String getLastReturnedTime() {
+        return lastReturnedTime;
+    }
+
+    public void setLastReturnedTime(String lastReturnedTime) {
+        this.lastReturnedTime = lastReturnedTime;
+    }
+
+    public String getLastRefundTime() {
+        return lastRefundTime;
+    }
+
+    public void setLastRefundTime(String lastRefundTime) {
+        this.lastRefundTime = lastRefundTime;
+    }
+
+    public String getDeliverCentre() {
+        return deliverCentre;
+    }
+
+    public void setDeliverCentre(String deliverCentre) {
+        this.deliverCentre = deliverCentre;
+    }
+
+    public String getDeliverStation() {
+        return deliverStation;
+    }
+
+    public void setDeliverStation(String deliverStation) {
+        this.deliverStation = deliverStation;
+    }
+
+    public String getIsPreDeliveryNotice() {
+        return isPreDeliveryNotice;
+    }
+
+    public void setIsPreDeliveryNotice(String isPreDeliveryNotice) {
+        this.isPreDeliveryNotice = isPreDeliveryNotice;
+    }
+
+    public String getJdDeliveryTime() {
+        return jdDeliveryTime;
+    }
+
+    public void setJdDeliveryTime(String jdDeliveryTime) {
+        this.jdDeliveryTime = jdDeliveryTime;
+    }
+
+    public String getSortingCode() {
+        return sortingCode;
+    }
+
+    public void setSortingCode(String sortingCode) {
+        this.sortingCode = sortingCode;
+    }
+
+    public String getCodSettlementVouchernumber() {
+        return codSettlementVouchernumber;
+    }
+
+    public void setCodSettlementVouchernumber(String codSettlementVouchernumber) {
+        this.codSettlementVouchernumber = codSettlementVouchernumber;
+    }
+
+    public String getTotalNum() {
+        return totalNum;
+    }
+
+    public void setTotalNum(String totalNum) {
+        this.totalNum = totalNum;
+    }
+
+    public String getBuyerEmail() {
+        return buyerEmail;
+    }
+
+    public void setBuyerEmail(String buyerEmail) {
+        this.buyerEmail = buyerEmail;
+    }
+
+    public String getBuyerAlipay() {
+        return buyerAlipay;
+    }
+
+    public void setBuyerAlipay(String buyerAlipay) {
+        this.buyerAlipay = buyerAlipay;
+    }
+
+    public String getConsignee() {
+        return consignee;
+    }
+
+    public void setConsignee(String consignee) {
+        this.consignee = consignee;
+    }
+
+    public String getPrivince() {
+        return privince;
+    }
+
+    public void setPrivince(String privince) {
+        this.privince = privince;
+    }
+
+    public String getCitys() {
+        return citys;
+    }
+
+    public void setCitys(String citys) {
+        this.citys = citys;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public double getInvoiceMoney() {
+        return invoiceMoney;
+    }
+
+    public void setInvoiceMoney(double invoiceMoney) {
+        this.invoiceMoney = invoiceMoney;
+    }
+
+    public double getPayCommission() {
+        return payCommission;
+    }
+
+    public void setPayCommission(double payCommission) {
+        this.payCommission = payCommission;
+    }
+
+    public int getPayScore() {
+        return payScore;
+    }
+
+    public void setPayScore(int payScore) {
+        this.payScore = payScore;
+    }
+
+    public int getReturnScore() {
+        return returnScore;
+    }
+
+    public void setReturnScore(int returnScore) {
+        this.returnScore = returnScore;
+    }
+
+    public String getAlipayTransactionNo() {
+        return alipayTransactionNo;
+    }
+
+    public void setAlipayTransactionNo(String alipayTransactionNo) {
+        this.alipayTransactionNo = alipayTransactionNo;
+    }
+
+    public String getOutExpressMethod() {
+        return outExpressMethod;
+    }
+
+    public void setOutExpressMethod(String outExpressMethod) {
+        this.outExpressMethod = outExpressMethod;
+    }
+
+    public String getOutOrderStatus() {
+        return outOrderStatus;
+    }
+
+    public void setOutOrderStatus(String outOrderStatus) {
+        this.outOrderStatus = outOrderStatus;
+    }
+
+    public String getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(String orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public String getPayDate() {
+        return payDate;
+    }
+
+    public void setPayDate(String payDate) {
+        this.payDate = payDate;
+    }
+
+    public String getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(String finishDate) {
+        this.finishDate = finishDate;
+    }
+
+    public String getWuLiu() {
+        return wuLiu;
+    }
+
+    public void setWuLiu(String wuLiu) {
+        this.wuLiu = wuLiu;
+    }
+
+    public String getWuLiuNo() {
+        return wuLiuNo;
+    }
+
+    public void setWuLiuNo(String wuLiuNo) {
+        this.wuLiuNo = wuLiuNo;
+    }
+
+    public String getTerminalType() {
+        return terminalType;
+    }
+
+    public void setTerminalType(String terminalType) {
+        this.terminalType = terminalType;
+    }
+
+    public double getOutPrice() {
+        return outPrice;
+    }
+
+    public void setOutPrice(double outPrice) {
+        this.outPrice = outPrice;
+    }
+
+    public String getGiftNum() {
+        return giftNum;
+    }
+
+    public void setGiftNum(String giftNum) {
+        this.giftNum = giftNum;
+    }
+
+    public String getProductStockout() {
+        return productStockout;
+    }
+
+    public void setProductStockout(String productStockout) {
+        this.productStockout = productStockout;
+    }
+
+    public int getIsBook() {
+        return isBook;
+    }
+
+    public void setIsBook(int isBook) {
+        this.isBook = isBook;
+    }
+
+    public int getIsGift() {
+        return isGift;
+    }
+
+    public void setIsGift(int isGift) {
+        this.isGift = isGift;
+    }
+
+    public double getAvgPrice() {
+        return avgPrice;
+    }
+
+    public void setAvgPrice(double avgPrice) {
+        this.avgPrice = avgPrice;
+    }
+
+    public double getProductFreight() {
+        return productFreight;
+    }
+
+    public void setProductFreight(double productFreight) {
+        this.productFreight = productFreight;
+    }
+
+    public String getOutProductId() {
+        return outProductId;
+    }
+
+    public void setOutProductId(String outProductId) {
+        this.outProductId = outProductId;
+    }
+
+    public String getOutBarCode() {
+        return outBarCode;
+    }
+
+    public void setOutBarCode(String outBarCode) {
+        this.outBarCode = outBarCode;
+    }
+
+    public String getProductIntro() {
+        return productIntro;
+    }
+
+    public void setProductIntro(String productIntro) {
+        this.productIntro = productIntro;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCustomerRemark() {
+        return customerRemark;
+    }
+
+    public void setCustomerRemark(String customerRemark) {
+        this.customerRemark = customerRemark;
+    }
 }

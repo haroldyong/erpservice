@@ -156,5 +156,595 @@ public class ProductInfo extends BaseBean {
     //是否为多规格
     private String isSku;
 
+    public String getProductNo() {
+        return productNo;
+    }
 
+    public void setProductNo(String productNo) {
+        this.productNo = productNo;
+    }
+
+    public String getProductDetailNo() {
+        return productDetailNo;
+    }
+
+    public void setProductDetailNo(String productDetailNo) {
+        this.productDetailNo = productDetailNo;
+    }
+
+    public String getBarCode() {
+        return barCode;
+    }
+
+    public void setBarCode(String barCode) {
+        this.barCode = barCode;
+    }
+
+    public String getSpecification() {
+        return specification;
+    }
+
+    public void setSpecification(String specification) {
+        this.specification = specification;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public String getProductStatus() {
+        return productStatus;
+    }
+
+    public void setProductStatus(String productStatus) {
+        this.productStatus = productStatus;
+    }
+
+    public String getSellPrice() {
+        return sellPrice;
+    }
+
+    public void setSellPrice(String sellPrice) {
+        this.sellPrice = sellPrice;
+    }
+
+    public String getContrastPurchasePrice() {
+        return contrastPurchasePrice;
+    }
+
+    public void setContrastPurchasePrice(String contrastPurchasePrice) {
+        this.contrastPurchasePrice = contrastPurchasePrice;
+    }
+
+    public String getMiniPurchasePrice() {
+        return miniPurchasePrice;
+    }
+
+    public void setMiniPurchasePrice(String miniPurchasePrice) {
+        this.miniPurchasePrice = miniPurchasePrice;
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public void setCost(String cost) {
+        this.cost = cost;
+    }
+
+    public String getCostTax() {
+        return costTax;
+    }
+
+    public void setCostTax(String costTax) {
+        this.costTax = costTax;
+    }
+
+    public String getPurchasePriceEx() {
+        return purchasePriceEx;
+    }
+
+    public void setPurchasePriceEx(String purchasePriceEx) {
+        this.purchasePriceEx = purchasePriceEx;
+    }
+
+    public String getBoxNum() {
+        return boxNum;
+    }
+
+    public void setBoxNum(String boxNum) {
+        this.boxNum = boxNum;
+    }
+
+    public String getPeriodValidity() {
+        return periodValidity;
+    }
+
+    public void setPeriodValidity(String periodValidity) {
+        this.periodValidity = periodValidity;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getIsConsump() {
+        return isConsump;
+    }
+
+    public void setIsConsump(String isConsump) {
+        this.isConsump = isConsump;
+    }
+
+    public String getConsumpCycle() {
+        return consumpCycle;
+    }
+
+    public void setConsumpCycle(String consumpCycle) {
+        this.consumpCycle = consumpCycle;
+    }
+
+    public String getIsSingleSend() {
+        return isSingleSend;
+    }
+
+    public void setIsSingleSend(String isSingleSend) {
+        this.isSingleSend = isSingleSend;
+    }
+
+    public String getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
+    }
+
+    public String getPurchaseType() {
+        return purchaseType;
+    }
+
+    public void setPurchaseType(String purchaseType) {
+        this.purchaseType = purchaseType;
+    }
+
+    public String getIsFlight() {
+        return isFlight;
+    }
+
+    public void setIsFlight(String isFlight) {
+        this.isFlight = isFlight;
+    }
+
+    public String getProductNameId() {
+        return productNameId;
+    }
+
+    public void setProductNameId(String productNameId) {
+        this.productNameId = productNameId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
+
+    public String getPurchaseCycle() {
+        return purchaseCycle;
+    }
+
+    public void setPurchaseCycle(String purchaseCycle) {
+        this.purchaseCycle = purchaseCycle;
+    }
+
+    public String getPurchaseBatch() {
+        return purchaseBatch;
+    }
+
+    public void setPurchaseBatch(String purchaseBatch) {
+        this.purchaseBatch = purchaseBatch;
+    }
+
+    public String getSaleCalculation() {
+        return saleCalculation;
+    }
+
+    public void setSaleCalculation(String saleCalculation) {
+        this.saleCalculation = saleCalculation;
+    }
+
+    public String getIsPackMaterials() {
+        return isPackMaterials;
+    }
+
+    public void setIsPackMaterials(String isPackMaterials) {
+        this.isPackMaterials = isPackMaterials;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getUserIP() {
+        return userIP;
+    }
+
+    public void setUserIP(String userIP) {
+        this.userIP = userIP;
+    }
+
+    public String getBrandName() {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
+    }
+
+    public String getSortName() {
+        return sortName;
+    }
+
+    public void setSortName(String sortName) {
+        this.sortName = sortName;
+    }
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
+    public String getOuterId() {
+        return outerId;
+    }
+
+    public void setOuterId(String outerId) {
+        this.outerId = outerId;
+    }
+
+    public String getMarketPrice() {
+        return marketPrice;
+    }
+
+    public void setMarketPrice(String marketPrice) {
+        this.marketPrice = marketPrice;
+    }
+
+    public String getProductintro() {
+        return productintro;
+    }
+
+    public void setProductintro(String productintro) {
+        this.productintro = productintro;
+    }
+
+    public String getFactoryItem() {
+        return factoryItem;
+    }
+
+    public void setFactoryItem(String factoryItem) {
+        this.factoryItem = factoryItem;
+    }
+
+    public String getIsPack() {
+        return isPack;
+    }
+
+    public void setIsPack(String isPack) {
+        this.isPack = isPack;
+    }
+
+    public String getPackingCharges() {
+        return packingCharges;
+    }
+
+    public void setPackingCharges(String packingCharges) {
+        this.packingCharges = packingCharges;
+    }
+
+    public String getRoughWeightRatio() {
+        return roughWeightRatio;
+    }
+
+    public void setRoughWeightRatio(String roughWeightRatio) {
+        this.roughWeightRatio = roughWeightRatio;
+    }
+
+    public String getLength() {
+        return length;
+    }
+
+    public void setLength(String length) {
+        this.length = length;
+    }
+
+    public String getWide() {
+        return wide;
+    }
+
+    public void setWide(String wide) {
+        this.wide = wide;
+    }
+
+    public String getHigh() {
+        return high;
+    }
+
+    public void setHigh(String high) {
+        this.high = high;
+    }
+
+    public String getProductAttribute() {
+        return productAttribute;
+    }
+
+    public void setProductAttribute(String productAttribute) {
+        this.productAttribute = productAttribute;
+    }
+
+    public String getCreateLevel() {
+        return createLevel;
+    }
+
+    public void setCreateLevel(String createLevel) {
+        this.createLevel = createLevel;
+    }
+
+    public String getLogisticLevel() {
+        return logisticLevel;
+    }
+
+    public void setLogisticLevel(String logisticLevel) {
+        this.logisticLevel = logisticLevel;
+    }
+
+    public String getStorageLevel() {
+        return storageLevel;
+    }
+
+    public void setStorageLevel(String storageLevel) {
+        this.storageLevel = storageLevel;
+    }
+
+    public String getPackLevel() {
+        return packLevel;
+    }
+
+    public void setPackLevel(String packLevel) {
+        this.packLevel = packLevel;
+    }
+
+    public String getWfpid() {
+        return wfpid;
+    }
+
+    public void setWfpid(String wfpid) {
+        this.wfpid = wfpid;
+    }
+
+    public String getNewExpireDate() {
+        return newExpireDate;
+    }
+
+    public void setNewExpireDate(String newExpireDate) {
+        this.newExpireDate = newExpireDate;
+    }
+
+    public String getSuitItemCount() {
+        return suitItemCount;
+    }
+
+    public void setSuitItemCount(String suitItemCount) {
+        this.suitItemCount = suitItemCount;
+    }
+
+    public String getPackCode() {
+        return packCode;
+    }
+
+    public void setPackCode(String packCode) {
+        this.packCode = packCode;
+    }
+
+    public String getPackStandard() {
+        return packStandard;
+    }
+
+    public void setPackStandard(String packStandard) {
+        this.packStandard = packStandard;
+    }
+
+    public String getIntegral() {
+        return integral;
+    }
+
+    public void setIntegral(String integral) {
+        this.integral = integral;
+    }
+
+    public String getIsUseIntegral() {
+        return isUseIntegral;
+    }
+
+    public void setIsUseIntegral(String isUseIntegral) {
+        this.isUseIntegral = isUseIntegral;
+    }
+
+    public String getBuyIntegral() {
+        return buyIntegral;
+    }
+
+    public void setBuyIntegral(String buyIntegral) {
+        this.buyIntegral = buyIntegral;
+    }
+
+    public String getMinCost() {
+        return minCost;
+    }
+
+    public void setMinCost(String minCost) {
+        this.minCost = minCost;
+    }
+
+    public String getHighestCost() {
+        return highestCost;
+    }
+
+    public void setHighestCost(String highestCost) {
+        this.highestCost = highestCost;
+    }
+
+    public String getAvgCost() {
+        return avgCost;
+    }
+
+    public void setAvgCost(String avgCost) {
+        this.avgCost = avgCost;
+    }
+
+    public String getAvgcostExplain() {
+        return avgcostExplain;
+    }
+
+    public void setAvgcostExplain(String avgcostExplain) {
+        this.avgcostExplain = avgcostExplain;
+    }
+
+    public String getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(String isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public String getIsStop() {
+        return isStop;
+    }
+
+    public void setIsStop(String isStop) {
+        this.isStop = isStop;
+    }
+
+    public String getIntegralScale() {
+        return integralScale;
+    }
+
+    public void setIntegralScale(String integralScale) {
+        this.integralScale = integralScale;
+    }
+
+    public String getStockAttribute() {
+        return stockAttribute;
+    }
+
+    public void setStockAttribute(String stockAttribute) {
+        this.stockAttribute = stockAttribute;
+    }
+
+    public String getLowestStock() {
+        return lowestStock;
+    }
+
+    public void setLowestStock(String lowestStock) {
+        this.lowestStock = lowestStock;
+    }
+
+    public String getSizeName() {
+        return sizeName;
+    }
+
+    public void setSizeName(String sizeName) {
+        this.sizeName = sizeName;
+    }
+
+    public String getColorName() {
+        return colorName;
+    }
+
+    public void setColorName(String colorName) {
+        this.colorName = colorName;
+    }
+
+    public String getCustomAtt() {
+        return customAtt;
+    }
+
+    public void setCustomAtt(String customAtt) {
+        this.customAtt = customAtt;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public String getIsSku() {
+        return isSku;
+    }
+
+    public void setIsSku(String isSku) {
+        this.isSku = isSku;
+    }
 }

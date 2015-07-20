@@ -9,4 +9,28 @@ public class ERPInfo {
     private String type;//erp类型
     private String name;//ERP名称
     private String validation;//验证信息
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getValidation() {
+        return validation;
+    }
+
+    public void setValidation(String validation) {
+        this.validation = validation;
+    }
 }

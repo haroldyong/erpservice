@@ -72,4 +72,259 @@ public class AfterSaleInfo extends BaseBean {
     //子节点
     private AfterSaleInfo aftersale_id [];
 
+    public String getDateType() {
+        return dateType;
+    }
+
+    public void setDateType(String dateType) {
+        this.dateType = dateType;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getAftersaleId() {
+        return aftersaleId;
+    }
+
+    public void setAftersaleId(String aftersaleId) {
+        this.aftersaleId = aftersaleId;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(String pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public String getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(String pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public String getSaleOrderId() {
+        return saleOrderId;
+    }
+
+    public void setSaleOrderId(String saleOrderId) {
+        this.saleOrderId = saleOrderId;
+    }
+
+    public String getAfterSaleId() {
+        return afterSaleId;
+    }
+
+    public void setAfterSaleId(String afterSaleId) {
+        this.afterSaleId = afterSaleId;
+    }
+
+    public String getSendStorage() {
+        return sendStorage;
+    }
+
+    public void setSendStorage(String sendStorage) {
+        this.sendStorage = sendStorage;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getReturnCreateTime() {
+        return returnCreateTime;
+    }
+
+    public void setReturnCreateTime(String returnCreateTime) {
+        this.returnCreateTime = returnCreateTime;
+    }
+
+    public String getReturnConfirmTime() {
+        return returnConfirmTime;
+    }
+
+    public void setReturnConfirmTime(String returnConfirmTime) {
+        this.returnConfirmTime = returnConfirmTime;
+    }
+
+    public String getRefundCreateTime() {
+        return refundCreateTime;
+    }
+
+    public void setRefundCreateTime(String refundCreateTime) {
+        this.refundCreateTime = refundCreateTime;
+    }
+
+    public String getRefundConfirmTime() {
+        return refundConfirmTime;
+    }
+
+    public void setRefundConfirmTime(String refundConfirmTime) {
+        this.refundConfirmTime = refundConfirmTime;
+    }
+
+    public String getReturnStatus() {
+        return returnStatus;
+    }
+
+    public void setReturnStatus(String returnStatus) {
+        this.returnStatus = returnStatus;
+    }
+
+    public String getRefundStatus() {
+        return refundStatus;
+    }
+
+    public void setRefundStatus(String refundStatus) {
+        this.refundStatus = refundStatus;
+    }
+
+    public String getProcessStatus() {
+        return processStatus;
+    }
+
+    public void setProcessStatus(String processStatus) {
+        this.processStatus = processStatus;
+    }
+
+    public String getReturnLofisticsCompany() {
+        return returnLofisticsCompany;
+    }
+
+    public void setReturnLofisticsCompany(String returnLofisticsCompany) {
+        this.returnLofisticsCompany = returnLofisticsCompany;
+    }
+
+    public String getReturnLogisticsNumber() {
+        return returnLogisticsNumber;
+    }
+
+    public void setReturnLogisticsNumber(String returnLogisticsNumber) {
+        this.returnLogisticsNumber = returnLogisticsNumber;
+    }
+
+    public String getIsReturnInvoice() {
+        return isReturnInvoice;
+    }
+
+    public void setIsReturnInvoice(String isReturnInvoice) {
+        this.isReturnInvoice = isReturnInvoice;
+    }
+
+    public String getReturnInvoiceNum() {
+        return returnInvoiceNum;
+    }
+
+    public void setReturnInvoiceNum(String returnInvoiceNum) {
+        this.returnInvoiceNum = returnInvoiceNum;
+    }
+
+    public String getTotalGoodsRefundFee() {
+        return totalGoodsRefundFee;
+    }
+
+    public void setTotalGoodsRefundFee(String totalGoodsRefundFee) {
+        this.totalGoodsRefundFee = totalGoodsRefundFee;
+    }
+
+    public String getOtherRefundFee() {
+        return otherRefundFee;
+    }
+
+    public void setOtherRefundFee(String otherRefundFee) {
+        this.otherRefundFee = otherRefundFee;
+    }
+
+    public String getRefundTo() {
+        return refundTo;
+    }
+
+    public void setRefundTo(String refundTo) {
+        this.refundTo = refundTo;
+    }
+
+    public String getBuyerId() {
+        return buyerId;
+    }
+
+    public void setBuyerId(String buyerId) {
+        this.buyerId = buyerId;
+    }
+
+    public String getLastAlterTime() {
+        return lastAlterTime;
+    }
+
+    public void setLastAlterTime(String lastAlterTime) {
+        this.lastAlterTime = lastAlterTime;
+    }
+
+    public String getOutTid() {
+        return outTid;
+    }
+
+    public void setOutTid(String outTid) {
+        this.outTid = outTid;
+    }
+
+    public String getWholeQuestionType() {
+        return wholeQuestionType;
+    }
+
+    public void setWholeQuestionType(String wholeQuestionType) {
+        this.wholeQuestionType = wholeQuestionType;
+    }
+
+    public String getServiceRemarks() {
+        return serviceRemarks;
+    }
+
+    public void setServiceRemarks(String serviceRemarks) {
+        this.serviceRemarks = serviceRemarks;
+    }
+
+    public String getAftersaleType() {
+        return aftersaleType;
+    }
+
+    public void setAftersaleType(String aftersaleType) {
+        this.aftersaleType = aftersaleType;
+    }
+
+    public AfterSaleInfo[] getAftersale_id() {
+        return aftersale_id;
+    }
+
+    public void setAftersale_id(AfterSaleInfo[] aftersale_id) {
+        this.aftersale_id = aftersale_id;
+    }
 }
