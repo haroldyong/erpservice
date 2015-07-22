@@ -7,6 +7,5 @@ import org.springframework.stereotype.Repository;
 /**
  * Created by allan on 2015/7/10.
  */
-@Repository
 public interface MallProductRepository extends JpaRepository<MallProductBean, Long> {
 }

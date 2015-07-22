@@ -1,5 +1,6 @@
 package com.huobanplus.erpservice.event;
 
+import com.huobanplus.erpservice.event.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.event.model.ProductClass;
 import com.huobanplus.erpservice.event.model.ProductInfo;
 import com.huobanplus.erpservice.event.model.ProudctInStock;
@@ -7,7 +8,7 @@ import com.huobanplus.erpservice.event.model.ProudctInStock;
 /**
  *  商品处理事件
  */
-public class GoodEvent extends ERPEvent {
+public class GoodBaseEvent extends ERPBaseEvent {
 
 
     /**

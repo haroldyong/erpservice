@@ -8,8 +8,10 @@ import com.huobanplus.erpservice.datacenter.bean.MallProductBean;
 import com.huobanplus.erpservice.datacenter.repository.MallOrderRepository;
 import com.huobanplus.erpservice.datacenter.repository.MallPaymentRepository;
 import com.huobanplus.erpservice.datacenter.repository.MallProductRepository;
+import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.event.handler.ERPRegister;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,15 +32,18 @@ public class ObtainDataController {
 
     @Resource
     private ERPRegister erpRegister;
-    @Resource
-    private MallOrderRepository orderRepository;
+    //    @Resource
+//    private MallOrderRepository orderRepository;
+    @Autowired
+    private MallOrderService orderService;
     @Resource
     private MallPaymentRepository paymentRepository;
     @Resource
     private MallProductRepository productRepository;
 
     /**
-     *  获取伙伴客的订单数据，并插入数据库
+     * 获取伙伴客的订单数据，并插入数据库
+     *
      * @param orderId
      * @param syncStatus
      * @param memberId
@@ -232,7 +237,7 @@ public class ObtainDataController {
             order.setHongbaoAmount(hongbaoAmount);
             order.setPayTime(new Date(payTime));
             order.setVirtualRecMobile(virtualRecMobile);
-            order = orderRepository.save(order);
+            order = orderService.save(order);
             if (null == order) {
 
                 //插入数据失败
@@ -265,6 +270,7 @@ public class ObtainDataController {
 
     /**
      * 获取伙伴商城支付信息
+     *
      * @param paymentId
      * @param orderId
      * @param memberId
@@ -299,34 +305,33 @@ public class ObtainDataController {
     @ResponseBody
     @RequestMapping(value = "/commitPayMentInfo", method = RequestMethod.POST)
     public Map obtainPaymentInfo(String paymentId, String orderId,
-                               @RequestParam(value = "memberId", required = false, defaultValue = "0") int memberId,
-                               String account,
-                               String bank,
-                               String payAccount,
-                               String currency,
-                               float money,
-                               @RequestParam(value = "payCost", required = false, defaultValue = "0") float payCost,
-                               @RequestParam(value = "curMoney", required = false, defaultValue = "0") float curMoney,
-                               int payType,
-                               String payMethod,
-                               @RequestParam(value = "ip", required = false, defaultValue = "") String ip,
-                               long beginTime,
-                               long endTime,
-                               String status,
-                               @RequestParam(value = "memo", required = false, defaultValue = "") String memo,
-                               @RequestParam(value = "tradeNo", required = false, defaultValue = "") String tradeNo,
-                               int customerId,
-                               String wxOpenId,
-                               @RequestParam(value = "wxIsSubscribe", required = false, defaultValue = "0") int wxIsSubscribe,
-                               int onlinePayType,
-                               @RequestParam(value = "payAgentId", required = false, defaultValue = "0") int payAgentId,
-                               String sign,
-                               String appKey,
-                               String operation,
-                               String capCode,
-                               String timeStamp,
-                               String erpName)
-    {
+                                 @RequestParam(value = "memberId", required = false, defaultValue = "0") int memberId,
+                                 String account,
+                                 String bank,
+                                 String payAccount,
+                                 String currency,
+                                 float money,
+                                 @RequestParam(value = "payCost", required = false, defaultValue = "0") float payCost,
+                                 @RequestParam(value = "curMoney", required = false, defaultValue = "0") float curMoney,
+                                 int payType,
+                                 String payMethod,
+                                 @RequestParam(value = "ip", required = false, defaultValue = "") String ip,
+                                 long beginTime,
+                                 long endTime,
+                                 String status,
+                                 @RequestParam(value = "memo", required = false, defaultValue = "") String memo,
+                                 @RequestParam(value = "tradeNo", required = false, defaultValue = "") String tradeNo,
+                                 int customerId,
+                                 String wxOpenId,
+                                 @RequestParam(value = "wxIsSubscribe", required = false, defaultValue = "0") int wxIsSubscribe,
+                                 int onlinePayType,
+                                 @RequestParam(value = "payAgentId", required = false, defaultValue = "0") int payAgentId,
+                                 String sign,
+                                 String appKey,
+                                 String operation,
+                                 String capCode,
+                                 String timeStamp,
+                                 String erpName) {
         Map<String, String> resultMap;
         MallPaymentBean payMent;
         if (!SecurityUtils.getInstance().validateSign(sign, appKey, operation, capCode, timeStamp)) {
@@ -415,8 +420,7 @@ public class ObtainDataController {
                                  String operation,
                                  String capCode,
                                  String timeStamp,
-                                 String erpName )
-    {
+                                 String erpName) {
         Map<String, String> resultMap;
         MallProductBean product;
         if (!SecurityUtils.getInstance().validateSign(sign, appKey, operation, capCode, timeStamp)) {

@@ -36,6 +36,10 @@
             <artifactId>spring-jdbc</artifactId>
             <version>4.1.6.RELEASE</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.huobanplus.erpservice</groupId>
+            <artifactId>erpservice-datacenter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

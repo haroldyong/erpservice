@@ -17,7 +17,6 @@ import java.util.List;
  */
 @Configuration
 @EnableWebMvc
-@ImportResource("classpath")
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {

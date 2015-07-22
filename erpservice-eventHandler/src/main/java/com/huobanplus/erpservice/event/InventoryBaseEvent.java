@@ -1,11 +1,12 @@
 package com.huobanplus.erpservice.event;
 
+import com.huobanplus.erpservice.event.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.event.model.InventoryInfo;
 
 /**
  *  库存信息处理事件
  */
-public class InventoryEvent extends ERPEvent {
+public class InventoryBaseEvent extends ERPBaseEvent {
 
     /**
      * 确认出库单

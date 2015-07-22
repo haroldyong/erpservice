@@ -1,5 +1,6 @@
 package com.huobanplus.erpservice.commons.boot;
 
+import com.huobanplus.erpservice.commons.config.ApplicationConfig;
 import com.huobanplus.erpservice.commons.config.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -10,7 +11,7 @@ public class AdminBoot extends AbstractAnnotationConfigDispatcherServletInitiali
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class<?>[]{
-                WebConfig.class
+                ApplicationConfig.class, WebConfig.class
         };
     }
 
