@@ -10,6 +10,9 @@ private String type;//erp类型
 private String name;//ERP名称
 private String validation;//验证信息
 
+    public ERPInfo() {
+    }
+
     public String getType() {
         return type;
     }
