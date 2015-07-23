@@ -10,6 +10,9 @@ public class ERPInfo {
     private String name;//ERP名称
     private String validation;//验证信息
 
+    public ERPInfo() {
+    }
+
     public String getType() {
         return type;
     }

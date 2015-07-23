@@ -9,8 +9,10 @@ import com.huobanplus.erpservice.datacenter.repository.MallOrderRepository;
 import com.huobanplus.erpservice.datacenter.repository.MallPaymentRepository;
 import com.huobanplus.erpservice.datacenter.repository.MallProductRepository;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
+import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.event.handler.ERPRegister;
+import com.huobanplus.erpservice.event.model.ERPInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -257,7 +259,9 @@ public class ObtainDataController {
                     for (ERPHandlerBuilder builder : erpRegister.getHandlerBuilders()) {
 
                     }
-
+                    ERPInfo info = new ERPInfo();
+                    ERPHandler edbHandler = erpRegister.getERPHandler(info);
+                    //edbHandler.handleEvent()
                     //返回操作成功结果
                     resultMap = new HashMap<String, String>();
                     resultMap.put("resut_message", "订单接收成功");
@@ -265,6 +269,7 @@ public class ObtainDataController {
                     return resultMap;
                 }
             }
+
         }
     }
 

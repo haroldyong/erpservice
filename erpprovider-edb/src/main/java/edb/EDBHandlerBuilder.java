@@ -45,7 +45,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
 
                 }
                 if (erpEvent instanceof InventoryEvent) {
-                    
+
                 }
                 return null;
             }
