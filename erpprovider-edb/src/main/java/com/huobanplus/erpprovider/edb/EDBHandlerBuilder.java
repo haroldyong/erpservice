@@ -1,9 +1,8 @@
 package com.huobanplus.erpprovider.edb;
 
 
-import com.huobanplus.erpservice.event.erpevent.CreateOrderEvent;
-import com.huobanplus.erpservice.event.erpevent.ERPBaseEvent;
-import com.huobanplus.erpservice.event.erpevent.InventoryEvent;
+import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
+import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.event.model.ERPInfo;
@@ -35,16 +34,42 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                 if (erpEvent instanceof CreateOrderEvent) {
                     return true;
                 }
-                return false;
+                else if(erpEvent instanceof InventoryEvent)
+                {
+                    return true;
+                }
+                else if(erpEvent instanceof DeliveryInfoEvent)
+                {
+                    return true;
+                }
+                else if(erpEvent instanceof OrderStatusInfoEvent)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             public Monitor<EventResult> handleEvent(ERPBaseEvent erpEvent) throws IOException, IllegalAccessException {
                 //todo 处理事件并返回结果
                 if (erpEvent instanceof CreateOrderEvent) {
+                    //
                     OrderInfo orderInfo = ((CreateOrderEvent) erpEvent).getOrderInfo();
 
+                    EventResult result = null;// api
+
+                    return new SimpleMonitor<EventResult>(result);
                 }
                 if (erpEvent instanceof InventoryEvent) {
+
+
+                }
+                if (erpEvent instanceof DeliveryInfoEvent) {
+
+                }
+                if (erpEvent instanceof OrderStatusInfoEvent) {
 
                 }
                 return null;
