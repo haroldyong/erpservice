@@ -6,9 +6,9 @@ package com.huobanplus.erpservice.event.model;
  */
 public class ERPInfo {
     //todo erp相关信息，如类型，名称，验证信息等
-    private String type;//erp类型
-    private String name;//ERP名称
-    private String validation;//验证信息
+private String type;//erp类型
+private String name;//ERP名称
+private String validation;//验证信息
 
     public String getType() {
         return type;
