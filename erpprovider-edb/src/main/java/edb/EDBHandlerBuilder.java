@@ -26,7 +26,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
      * @return 无法处理返回空，可以处理返回该erp事件处理器
      */
     public ERPHandler buildHandler(ERPInfo erpInfo) {
-        if (erpInfo.toString().equals("")) {
+        if (!erpInfo.getName().equals("edb")) {
             return null;
         }
         return new ERPHandler() {

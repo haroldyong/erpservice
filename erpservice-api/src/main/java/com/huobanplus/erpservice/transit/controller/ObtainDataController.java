@@ -9,6 +9,7 @@ import com.huobanplus.erpservice.datacenter.repository.MallOrderRepository;
 import com.huobanplus.erpservice.datacenter.repository.MallPaymentRepository;
 import com.huobanplus.erpservice.datacenter.repository.MallProductRepository;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
+import com.huobanplus.erpservice.event.erpevent.CreateOrderEvent;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.event.handler.ERPRegister;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -255,13 +257,25 @@ public class ObtainDataController {
                     resultMap.put("resut_code", ResponseCode.ERP_INFO_ERROR);
                     return resultMap;
                 } else {
-                    //遍历
-                    for (ERPHandlerBuilder builder : erpRegister.getHandlerBuilders()) {
-
-                    }
                     ERPInfo info = new ERPInfo();
+                    info.setName(erpName);
+                    //处理edb模块
                     ERPHandler edbHandler = erpRegister.getERPHandler(info);
-                    //edbHandler.handleEvent()
+                    if(null != edbHandler)
+                    {
+                        CreateOrderEvent orderEvent = new CreateOrderEvent();
+                        if(edbHandler.eventSupported(orderEvent))
+                        {
+                            try {
+                                edbHandler.handleEvent(orderEvent);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
                     //返回操作成功结果
                     resultMap = new HashMap<String, String>();
                     resultMap.put("resut_message", "订单接收成功");
