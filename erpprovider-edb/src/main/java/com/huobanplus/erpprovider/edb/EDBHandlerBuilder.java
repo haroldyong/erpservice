@@ -1,4 +1,4 @@
-package edb;
+package com.huobanplus.erpprovider.edb;
 
 
 import com.huobanplus.erpservice.event.erpevent.CreateOrderEvent;
@@ -14,7 +14,7 @@ import com.huobanplus.erpservice.event.model.OrderInfo;
 import java.io.IOException;
 
 /**
- * edb 具体事件处理实现类
+ * com.huobanplus.erpprovider.edb 具体事件处理实现类
  * Created by allan on 2015/7/13.
  */
 public class EDBHandlerBuilder implements ERPHandlerBuilder {
