@@ -9,6 +9,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
 ">
-    <!--example edb-->
-    <!--<context:component-scan base-package="com.huobanplus.erpprovider.edb"/>-->
+    <!--example com.huobanplus.erpprovider.edb-->
+    <context:component-scan base-package="com.huobanplus.erpprovider.edb"/>
 </beans>
