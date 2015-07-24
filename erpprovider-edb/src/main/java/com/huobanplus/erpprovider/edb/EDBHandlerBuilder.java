@@ -13,16 +13,16 @@ import com.huobanplus.erpservice.event.model.OrderInfo;
 import java.io.IOException;
 
 /**
- * com.huobanplus.erpprovider.edb ¾ßÌåÊÂ¼ş´¦ÀíÊµÏÖÀà
+ * com.huobanplus.erpprovider.edb å…·ä½“äº‹ä»¶å¤„ç†å®ç°ç±»
  * Created by allan on 2015/7/13.
  */
 public class EDBHandlerBuilder implements ERPHandlerBuilder {
 
     /**
-     * ¸ù¾İerpĞÅÏ¢ÅĞ¶ÏÊÇ·ñÓÉ¸Ãerp-provider´¦Àí
+     * æ ¹æ®erpä¿¡æ¯åˆ¤æ–­æ˜¯å¦ç”±è¯¥erp-providerå¤„ç†
      *
      * @param erpInfo
-     * @return ÎŞ·¨´¦Àí·µ»Ø¿Õ£¬¿ÉÒÔ´¦Àí·µ»Ø¸ÃerpÊÂ¼ş´¦ÀíÆ÷
+     * @return æ— æ³•å¤„ç†è¿”å›ç©ºï¼Œå¯ä»¥å¤„ç†è¿”å›è¯¥erpäº‹ä»¶å¤„ç†å™¨
      */
     public ERPHandler buildHandler(ERPInfo erpInfo) {
         if (!erpInfo.getName().equals("edb")) {
@@ -30,30 +30,22 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
         }
         return new ERPHandler() {
             public boolean eventSupported(ERPBaseEvent erpEvent) {
-                //todo ÅĞ¶ÏÊÂ¼şÊÇ·ñ¿ÉÒÔ´¦Àí
+                //todo åˆ¤æ–­äº‹ä»¶æ˜¯å¦å¯ä»¥å¤„ç†
                 if (erpEvent instanceof CreateOrderEvent) {
                     return true;
-                }
-                else if(erpEvent instanceof InventoryEvent)
-                {
+                } else if (erpEvent instanceof InventoryEvent) {
                     return true;
-                }
-                else if(erpEvent instanceof DeliveryInfoEvent)
-                {
+                } else if (erpEvent instanceof DeliveryInfoEvent) {
                     return true;
-                }
-                else if(erpEvent instanceof OrderStatusInfoEvent)
-                {
+                } else if (erpEvent instanceof OrderStatusInfoEvent) {
                     return true;
-                }
-                else
-                {
+                } else {
                     return false;
                 }
             }
 
             public Monitor<EventResult> handleEvent(ERPBaseEvent erpEvent) throws IOException, IllegalAccessException {
-                //todo ´¦ÀíÊÂ¼ş²¢·µ»Ø½á¹û
+                //todo å¤„ç†äº‹ä»¶å¹¶è¿”å›ç»“æœ
                 if (erpEvent instanceof CreateOrderEvent) {
                     //
                     OrderInfo orderInfo = ((CreateOrderEvent) erpEvent).getOrderInfo();
