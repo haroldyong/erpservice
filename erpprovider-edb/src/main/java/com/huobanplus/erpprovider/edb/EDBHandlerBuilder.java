@@ -1,7 +1,9 @@
 package com.huobanplus.erpprovider.edb;
 
 
+import com.huobanplus.erpprovider.edb.net.HttpUtil;
 import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
+import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
@@ -57,13 +59,13 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                 if (erpEvent instanceof CreateOrderEvent) {
                     //
                     OrderInfo orderInfo = ((CreateOrderEvent) erpEvent).getOrderInfo();
-
                     EventResult result = null;// api
-
+                    String resultStr = HttpUtil.getInstance().doGet(Constant.CREAT_ORDER_URL);
+                    //将返回值转换成EventResult
+                    
                     return new SimpleMonitor<EventResult>(result);
                 }
                 if (erpEvent instanceof InventoryEvent) {
-
 
                 }
                 if (erpEvent instanceof DeliveryInfoEvent) {
