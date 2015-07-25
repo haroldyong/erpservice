@@ -1,5 +1,7 @@
 package com.huobanplus.erpprovider.netshop.test;
 
+import com.huobanplus.erpprovider.netshop.util.XmlUtil;
+
 import java.io.Serializable;
 
 /**
@@ -53,6 +55,11 @@ public class NetShopTest {
         TestBean bean = test.new TestBean();
 
         bean.setAddress("chian hangzhou bingjiang clear");
+        bean.setAge("12");
+        bean.setName("Aaron");
+        bean.setInfo("hello Aaron");
 
+        XmlUtil<TestBean> xml = new XmlUtil<TestBean>();
+        System.out.print(xml.toXml(bean));
     }
 }
