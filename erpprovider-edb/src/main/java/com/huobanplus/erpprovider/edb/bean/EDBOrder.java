@@ -18,4 +18,8 @@ public class EDBOrder {
     public void setEdbOrderInfo(EDBOrderInfo edbOrderInfo) {
         this.edbOrderInfo = edbOrderInfo;
     }
+
+    public EDBOrder(EDBOrderInfo edbOrderInfo) {
+        this.edbOrderInfo = edbOrderInfo;
+    }
 }

@@ -33,4 +33,15 @@ public class Constant {
      * 请求时时间戳
      */
     public static final String SIGN_TIME_STAMP = "timeStamp";
+
+    //系统级参数
+    public static final String DB_HOST = "edb_a88888";
+    public static final String APP_KEY = "6f55e36b";
+    public static final String FORMAT = "XML";
+    public static final String V = "2.0";
+    public static final String SLENCRY = "0";
+    public static final String IP = "117.79.148.228";
+
+    //请求方法
+    public static final String CREATE_ORDER = "edbTradeAdd";
 }

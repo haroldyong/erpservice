@@ -1,6 +1,7 @@
 package com.huobanplus.erpservice.event.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 订单信息实体
@@ -108,7 +109,7 @@ public class OrderInfo extends BaseBean {
     //发票打印情况(0:未打印，1:已打印)
     private String invoiceIsprint;
     //是否开发票 (0:未开/1:已开
-    private String invoiceIsopen;
+    private int invoiceIsopen;
     //页码
     private String pageNo;
     //每页数量
@@ -164,7 +165,7 @@ public class OrderInfo extends BaseBean {
     //发票名称
     private String invoiceName;
     //开票情况
-    private String invoiceSituation;
+    private int invoiceSituation;
     //发票抬头
     private String invoiceTitle;
     //发票类型
@@ -172,11 +173,11 @@ public class OrderInfo extends BaseBean {
     //开票内容
     private String invoiceContent;
     //产品总金额
-    private String proTotalFee;
+    private double proTotalFee;
     //订单总金额
-    private String orderTotalFee;
+    private double orderTotalFee;
     //实收参考价
-    private String referencePricePaid;
+    private double referencePricePaid;
     //发票金额
     private String invoiceFee;
     //货到付款金额
@@ -186,7 +187,7 @@ public class OrderInfo extends BaseBean {
     //退款总金额
     private String refundTotalFee;
     //优惠金额
-    private String discountFee;
+    private double discountFee;
     //折扣
     private String discount;
     //渠道优惠金额
@@ -194,13 +195,13 @@ public class OrderInfo extends BaseBean {
     //商家优惠金额
     private String merchantDisFee;
     //整单优惠
-    private String orderDisfee;
+    private double orderDisfee;
     //佣金
     private String commissionFee;
     //是否货到付款
-    private String isCod;
+    private int isCod;
     //是否积分换购
-    private String pointPay;
+    private int pointPay;
     //消耗积分
     private String costPoint;
     //获得积分
@@ -216,9 +217,9 @@ public class OrderInfo extends BaseBean {
     //配送方式
     private String sendingType;
     //实收运费
-    private String realIncomefreight;
+    private double realIncomefreight;
     //实付运费
-    private String realPayFreight;
+    private double realPayFreight;
     //毛重运费
     private String grossWeightFreight;
     //净重运费
@@ -254,7 +255,7 @@ public class OrderInfo extends BaseBean {
     //预配货员
     private String advDistributer;
     //预配货时间
-    private String advDistributTime;
+    private Date advDistributTime;
     //取消员
     private String cancelOperator;
     //取消时间
@@ -272,7 +273,7 @@ public class OrderInfo extends BaseBean {
     //称重时间
     private String weighTime;
     //预计发货时间
-    private String bookDeliveryTime;
+    private Date bookDeliveryTime;
     //锁定员
     private String locker;
     //锁定时间
@@ -340,7 +341,7 @@ public class OrderInfo extends BaseBean {
     //分销商等级
     private String distributorLevel;
     //货到付款服务费
-    private String codServiceFee;
+    private double codServiceFee;
     //快递代收金额
     private String expressColFee;
     //产品数量
@@ -376,7 +377,7 @@ public class OrderInfo extends BaseBean {
     //平台类型
     private String platType;
     //是否预售
-    private String isAdvSale;
+    private int isAdvSale;
     //省编码
     private String provincCode;
     //市编码
@@ -428,11 +429,11 @@ public class OrderInfo extends BaseBean {
     //外部平台快递订单状态
     private String outOrderStatus;
     //订货日期（订货日期距当前时间不可超过一个月）
-    private String orderDate;
+    private Date orderDate;
     //付款日期
-    private String payDate;
+    private Date payDate;
     //完成日期
-    private String finishDate;
+    private Date finishDate;
     //物流公司
     private String wuLiu;
     //物流单号
@@ -442,7 +443,7 @@ public class OrderInfo extends BaseBean {
     //外部单价
     private double outPrice;
     //赠品数量
-    private String giftNum;
+    private int giftNum;
     //产品缺货情况
     private String productStockout;
     //是否预订
@@ -864,11 +865,11 @@ public class OrderInfo extends BaseBean {
         this.invoiceIsprint = invoiceIsprint;
     }
 
-    public String getInvoiceIsopen() {
+    public int getInvoiceIsopen() {
         return invoiceIsopen;
     }
 
-    public void setInvoiceIsopen(String invoiceIsopen) {
+    public void setInvoiceIsopen(int invoiceIsopen) {
         this.invoiceIsopen = invoiceIsopen;
     }
 
@@ -1088,11 +1089,11 @@ public class OrderInfo extends BaseBean {
         this.invoiceName = invoiceName;
     }
 
-    public String getInvoiceSituation() {
+    public int getInvoiceSituation() {
         return invoiceSituation;
     }
 
-    public void setInvoiceSituation(String invoiceSituation) {
+    public void setInvoiceSituation(int invoiceSituation) {
         this.invoiceSituation = invoiceSituation;
     }
 
@@ -1120,27 +1121,27 @@ public class OrderInfo extends BaseBean {
         this.invoiceContent = invoiceContent;
     }
 
-    public String getProTotalFee() {
+    public double getProTotalFee() {
         return proTotalFee;
     }
 
-    public void setProTotalFee(String proTotalFee) {
+    public void setProTotalFee(double proTotalFee) {
         this.proTotalFee = proTotalFee;
     }
 
-    public String getOrderTotalFee() {
+    public double getOrderTotalFee() {
         return orderTotalFee;
     }
 
-    public void setOrderTotalFee(String orderTotalFee) {
+    public void setOrderTotalFee(double orderTotalFee) {
         this.orderTotalFee = orderTotalFee;
     }
 
-    public String getReferencePricePaid() {
+    public double getReferencePricePaid() {
         return referencePricePaid;
     }
 
-    public void setReferencePricePaid(String referencePricePaid) {
+    public void setReferencePricePaid(double referencePricePaid) {
         this.referencePricePaid = referencePricePaid;
     }
 
@@ -1176,11 +1177,11 @@ public class OrderInfo extends BaseBean {
         this.refundTotalFee = refundTotalFee;
     }
 
-    public String getDiscountFee() {
+    public double getDiscountFee() {
         return discountFee;
     }
 
-    public void setDiscountFee(String discountFee) {
+    public void setDiscountFee(double discountFee) {
         this.discountFee = discountFee;
     }
 
@@ -1208,11 +1209,11 @@ public class OrderInfo extends BaseBean {
         this.merchantDisFee = merchantDisFee;
     }
 
-    public String getOrderDisfee() {
+    public double getOrderDisfee() {
         return orderDisfee;
     }
 
-    public void setOrderDisfee(String orderDisfee) {
+    public void setOrderDisfee(double orderDisfee) {
         this.orderDisfee = orderDisfee;
     }
 
@@ -1224,19 +1225,19 @@ public class OrderInfo extends BaseBean {
         this.commissionFee = commissionFee;
     }
 
-    public String getIsCod() {
+    public int getIsCod() {
         return isCod;
     }
 
-    public void setIsCod(String isCod) {
+    public void setIsCod(int isCod) {
         this.isCod = isCod;
     }
 
-    public String getPointPay() {
+    public int getPointPay() {
         return pointPay;
     }
 
-    public void setPointPay(String pointPay) {
+    public void setPointPay(int pointPay) {
         this.pointPay = pointPay;
     }
 
@@ -1296,19 +1297,19 @@ public class OrderInfo extends BaseBean {
         this.sendingType = sendingType;
     }
 
-    public String getRealIncomefreight() {
+    public double getRealIncomefreight() {
         return realIncomefreight;
     }
 
-    public void setRealIncomefreight(String realIncomefreight) {
+    public void setRealIncomefreight(double realIncomefreight) {
         this.realIncomefreight = realIncomefreight;
     }
 
-    public String getRealPayFreight() {
+    public double getRealPayFreight() {
         return realPayFreight;
     }
 
-    public void setRealPayFreight(String realPayFreight) {
+    public void setRealPayFreight(double realPayFreight) {
         this.realPayFreight = realPayFreight;
     }
 
@@ -1448,11 +1449,11 @@ public class OrderInfo extends BaseBean {
         this.advDistributer = advDistributer;
     }
 
-    public String getAdvDistributTime() {
+    public Date getAdvDistributTime() {
         return advDistributTime;
     }
 
-    public void setAdvDistributTime(String advDistributTime) {
+    public void setAdvDistributTime(Date advDistributTime) {
         this.advDistributTime = advDistributTime;
     }
 
@@ -1520,11 +1521,11 @@ public class OrderInfo extends BaseBean {
         this.weighTime = weighTime;
     }
 
-    public String getBookDeliveryTime() {
+    public Date getBookDeliveryTime() {
         return bookDeliveryTime;
     }
 
-    public void setBookDeliveryTime(String bookDeliveryTime) {
+    public void setBookDeliveryTime(Date bookDeliveryTime) {
         this.bookDeliveryTime = bookDeliveryTime;
     }
 
@@ -1792,11 +1793,11 @@ public class OrderInfo extends BaseBean {
         this.distributorLevel = distributorLevel;
     }
 
-    public String getCodServiceFee() {
+    public double getCodServiceFee() {
         return codServiceFee;
     }
 
-    public void setCodServiceFee(String codServiceFee) {
+    public void setCodServiceFee(double codServiceFee) {
         this.codServiceFee = codServiceFee;
     }
 
@@ -1936,11 +1937,11 @@ public class OrderInfo extends BaseBean {
         this.platType = platType;
     }
 
-    public String getIsAdvSale() {
+    public int getIsAdvSale() {
         return isAdvSale;
     }
 
-    public void setIsAdvSale(String isAdvSale) {
+    public void setIsAdvSale(int isAdvSale) {
         this.isAdvSale = isAdvSale;
     }
 
@@ -2144,27 +2145,27 @@ public class OrderInfo extends BaseBean {
         this.outOrderStatus = outOrderStatus;
     }
 
-    public String getOrderDate() {
+    public Date getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(String orderDate) {
+    public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
 
-    public String getPayDate() {
+    public Date getPayDate() {
         return payDate;
     }
 
-    public void setPayDate(String payDate) {
+    public void setPayDate(Date payDate) {
         this.payDate = payDate;
     }
 
-    public String getFinishDate() {
+    public Date getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(String finishDate) {
+    public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
     }
 
@@ -2200,11 +2201,11 @@ public class OrderInfo extends BaseBean {
         this.outPrice = outPrice;
     }
 
-    public String getGiftNum() {
+    public int getGiftNum() {
         return giftNum;
     }
 
-    public void setGiftNum(String giftNum) {
+    public void setGiftNum(int giftNum) {
         this.giftNum = giftNum;
     }
 
