@@ -10,8 +10,9 @@ import com.huobanplus.erpservice.event.model.OrderInfo;
  */
 public class OrderBaseEvent extends ERPBaseEvent {
 
-    public void createOrder(MallOrderBean orderBean) {
+    public OrderInfo createOrder() {
 
+        return new OrderInfo();
     }
 
     /**
@@ -42,7 +43,7 @@ public class OrderBaseEvent extends ERPBaseEvent {
     }
 
     /**
-     * 订单批量发货
+     * 订单批量发  货
      *
      * @return
      */

@@ -3,7 +3,6 @@ package com.huobanplus.erpprovider.edb.handler.impl;
 import com.huobanplus.erpprovider.edb.handler.OrderHandler;
 import com.huobanplus.erpprovider.edb.utils.HTNetService;
 import com.huobanplus.erpservice.event.model.OrderInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

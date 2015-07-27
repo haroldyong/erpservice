@@ -15,6 +15,7 @@
         <module>erpservice-eventHandler</module>
         <module>erpprovider-edb</module>
         <module>erpprovider-netshop</module>
+        <module>erpprovider-huobanmall</module>
     </modules>
 
     <build>

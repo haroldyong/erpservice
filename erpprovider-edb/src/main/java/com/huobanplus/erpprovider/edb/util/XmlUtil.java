@@ -1,4 +1,4 @@
-package com.huobanplus.erpprovider.edb.utils;
+package com.huobanplus.erpprovider.edb.util;
 
 import com.wutka.jox.JOXBeanInputStream;
 import com.wutka.jox.JOXBeanOutputStream;
