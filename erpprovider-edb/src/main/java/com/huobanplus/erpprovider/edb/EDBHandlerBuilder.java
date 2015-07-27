@@ -54,20 +54,15 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     EventResult result = null;// api
                     String resultStr = HttpUtil.getInstance().doGet(Constant.CREAT_ORDER_URL);
                     //������ֵת����EventResult
-                    
+
                     return new SimpleMonitor<EventResult>(result);
-                }
-                else if (erpEvent instanceof InventoryEvent) {
+                } else if (erpEvent instanceof InventoryEvent) {
 
-                }
-                else if (erpEvent instanceof DeliveryInfoEvent) {
+                } else if (erpEvent instanceof DeliveryInfoEvent) {
 
-                }
-                else if (erpEvent instanceof OrderStatusInfoEvent) {
+                } else if (erpEvent instanceof OrderStatusInfoEvent) {
 
-                }
-                else
-                {
+                } else {
 
                 }
                 return null;
