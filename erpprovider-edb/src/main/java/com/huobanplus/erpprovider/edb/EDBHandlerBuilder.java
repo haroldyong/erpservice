@@ -52,7 +52,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     //
                     OrderInfo orderInfo = ((CreateOrderEvent) erpEvent).getOrderInfo();
                     EventResult result = null;// api
-                    String resultStr = HttpUtil.getInstance().doGet(Constant.CREAT_ORDER_URL);
+                    String resultStr = HttpUtil.getInstance().doGet(Constant.REQUEST_URI);
                     //������ֵת����EventResult
 
                     return new SimpleMonitor<EventResult>(result);

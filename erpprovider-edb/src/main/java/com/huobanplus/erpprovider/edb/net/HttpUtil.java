@@ -17,6 +17,7 @@ import java.util.Map;
 public class HttpUtil {
 
     private HttpClient client;
+
     private static class Holder {
         private static final HttpUtil instance = new HttpUtil();
     }
@@ -25,8 +26,7 @@ public class HttpUtil {
         return Holder.instance;
     }
 
-    private HttpUtil()
-    {
+    private HttpUtil() {
 
     }
 
@@ -54,6 +54,7 @@ public class HttpUtil {
                 //请求成功，读取内容
                 return new String(getMethod.getResponseBody(), "UTF-8");
             } else {
+                String msg = new String(getMethod.getResponseBody(), "UTF-8");
                 //请求失败，返回null
                 return null;
             }

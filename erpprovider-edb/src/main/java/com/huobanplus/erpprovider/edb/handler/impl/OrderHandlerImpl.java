@@ -7,9 +7,8 @@ import com.huobanplus.erpprovider.edb.eventResult.CreateOrderResult;
 import com.huobanplus.erpprovider.edb.handler.OrderHandler;
 import com.huobanplus.erpprovider.edb.net.HttpUtil;
 import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
-import com.huobanplus.erpprovider.edb.util.AuthBean;
 import com.huobanplus.erpprovider.edb.util.Constant;
-import com.huobanplus.erpprovider.edb.util.SignStrategy;
+import com.huobanplus.erpprovider.edb.util.SignBuilder;
 import com.huobanplus.erpprovider.edb.util.StringUtil;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
@@ -20,6 +19,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by allan on 2015/7/24.
@@ -30,7 +30,7 @@ public class OrderHandlerImpl implements OrderHandler {
     @Override
     public Monitor<EventResult> createOrder(OrderInfo orderInfo) throws IOException {
         HttpUtil htNetService = HttpUtil.getInstance();
-        Map<Object, Object> map = new HashMap<>();
+
         EDBOrderInfo edbOrderInfo = new EDBOrderInfo();
         edbOrderInfo.setTid(orderInfo.getTid());
         edbOrderInfo.setOutTid(orderInfo.getOutTid());
@@ -106,18 +106,28 @@ public class OrderHandlerImpl implements OrderHandler {
         edbOrderInfo.setOutBarCode(orderInfo.getOutBarCode());
         edbOrderInfo.setProductIntro(orderInfo.getProductIntro());
         EDBOrder edbOrder = new EDBOrder(edbOrderInfo);
+
         XmlMapper xmlMapper = new XmlMapper();
         String resultStr = xmlMapper.writeValueAsString(edbOrder);
-        map.put("dbhost", Constant.DB_HOST);
-        map.put("appkey", Constant.APP_KEY);
-        map.put("method", Constant.CREATE_ORDER);
-        map.put("format", Constant.FORMAT);
-        map.put("timestamp", new Date().getTime());
-        map.put("v", Constant.V);
-        map.put("slencry", Constant.SLENCRY);
-        map.put("ip", Constant.IP);
-        map.put("xmlvalues", resultStr);
-        String result = htNetService.doPost(Constant.REQUEST_URI, map);
+
+        Map<String, String> requestData = new HashMap<>();
+
+        requestData.put("dbhost", Constant.DB_HOST);
+        requestData.put("appkey", Constant.APP_KEY);
+        requestData.put("method", Constant.CREATE_ORDER);
+        requestData.put("format", Constant.FORMAT);
+        requestData.put("timestamp", String.valueOf(new Date().getTime()));
+        requestData.put("v", Constant.V);
+        requestData.put("slencry", Constant.SLENCRY);
+        requestData.put("ip", Constant.IP);
+        requestData.put("xmlvalues", resultStr);
+
+        TreeMap<String, String> signMap = new TreeMap<>(requestData);
+        signMap.put("appscret", Constant.APP_SECRET);
+        signMap.put("token", Constant.TOKEN);
+        requestData.put("sign", SignBuilder.buildSign(signMap, Constant.APP_KEY, ""));
+
+        String result = htNetService.doPost(Constant.REQUEST_URI, requestData);
         CreateOrderResult orderResult = xmlMapper.readValue(result, CreateOrderResult.class);
         return new SimpleMonitor<>(orderResult);
     }

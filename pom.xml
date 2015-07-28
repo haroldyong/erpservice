@@ -16,7 +16,6 @@
         <module>erpprovider-edb</module>
         <module>erpprovider-netshop</module>
         <module>erpprovider-huobanmall</module>
-        <module>erpservice-utils</module>
     </modules>
 
     <build>

@@ -6,5 +6,6 @@ package com.huobanplus.erpservice.event.model;
  */
 public class EventResult {
     //todo
-
+    private int status;
+    private String resultJson;
 }
