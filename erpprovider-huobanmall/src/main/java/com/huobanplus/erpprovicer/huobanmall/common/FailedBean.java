@@ -1,5 +1,7 @@
 package com.huobanplus.erpprovicer.huobanmall.common;
 
+import com.huobanplus.erpservice.event.model.BaseResult;
+
 /**
  * 类描述：请求失败 实体
  * @author aaron

@@ -1,7 +1,7 @@
 package com.huobanplus.erpprovicer.huobanmall.service;
 
-import com.huobanplus.erpprovicer.huobanmall.common.BaseResult;
 import com.huobanplus.erpprovicer.huobanmall.common.FailedBean;
+import com.huobanplus.erpservice.event.model.BaseResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 
 /**

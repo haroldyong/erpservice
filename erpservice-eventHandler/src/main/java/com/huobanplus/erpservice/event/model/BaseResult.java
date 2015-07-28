@@ -1,5 +1,4 @@
-package com.huobanplus.erpprovicer.huobanmall.common;
-
+package com.huobanplus.erpservice.event.model;
 import java.io.Serializable;
 
 /**

@@ -80,8 +80,9 @@ public class SignStrategy {
      * 2、头尾加上secret
      * 3、MD5加密
      * 4、返回sign
-     * @param paramsMap
-     * @return
+     * @param paramsMap 签名参数的容器
+     * @param secret 签名秘钥
+     * @return 返回签名字符
      */
     private String obtainSign(Map<String, String> paramsMap, String secret)
     {

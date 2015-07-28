@@ -3,7 +3,10 @@ package com.huobanplus.erpservice.event.model;
 import java.io.Serializable;
 
 /**
- * 公共参数
+ * 类描述：公共参数
+ * @author aaron
+ * @since  2015年7月27日 上午10:24:35
+ * @version V1.0
  */
 public class BaseBean implements Serializable {
 

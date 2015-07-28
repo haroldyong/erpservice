@@ -3,9 +3,12 @@ package com.huobanplus.erpservice.event.model;
 import java.io.Serializable;
 
 /**
- * Created by Administrator on 2015/7/16.
+ * 类描述：库存信息实体
+ * @author aaron
+ * @since  2015年7月27日 上午10:24:35
+ * @version V1.0
  */
-public class InventoryInfo extends BaseBean {
+public class InventoryInfo extends BaseResult {
 
     //出库单号
     private String outStorageNo;
