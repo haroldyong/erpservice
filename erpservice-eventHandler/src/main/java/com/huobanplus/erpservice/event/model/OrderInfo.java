@@ -1,6 +1,7 @@
 package com.huobanplus.erpservice.event.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 类描述：订单信息实体
@@ -46,15 +47,15 @@ public class OrderInfo extends BaseResult {
     /**
      * 订单创建时间
      */
-    private String orderTime;
+    private Date orderTime;
     /**
      * 订单付款时间
      */
-    private String payTime;
+    private Date payTime;
     /**
      * 系统写入时间
      */
-    private String inSysTime;
+    private Date inSysTime;
     /**
      * 商家编码
      */
@@ -162,11 +163,11 @@ public class OrderInfo extends BaseResult {
     /**
      * 配货时间
      */
-    private String cargoTime;
+    private Date cargoTime;
     /**
      * 打印时间
      */
-    private String printTime;
+    private Date printTime;
     /**
      * 验货员
      */
@@ -182,7 +183,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 发货时间、验货时间
      */
-    private String deliveryTime;
+    private Date deliveryTime;
     /**
      * 毛重
      */
@@ -231,11 +232,11 @@ public class OrderInfo extends BaseResult {
     /**
      * 开始时间
      */
-    private String beginTime;
+    private Date beginTime;
     /**
      * 结束时间
      */
-    private String endTime;
+    private Date endTime;
     /**
      * 时间排序类型：审单时间
      */
@@ -272,10 +273,6 @@ public class OrderInfo extends BaseResult {
      */
     private String invoiceIsprint;
     /**
-     * 是否开发票 (0:未开/1:已开
-     */
-    private String invoiceIsopen;
-    /**
      * 是否保价
      */
     private String isProtect;
@@ -301,6 +298,11 @@ public class OrderInfo extends BaseResult {
         this.costProtect = costProtect;
     }
 
+
+    /**
+     * 是否开发票 (0:未开/1:已开
+     */
+    private int invoiceIsopen;
     /**
      * 页码
      */
@@ -427,11 +429,12 @@ public class OrderInfo extends BaseResult {
     /**
      * 开票情况
      */
-    private String invoiceSituation;
+    private int invoiceSituation;
     /**
      * 发票抬头
      */
     private String invoiceTitle;
+
     /**
      * 发票类型
      */
@@ -440,6 +443,7 @@ public class OrderInfo extends BaseResult {
      * 开票内容
      */
     private String invoiceContent;
+
     /**
      * 产品总金额
      */
@@ -451,7 +455,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 实收参考价
      */
-    private String referencePricePaid;
+    private double referencePricePaid;
 
     /**
      * 最终金额
@@ -482,7 +486,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 发票金额
      */
-    private String invoiceFee;
+    private double invoiceFee;
     /**
      * 货到付款金额
      */
@@ -495,7 +499,6 @@ public class OrderInfo extends BaseResult {
      * 退款总金额
      */
     private String refundTotalFee;
-
     /**
      * 是否启用优惠
      */
@@ -528,11 +531,11 @@ public class OrderInfo extends BaseResult {
     /**
      * 整单优惠
      */
-    private String orderDisfee;
+    private double orderDisfee;
     /**
      * 佣金
      */
-    private String commissionFee;
+    private double commissionFee;
     /**
      * 是否货到付款
      */
@@ -540,7 +543,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 是否积分换购
      */
-    private String pointPay;
+    private int pointPay;
     /**
      * 消耗积分
      */
@@ -677,15 +680,15 @@ public class OrderInfo extends BaseResult {
     /**
      * 实收运费
      */
-    private String realIncomefreight;
+    private double realIncomefreight;
     /**
      * 实付运费
      */
-    private String realPayFreight;
+    private double realPayFreight;
     /**
      * 毛重运费
      */
-    private String grossWeightFreight;
+    private double grossWeightFreight;
     /**
      * 净重运费
      */
@@ -701,11 +704,11 @@ public class OrderInfo extends BaseResult {
     /**
      * 订货时间
      */
-    private String tidTime;
+    private Date tidTime;
     /**
      * 获取时间
      */
-    private String getTime;
+    private Date getTime;
     /**
      * 下单员
      */
@@ -721,7 +724,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 到款时间
      */
-    private String paymentReceivedTime;
+    private Date paymentReceivedTime;
     /**
      * 审单员
      */
@@ -729,7 +732,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 审单时间
      */
-    private String reviewOrdersTime;
+    private Date reviewOrdersTime;
     /**
      * 财务审核人
      */
@@ -737,7 +740,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 财务审核时间
      */
-    private String financeReviewTime;
+    private Date financeReviewTime;
     /**
      * 预打印员
      */
@@ -753,7 +756,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 预配货时间
      */
-    private String advDistributTime;
+    private Date advDistributTime;
     /**
      * 取消员
      */
@@ -761,7 +764,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 取消时间
      */
-    private String cancelTime;
+    private Date cancelTime;
     /**
      * 反取消员
      */
@@ -769,7 +772,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 反取消时间
      */
-    private String revokeCancelTime;
+    private Date revokeCancelTime;
     /**
      * 打包员
      */
@@ -777,7 +780,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 打包时间
      */
-    private String packTime;
+    private Date packTime;
     /**
      * 称重员
      */
@@ -785,11 +788,11 @@ public class OrderInfo extends BaseResult {
     /**
      * 称重时间
      */
-    private String weighTime;
+    private Date weighTime;
     /**
      * 预计发货时间
      */
-    private String bookDeliveryTime;
+    private Date bookDeliveryTime;
 
     /**
      * 创建IP
@@ -811,11 +814,11 @@ public class OrderInfo extends BaseResult {
     /**
      * 锁定时间
      */
-    private String lockTime;
+    private Date lockTime;
     /**
      * 预计归档时间
      */
-    private String bookFileTime;
+    private Date bookFileTime;
     /**
      * 归档员
      */
@@ -823,15 +826,15 @@ public class OrderInfo extends BaseResult {
     /**
      * 归档时间
      */
-    private String fileTime;
+    private Date fileTime;
     /**
      * 完成时间
      */
-    private String finishTime;
+    private Date finishTime;
     /**
      * 订单修改时间
      */
-    private String modityTime;
+    private Date modityTime;
     /**
      * 促销标记
      */
@@ -847,23 +850,23 @@ public class OrderInfo extends BaseResult {
     /**
      * 到货日期
      */
-    private String goodReceiveTime;
+    private Date goodReceiveTime;
     /**
      * 生成应收时间
      */
-    private String receiveTime;
+    private Date receiveTime;
     /**
      * 核销日期
      */
-    private String verificatyTime;
+    private Date verificatyTime;
     /**
      * 启用智能仓库时间
      */
-    private String enableInteStoTime;
+    private Date enableInteStoTime;
     /**
      * 启用智能快递时间
      */
-    private String enableInteDeliveryTime;
+    private Date enableInteDeliveryTime;
     /**
      * 支付宝账户
      */
@@ -911,7 +914,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 短信发送时间
      */
-    private String messageTime;
+    private Date messageTime;
     /**
      * 是否缺货
      */
@@ -939,7 +942,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 货到付款服务费
      */
-    private String codServiceFee;
+    private double codServiceFee;
     /**
      * 快递代收金额
      */
@@ -997,7 +1000,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 处理订单需要的时间戳
      */
-    private String orderProcessTime;
+    private long orderProcessTime;
 
     /**
      * 订单备注
@@ -1023,7 +1026,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 中断时间
      */
-    private String breakTime;
+    private Date breakTime;
     /**
      * 中断说明
      */
@@ -1039,7 +1042,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 是否预售
      */
-    private String isAdvSale;
+    private int isAdvSale;
     /**
      * 省编码
      */
@@ -1055,11 +1058,11 @@ public class OrderInfo extends BaseResult {
     /**
      * 最后一次退货时间
      */
-    private String lastReturnedTime;
+    private Date lastReturnedTime;
     /**
      * 最后一次退款时间
      */
-    private String lastRefundTime;
+    private Date lastRefundTime;
     /**
      * 配送中心名称
      */
@@ -1075,7 +1078,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 送货时间
      */
-    private String  jdDeliveryTime;
+    private Date  jdDeliveryTime;
     /**
      * 分拣代码
      */
@@ -1156,15 +1159,15 @@ public class OrderInfo extends BaseResult {
     /**
      * 订货日期（订货日期距当前时间不可超过一个月）
      */
-    private String orderDate;
+    private Date orderDate;
     /**
      * 付款日期
      */
-    private String payDate;
+    private Date payDate;
     /**
      * 完成日期
      */
-    private String finishDate;
+    private Date finishDate;
     /**
      * 物流公司
      */
@@ -1212,7 +1215,7 @@ public class OrderInfo extends BaseResult {
     /**
      * 赠品数量
      */
-    private String giftNum;
+    private int giftNum;
     /**
      * 产品缺货情况
      */
@@ -1307,27 +1310,27 @@ public class OrderInfo extends BaseResult {
         this.tid = tid;
     }
 
-    public String getOrderTime() {
+    public Date getOrderTime() {
         return orderTime;
     }
 
-    public void setOrderTime(String orderTime) {
+    public void setOrderTime(Date orderTime) {
         this.orderTime = orderTime;
     }
 
-    public String getPayTime() {
+    public Date getPayTime() {
         return payTime;
     }
 
-    public void setPayTime(String payTime) {
+    public void setPayTime(Date payTime) {
         this.payTime = payTime;
     }
 
-    public String getInSysTime() {
+    public Date getInSysTime() {
         return inSysTime;
     }
 
-    public void setInSysTime(String inSysTime) {
+    public void setInSysTime(Date inSysTime) {
         this.inSysTime = inSysTime;
     }
 
@@ -1483,19 +1486,19 @@ public class OrderInfo extends BaseResult {
         this.cargoOperator = cargoOperator;
     }
 
-    public String getCargoTime() {
+    public Date getCargoTime() {
         return cargoTime;
     }
 
-    public void setCargoTime(String cargoTime) {
+    public void setCargoTime(Date cargoTime) {
         this.cargoTime = cargoTime;
     }
 
-    public String getPrintTime() {
+    public Date getPrintTime() {
         return printTime;
     }
 
-    public void setPrintTime(String printTime) {
+    public void setPrintTime(Date printTime) {
         this.printTime = printTime;
     }
 
@@ -1523,11 +1526,11 @@ public class OrderInfo extends BaseResult {
         this.deliveryOperator = deliveryOperator;
     }
 
-    public String getDeliveryTime() {
+    public Date getDeliveryTime() {
         return deliveryTime;
     }
 
-    public void setDeliveryTime(String deliveryTime) {
+    public void setDeliveryTime(Date deliveryTime) {
         this.deliveryTime = deliveryTime;
     }
 
@@ -1587,19 +1590,19 @@ public class OrderInfo extends BaseResult {
         this.dateType = dateType;
     }
 
-    public String getBeginTime() {
+    public Date getBeginTime() {
         return beginTime;
     }
 
-    public void setBeginTime(String beginTime) {
+    public void setBeginTime(Date beginTime) {
         this.beginTime = beginTime;
     }
 
-    public String getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
@@ -1667,11 +1670,11 @@ public class OrderInfo extends BaseResult {
         this.invoiceIsprint = invoiceIsprint;
     }
 
-    public String getInvoiceIsopen() {
+    public int getInvoiceIsopen() {
         return invoiceIsopen;
     }
 
-    public void setInvoiceIsopen(String invoiceIsopen) {
+    public void setInvoiceIsopen(int invoiceIsopen) {
         this.invoiceIsopen = invoiceIsopen;
     }
 
@@ -1891,11 +1894,11 @@ public class OrderInfo extends BaseResult {
         this.invoiceName = invoiceName;
     }
 
-    public String getInvoiceSituation() {
+    public int getInvoiceSituation() {
         return invoiceSituation;
     }
 
-    public void setInvoiceSituation(String invoiceSituation) {
+    public void setInvoiceSituation(int invoiceSituation) {
         this.invoiceSituation = invoiceSituation;
     }
 
@@ -1939,19 +1942,19 @@ public class OrderInfo extends BaseResult {
         this.orderTotalFee = orderTotalFee;
     }
 
-    public String getReferencePricePaid() {
+    public double getReferencePricePaid() {
         return referencePricePaid;
     }
 
-    public void setReferencePricePaid(String referencePricePaid) {
+    public void setReferencePricePaid(double referencePricePaid) {
         this.referencePricePaid = referencePricePaid;
     }
 
-    public String getInvoiceFee() {
+    public double getInvoiceFee() {
         return invoiceFee;
     }
 
-    public void setInvoiceFee(String invoiceFee) {
+    public void setInvoiceFee(double invoiceFee) {
         this.invoiceFee = invoiceFee;
     }
 
@@ -2011,19 +2014,19 @@ public class OrderInfo extends BaseResult {
         this.merchantDisFee = merchantDisFee;
     }
 
-    public String getOrderDisfee() {
+    public double getOrderDisfee() {
         return orderDisfee;
     }
 
-    public void setOrderDisfee(String orderDisfee) {
+    public void setOrderDisfee(double orderDisfee) {
         this.orderDisfee = orderDisfee;
     }
 
-    public String getCommissionFee() {
+    public double getCommissionFee() {
         return commissionFee;
     }
 
-    public void setCommissionFee(String commissionFee) {
+    public void setCommissionFee(double commissionFee) {
         this.commissionFee = commissionFee;
     }
 
@@ -2035,11 +2038,11 @@ public class OrderInfo extends BaseResult {
         this.isCod = isCod;
     }
 
-    public String getPointPay() {
+    public int getPointPay() {
         return pointPay;
     }
 
-    public void setPointPay(String pointPay) {
+    public void setPointPay(int pointPay) {
         this.pointPay = pointPay;
     }
 
@@ -2099,27 +2102,27 @@ public class OrderInfo extends BaseResult {
         this.sendingType = sendingType;
     }
 
-    public String getRealIncomefreight() {
+    public double getRealIncomefreight() {
         return realIncomefreight;
     }
 
-    public void setRealIncomefreight(String realIncomefreight) {
+    public void setRealIncomefreight(double realIncomefreight) {
         this.realIncomefreight = realIncomefreight;
     }
 
-    public String getRealPayFreight() {
+    public double getRealPayFreight() {
         return realPayFreight;
     }
 
-    public void setRealPayFreight(String realPayFreight) {
+    public void setRealPayFreight(double realPayFreight) {
         this.realPayFreight = realPayFreight;
     }
 
-    public String getGrossWeightFreight() {
+    public double getGrossWeightFreight() {
         return grossWeightFreight;
     }
 
-    public void setGrossWeightFreight(String grossWeightFreight) {
+    public void setGrossWeightFreight(double grossWeightFreight) {
         this.grossWeightFreight = grossWeightFreight;
     }
 
@@ -2147,19 +2150,19 @@ public class OrderInfo extends BaseResult {
         this.totalWeight = totalWeight;
     }
 
-    public String getTidTime() {
+    public Date getTidTime() {
         return tidTime;
     }
 
-    public void setTidTime(String tidTime) {
+    public void setTidTime(Date tidTime) {
         this.tidTime = tidTime;
     }
 
-    public String getGetTime() {
+    public Date getGetTime() {
         return getTime;
     }
 
-    public void setGetTime(String getTime) {
+    public void setGetTime(Date getTime) {
         this.getTime = getTime;
     }
 
@@ -2187,11 +2190,11 @@ public class OrderInfo extends BaseResult {
         this.paymentReceivedOperator = paymentReceivedOperator;
     }
 
-    public String getPaymentReceivedTime() {
+    public Date getPaymentReceivedTime() {
         return paymentReceivedTime;
     }
 
-    public void setPaymentReceivedTime(String paymentReceivedTime) {
+    public void setPaymentReceivedTime(Date paymentReceivedTime) {
         this.paymentReceivedTime = paymentReceivedTime;
     }
 
@@ -2203,11 +2206,11 @@ public class OrderInfo extends BaseResult {
         this.reviewOrdersOperator = reviewOrdersOperator;
     }
 
-    public String getReviewOrdersTime() {
+    public Date getReviewOrdersTime() {
         return reviewOrdersTime;
     }
 
-    public void setReviewOrdersTime(String reviewOrdersTime) {
+    public void setReviewOrdersTime(Date reviewOrdersTime) {
         this.reviewOrdersTime = reviewOrdersTime;
     }
 
@@ -2219,11 +2222,11 @@ public class OrderInfo extends BaseResult {
         this.financeReviewOperator = financeReviewOperator;
     }
 
-    public String getFinanceReviewTime() {
+    public Date getFinanceReviewTime() {
         return financeReviewTime;
     }
 
-    public void setFinanceReviewTime(String financeReviewTime) {
+    public void setFinanceReviewTime(Date financeReviewTime) {
         this.financeReviewTime = financeReviewTime;
     }
 
@@ -2251,11 +2254,11 @@ public class OrderInfo extends BaseResult {
         this.advDistributer = advDistributer;
     }
 
-    public String getAdvDistributTime() {
+    public Date getAdvDistributTime() {
         return advDistributTime;
     }
 
-    public void setAdvDistributTime(String advDistributTime) {
+    public void setAdvDistributTime(Date advDistributTime) {
         this.advDistributTime = advDistributTime;
     }
 
@@ -2267,11 +2270,11 @@ public class OrderInfo extends BaseResult {
         this.cancelOperator = cancelOperator;
     }
 
-    public String getCancelTime() {
+    public Date getCancelTime() {
         return cancelTime;
     }
 
-    public void setCancelTime(String cancelTime) {
+    public void setCancelTime(Date cancelTime) {
         this.cancelTime = cancelTime;
     }
 
@@ -2283,11 +2286,11 @@ public class OrderInfo extends BaseResult {
         this.revokeCanceler = revokeCanceler;
     }
 
-    public String getRevokeCancelTime() {
+    public Date getRevokeCancelTime() {
         return revokeCancelTime;
     }
 
-    public void setRevokeCancelTime(String revokeCancelTime) {
+    public void setRevokeCancelTime(Date revokeCancelTime) {
         this.revokeCancelTime = revokeCancelTime;
     }
 
@@ -2299,11 +2302,11 @@ public class OrderInfo extends BaseResult {
         this.packager = packager;
     }
 
-    public String getPackTime() {
+    public Date getPackTime() {
         return packTime;
     }
 
-    public void setPackTime(String packTime) {
+    public void setPackTime(Date packTime) {
         this.packTime = packTime;
     }
 
@@ -2315,19 +2318,19 @@ public class OrderInfo extends BaseResult {
         this.weighOperator = weighOperator;
     }
 
-    public String getWeighTime() {
+    public Date getWeighTime() {
         return weighTime;
     }
 
-    public void setWeighTime(String weighTime) {
+    public void setWeighTime(Date weighTime) {
         this.weighTime = weighTime;
     }
 
-    public String getBookDeliveryTime() {
+    public Date getBookDeliveryTime() {
         return bookDeliveryTime;
     }
 
-    public void setBookDeliveryTime(String bookDeliveryTime) {
+    public void setBookDeliveryTime(Date bookDeliveryTime) {
         this.bookDeliveryTime = bookDeliveryTime;
     }
 
@@ -2339,19 +2342,19 @@ public class OrderInfo extends BaseResult {
         this.locker = locker;
     }
 
-    public String getLockTime() {
+    public Date getLockTime() {
         return lockTime;
     }
 
-    public void setLockTime(String lockTime) {
+    public void setLockTime(Date lockTime) {
         this.lockTime = lockTime;
     }
 
-    public String getBookFileTime() {
+    public Date getBookFileTime() {
         return bookFileTime;
     }
 
-    public void setBookFileTime(String bookFileTime) {
+    public void setBookFileTime(Date bookFileTime) {
         this.bookFileTime = bookFileTime;
     }
 
@@ -2363,27 +2366,27 @@ public class OrderInfo extends BaseResult {
         this.fileOperator = fileOperator;
     }
 
-    public String getFileTime() {
+    public Date getFileTime() {
         return fileTime;
     }
 
-    public void setFileTime(String fileTime) {
+    public void setFileTime(Date fileTime) {
         this.fileTime = fileTime;
     }
 
-    public String getFinishTime() {
+    public Date getFinishTime() {
         return finishTime;
     }
 
-    public void setFinishTime(String finishTime) {
+    public void setFinishTime(Date finishTime) {
         this.finishTime = finishTime;
     }
 
-    public String getModityTime() {
+    public Date getModityTime() {
         return modityTime;
     }
 
-    public void setModityTime(String modityTime) {
+    public void setModityTime(Date modityTime) {
         this.modityTime = modityTime;
     }
 
@@ -2411,43 +2414,43 @@ public class OrderInfo extends BaseResult {
         this.outPromotionDetail = outPromotionDetail;
     }
 
-    public String getGoodReceiveTime() {
+    public Date getGoodReceiveTime() {
         return goodReceiveTime;
     }
 
-    public void setGoodReceiveTime(String goodReceiveTime) {
+    public void setGoodReceiveTime(Date goodReceiveTime) {
         this.goodReceiveTime = goodReceiveTime;
     }
 
-    public String getReceiveTime() {
+    public Date getReceiveTime() {
         return receiveTime;
     }
 
-    public void setReceiveTime(String receiveTime) {
+    public void setReceiveTime(Date receiveTime) {
         this.receiveTime = receiveTime;
     }
 
-    public String getVerificatyTime() {
+    public Date getVerificatyTime() {
         return verificatyTime;
     }
 
-    public void setVerificatyTime(String verificatyTime) {
+    public void setVerificatyTime(Date verificatyTime) {
         this.verificatyTime = verificatyTime;
     }
 
-    public String getEnableInteStoTime() {
+    public Date getEnableInteStoTime() {
         return enableInteStoTime;
     }
 
-    public void setEnableInteStoTime(String enableInteStoTime) {
+    public void setEnableInteStoTime(Date enableInteStoTime) {
         this.enableInteStoTime = enableInteStoTime;
     }
 
-    public String getEnableInteDeliveryTime() {
+    public Date getEnableInteDeliveryTime() {
         return enableInteDeliveryTime;
     }
 
-    public void setEnableInteDeliveryTime(String enableInteDeliveryTime) {
+    public void setEnableInteDeliveryTime(Date enableInteDeliveryTime) {
         this.enableInteDeliveryTime = enableInteDeliveryTime;
     }
 
@@ -2539,11 +2542,11 @@ public class OrderInfo extends BaseResult {
         this.message = message;
     }
 
-    public String getMessageTime() {
+    public Date getMessageTime() {
         return messageTime;
     }
 
-    public void setMessageTime(String messageTime) {
+    public void setMessageTime(Date messageTime) {
         this.messageTime = messageTime;
     }
 
@@ -2595,11 +2598,11 @@ public class OrderInfo extends BaseResult {
         this.distributorLevel = distributorLevel;
     }
 
-    public String getCodServiceFee() {
+    public double getCodServiceFee() {
         return codServiceFee;
     }
 
-    public void setCodServiceFee(String codServiceFee) {
+    public void setCodServiceFee(double codServiceFee) {
         this.codServiceFee = codServiceFee;
     }
 
@@ -2683,11 +2686,11 @@ public class OrderInfo extends BaseResult {
         this.taobaoDeliveryMethod = taobaoDeliveryMethod;
     }
 
-    public String getOrderProcessTime() {
+    public long getOrderProcessTime() {
         return orderProcessTime;
     }
 
-    public void setOrderProcessTime(String orderProcessTime) {
+    public void setOrderProcessTime(long orderProcessTime) {
         this.orderProcessTime = orderProcessTime;
     }
 
@@ -2707,11 +2710,11 @@ public class OrderInfo extends BaseResult {
         this.breaker = breaker;
     }
 
-    public String getBreakTime() {
+    public Date getBreakTime() {
         return breakTime;
     }
 
-    public void setBreakTime(String breakTime) {
+    public void setBreakTime(Date breakTime) {
         this.breakTime = breakTime;
     }
 
@@ -2739,11 +2742,11 @@ public class OrderInfo extends BaseResult {
         this.platType = platType;
     }
 
-    public String getIsAdvSale() {
+    public int getIsAdvSale() {
         return isAdvSale;
     }
 
-    public void setIsAdvSale(String isAdvSale) {
+    public void setIsAdvSale(int isAdvSale) {
         this.isAdvSale = isAdvSale;
     }
 
@@ -2771,19 +2774,19 @@ public class OrderInfo extends BaseResult {
         this.areaCode = areaCode;
     }
 
-    public String getLastReturnedTime() {
+    public Date getLastReturnedTime() {
         return lastReturnedTime;
     }
 
-    public void setLastReturnedTime(String lastReturnedTime) {
+    public void setLastReturnedTime(Date lastReturnedTime) {
         this.lastReturnedTime = lastReturnedTime;
     }
 
-    public String getLastRefundTime() {
+    public Date getLastRefundTime() {
         return lastRefundTime;
     }
 
-    public void setLastRefundTime(String lastRefundTime) {
+    public void setLastRefundTime(Date lastRefundTime) {
         this.lastRefundTime = lastRefundTime;
     }
 
@@ -2811,11 +2814,11 @@ public class OrderInfo extends BaseResult {
         this.isPreDeliveryNotice = isPreDeliveryNotice;
     }
 
-    public String getJdDeliveryTime() {
+    public Date getJdDeliveryTime() {
         return jdDeliveryTime;
     }
 
-    public void setJdDeliveryTime(String jdDeliveryTime) {
+    public void setJdDeliveryTime(Date jdDeliveryTime) {
         this.jdDeliveryTime = jdDeliveryTime;
     }
 
@@ -2947,27 +2950,27 @@ public class OrderInfo extends BaseResult {
         this.outOrderStatus = outOrderStatus;
     }
 
-    public String getOrderDate() {
+    public Date getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(String orderDate) {
+    public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
 
-    public String getPayDate() {
+    public Date getPayDate() {
         return payDate;
     }
 
-    public void setPayDate(String payDate) {
+    public void setPayDate(Date payDate) {
         this.payDate = payDate;
     }
 
-    public String getFinishDate() {
+    public Date getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(String finishDate) {
+    public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
     }
 
@@ -3003,11 +3006,11 @@ public class OrderInfo extends BaseResult {
         this.outPrice = outPrice;
     }
 
-    public String getGiftNum() {
+    public int getGiftNum() {
         return giftNum;
     }
 
-    public void setGiftNum(String giftNum) {
+    public void setGiftNum(int giftNum) {
         this.giftNum = giftNum;
     }
 

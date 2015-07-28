@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  *
@@ -127,7 +128,7 @@ public class OrderInfoController {
                                @RequestParam(value = "shipTime", required = false, defaultValue = "") String shipTime,
                                String shipMobile,
                                double costItem,
-                               @RequestParam(value = "isTax", required = false, defaultValue = "0") String isTax,
+                               @RequestParam(value = "isTax", required = false, defaultValue = "0") int isTax,
                                @RequestParam(value = "costTax", required = false, defaultValue = "0") float costTax,
                                @RequestParam(value = "taxCompany", required = false, defaultValue = "") String taxCompany,
                                @RequestParam(value = "costFreight", required = false, defaultValue = "0") float costFreight,
@@ -196,8 +197,8 @@ public class OrderInfoController {
             orderInfo.setTotalWeight(weight);
             orderInfo.setOrderName(orderName);
             orderInfo.setItemNum(itemNum);
-            orderInfo.setAdvDistributTime(DateUtil.formatDate(actTime, Constant.TIME_FORMAT_ONE));
-            orderInfo.setOrderTime(DateUtil.formatDate(createTime, Constant.TIME_FORMAT_ONE));
+            orderInfo.setAdvDistributTime(new Date(actTime));
+            orderInfo.setOrderTime(new Date(createTime));
             orderInfo.setCreateIP(createIP);
             orderInfo.setConsignee(shipName);
             orderInfo.setArea(shipArea);
@@ -205,7 +206,7 @@ public class OrderInfoController {
             orderInfo.setPost(shipZip);
             orderInfo.setPhone(shipTel);
             orderInfo.setEmail(shipEmail);
-            orderInfo.setBookDeliveryTime(shipTime);
+            orderInfo.setBookDeliveryTime(new Date(shipTime));
             orderInfo.setReceiverMobile(shipMobile);
             orderInfo.setProTotalFee(costItem);
             orderInfo.setInvoiceIsopen(isTax);
@@ -223,7 +224,7 @@ public class OrderInfoController {
             orderInfo.setDiscountFee(pmtAmount);
             orderInfo.setPayed(payed);
             orderInfo.setMemo(memo);
-            orderInfo.setEndTime(DateUtil.formatDate(lastChangeTime, Constant.TIME_FORMAT_ONE));
+            orderInfo.setEndTime(new Date(lastChangeTime));
             orderInfo.setCustomerId(customerId);
             orderInfo.setIsCod(cashOnDly);
             orderInfo.setPayMothed(onlinePayType);
@@ -236,7 +237,7 @@ public class OrderInfoController {
             orderInfo.setHasPayedScore(hasPayedScore);
             orderInfo.setOnlineAmount(onlineAmount);
             orderInfo.setHongbaoAmount(hongbaoAmount);
-            orderInfo.setPayDate(DateUtil.formatDate(payTime, Constant.TIME_FORMAT_ONE));
+            orderInfo.setPayDate(new Date(payTime));
             orderInfo.setVirtualRecMobile(virtualRecMobile);
 
             return orderEventService.commitOrder(authBean, orderInfo);
@@ -483,7 +484,7 @@ public class OrderInfoController {
                                            @RequestParam(value = "shipTime", required = false) String shipTime,
                                            @RequestParam(value = "shipMobile", required = false) String shipMobile,
                                            @RequestParam(value = "costItem", required = false) double costItem,
-                                           @RequestParam(value = "isTax", required = false) String isTax,
+                                           @RequestParam(value = "isTax", required = false) int isTax,
                                            @RequestParam(value = "costTax", required = false) float costTax,
                                            @RequestParam(value = "taxCompany", required = false) String taxCompany,
                                            @RequestParam(value = "costFreight", required = false) float costFreight,
@@ -552,8 +553,8 @@ public class OrderInfoController {
             orderInfo.setTotalWeight(weight);
             orderInfo.setOrderName(orderName);
             orderInfo.setItemNum(itemNum);
-            orderInfo.setAdvDistributTime(DateUtil.formatDate(actTime, Constant.TIME_FORMAT_ONE));
-            orderInfo.setOrderTime(DateUtil.formatDate(createTime, Constant.TIME_FORMAT_ONE));
+            orderInfo.setAdvDistributTime(new Date(actTime));
+            orderInfo.setOrderTime(new Date(createTime));
             orderInfo.setCreateIP(createIP);
             orderInfo.setConsignee(shipName);
             orderInfo.setArea(shipArea);
@@ -561,7 +562,7 @@ public class OrderInfoController {
             orderInfo.setPost(shipZip);
             orderInfo.setPhone(shipTel);
             orderInfo.setEmail(shipEmail);
-            orderInfo.setBookDeliveryTime(shipTime);
+            orderInfo.setBookDeliveryTime(new Date(shipTime));
             orderInfo.setReceiverMobile(shipMobile);
             orderInfo.setProTotalFee(costItem);
             orderInfo.setInvoiceIsopen(isTax);
@@ -579,7 +580,7 @@ public class OrderInfoController {
             orderInfo.setDiscountFee(pmtAmount);
             orderInfo.setPayed(payed);
             orderInfo.setMemo(memo);
-            orderInfo.setEndTime(DateUtil.formatDate(lastChangeTime, Constant.TIME_FORMAT_ONE));
+            orderInfo.setEndTime(new Date(lastChangeTime));
             orderInfo.setCustomerId(customerId);
             orderInfo.setIsCod(cashOnDly);
             orderInfo.setPayMothed(onlinePayType);
@@ -592,7 +593,7 @@ public class OrderInfoController {
             orderInfo.setHasPayedScore(hasPayedScore);
             orderInfo.setOnlineAmount(onlineAmount);
             orderInfo.setHongbaoAmount(hongbaoAmount);
-            orderInfo.setPayDate(DateUtil.formatDate(payTime, Constant.TIME_FORMAT_ONE));
+            orderInfo.setPayDate(new Date(payTime));
             orderInfo.setVirtualRecMobile(virtualRecMobile);
 
             return orderEventService.modifyOrderInfo(authBean, orderInfo);
