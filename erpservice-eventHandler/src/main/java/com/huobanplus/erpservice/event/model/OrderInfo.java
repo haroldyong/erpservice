@@ -4,466 +4,1271 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 订单信息实体
+ * 类描述：订单信息实体
+ * @author aaron
+ * @since  2015年7月27日 上午10:24:35
+ * @version V1.0
  */
-public class OrderInfo extends BaseBean {
+public class OrderInfo extends BaseResult {
 
-    //订单编号
+    /**
+     * 订单编号
+     */
     private String orderCode;
-    //单据号
+    /**
+     * 单据号
+     */
     private String numId;
-    //单据类型,例如:Order订单/salesReturn退货单/stock_in_detail入库单/stock_out_detail出库单(请填入英文)
+    /**
+     * 单据类型,例如:Order订单/salesReturn退货单/stock_in_detail入库单/stock_out_detail出库单(请填入英文)
+     */
     private String tidType;
-    //导入标记
+    /**
+     * 导入标记
+     */
     private String importMark;
-    //订单编号(E店宝中订单编号)
+
+    public int getSyncStatus() {
+        return syncStatus;
+    }
+
+    public void setSyncStatus(int syncStatus) {
+        this.syncStatus = syncStatus;
+    }
+
+    /**
+     * 同步标记，1表示已抓取
+     */
+    private int syncStatus;
+    /**
+     * 订单编号(E店宝中订单编号)
+     */
     private String tid;
-    //订单创建时间
-    private String orderTime;
-    //订单付款时间
-    private String payTime;
-    //系统写入时间
-    private String inSysTime;
-    //商家编码
+    /**
+     * 订单创建时间
+     */
+    private Date orderTime;
+    /**
+     * 订单付款时间
+     */
+    private Date payTime;
+    /**
+     * 系统写入时间
+     */
+    private Date inSysTime;
+    /**
+     * 商家编码
+     */
     private String chlidBarCode;
-    //订单数量
+    /**
+     * 订单数量
+     */
     private String num;
-    //子节点
+    /**
+     * 子节点
+     */
     private OrderInfo[] tradeNo;
-    //快递单号
+    /**
+     * 快递单号
+     */
     private String expressNo;
-    //快递公司名：需要在EDB中存在
+    /**
+     * 快递公司名：需要在EDB中存在
+     */
     private String express;
-    //订单净重
+    /**
+     * 是否需要发货
+     */
+    private int isDelivery;
+
+    public int getIsDelivery() {
+        return isDelivery;
+    }
+
+    public void setIsDelivery(int isDelivery) {
+        this.isDelivery = isDelivery;
+    }
+
+    /**
+
+     * 订单净重
+     */
     private String weight;
-    //收货地址
+    /**
+     * 收货地址
+     */
     private String address;
-    //买家留言
+    /**
+     * 买家留言
+     */
     private String buyerMessage;
-    //客服备注
+    /**
+     * 客服备注
+     */
     private String serviceRemarks;
-    //原始订单编号/外部订单编号
+    /**
+     * 原始订单编号/外部订单编号
+     */
     private String outTid;
-    //条形码
+    /**
+     * 原始订单编号/外部订单编号
+     */
     private String barCode;
-    //网店品名
+    /**
+     * 网店品名
+     */
     private String productTitle;
-    //网店规格
+    /**
+     * 网店规格
+     */
     private String standard;
-    //产品类型（值为赠品）
+    /**
+     * 产品类型（值为赠品）
+     */
     private String proType;
-    //订货数量
+    /**
+     * 订货数量
+     */
     private int orderGoodsNum;
-    //成交单价
+    /**
+     * 成交单价
+     */
     private double costPrice;
-    //快递代码
+    /**
+     * 快递代码
+     */
     private String expressCode;
-    //打印员
+    /**
+     * 打印员
+     */
     private String printer;
-    //配货员
+    /**
+     * 客户状态
+     */
+    private String customerStatus;
+
+    public String getCustomerStatus() {
+        return customerStatus;
+    }
+
+    public void setCustomerStatus(String customerStatus) {
+        this.customerStatus = customerStatus;
+    }
+
+    /**
+     * 配货员
+     */
     private String cargoOperator;
-    //配货时间
-    private String cargoTime;
-    //打印时间
-    private String printTime;
-    //验货员
+
+    /**
+     * 配货时间
+     */
+    private Date cargoTime;
+    /**
+     * 打印时间
+     */
+    private Date printTime;
+    /**
+     * 验货员
+     */
     private String inspecter;
-    //是否验货后回传快递信息,验货后回传验货信息必须传,打印后回传快递信息传
+    /**
+     * 是否验货后回传快递信息,验货后回传验货信息必须传,打印后回传快递信息传
+     */
     private String isInspectDelivery;
-    //发货员
+    /**
+     * 发货员
+     */
     private String deliveryOperator;
-    //发货时间、验货时间
-    private String deliveryTime;
-    //毛重
+    /**
+     * 发货时间、验货时间
+     */
+    private Date deliveryTime;
+    /**
+     * 毛重
+     */
     private float grossWeight;
-    //内部便签
+    /**
+     * 内部便签
+     */
     private String internalNote;
-    //原寄地代码
+    /**
+     * 原寄地代码
+     */
     private String originCode;
-    //目的地代码
+    /**
+     * 目的地代码
+     */
     private String destCode;
-    //验货数量
+
+    /**
+     * 代付人ID
+     */
+    private String payAgentId;
+
+    public String getPayAgentId() {
+        return payAgentId;
+    }
+
+    public void setPayAgentId(String payAgentId) {
+        this.payAgentId = payAgentId;
+    }
+
+    /**
+     * 验货数量
+     */
     private String inspectionNum;
-    //是否覆盖原来内容（ 0 叠加 1 覆盖）
+    /**
+     * 是否覆盖原来内容（ 0 叠加 1 覆盖）
+     */
     private int isCover;
-    //日期类型支持下面几种,默认订货日期/订货日期/付款日期/发货日期/归档日期/预计归档日期/到货日期/订单修改日期/验货日期/核销日期/生成应收时间/称重时间/审单时间/取消时间/完成时间
+    /**
+     * 日期类型支持下面几种,
+     * 默认订货日期/订货日期/付款日期/发货日期/归档日期/预计归档日期
+     * 到货日期/订单修改日期/验货日期/核销日期/生成应收时间/称重时间
+     * 审单时间/取消时间/完成时间
+     */
     private String dateType;
-    //开始时间
-    private String beginTime;
-    //结束时间
-    private String endTime;
-    //时间排序类型：审单时间
+    /**
+     * 开始时间
+     */
+    private Date beginTime;
+    /**
+     * 结束时间
+     */
+    private Date endTime;
+    /**
+     * 时间排序类型：审单时间
+     */
     private String orderType;
-    //待退款部分退款/待退款全部退款/待退款所有/货到付款/交易关闭/未付款/已付款/已退款部分退款/已退款全部退款/已退款所有
+    /**
+     * 待退款部分退款/待退款全部退款/待退款所有/货到付款/交易关闭
+     * 未付款/已付款/已退款部分退款/已退款全部退款/已退款所有
+     */
     private String paymentStatus;
-    //待退货部分退货/待退货全部退货/待退货所有/退货到货部分退货/退货到货全部退货/退货到货所有/未发货/已发货
+    /**
+     * 待退货部分退货/待退货全部退货/待退货所有/退货到货部分退货
+     * 退货到货全部退货/退货到货所有/未发货/已发货
+     */
     private String orderStatus;
-    //未确认/已确认/已财务审核/已作废/已归档
+    /**
+     * 未确认/已确认/已财务审核/已作废/已归档
+     */
     private String proceStatus;
-    //待退款部分退款/待退款全部退款/等待买家付款/货到付款/交易成功/交易关闭/买家已付款/缺货订单未付款/已发货/已付款/已签收/交易成功/已取消/预退款
+    /**
+     * 待退款部分退款/待退款全部退款/等待买家付款/货到付款/交易成功/交易关闭/买家已付款
+     * 缺货订单未付款/已发货/已付款/已签收/交易成功/已取消/预退款
+     */
     private String platformStatus;
-    //库房id、仓库编号
+    /**
+     * 库房id、仓库编号
+     */
     private String storageId;
-    //店铺id
+    /**
+     * 店铺id
+     */
     private String shopId;
-    //发票打印情况(0:未打印，1:已打印)
+    /**
+     * 发票打印情况(0:未打印，1:已打印)
+     */
     private String invoiceIsprint;
-    //是否开发票 (0:未开/1:已开
+    /**
+     * 是否保价
+     */
+    private String isProtect;
+
+    /**
+     * 保价费用
+     */
+    private double costProtect;
+
+    public String getIsProtect() {
+        return isProtect;
+    }
+
+    public void setIsProtect(String isProtect) {
+        this.isProtect = isProtect;
+    }
+
+    public double getCostProtect() {
+        return costProtect;
+    }
+
+    public void setCostProtect(double costProtect) {
+        this.costProtect = costProtect;
+    }
+
+
+    /**
+     * 是否开发票 (0:未开/1:已开
+     */
     private int invoiceIsopen;
-    //页码
+    /**
+     * 页码
+     */
     private String pageNo;
-    //每页数量
+    /**
+     * 每页数量
+     */
     private String pageSize;
-    //是否产品套装:3单品与套装:显示单品信息+套装信息;1单品与套装明细:显示单品信息+套装明细信息;2单品与套装以及套装明细:显示单品信息+套装信息+套装明细信息(默认)
+    /**
+     * 是否产品套装:3单品与套装:显示单品信息+套装信息;1单品与套装明细:显示单品信息+套装明细信息;
+     * 2单品与套装以及套装明细:显示单品信息+套装信息+套装明细信息(默认)
+     */
     private int productInfoType;
-    //交易编号
+    /**
+     * 交易编号
+     */
     private String transactionId;
-    //客户编号
+    /**
+     * 客户编号
+     */
     private String customerId;
-    //分销商编号
+    /**
+     * 分销商编号
+     */
     private String distributorId;
-    //店铺名称
+    /**
+     * 店铺名称
+     */
     private String shopName;
-    //外部平台付款单号
+    /**
+     * 外部平台付款单号
+     */
     private String outPayTid;
-    //凭证单号
+    /**
+     * 凭证单号
+     */
     private String voucherId;
-    //流水号
+    /**
+     * 流水号
+     */
     private String serialNum;
-    //订单渠道
+    /**
+     * 订单渠道
+     */
     private String orderChannel;
-    //订单来源
+    /**
+     * 订单来源
+     */
     private String orderFrom;
-    //买家ID
+    /**
+     * 买家ID
+     */
     private String buyerId;
-    //买家姓名
+    /**
+     * 买家姓名
+     */
     private String buyerName;
-    //订单类型
+    /**
+     * 订单类型
+     */
     private String type;
-    //处理状态
+
+    /**
+     * 订单名称
+     */
+    private String orderName;
+
+    public String getOrderName() {
+        return orderName;
+    }
+
+    public void setOrderName(String orderName) {
+        this.orderName = orderName;
+    }
+
+    /**
+     * 处理状态
+     */
     private String status;
-    //异常状态
+    /**
+     * 异常状态
+     */
     private String abnormalStatus;
-    //合并状态
+    /**
+     * 合并状态
+     */
     private String mergeStatus;
-    //收货人
+    /**
+     * 收货人
+     */
     private String receiverName;
-    //收货手机
+    /**
+     * 收货手机
+     */
     private String receiverMobile;
-    //电话
+    /**
+     * 电话
+     */
     private String phone;
-    //省
+    /**
+     * 省
+     */
     private String province;
-    //市
+    /**
+     * 市
+     */
     private String city;
-    //区
+    /**
+     * 区
+     */
     private String district;
-    //邮编
+    /**
+     * 邮编
+     */
     private String post;
-    //电子邮件
+    /**
+     * 电子邮件
+     */
     private String email;
-    //发票名称
+    /**
+     * 发票名称
+     */
     private String invoiceName;
-    //开票情况
+    /**
+     * 开票情况
+     */
     private int invoiceSituation;
-    //发票抬头
+    /**
+     * 发票抬头
+     */
     private String invoiceTitle;
-    //发票类型
+
+    /**
+     * 发票类型
+     */
     private String invoiceType;
-    //开票内容
+    /**
+     * 开票内容
+     */
     private String invoiceContent;
-    //产品总金额
+
+    /**
+     * 产品总金额
+     */
     private double proTotalFee;
-    //订单总金额
+    /**
+     * 订单总金额
+     */
     private double orderTotalFee;
-    //实收参考价
+    /**
+     * 实收参考价
+     */
     private double referencePricePaid;
-    //发票金额
-    private String invoiceFee;
-    //货到付款金额
+
+    /**
+     * 最终金额
+     */
+    private double finalAmount;
+
+    public double getFinalAmount() {
+        return finalAmount;
+    }
+
+    public void setFinalAmount(double finalAmount) {
+        this.finalAmount = finalAmount;
+    }
+
+    /**
+     * 税金
+     */
+    private double costTax;
+
+    public double getCostTax() {
+        return costTax;
+    }
+
+    public void setCostTax(double costTax) {
+        this.costTax = costTax;
+    }
+
+    /**
+     * 发票金额
+     */
+    private double invoiceFee;
+    /**
+     * 货到付款金额
+     */
     private String codFee;
-    //其他费用
+    /**
+     * 其他费用
+     */
     private String otherFee;
-    //退款总金额
+    /**
+     * 退款总金额
+     */
     private String refundTotalFee;
-    //优惠金额
+    /**
+     * 是否启用优惠
+     */
+    private String usePmt;
+
+    public String getUsePmt() {
+        return usePmt;
+    }
+
+    public void setUsePmt(String usePmt) {
+        this.usePmt = usePmt;
+    }
+
+    /**
+     * 优惠金额
+     */
     private double discountFee;
-    //折扣
-    private String discount;
-    //渠道优惠金额
+    /**
+     * 折扣
+     */
+    private double discount;
+    /**
+     * 渠道优惠金额
+     */
     private String channelDisfee;
-    //商家优惠金额
+    /**
+     * 商家优惠金额
+     */
     private String merchantDisFee;
-    //整单优惠
+    /**
+     * 整单优惠
+     */
     private double orderDisfee;
-    //佣金
-    private String commissionFee;
-    //是否货到付款
+    /**
+     * 佣金
+     */
+    private double commissionFee;
+    /**
+     * 是否货到付款
+     */
     private int isCod;
-    //是否积分换购
+    /**
+     * 是否积分换购
+     */
     private int pointPay;
-    //消耗积分
-    private String costPoint;
-    //获得积分
+    /**
+     * 消耗积分
+     */
+    private double costPoint;
+    /**
+     * 获得积分
+     */
     private String point;
-    //上级积分
+    /**
+     * 上级积分
+     */
     private String superiorPoint;
-    //提成金额
+    /**
+     * 提成金额
+     */
     private String royaltyFee;
-    //外部积分
-    private  String externalPoint;
-    //线上快递公司
+    /**
+     * 外部积分
+     */
+    private String externalPoint;
+    /**
+     * 代付积分
+     */
+    private double payAgentScore;
+
+    /**
+     * 代付积分金额
+     */
+    private double payAgentScoreAmount;
+
+    /**
+     * 订单已付金额
+     */
+    private double hasPayed;
+
+    /**
+     * 订单已付积分
+     */
+    private double hasPayedScore;
+
+    public double getHasPayedScore() {
+        return hasPayedScore;
+    }
+
+    public void setHasPayedScore(double hasPayedScore) {
+        this.hasPayedScore = hasPayedScore;
+    }
+
+    public double getHasPayed() {
+        return hasPayed;
+    }
+
+    public void setHasPayed(double hasPayed) {
+        this.hasPayed = hasPayed;
+    }
+
+    /**
+     * 余额代付
+     */
+    private double payAgentPayed;
+
+    public double getPayAgentPayed() {
+        return payAgentPayed;
+    }
+
+    public void setPayAgentPayed(double payAgentPayed) {
+        this.payAgentPayed = payAgentPayed;
+    }
+
+    public double getPayAgentScoreAmount() {
+        return payAgentScoreAmount;
+    }
+
+    public void setPayAgentScoreAmount(double payAgentScoreAmount) {
+        this.payAgentScoreAmount = payAgentScoreAmount;
+    }
+
+    public double getPayAgentScore() {
+        return payAgentScore;
+    }
+
+    public void setPayAgentScore(double payAgentScore) {
+        this.payAgentScore = payAgentScore;
+    }
+
+    /**
+     * 线上快递公司
+     */
     private String onlineExpress;
-    //配送方式
+    /**
+     * 配送方式
+     */
     private String sendingType;
-    //实收运费
+
+    /**
+     * 配送方式编号
+     */
+    private String sendingTypeId;
+
+    /**
+     * 配送费用
+     */
+    private double costFreight;
+
+    public double getCostFreight() {
+        return costFreight;
+    }
+
+    public void setCostFreight(double costFreight) {
+        this.costFreight = costFreight;
+    }
+
+    /**
+     * 配送区域
+     */
+    private String sendingArea;
+
+    public String getSendingArea() {
+        return sendingArea;
+    }
+
+    public void setSendingArea(String sendingArea) {
+        this.sendingArea = sendingArea;
+    }
+
+    public String getSendingTypeId() {
+        return sendingTypeId;
+    }
+
+    public void setSendingTypeId(String sendingTypeId) {
+        this.sendingTypeId = sendingTypeId;
+    }
+
+    /**
+     * 实收运费
+     */
     private double realIncomefreight;
-    //实付运费
+    /**
+     * 实付运费
+     */
     private double realPayFreight;
-    //毛重运费
-    private String grossWeightFreight;
-    //净重运费
+    /**
+     * 毛重运费
+     */
+    private double grossWeightFreight;
+    /**
+     * 净重运费
+     */
     private String netWeightWreight;
-    //运费说明
+    /**
+     * 运费说明
+     */
     private String freightExplain;
-    //总重量
-    private String totalWeight;
-    //订货时间
-    private String tidTime;
-    //获取时间
-    private String getTime;
-    //下单员
+    /**
+     * 总重量
+     */
+    private double totalWeight;
+    /**
+     * 订货时间
+     */
+    private Date tidTime;
+    /**
+     * 获取时间
+     */
+    private Date getTime;
+    /**
+     * 下单员
+     */
     private String orderCreater;
-    //业务员
+    /**
+     * 业务员
+     */
     private String businessMan;
-    //到款员
+    /**
+     * 到款员
+     */
     private String paymentReceivedOperator;
-    //到款时间
-    private String paymentReceivedTime;
-    //审单员
+    /**
+     * 到款时间
+     */
+    private Date paymentReceivedTime;
+    /**
+     * 审单员
+     */
     private String reviewOrdersOperator;
-    //审单时间
-    private String reviewOrdersTime;
-    //财务审核人
+    /**
+     * 审单时间
+     */
+    private Date reviewOrdersTime;
+    /**
+     * 财务审核人
+     */
     private String financeReviewOperator;
-    //财务审核时间
-    private String financeReviewTime;
-    //预打印员
+    /**
+     * 财务审核时间
+     */
+    private Date financeReviewTime;
+    /**
+     * 预打印员
+     */
     private String advancePrinter;
-    //是否打印
+    /**
+     * 是否打印
+     */
     private String isPrint;
-    //预配货员
+    /**
+     * 预配货员
+     */
     private String advDistributer;
-    //预配货时间
+    /**
+     * 预配货时间
+     */
     private Date advDistributTime;
-    //取消员
+    /**
+     * 取消员
+     */
     private String cancelOperator;
-    //取消时间
-    private String cancelTime;
-    //反取消员
+    /**
+     * 取消时间
+     */
+    private Date cancelTime;
+    /**
+     * 反取消员
+     */
     private String revokeCanceler;
-    //反取消时间
-    private String revokeCancelTime;
-    //打包员
+    /**
+     * 反取消时间
+     */
+    private Date revokeCancelTime;
+    /**
+     * 打包员
+     */
     private String packager;
-    //打包时间
-    private String packTime;
-    //称重员
+    /**
+     * 打包时间
+     */
+    private Date packTime;
+    /**
+     * 称重员
+     */
     private String weighOperator;
-    //称重时间
-    private String weighTime;
-    //预计发货时间
+    /**
+     * 称重时间
+     */
+    private Date weighTime;
+    /**
+     * 预计发货时间
+     */
     private Date bookDeliveryTime;
-    //锁定员
+
+    /**
+     * 创建IP
+     */
+    private String createIP;
+
+    public String getCreateIP() {
+        return createIP;
+    }
+
+    public void setCreateIP(String createIP) {
+        this.createIP = createIP;
+    }
+
+    /**
+     * 锁定员
+     */
     private String locker;
-    //锁定时间
-    private String lockTime;
-    //预计归档时间
-    private String bookFileTime;
-    //归档员
+    /**
+     * 锁定时间
+     */
+    private Date lockTime;
+    /**
+     * 预计归档时间
+     */
+    private Date bookFileTime;
+    /**
+     * 归档员
+     */
     private String fileOperator;
-    //归档时间
-    private String fileTime;
-    //完成时间
-    private String finishTime;
-    //订单修改时间
-    private String modityTime;
-    //促销标记
+    /**
+     * 归档时间
+     */
+    private Date fileTime;
+    /**
+     * 完成时间
+     */
+    private Date finishTime;
+    /**
+     * 订单修改时间
+     */
+    private Date modityTime;
+    /**
+     * 促销标记
+     */
     private String isPromotion;
-    //满足的促销方案
+    /**
+     * 满足的促销方案
+     */
     private String promotionPlan;
-    //外部平台促销详情
+    /**
+     * 外部平台促销详情
+     */
     private String outPromotionDetail;
-    //到货日期
-    private String goodReceiveTime;
-    //生成应收时间
-    private String receiveTime;
-    //核销日期
-    private String verificatyTime;
-    //启用智能仓库时间
-    private String enableInteStoTime;
-    //启用智能快递时间
-    private String enableInteDeliveryTime;
-    //支付宝账户
+    /**
+     * 到货日期
+     */
+    private Date goodReceiveTime;
+    /**
+     * 生成应收时间
+     */
+    private Date receiveTime;
+    /**
+     * 核销日期
+     */
+    private Date verificatyTime;
+    /**
+     * 启用智能仓库时间
+     */
+    private Date enableInteStoTime;
+    /**
+     * 启用智能快递时间
+     */
+    private Date enableInteDeliveryTime;
+    /**
+     * 支付宝账户
+     */
     private String alipayId;
-    //支付宝状态
+    /**
+     * 支付宝状态
+     */
     private String alipayStatus;
-    //支付方式
-    private String payMothed;
-    //付款状态
+    /**
+     * 付款状态
+     */
     private String payStatus;
-    //汇率
+    /**
+     * 支付方式
+     */
+    private String payMothed;
+    /**
+     * 汇率
+     */
     private String rate;
-    //币种
+    /**
+     * 币种
+     */
     private String currency;
-    //发货状态
+    /**
+     * 发货状态
+     */
     private String deliveryStatus;
-    //分销商便签
+    /**
+     * 分销商便签
+     */
     private String distributorMark;
-    //系统备注
+    /**
+     * 系统备注
+     */
     private String systemRemarks;
-    //其他备注
+    /**
+     * 其他备注
+     */
     private String otherRemarks;
-    //短信通知
+    /**
+     * 短信通知
+     */
     private String message;
-    //短信发送时间
-    private String messageTime;
-    //是否缺货
+    /**
+     * 短信发送时间
+     */
+    private Date messageTime;
+    /**
+     * 是否缺货
+     */
     private String isStock;
-    //相关订单
+    /**
+     * 相关订单
+     */
     private String relatedOrders;
-    //相关订单类型
+    /**
+     * 相关订单类型
+     */
     private String relatedOrdersType;
-    //第三方快递名称
+    /**
+     * 第三方快递名称
+     */
     private String deliveryName;
-    //是否新客户
+    /**
+     * 是否新客户
+     */
     private String isNewCustomer;
-    //分销商等级
+    /**
+     * 分销商等级
+     */
     private String distributorLevel;
-    //货到付款服务费
+    /**
+     * 货到付款服务费
+     */
     private double codServiceFee;
-    //快递代收金额
+    /**
+     * 快递代收金额
+     */
     private String expressColFee;
-    //产品数量
+    /**
+     * 产品数量
+     */
     private String productNum;
-    //产品条形码
+    /**
+     * 产品条形码
+     */
     private String sku;
-    //单品条数
-    private String itemNum;
-    //单品数量
+
+    /**
+     * 用余额支付的金额
+     */
+    private double payed;
+
+    public double getPayed() {
+        return payed;
+    }
+
+    public void setPayed(double payed) {
+        this.payed = payed;
+    }
+
+    /**
+     * 单品条数
+     */
+    private int itemNum;
+    /**
+     * 单品数量
+     */
     private String singleNum;
-    //旗帜颜色
+    /**
+     * 旗帜颜色
+     */
     private String flagColor;
-    //是否插旗
+    /**
+     * 是否插旗
+     */
     private String isFlag;
-    //淘宝快递订单状态
+    /**
+     * 淘宝快递订单状态
+     */
     private String taobaoDeliveryOrderStatus;
-    //淘宝快递状态
+    /**
+     * 淘宝快递状态
+     */
     private String taobaoDeliveryStatus;
-    //淘宝快递方式
+    /**
+     * 淘宝快递方式
+     */
     private String taobaoDeliveryMethod;
-    //处理订单需要的时间戳
-    private String orderProcessTime;
-    //是否中断
+    /**
+     * 处理订单需要的时间戳
+     */
+    private long orderProcessTime;
+
+    /**
+     * 订单备注
+     */
+    private String memo;
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    /**
+     * 是否中断
+     */
     private String isBreak;
-    //中断员
+    /**
+     * 中断员
+     */
     private String breaker;
-    //中断时间
-    private String breakTime;
-    //中断说明
+    /**
+     * 中断时间
+     */
+    private Date breakTime;
+    /**
+     * 中断说明
+     */
     private String breakExplain;
-    //平台发货状态
+    /**
+     * 平台发货状态
+     */
     private String platSendStatus;
-    //平台类型
+    /**
+     * 平台类型
+     */
     private String platType;
-    //是否预售
+    /**
+     * 是否预售
+     */
     private int isAdvSale;
-    //省编码
+    /**
+     * 省编码
+     */
     private String provincCode;
-    //市编码
+    /**
+     * 市编码
+     */
     private String cityCode;
-    //区编码
+    /**
+     * 区编码
+     */
     private String areaCode;
-    //最后一次退货时间
-    private String lastReturnedTime;
-    //最后一次退款时间
-    private String lastRefundTime;
-    //配送中心名称
+    /**
+     * 最后一次退货时间
+     */
+    private Date lastReturnedTime;
+    /**
+     * 最后一次退款时间
+     */
+    private Date lastRefundTime;
+    /**
+     * 配送中心名称
+     */
     private String deliverCentre;
-    //配送站点名称
+    /**
+     * 配送站点名称
+     */
     private String deliverStation;
-    //是否送货前通知
+    /**
+     * 是否送货前通知
+     */
     private String  isPreDeliveryNotice;
-    //送货时间
-    private String  jdDeliveryTime;
-    //分拣代码
+    /**
+     * 送货时间
+     */
+    private Date  jdDeliveryTime;
+    /**
+     * 分拣代码
+     */
     private String  sortingCode;
-    //货到付款结算凭证号
+    /**
+     * 货到付款结算凭证号
+     */
     private String codSettlementVouchernumber;
-    //总数
+    /**
+     * 总数
+     */
     private String totalNum;
-    //买家邮件地址
+    /**
+     * 买家邮件地址
+     */
     private String buyerEmail;
-    //买家支付宝账号
+    /**
+     * 买家支付宝账号
+     */
     private String buyerAlipay;
-    //收货人姓名
+    /**
+     * 收货人姓名
+     */
     private String consignee;
-    //收货人省份
+    /**
+     * 收货人省份
+     */
     private String privince;
-    //收货人城市
+    /**
+     * 收货人城市
+     */
     private String citys;
-    //收货人地区
+    /**
+     * 收货人地区
+     */
     private String area;
-    //开票金额
+    /**
+     * 开票金额
+     */
     private double invoiceMoney;
-    //支付佣金
+    /**
+     * 支付佣金
+     */
     private double payCommission;
-    //支付积分
+    /**
+     * 支付积分
+     */
     private int payScore;
-    //返点积分
+    /**
+     * 积分抵用金额
+     */
+    private double scoreUAmount;
+
+    public double getScoreUAmount() {
+        return scoreUAmount;
+    }
+
+    public void setScoreUAmount(double scoreUAmount) {
+        this.scoreUAmount = scoreUAmount;
+    }
+
+    /**
+     * 返点积分
+     */
     private int returnScore;
-    //支付宝交易号
+    /**
+     * 支付宝交易号
+     */
     private String alipayTransactionNo;
-    //外部平台快递方式
+    /**
+     * 外部平台快递方式
+     */
     private String outExpressMethod;
-    //外部平台快递订单状态
+    /**
+     * 外部平台快递订单状态
+     */
     private String outOrderStatus;
-    //订货日期（订货日期距当前时间不可超过一个月）
+    /**
+     * 订货日期（订货日期距当前时间不可超过一个月）
+     */
     private Date orderDate;
-    //付款日期
+    /**
+     * 付款日期
+     */
     private Date payDate;
-    //完成日期
+    /**
+     * 完成日期
+     */
     private Date finishDate;
-    //物流公司
+    /**
+     * 物流公司
+     */
     private String wuLiu;
-    //物流单号
+    /**
+     * 物流单号
+     */
     private String wuLiuNo;
-    //终端类型
+    /**
+     * 终端类型
+     */
     private String terminalType;
-    //外部单价
+
+    /**
+     * 虚拟商品收货手机
+     */
+    private String virtualRecMobile;
+
+    public String getVirtualRecMobile() {
+        return virtualRecMobile;
+    }
+
+    public void setVirtualRecMobile(String virtualRecMobile) {
+        this.virtualRecMobile = virtualRecMobile;
+    }
+
+    /**
+     * 外部单价
+     */
     private double outPrice;
-    //赠品数量
+
+    /**
+     * 在线支付金额
+     */
+    private double onlineAmount;
+
+    public double getOnlineAmount() {
+        return onlineAmount;
+    }
+
+    public void setOnlineAmount(double onlineAmount) {
+        this.onlineAmount = onlineAmount;
+    }
+
+    /**
+     * 赠品数量
+     */
     private int giftNum;
-    //产品缺货情况
+    /**
+     * 产品缺货情况
+     */
     private String productStockout;
-    //是否预订
+    /**
+     * 是否预订
+     */
     private int isBook;
-    //是否赠品
+    /**
+     * 是否赠品
+     */
     private int isGift;
-    //加权平均单价
+    /**
+     * 加权平均单价
+     */
     private double avgPrice;
-    //产品运费
+    /**
+     * 产品运费
+     */
     private double productFreight;
-    //外部平台产品Id
+    /**
+     * 外部平台产品Id
+     */
     private String outProductId;
-    //外部平台条形码
+    /**
+     * 外部平台条形码
+     */
     private String outBarCode;
-    //产品简介
+    /**
+     * 产品简介
+     */
     private String productIntro;
-    //国家
+    /**
+     * 国家
+     */
     private String country;
-    //客户备注
+    /**
+     * 客户备注
+     */
     private String customerRemark;
+
+    /**
+     * 红包抵用金额
+     */
+    private double hongbaoAmount;
+
+    public double getHongbaoAmount() {
+        return hongbaoAmount;
+    }
+
+    public void setHongbaoAmount(double hongbaoAmount) {
+        this.hongbaoAmount = hongbaoAmount;
+    }
 
     public String getOrderCode() {
         return orderCode;
@@ -505,27 +1310,27 @@ public class OrderInfo extends BaseBean {
         this.tid = tid;
     }
 
-    public String getOrderTime() {
+    public Date getOrderTime() {
         return orderTime;
     }
 
-    public void setOrderTime(String orderTime) {
+    public void setOrderTime(Date orderTime) {
         this.orderTime = orderTime;
     }
 
-    public String getPayTime() {
+    public Date getPayTime() {
         return payTime;
     }
 
-    public void setPayTime(String payTime) {
+    public void setPayTime(Date payTime) {
         this.payTime = payTime;
     }
 
-    public String getInSysTime() {
+    public Date getInSysTime() {
         return inSysTime;
     }
 
-    public void setInSysTime(String inSysTime) {
+    public void setInSysTime(Date inSysTime) {
         this.inSysTime = inSysTime;
     }
 
@@ -681,19 +1486,19 @@ public class OrderInfo extends BaseBean {
         this.cargoOperator = cargoOperator;
     }
 
-    public String getCargoTime() {
+    public Date getCargoTime() {
         return cargoTime;
     }
 
-    public void setCargoTime(String cargoTime) {
+    public void setCargoTime(Date cargoTime) {
         this.cargoTime = cargoTime;
     }
 
-    public String getPrintTime() {
+    public Date getPrintTime() {
         return printTime;
     }
 
-    public void setPrintTime(String printTime) {
+    public void setPrintTime(Date printTime) {
         this.printTime = printTime;
     }
 
@@ -721,11 +1526,11 @@ public class OrderInfo extends BaseBean {
         this.deliveryOperator = deliveryOperator;
     }
 
-    public String getDeliveryTime() {
+    public Date getDeliveryTime() {
         return deliveryTime;
     }
 
-    public void setDeliveryTime(String deliveryTime) {
+    public void setDeliveryTime(Date deliveryTime) {
         this.deliveryTime = deliveryTime;
     }
 
@@ -785,19 +1590,19 @@ public class OrderInfo extends BaseBean {
         this.dateType = dateType;
     }
 
-    public String getBeginTime() {
+    public Date getBeginTime() {
         return beginTime;
     }
 
-    public void setBeginTime(String beginTime) {
+    public void setBeginTime(Date beginTime) {
         this.beginTime = beginTime;
     }
 
-    public String getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
@@ -1145,11 +1950,11 @@ public class OrderInfo extends BaseBean {
         this.referencePricePaid = referencePricePaid;
     }
 
-    public String getInvoiceFee() {
+    public double getInvoiceFee() {
         return invoiceFee;
     }
 
-    public void setInvoiceFee(String invoiceFee) {
+    public void setInvoiceFee(double invoiceFee) {
         this.invoiceFee = invoiceFee;
     }
 
@@ -1185,11 +1990,11 @@ public class OrderInfo extends BaseBean {
         this.discountFee = discountFee;
     }
 
-    public String getDiscount() {
+    public double getDiscount() {
         return discount;
     }
 
-    public void setDiscount(String discount) {
+    public void setDiscount(double discount) {
         this.discount = discount;
     }
 
@@ -1217,11 +2022,11 @@ public class OrderInfo extends BaseBean {
         this.orderDisfee = orderDisfee;
     }
 
-    public String getCommissionFee() {
+    public double getCommissionFee() {
         return commissionFee;
     }
 
-    public void setCommissionFee(String commissionFee) {
+    public void setCommissionFee(double commissionFee) {
         this.commissionFee = commissionFee;
     }
 
@@ -1241,11 +2046,11 @@ public class OrderInfo extends BaseBean {
         this.pointPay = pointPay;
     }
 
-    public String getCostPoint() {
+    public double getCostPoint() {
         return costPoint;
     }
 
-    public void setCostPoint(String costPoint) {
+    public void setCostPoint(double costPoint) {
         this.costPoint = costPoint;
     }
 
@@ -1313,11 +2118,11 @@ public class OrderInfo extends BaseBean {
         this.realPayFreight = realPayFreight;
     }
 
-    public String getGrossWeightFreight() {
+    public double getGrossWeightFreight() {
         return grossWeightFreight;
     }
 
-    public void setGrossWeightFreight(String grossWeightFreight) {
+    public void setGrossWeightFreight(double grossWeightFreight) {
         this.grossWeightFreight = grossWeightFreight;
     }
 
@@ -1337,27 +2142,27 @@ public class OrderInfo extends BaseBean {
         this.freightExplain = freightExplain;
     }
 
-    public String getTotalWeight() {
+    public double getTotalWeight() {
         return totalWeight;
     }
 
-    public void setTotalWeight(String totalWeight) {
+    public void setTotalWeight(double totalWeight) {
         this.totalWeight = totalWeight;
     }
 
-    public String getTidTime() {
+    public Date getTidTime() {
         return tidTime;
     }
 
-    public void setTidTime(String tidTime) {
+    public void setTidTime(Date tidTime) {
         this.tidTime = tidTime;
     }
 
-    public String getGetTime() {
+    public Date getGetTime() {
         return getTime;
     }
 
-    public void setGetTime(String getTime) {
+    public void setGetTime(Date getTime) {
         this.getTime = getTime;
     }
 
@@ -1385,11 +2190,11 @@ public class OrderInfo extends BaseBean {
         this.paymentReceivedOperator = paymentReceivedOperator;
     }
 
-    public String getPaymentReceivedTime() {
+    public Date getPaymentReceivedTime() {
         return paymentReceivedTime;
     }
 
-    public void setPaymentReceivedTime(String paymentReceivedTime) {
+    public void setPaymentReceivedTime(Date paymentReceivedTime) {
         this.paymentReceivedTime = paymentReceivedTime;
     }
 
@@ -1401,11 +2206,11 @@ public class OrderInfo extends BaseBean {
         this.reviewOrdersOperator = reviewOrdersOperator;
     }
 
-    public String getReviewOrdersTime() {
+    public Date getReviewOrdersTime() {
         return reviewOrdersTime;
     }
 
-    public void setReviewOrdersTime(String reviewOrdersTime) {
+    public void setReviewOrdersTime(Date reviewOrdersTime) {
         this.reviewOrdersTime = reviewOrdersTime;
     }
 
@@ -1417,11 +2222,11 @@ public class OrderInfo extends BaseBean {
         this.financeReviewOperator = financeReviewOperator;
     }
 
-    public String getFinanceReviewTime() {
+    public Date getFinanceReviewTime() {
         return financeReviewTime;
     }
 
-    public void setFinanceReviewTime(String financeReviewTime) {
+    public void setFinanceReviewTime(Date financeReviewTime) {
         this.financeReviewTime = financeReviewTime;
     }
 
@@ -1465,11 +2270,11 @@ public class OrderInfo extends BaseBean {
         this.cancelOperator = cancelOperator;
     }
 
-    public String getCancelTime() {
+    public Date getCancelTime() {
         return cancelTime;
     }
 
-    public void setCancelTime(String cancelTime) {
+    public void setCancelTime(Date cancelTime) {
         this.cancelTime = cancelTime;
     }
 
@@ -1481,11 +2286,11 @@ public class OrderInfo extends BaseBean {
         this.revokeCanceler = revokeCanceler;
     }
 
-    public String getRevokeCancelTime() {
+    public Date getRevokeCancelTime() {
         return revokeCancelTime;
     }
 
-    public void setRevokeCancelTime(String revokeCancelTime) {
+    public void setRevokeCancelTime(Date revokeCancelTime) {
         this.revokeCancelTime = revokeCancelTime;
     }
 
@@ -1497,11 +2302,11 @@ public class OrderInfo extends BaseBean {
         this.packager = packager;
     }
 
-    public String getPackTime() {
+    public Date getPackTime() {
         return packTime;
     }
 
-    public void setPackTime(String packTime) {
+    public void setPackTime(Date packTime) {
         this.packTime = packTime;
     }
 
@@ -1513,11 +2318,11 @@ public class OrderInfo extends BaseBean {
         this.weighOperator = weighOperator;
     }
 
-    public String getWeighTime() {
+    public Date getWeighTime() {
         return weighTime;
     }
 
-    public void setWeighTime(String weighTime) {
+    public void setWeighTime(Date weighTime) {
         this.weighTime = weighTime;
     }
 
@@ -1537,19 +2342,19 @@ public class OrderInfo extends BaseBean {
         this.locker = locker;
     }
 
-    public String getLockTime() {
+    public Date getLockTime() {
         return lockTime;
     }
 
-    public void setLockTime(String lockTime) {
+    public void setLockTime(Date lockTime) {
         this.lockTime = lockTime;
     }
 
-    public String getBookFileTime() {
+    public Date getBookFileTime() {
         return bookFileTime;
     }
 
-    public void setBookFileTime(String bookFileTime) {
+    public void setBookFileTime(Date bookFileTime) {
         this.bookFileTime = bookFileTime;
     }
 
@@ -1561,27 +2366,27 @@ public class OrderInfo extends BaseBean {
         this.fileOperator = fileOperator;
     }
 
-    public String getFileTime() {
+    public Date getFileTime() {
         return fileTime;
     }
 
-    public void setFileTime(String fileTime) {
+    public void setFileTime(Date fileTime) {
         this.fileTime = fileTime;
     }
 
-    public String getFinishTime() {
+    public Date getFinishTime() {
         return finishTime;
     }
 
-    public void setFinishTime(String finishTime) {
+    public void setFinishTime(Date finishTime) {
         this.finishTime = finishTime;
     }
 
-    public String getModityTime() {
+    public Date getModityTime() {
         return modityTime;
     }
 
-    public void setModityTime(String modityTime) {
+    public void setModityTime(Date modityTime) {
         this.modityTime = modityTime;
     }
 
@@ -1609,43 +2414,43 @@ public class OrderInfo extends BaseBean {
         this.outPromotionDetail = outPromotionDetail;
     }
 
-    public String getGoodReceiveTime() {
+    public Date getGoodReceiveTime() {
         return goodReceiveTime;
     }
 
-    public void setGoodReceiveTime(String goodReceiveTime) {
+    public void setGoodReceiveTime(Date goodReceiveTime) {
         this.goodReceiveTime = goodReceiveTime;
     }
 
-    public String getReceiveTime() {
+    public Date getReceiveTime() {
         return receiveTime;
     }
 
-    public void setReceiveTime(String receiveTime) {
+    public void setReceiveTime(Date receiveTime) {
         this.receiveTime = receiveTime;
     }
 
-    public String getVerificatyTime() {
+    public Date getVerificatyTime() {
         return verificatyTime;
     }
 
-    public void setVerificatyTime(String verificatyTime) {
+    public void setVerificatyTime(Date verificatyTime) {
         this.verificatyTime = verificatyTime;
     }
 
-    public String getEnableInteStoTime() {
+    public Date getEnableInteStoTime() {
         return enableInteStoTime;
     }
 
-    public void setEnableInteStoTime(String enableInteStoTime) {
+    public void setEnableInteStoTime(Date enableInteStoTime) {
         this.enableInteStoTime = enableInteStoTime;
     }
 
-    public String getEnableInteDeliveryTime() {
+    public Date getEnableInteDeliveryTime() {
         return enableInteDeliveryTime;
     }
 
-    public void setEnableInteDeliveryTime(String enableInteDeliveryTime) {
+    public void setEnableInteDeliveryTime(Date enableInteDeliveryTime) {
         this.enableInteDeliveryTime = enableInteDeliveryTime;
     }
 
@@ -1737,11 +2542,11 @@ public class OrderInfo extends BaseBean {
         this.message = message;
     }
 
-    public String getMessageTime() {
+    public Date getMessageTime() {
         return messageTime;
     }
 
-    public void setMessageTime(String messageTime) {
+    public void setMessageTime(Date messageTime) {
         this.messageTime = messageTime;
     }
 
@@ -1825,11 +2630,11 @@ public class OrderInfo extends BaseBean {
         this.sku = sku;
     }
 
-    public String getItemNum() {
+    public int getItemNum() {
         return itemNum;
     }
 
-    public void setItemNum(String itemNum) {
+    public void setItemNum(int itemNum) {
         this.itemNum = itemNum;
     }
 
@@ -1881,11 +2686,11 @@ public class OrderInfo extends BaseBean {
         this.taobaoDeliveryMethod = taobaoDeliveryMethod;
     }
 
-    public String getOrderProcessTime() {
+    public long getOrderProcessTime() {
         return orderProcessTime;
     }
 
-    public void setOrderProcessTime(String orderProcessTime) {
+    public void setOrderProcessTime(long orderProcessTime) {
         this.orderProcessTime = orderProcessTime;
     }
 
@@ -1905,11 +2710,11 @@ public class OrderInfo extends BaseBean {
         this.breaker = breaker;
     }
 
-    public String getBreakTime() {
+    public Date getBreakTime() {
         return breakTime;
     }
 
-    public void setBreakTime(String breakTime) {
+    public void setBreakTime(Date breakTime) {
         this.breakTime = breakTime;
     }
 
@@ -1969,19 +2774,19 @@ public class OrderInfo extends BaseBean {
         this.areaCode = areaCode;
     }
 
-    public String getLastReturnedTime() {
+    public Date getLastReturnedTime() {
         return lastReturnedTime;
     }
 
-    public void setLastReturnedTime(String lastReturnedTime) {
+    public void setLastReturnedTime(Date lastReturnedTime) {
         this.lastReturnedTime = lastReturnedTime;
     }
 
-    public String getLastRefundTime() {
+    public Date getLastRefundTime() {
         return lastRefundTime;
     }
 
-    public void setLastRefundTime(String lastRefundTime) {
+    public void setLastRefundTime(Date lastRefundTime) {
         this.lastRefundTime = lastRefundTime;
     }
 
@@ -2009,11 +2814,11 @@ public class OrderInfo extends BaseBean {
         this.isPreDeliveryNotice = isPreDeliveryNotice;
     }
 
-    public String getJdDeliveryTime() {
+    public Date getJdDeliveryTime() {
         return jdDeliveryTime;
     }
 
-    public void setJdDeliveryTime(String jdDeliveryTime) {
+    public void setJdDeliveryTime(Date jdDeliveryTime) {
         this.jdDeliveryTime = jdDeliveryTime;
     }
 

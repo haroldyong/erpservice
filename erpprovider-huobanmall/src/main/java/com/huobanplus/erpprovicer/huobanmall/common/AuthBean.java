@@ -1,5 +1,7 @@
 package com.huobanplus.erpprovicer.huobanmall.common;
 
+import com.huobanplus.erpservice.event.model.BaseResult;
+
 /**
  * 类描述：授权 签名字段
  * @author aaron
