@@ -79,13 +79,13 @@ public class OrderInfo extends BaseResult {
     /**
      * 是否需要发货
      */
-    private String isDelivery;
+    private int isDelivery;
 
-    public String getIsDelivery() {
+    public int getIsDelivery() {
         return isDelivery;
     }
 
-    public void setIsDelivery(String isDelivery) {
+    public void setIsDelivery(int isDelivery) {
         this.isDelivery = isDelivery;
     }
 

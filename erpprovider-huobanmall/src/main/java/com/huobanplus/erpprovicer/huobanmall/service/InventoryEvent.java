@@ -19,11 +19,12 @@ public interface InventoryEvent extends BaseEvent {
      *（待定，当前标记为过期方法。）
      * 提示错误信息，并开启重新同步机制
      * @param authBean 安全签名参数集合
+     * @param storageIds 库存编号集合{1、当只包含1个库存时，同步该库存信息 2、当包含多个库存时，批量同步库存信息}
      * @return 返回同步结果（成功、失败）
      * @since 2015年7月25日 下午4:30:43
      */
     @Deprecated
-    public Monitor<BaseResult> syncInventory(AuthBean authBean);
+    public Monitor<BaseResult> syncInventory(AuthBean authBean, String storageIds);
 
     /**
      * （新增）提交入库单信息

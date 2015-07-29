@@ -18,8 +18,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class InventoryEventImpl implements InventoryEvent {
+
     @Override
-    public Monitor<BaseResult> syncInventory(AuthBean authBean) {
+    public Monitor<BaseResult> syncInventory(AuthBean authBean, String storageIds) {
         return null;
     }
 
