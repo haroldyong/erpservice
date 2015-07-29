@@ -2,20 +2,22 @@ package com.huobanplus.erpprovider.edb.handler.impl;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.edb.bean.EDBOrder;
-import com.huobanplus.erpprovider.edb.bean.EDBOrderInfo;
-import com.huobanplus.erpprovider.edb.eventResult.CreateOrderResult;
+import com.huobanplus.erpprovider.edb.bean.EDBCreateOrderInfo;
 import com.huobanplus.erpprovider.edb.handler.OrderHandler;
 import com.huobanplus.erpprovider.edb.net.HttpUtil;
 import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpprovider.edb.util.SignBuilder;
 import com.huobanplus.erpprovider.edb.util.StringUtil;
+import com.huobanplus.erpprovider.edb.util.XmlUtil;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import com.huobanplus.erpservice.event.model.OrderInfo;
+import org.dom4j.DocumentException;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,95 +30,95 @@ import java.util.TreeMap;
 public class OrderHandlerImpl implements OrderHandler {
 
     @Override
-    public Monitor<EventResult> createOrder(OrderInfo orderInfo) throws IOException {
+    public Monitor<EventResult> createOrder(OrderInfo orderInfo) throws IOException, DocumentException {
         HttpUtil htNetService = HttpUtil.getInstance();
 
-        EDBOrderInfo edbOrderInfo = new EDBOrderInfo();
-        edbOrderInfo.setTid(orderInfo.getTid());
-        edbOrderInfo.setOutTid(orderInfo.getOutTid());
-        edbOrderInfo.setShopId(orderInfo.getShopId());
-        edbOrderInfo.setStorageId(Integer.parseInt(orderInfo.getStorageId()));
-        edbOrderInfo.setBuyerId(orderInfo.getBuyerId());
-        edbOrderInfo.setBuyerEmail(orderInfo.getBuyerEmail());
-        edbOrderInfo.setBuyerAlipay(orderInfo.getBuyerAlipay());
-        edbOrderInfo.setSellerRemark(orderInfo.getServiceRemarks());
-        edbOrderInfo.setConsignee(orderInfo.getConsignee());
-        edbOrderInfo.setAddress(orderInfo.getAddress());
-        edbOrderInfo.setPostcode(orderInfo.getPost());
-        edbOrderInfo.setTelephone(orderInfo.getPhone());
-        edbOrderInfo.setMobilPhone(orderInfo.getReceiverMobile());
-        edbOrderInfo.setProvince(orderInfo.getProvince());
-        edbOrderInfo.setCity(orderInfo.getCity());
-        edbOrderInfo.setArea(orderInfo.getArea());
-        edbOrderInfo.setActualFreightGet(orderInfo.getRealIncomefreight());
-        edbOrderInfo.setActual_RP(orderInfo.getReferencePricePaid());
-        edbOrderInfo.setShipMethod(orderInfo.getSendingType());
-        edbOrderInfo.setExpress(orderInfo.getExpress());
-        edbOrderInfo.setIsInvoiceOpened(orderInfo.getInvoiceSituation());
-        edbOrderInfo.setInvoiceType(orderInfo.getInvoiceType());
-        edbOrderInfo.setInvoiceMoney(orderInfo.getInvoiceMoney());
-        edbOrderInfo.setInvoiceTitle(orderInfo.getInvoiceTitle());
-        edbOrderInfo.setInvoiceMsg(orderInfo.getInvoiceContent());
-        edbOrderInfo.setOrderType(orderInfo.getOrderType());
-        edbOrderInfo.setProcessStatus(orderInfo.getStatus());
-        edbOrderInfo.setPayStatus(orderInfo.getPayStatus());
-        edbOrderInfo.setDeliverStatus(orderInfo.getDeliveryStatus());
-        edbOrderInfo.setIsCOD(orderInfo.getIsCod());
-        edbOrderInfo.setServerCostCOD(orderInfo.getCodServiceFee());
-        edbOrderInfo.setOrderTotalMoney(orderInfo.getOrderTotalFee());
-        edbOrderInfo.setProductTotalMoney(orderInfo.getProTotalFee());
-        edbOrderInfo.setPayMethod(orderInfo.getPayMothed());
-        edbOrderInfo.setPayCommission(orderInfo.getPayCommission());
-        edbOrderInfo.setPayScore(orderInfo.getPayScore());
-        edbOrderInfo.setReturnScore(orderInfo.getReturnScore());
-        edbOrderInfo.setFavorableMoney(orderInfo.getOrderDisfee());
-        edbOrderInfo.setAlipayTransactionNo(orderInfo.getAlipayTransactionNo());
-        edbOrderInfo.setOutPayNo(orderInfo.getOutPayTid());
-        edbOrderInfo.setOutExpressMethod(orderInfo.getOutExpressMethod());
-        edbOrderInfo.setOrderDate(StringUtil.DateFormat(orderInfo.getOrderDate(), StringUtil.TIME_PATTERN));
-        edbOrderInfo.setPayDate(StringUtil.DateFormat(orderInfo.getPayDate(), StringUtil.TIME_PATTERN));
-        edbOrderInfo.setFinishDate(StringUtil.DateFormat(orderInfo.getFinishDate(), StringUtil.TIME_PATTERN));
-        edbOrderInfo.setPlatType(orderInfo.getPlatType());
-        edbOrderInfo.setDistributorNo(orderInfo.getDistributorId());
-        edbOrderInfo.setWuLiu(orderInfo.getWuLiu());
-        edbOrderInfo.setWuLiuNo(orderInfo.getWuLiuNo());
-        edbOrderInfo.setTerminalType(orderInfo.getTerminalType());
-        edbOrderInfo.setInMemo(orderInfo.getInternalNote());
-        edbOrderInfo.setOtherRemark(orderInfo.getOtherRemarks());
-        edbOrderInfo.setActualFreightPay(orderInfo.getRealPayFreight());
-        edbOrderInfo.setShipDatePlan(StringUtil.DateFormat(orderInfo.getAdvDistributTime(), StringUtil.TIME_PATTERN));
-        edbOrderInfo.setDeliverDatePlan(StringUtil.DateFormat(orderInfo.getBookDeliveryTime(), StringUtil.TIME_PATTERN));
-        edbOrderInfo.setIsScorePay(orderInfo.getPointPay());
-        edbOrderInfo.setIsNeedInvoice(orderInfo.getInvoiceIsopen());
-        edbOrderInfo.setBarCode(orderInfo.getBarCode());
-        edbOrderInfo.setProductTitle(orderInfo.getProductTitle());
-        edbOrderInfo.setStandard(orderInfo.getStandard());
-        edbOrderInfo.setOutPrice(orderInfo.getOutPrice());
-        edbOrderInfo.setFavoriteMoney(orderInfo.getDiscountFee());
-        edbOrderInfo.setOrderGoodsNum(orderInfo.getOrderGoodsNum());
-        edbOrderInfo.setGiftNum(orderInfo.getGiftNum());
-        edbOrderInfo.setCostPrice(orderInfo.getCostPrice());
-        edbOrderInfo.setProductStockOut(orderInfo.getProductStockout());
-        edbOrderInfo.setIsBook(orderInfo.getIsBook());
-        edbOrderInfo.setIsPreSell(orderInfo.getIsAdvSale());
-        edbOrderInfo.setIsGift(orderInfo.getIsGift());
-        edbOrderInfo.setAvgPrice(orderInfo.getAvgPrice());
-        edbOrderInfo.setProductFreight(orderInfo.getProductFreight());
-        edbOrderInfo.setOutProductId(orderInfo.getOutProductId());
-        edbOrderInfo.setOutBarCode(orderInfo.getOutBarCode());
-        edbOrderInfo.setProductIntro(orderInfo.getProductIntro());
-        EDBOrder edbOrder = new EDBOrder(edbOrderInfo);
+        EDBCreateOrderInfo edbCreateOrderInfo = new EDBCreateOrderInfo();
+        edbCreateOrderInfo.setTid(orderInfo.getTid());
+        edbCreateOrderInfo.setOutTid(orderInfo.getOutTid());
+        edbCreateOrderInfo.setShopId(orderInfo.getShopId());
+        edbCreateOrderInfo.setStorageId(Integer.parseInt(orderInfo.getStorageId()));
+        edbCreateOrderInfo.setBuyerId(orderInfo.getBuyerId());
+        edbCreateOrderInfo.setBuyerEmail(orderInfo.getBuyerEmail());
+        edbCreateOrderInfo.setBuyerAlipay(orderInfo.getBuyerAlipay());
+        edbCreateOrderInfo.setSellerRemark(orderInfo.getServiceRemarks());
+        edbCreateOrderInfo.setConsignee(orderInfo.getConsignee());
+        edbCreateOrderInfo.setAddress(orderInfo.getAddress());
+        edbCreateOrderInfo.setPostcode(orderInfo.getPost());
+        edbCreateOrderInfo.setTelephone(orderInfo.getPhone());
+        edbCreateOrderInfo.setMobilPhone(orderInfo.getReceiverMobile());
+        edbCreateOrderInfo.setProvince(orderInfo.getProvince());
+        edbCreateOrderInfo.setCity(orderInfo.getCity());
+        edbCreateOrderInfo.setArea(orderInfo.getArea());
+        edbCreateOrderInfo.setActualFreightGet(orderInfo.getRealIncomefreight());
+        edbCreateOrderInfo.setActual_RP(orderInfo.getReferencePricePaid());
+        edbCreateOrderInfo.setShipMethod(orderInfo.getSendingType());
+        edbCreateOrderInfo.setExpress(orderInfo.getExpress());
+        edbCreateOrderInfo.setIsInvoiceOpened(orderInfo.getInvoiceSituation());
+        edbCreateOrderInfo.setInvoiceType(orderInfo.getInvoiceType());
+        edbCreateOrderInfo.setInvoiceMoney(orderInfo.getInvoiceMoney());
+        edbCreateOrderInfo.setInvoiceTitle(orderInfo.getInvoiceTitle());
+        edbCreateOrderInfo.setInvoiceMsg(orderInfo.getInvoiceContent());
+        edbCreateOrderInfo.setOrderType(orderInfo.getOrderType());
+        edbCreateOrderInfo.setProcessStatus(orderInfo.getStatus());
+        edbCreateOrderInfo.setPayStatus(orderInfo.getPayStatus());
+        edbCreateOrderInfo.setDeliverStatus(orderInfo.getDeliveryStatus());
+        edbCreateOrderInfo.setIsCOD(orderInfo.getIsCod());
+        edbCreateOrderInfo.setServerCostCOD(orderInfo.getCodServiceFee());
+        edbCreateOrderInfo.setOrderTotalMoney(orderInfo.getOrderTotalFee());
+        edbCreateOrderInfo.setProductTotalMoney(orderInfo.getProTotalFee());
+        edbCreateOrderInfo.setPayMethod(orderInfo.getPayMothed());
+        edbCreateOrderInfo.setPayCommission(orderInfo.getPayCommission());
+        edbCreateOrderInfo.setPayScore(orderInfo.getPayScore());
+        edbCreateOrderInfo.setReturnScore(orderInfo.getReturnScore());
+        edbCreateOrderInfo.setFavorableMoney(orderInfo.getOrderDisfee());
+        edbCreateOrderInfo.setAlipayTransactionNo(orderInfo.getAlipayTransactionNo());
+        edbCreateOrderInfo.setOutPayNo(orderInfo.getOutPayTid());
+        edbCreateOrderInfo.setOutExpressMethod(orderInfo.getOutExpressMethod());
+        edbCreateOrderInfo.setOrderDate(StringUtil.DateFormat(orderInfo.getOrderDate(), StringUtil.TIME_PATTERN));
+        edbCreateOrderInfo.setPayDate(StringUtil.DateFormat(orderInfo.getPayDate(), StringUtil.TIME_PATTERN));
+        edbCreateOrderInfo.setFinishDate(StringUtil.DateFormat(orderInfo.getFinishDate(), StringUtil.TIME_PATTERN));
+        edbCreateOrderInfo.setPlatType(orderInfo.getPlatType());
+        edbCreateOrderInfo.setDistributorNo(orderInfo.getDistributorId());
+        edbCreateOrderInfo.setWuLiu(orderInfo.getWuLiu());
+        edbCreateOrderInfo.setWuLiuNo(orderInfo.getWuLiuNo());
+        edbCreateOrderInfo.setTerminalType(orderInfo.getTerminalType());
+        edbCreateOrderInfo.setInMemo(orderInfo.getInternalNote());
+        edbCreateOrderInfo.setOtherRemark(orderInfo.getOtherRemarks());
+        edbCreateOrderInfo.setActualFreightPay(orderInfo.getRealPayFreight());
+        edbCreateOrderInfo.setShipDatePlan(StringUtil.DateFormat(orderInfo.getAdvDistributTime(), StringUtil.TIME_PATTERN));
+        edbCreateOrderInfo.setDeliverDatePlan(StringUtil.DateFormat(orderInfo.getBookDeliveryTime(), StringUtil.TIME_PATTERN));
+        edbCreateOrderInfo.setIsScorePay(orderInfo.getPointPay());
+        edbCreateOrderInfo.setIsNeedInvoice(orderInfo.getInvoiceIsopen());
+        edbCreateOrderInfo.setBarCode(orderInfo.getBarCode());
+        edbCreateOrderInfo.setProductTitle(orderInfo.getProductTitle());
+        edbCreateOrderInfo.setStandard(orderInfo.getStandard());
+        edbCreateOrderInfo.setOutPrice(orderInfo.getOutPrice());
+        edbCreateOrderInfo.setFavoriteMoney(orderInfo.getDiscountFee());
+        edbCreateOrderInfo.setOrderGoodsNum(orderInfo.getOrderGoodsNum());
+        edbCreateOrderInfo.setGiftNum(orderInfo.getGiftNum());
+        edbCreateOrderInfo.setCostPrice(orderInfo.getCostPrice());
+        edbCreateOrderInfo.setProductStockOut(orderInfo.getProductStockout());
+        edbCreateOrderInfo.setIsBook(orderInfo.getIsBook());
+        edbCreateOrderInfo.setIsPreSell(orderInfo.getIsAdvSale());
+        edbCreateOrderInfo.setIsGift(orderInfo.getIsGift());
+        edbCreateOrderInfo.setAvgPrice(orderInfo.getAvgPrice());
+        edbCreateOrderInfo.setProductFreight(orderInfo.getProductFreight());
+        edbCreateOrderInfo.setOutProductId(orderInfo.getOutProductId());
+        edbCreateOrderInfo.setOutBarCode(orderInfo.getOutBarCode());
+        edbCreateOrderInfo.setProductIntro(orderInfo.getProductIntro());
+        EDBOrder edbOrder = new EDBOrder(edbCreateOrderInfo);
 
         XmlMapper xmlMapper = new XmlMapper();
         String resultStr = xmlMapper.writeValueAsString(edbOrder);
 
         Map<String, String> requestData = new HashMap<>();
-
+        String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
         requestData.put("dbhost", Constant.DB_HOST);
         requestData.put("appkey", Constant.APP_KEY);
         requestData.put("method", Constant.CREATE_ORDER);
         requestData.put("format", Constant.FORMAT);
-        requestData.put("timestamp", String.valueOf(new Date().getTime()));
+        requestData.put("timestamp", timestamp);
         requestData.put("v", Constant.V);
         requestData.put("slencry", Constant.SLENCRY);
         requestData.put("ip", Constant.IP);
@@ -127,8 +129,46 @@ public class OrderHandlerImpl implements OrderHandler {
         signMap.put("token", Constant.TOKEN);
         requestData.put("sign", SignBuilder.buildSign(signMap, Constant.APP_KEY, ""));
 
-        String result = htNetService.doPost(Constant.REQUEST_URI, requestData);
-        CreateOrderResult orderResult = xmlMapper.readValue(result, CreateOrderResult.class);
-        return new SimpleMonitor<>(orderResult);
+        String responseData = htNetService.doPost(Constant.REQUEST_URI, requestData);
+        if (responseData == null) {
+            return new SimpleMonitor<>(new EventResult(0, responseData));
+        }
+        return new SimpleMonitor<>(new EventResult(1, XmlUtil.xml2Json(responseData)));
+    }
+
+    @Override
+    public Monitor<EventResult> getOrderInfo() throws IOException, DocumentException {
+        Map<String, String> requestData = new HashMap<>();
+        String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
+        requestData.put("dbhost", Constant.DB_HOST);
+        requestData.put("appkey", Constant.APP_KEY);
+        requestData.put("method", Constant.GET_ORDER_INFO);
+        requestData.put("format", Constant.FORMAT);
+        requestData.put("timestamp", timestamp);
+        requestData.put("v", Constant.V);
+        requestData.put("slencry", Constant.SLENCRY);
+        requestData.put("ip", Constant.IP);
+        requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
+        requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
+        requestData.put("page_no", "1");
+        requestData.put("page_size", "10");
+        requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
+        TreeMap<String, String> signMap = new TreeMap<>(requestData);
+        signMap.put("appscret", Constant.APP_SECRET);
+        signMap.put("token", Constant.TOKEN);
+        requestData.put("sign", SignBuilder.buildSign(signMap, Constant.APP_KEY, ""));
+
+        String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
+        if (responseData == null) {
+            return new SimpleMonitor<>(new EventResult(0, responseData));
+        }
+        int firstRowIndex = responseData.indexOf("<Rows>");
+        int lastRowIndex = responseData.lastIndexOf("</Rows>");
+        String first = responseData.substring(0, firstRowIndex);
+        String middle = responseData.substring(firstRowIndex, lastRowIndex + 7);
+        String last = responseData.substring(lastRowIndex + 7, responseData.length());
+        String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
+        String resultJson = XmlUtil.xml2Json(resultXml);
+        return new SimpleMonitor<>(new EventResult(1, XmlUtil.xml2Json(resultJson)));
     }
 }

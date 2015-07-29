@@ -9,17 +9,17 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @JacksonXmlRootElement(localName = "order")
 public class EDBOrder {
     @JacksonXmlProperty(localName = "orderInfo")
-    private EDBOrderInfo edbOrderInfo;
+    private EDBCreateOrderInfo edbCreateOrderInfo;
 
-    public EDBOrderInfo getEdbOrderInfo() {
-        return edbOrderInfo;
+    public EDBCreateOrderInfo getEdbCreateOrderInfo() {
+        return edbCreateOrderInfo;
     }
 
-    public void setEdbOrderInfo(EDBOrderInfo edbOrderInfo) {
-        this.edbOrderInfo = edbOrderInfo;
+    public void setEdbCreateOrderInfo(EDBCreateOrderInfo edbCreateOrderInfo) {
+        this.edbCreateOrderInfo = edbCreateOrderInfo;
     }
 
-    public EDBOrder(EDBOrderInfo edbOrderInfo) {
-        this.edbOrderInfo = edbOrderInfo;
+    public EDBOrder(EDBCreateOrderInfo edbCreateOrderInfo) {
+        this.edbCreateOrderInfo = edbCreateOrderInfo;
     }
 }

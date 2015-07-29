@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 /**
  * Created by allan on 2015/7/27.
  */
-public class EDBOrderInfo {
+public class EDBCreateOrderInfo {
     /**
      * 订单编号
      */

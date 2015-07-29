@@ -7,8 +7,11 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -64,6 +67,54 @@ public class HttpUtil {
             getMethod.releaseConnection();
         }
 
+    }
+
+    /**
+     * get请求
+     *
+     * @param url    请求地址
+     * @param params 请求参数
+     * @return
+     */
+    public String doGet(String url, Map<String, String> params) throws IOException {
+        String finalUrl = url;
+        Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
+        int index = 0;
+        while (iterator.hasNext()) {
+            Map.Entry<String, String> entry = iterator.next();
+
+            if (index == 0) {
+                finalUrl += "?" + entry.getKey() + "=" + entry.getValue();
+            } else {
+                finalUrl += "&" + entry.getKey() + "=" + entry.getValue();
+            }
+            index++;
+        }
+        GetMethod getMethod = null;
+        client = new HttpClient();
+        try {
+            URI uri = new URI(finalUrl);
+            getMethod = new GetMethod(finalUrl);
+            //设置代理，此处无代理
+            //设置系统默认回复策略
+           /* getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
+            HttpConnectionManagerParams managerParams = client.getHttpConnectionManager().getParams();
+            managerParams.setConnectionTimeout(30000);     // 设置连接超时时间(单位毫秒)
+            managerParams.setSoTimeout(120000);        //设置读数据超时时间(单位毫秒)*/
+            int statusCode = client.executeMethod(getMethod);// 执行getMethod,返回响应码
+            if (HttpStatus.SC_OK == statusCode) {
+                //请求成功，读取内容
+                return new String(getMethod.getResponseBody(), "UTF-8");
+            } else {
+//                String msg = new String(getMethod.getResponseBody(), "UTF-8");
+                //请求失败，返回null
+                return null;
+            }
+        } catch (URISyntaxException e) {
+            return null;
+        } finally {
+            getMethod.releaseConnection();
+        }
     }
 
     public String doPost(String url, Map params) throws IOException {
