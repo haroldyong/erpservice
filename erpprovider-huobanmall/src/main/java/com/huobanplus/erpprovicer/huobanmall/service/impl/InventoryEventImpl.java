@@ -25,14 +25,20 @@ public class InventoryEventImpl implements InventoryEvent {
     }
 
     @Override
-    public Monitor<BaseResult> commitInStorage(AuthBean authBean, InventoryInfo inventoryBean) {
+    public Monitor<BaseResult> modifyInStorage(AuthBean authBean, InventoryInfo inventoryInfo) {
         return null;
     }
 
     @Override
-    public Monitor<InventoryInfo> obtainInStorage(AuthBean authBean, String... params) {
+    public Monitor<BaseResult> modifyOutStorage(AuthBean authBean, InventoryInfo inventoryInfo) {
         return null;
     }
+
+    @Override
+    public Monitor<BaseResult> commitInStorage(AuthBean authBean, InventoryInfo inventoryBean) {
+        return null;
+    }
+
 
     @Override
     public Monitor<BaseResult> commitOutStorage(AuthBean authBean, InventoryInfo inventoryBean) {
@@ -40,17 +46,22 @@ public class InventoryEventImpl implements InventoryEvent {
     }
 
     @Override
-    public Monitor<InventoryInfo> obtainOutStorage(AuthBean authBean, String... params) {
+    public Monitor<InventoryInfo> obtainInStorage(AuthBean authBean, String inStorageIds) {
         return null;
     }
 
     @Override
-    public Monitor<BaseResult> confirmInStorage(AuthBean authBean, String... params) {
+    public Monitor<InventoryInfo> obtainOutStorage(AuthBean authBean, String outStorageIds) {
         return null;
     }
 
     @Override
-    public Monitor<BaseResult> confirmOutStorage(AuthBean authBean, String... params) {
+    public Monitor<BaseResult> confirmInStorage(AuthBean authBean, String inStorageIds) {
+        return null;
+    }
+
+    @Override
+    public Monitor<BaseResult> confirmOutStorage(AuthBean authBean, String outStorageIds) {
         return null;
     }
 
