@@ -242,50 +242,6 @@ public class OrderInfoController {
             orderInfo.setVirtualRecMobile(virtualRecMobile);
 
             return orderEventService.commitOrder(authBean, orderInfo);
-            //orderInfo = orderService.save(order);
-            /*if (null == orderInfo) {
-
-                //插入数据失败
-                resultMap = new HashMap<String, String>();
-                resultMap.put("resut_message", "订单数据保存失败");
-                resultMap.put("resut_code", Constant.REQUEST_DATABASE_ERROR);
-                return resultMap;
-            } else {
-                if (null == erpName || !"".equals(erpName.trim())) {
-                    //erp信息错误
-                    resultMap = new HashMap<String, String>();
-                    resultMap.put("resut_message", "ERP信息出错");
-                    resultMap.put("resut_code", Constant.REQUEST_ERP_INFO_ERROR);
-                    return resultMap;
-                } else {
-                    ERPInfo info = new ERPInfo();
-                    info.setName(erpName);
-                    //处理edb模块
-                    ERPHandler edbHandler = erpRegister.getERPHandler(info);
-                    if(null != edbHandler)
-                    {
-                        CreateOrderEvent orderEvent = new CreateOrderEvent();
-                        if(edbHandler.eventSupported(orderEvent))
-                        {
-                            try {
-                                edbHandler.handleEvent(orderEvent);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    //返回操作成功结果
-                    resultMap = new HashMap<String, String>();
-                    resultMap.put("resut_message", "订单接收成功");
-                    resultMap.put("resut_code", ResponseCode.SUCCESS);
-                    return resultMap;
-                }
-            }*/
-
-
         }
     }
 

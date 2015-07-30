@@ -23,7 +23,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
      * @param info 相关信息
      * @return 无法处理返回空，可以处理返回该erp事件处理器
      */
-    @Resource
+       @Resource
     private NetShopService netShopService;
 
     @Override
