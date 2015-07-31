@@ -13,15 +13,33 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Created by allan on 2015/7/31.
  */
-@Controller
-public class HotApiController {
-    @Autowired
-    private ERPRegister erpRegister;
+@RequestMapping("/hotErpApi")
+public interface HotApiController {
 
+    /**
+     * 得到商品库存信息
+     *
+     * @param info
+     * @param request
+     */
     @RequestMapping("/createOrder/{erpInfo}")
-    public void createOrder(@PathVariable("erpInfo") String info, HttpServletRequest request) {
-        ERPInfo erpInfo = new ERPInfo();
-        erpInfo.setName(info);
-        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
-    }
+    void createOrder(@PathVariable("erpInfo") String info, HttpServletRequest request);
+
+    /**
+     * 得到商品库存信息
+     *
+     * @param erpInfo
+     * @param request
+     */
+    @RequestMapping("/getProInventory")
+    void getProInventory(@PathVariable("erpInfo") String erpInfo, HttpServletRequest request);
+
+    /**
+     * 得到订单信息
+     *
+     * @param erpInfo
+     * @param request
+     */
+    @RequestMapping("/getOrderInfo")
+    void getOrderInfo(@PathVariable("erpInfo") String erpInfo, HttpServletRequest request);
 }
