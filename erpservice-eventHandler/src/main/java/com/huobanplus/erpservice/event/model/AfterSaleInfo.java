@@ -3,7 +3,7 @@ package com.huobanplus.erpservice.event.model;
 import java.io.Serializable;
 
 /**
- * 售后信息
+ * <b>类描述：</b>售后信息
  */
 public class AfterSaleInfo extends BaseBean {
 

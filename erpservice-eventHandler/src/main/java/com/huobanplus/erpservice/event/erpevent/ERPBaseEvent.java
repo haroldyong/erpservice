@@ -1,13 +1,19 @@
 package com.huobanplus.erpservice.event.erpevent;
 
+import com.huobanplus.erpservice.event.model.AuthBean;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 
 /**
- * ERP事件父类，携带epr相关信息
+ * <b>类描述：<b/>ERP事件父类，携带epr相关信息
  * Created by allan on 2015/7/13.
  */
 public class ERPBaseEvent {
     private ERPInfo erpInfo;
+
+    /**
+     * 授权验证实体
+     */
+    private AuthBean authBean;
 
     public ERPInfo getErpInfo() {
         return erpInfo;
@@ -15,5 +21,13 @@ public class ERPBaseEvent {
 
     public void setErpInfo(ERPInfo erpInfo) {
         this.erpInfo = erpInfo;
+    }
+
+    public AuthBean getAuthBean() {
+        return authBean;
+    }
+
+    public void setAuthBean(AuthBean authBean) {
+        this.authBean = authBean;
     }
 }

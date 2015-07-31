@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 类描述：库存信息实体
+ * <b>类描述：</b>库存信息实体
  * @author aaron
  * @since  2015年7月27日 上午10:24:35
  * @version V1.0
