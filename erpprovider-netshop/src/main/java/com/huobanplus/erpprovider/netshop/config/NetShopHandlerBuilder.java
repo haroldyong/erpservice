@@ -1,11 +1,13 @@
 package com.huobanplus.erpprovider.netshop.config;
 
+import com.huobanplus.erpprovider.netshop.bean.*;
 import com.huobanplus.erpprovider.netshop.service.NetShopService;
 import com.huobanplus.erpprovider.netshop.support.BaseMonitor;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.event.model.*;
+import com.huobanplus.erpservice.event.model.AuthBean;
 import org.springframework.dao.DataAccessException;
 
 import javax.annotation.Resource;
@@ -58,7 +60,9 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                     netShopService.obtainOrderDetail(authBean, orderInfo.getOrderCode());
                 }
                 else if (erpEvent instanceof InventoryEvent) {
-
+                    InventoryInfo inventoryInfo = ((InventoryEvent) erpEvent).getInventoryInfo();
+                    AuthBean authBean = ((InventoryEvent) erpEvent).getAuthBean();
+                    netShopService.syncInventory(authBean, inventoryInfo);
 
                 }
                 else if (erpEvent instanceof DeliveryInfoEvent) {

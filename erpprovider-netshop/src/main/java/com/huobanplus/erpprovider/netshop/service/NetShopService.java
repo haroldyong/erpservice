@@ -56,8 +56,8 @@ public interface NetShopService {
     /**
      * 库存同步接口
      * @param authBean 授权安全验证
-     * @param productInfo 商品查询参数
+     * @param inventoryInfo 库存查询参数
      * @return 返回同步结果
      */
-    public Monitor<BaseResult> syncInventory(AuthBean authBean, ProductInfo productInfo);
+    public Monitor<BaseResult> syncInventory(AuthBean authBean, InventoryInfo inventoryInfo);
 }
