@@ -13,7 +13,7 @@ import java.io.IOException;
 public interface HotApiController {
 
     /**
-     * 得到商品库存信息
+     * 写入订单信息
      *
      * @param info
      * @param request
@@ -31,11 +31,11 @@ public interface HotApiController {
     void getProInventory(@PathVariable("erpInfo") String erpInfo, HttpServletRequest request) throws IOException, IllegalAccessException;
 
     /**
-     * 得到订单信息
+     * 获取订单信息
      *
      * @param erpInfo
      * @param request
      */
-    @RequestMapping("/getOrderInfo")
+    @RequestMapping("/getOrderInfo/{erpInfo}")
     void getOrderInfo(@PathVariable("erpInfo") String erpInfo, HttpServletRequest request);
 }
