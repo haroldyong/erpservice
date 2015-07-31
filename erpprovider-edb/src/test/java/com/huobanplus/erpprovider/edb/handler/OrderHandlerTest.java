@@ -3,6 +3,7 @@ package com.huobanplus.erpprovider.edb.handler;
 import com.huobanplus.erpprovider.edb.EDBConfig;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.event.model.OrderInfo;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,9 +25,10 @@ public class OrderHandlerTest {
     private OrderHandler orderHandler;
 
     @Test
-    @Ignore
     public void testCreateOrder() throws Exception {
-
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setOutTid("sdfsdfsdf");
+        
     }
 
     @Test
