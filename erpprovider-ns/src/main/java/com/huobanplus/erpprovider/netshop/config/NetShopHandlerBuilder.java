@@ -8,9 +8,11 @@ import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.event.model.*;
 import com.huobanplus.erpservice.event.model.AuthBean;
+import org.dom4j.DocumentException;
 import org.springframework.dao.DataAccessException;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -18,7 +20,6 @@ import java.io.IOException;
  */
 public class NetShopHandlerBuilder implements ERPHandlerBuilder {
     /**
-     *
      * @param info 相关信息
      * @return 无法处理返回空，可以处理返回该erp事件处理器
      */
@@ -27,60 +28,23 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        if(!"netShop".equals(info.getName()))
-        {
+        if (!"netShop".equals(info.getName())) {
             //不是网店管家
             return null;
         }
         return new ERPHandler() {
+
             @Override
-            public boolean eventSupported(ERPBaseEvent erpEvent) {
-                if (erpEvent instanceof CreateOrderEvent) {
-                    return true;
-                } else if (erpEvent instanceof InventoryEvent) {
-                    return true;
-                } else if (erpEvent instanceof DeliveryInfoEvent) {
-                    return true;
-                } else if (erpEvent instanceof OrderStatusInfoEvent) {
-                    return true;
-                } else if(erpEvent instanceof  ProductInfoEvent)
-                {
-                    return true;
-                }
-                else {
-                    return false;
-                }
+            public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
+                return false;
             }
 
             @Override
-            public Monitor<EventResult> handleEvent(ERPBaseEvent erpEvent) throws IOException, IllegalAccessException, DataAccessException {
-                if (erpEvent instanceof CreateOrderEvent) {
-                    OrderInfo orderInfo = ((CreateOrderEvent) erpEvent).getOrderInfo();
-                    AuthBean authBean = ((CreateOrderEvent) erpEvent).getAuthBean();
-                    netShopService.obtainOrderDetail(authBean, orderInfo.getOrderCode());
-                }
-                else if (erpEvent instanceof InventoryEvent) {
-                    InventoryInfo inventoryInfo = ((InventoryEvent) erpEvent).getInventoryInfo();
-                    AuthBean authBean = ((InventoryEvent) erpEvent).getAuthBean();
-                    netShopService.syncInventory(authBean, inventoryInfo);
-                }
-                else if (erpEvent instanceof DeliveryInfoEvent) {
-                    DeliveryInfo deliveryInfo = ((DeliveryInfoEvent) erpEvent).getDeliveryInfo();
-                    AuthBean authBean = ((DeliveryInfoEvent) erpEvent).getAuthBean();
-                    netShopService.deliveryNotice(authBean, deliveryInfo);
-                }
-                else if (erpEvent instanceof OrderStatusInfoEvent) {
-                    //处理订单状态改变
-
-                }
-                else if(erpEvent instanceof  ProductInfoEvent)
-                {
-                    ProductInfo productInfo = ((ProductInfoEvent) erpEvent).getProductInfo();
-                    AuthBean authBean = ((ProductInfoEvent) erpEvent).getAuthBean();
-                    netShopService.obtainGoods(authBean, productInfo);
-                }
-                else
-                {
+            public Monitor<EventResult> handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, DataAccessException, DocumentException {
+                HttpServletRequest request = (HttpServletRequest) data;
+                if (baseEventClass == CreateOrderEvent.class) {
+                    request.getAttribute("uCode");
+                    request.getAttribute("sign");
 
                 }
                 return null;
