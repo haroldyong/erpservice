@@ -1,12 +1,7 @@
 package com.huobanplus.erpprovider.netshop.service;
 
-
-import com.huobanplus.erpprovider.netshop.dao.NetShopDao;
 import com.huobanplus.erpservice.event.model.*;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import javax.persistence.criteria.Order;
 
 /**
  * 类描述：网店管家操作接口

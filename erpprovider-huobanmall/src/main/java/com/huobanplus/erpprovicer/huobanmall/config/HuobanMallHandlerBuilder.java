@@ -22,7 +22,7 @@ public class HuobanMallHandlerBuilder implements ERPHandlerBuilder {
     public ERPHandler buildHandler(ERPInfo info) {
         if(!"huobanMall".equals(info.getName()))
         {
-            //不是网店管家
+            //不是伙伴商城
             return null;
         }
         return new ERPHandler() {
