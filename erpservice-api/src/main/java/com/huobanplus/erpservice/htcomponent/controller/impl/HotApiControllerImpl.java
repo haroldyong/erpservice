@@ -1,6 +1,9 @@
 package com.huobanplus.erpservice.htcomponent.controller.impl;
 
+import com.huobanplus.erpservice.event.erpevent.CreateOrderEvent;
+import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPRegister;
+import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.htcomponent.controller.HotApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,16 +21,29 @@ public class HotApiControllerImpl implements HotApiController {
 
     @Override
     public void createOrder(@PathVariable("erpInfo") String info, HttpServletRequest request) {
+
+        ERPInfo erpInfo = new ERPInfo();
+        erpInfo.setName(info);
+        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
+        CreateOrderEvent createOrderEvent = new CreateOrderEvent();
+        if(erpHandler.eventSupported(createOrderEvent))
+        {
+        }
+        else
+        {
+
+        }
+
         
     }
 
     @Override
-    public void getProInventory(@PathVariable("erpInfo") String erpInfo, HttpServletRequest request) {
+    public void getProInventory(@PathVariable("erpInfo") String info, HttpServletRequest request) {
 
     }
 
     @Override
-    public void getOrderInfo(@PathVariable("erpInfo") String erpInfo, HttpServletRequest request) {
+    public void getOrderInfo(@PathVariable("erpInfo") String info, HttpServletRequest request) {
 
     }
 }
