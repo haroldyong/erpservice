@@ -30,7 +30,7 @@ import java.util.TreeMap;
 public class OrderHandlerImpl implements OrderHandler {
 
     @Override
-    public Monitor<EventResult> createOrder(OrderInfo orderInfo) throws IOException, DocumentException {
+    public Monitor<EventResult> createOrder(OrderInfo orderInfo) throws IOException {
         HttpUtil htNetService = HttpUtil.getInstance();
 
         EDBCreateOrderInfo edbCreateOrderInfo = new EDBCreateOrderInfo();
@@ -137,7 +137,7 @@ public class OrderHandlerImpl implements OrderHandler {
     }
 
     @Override
-    public Monitor<EventResult> getOrderInfo() throws IOException, DocumentException {
+    public Monitor<EventResult> getOrderInfo() throws IOException {
         Map<String, String> requestData = new HashMap<>();
         String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
         requestData.put("dbhost", Constant.DB_HOST);

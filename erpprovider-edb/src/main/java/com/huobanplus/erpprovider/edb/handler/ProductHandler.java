@@ -17,5 +17,5 @@ public interface ProductHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> getProInventoryInfo() throws IOException, DocumentException;
+    Monitor<EventResult> getProInventoryInfo() throws IOException;
 }

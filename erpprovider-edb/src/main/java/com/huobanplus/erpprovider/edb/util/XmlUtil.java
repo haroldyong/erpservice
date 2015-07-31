@@ -102,8 +102,13 @@ public class XmlUtil<T> {
         return map;
     }
 
-    public static Map<String, Object> dom2Map(String xmlContent) throws DocumentException {
-        Document document = DocumentHelper.parseText(xmlContent);
+    public static Map<String, Object> dom2Map(String xmlContent) {
+        Document document = null;
+        try {
+            document = DocumentHelper.parseText(xmlContent);
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
         return dom2Map(document);
     }
 
@@ -160,7 +165,7 @@ public class XmlUtil<T> {
      * @param xmlContent
      * @return
      */
-    public static String xml2Json(String xmlContent) throws IOException, DocumentException {
+    public static String xml2Json(String xmlContent) throws IOException {
         Map map = dom2Map(xmlContent);
         return new ObjectMapper().writeValueAsString(map);
     }
