@@ -499,4 +499,7 @@ public class ObtainDataController {
         }
     }
 
+    public void Test(ERPInfo erpInfo) {
+        
+    }
 }
