@@ -63,17 +63,21 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                     InventoryInfo inventoryInfo = ((InventoryEvent) erpEvent).getInventoryInfo();
                     AuthBean authBean = ((InventoryEvent) erpEvent).getAuthBean();
                     netShopService.syncInventory(authBean, inventoryInfo);
-
                 }
                 else if (erpEvent instanceof DeliveryInfoEvent) {
-
+                    DeliveryInfo deliveryInfo = ((DeliveryInfoEvent) erpEvent).getDeliveryInfo();
+                    AuthBean authBean = ((DeliveryInfoEvent) erpEvent).getAuthBean();
+                    netShopService.deliveryNotice(authBean, deliveryInfo);
                 }
                 else if (erpEvent instanceof OrderStatusInfoEvent) {
+                    //处理订单状态改变
 
                 }
                 else if(erpEvent instanceof  ProductInfoEvent)
                 {
-
+                    ProductInfo productInfo = ((ProductInfoEvent) erpEvent).getProductInfo();
+                    AuthBean authBean = ((ProductInfoEvent) erpEvent).getAuthBean();
+                    netShopService.obtainGoods(authBean, productInfo);
                 }
                 else
                 {

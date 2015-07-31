@@ -6,4 +6,5 @@ package com.huobanplus.erpservice.event.model;
 public class DeliveryInfo extends BaseResult {
 
 
+
 }

@@ -11,4 +11,5 @@ http://www.springframework.org/schema/data/jpa http://www.springframework.org/sc
 ">
     <!--example com.huobanplus.erpprovider.edb-->
     <context:component-scan base-package="com.huobanplus.erpprovider.edb"/>
+    <context:component-scan base-package="com.huobanplus.erpprovider.netshop"/>
 </beans>

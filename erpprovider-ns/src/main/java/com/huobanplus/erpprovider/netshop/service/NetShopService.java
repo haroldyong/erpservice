@@ -1,12 +1,7 @@
 package com.huobanplus.erpprovider.netshop.service;
 
-
-import com.huobanplus.erpprovider.netshop.dao.NetShopDao;
 import com.huobanplus.erpservice.event.model.*;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import javax.persistence.criteria.Order;
 
 /**
  * 类描述：网店管家操作接口
@@ -36,10 +31,10 @@ public interface NetShopService {
     /**
      * 发货通知
      * @param authBean 授权安全验证
-     * @param orderInfo 订单信息
+     * @param deliveryInfo 发货物流信息
      * @return 返回发货结果（1、发货成功、2、发货失败）
      */
-    public Monitor<BaseResult> deliveryNotice(AuthBean authBean, OrderInfo orderInfo);
+    public Monitor<BaseResult> deliveryNotice(AuthBean authBean, DeliveryInfo deliveryInfo);
 
     //---商品
 
