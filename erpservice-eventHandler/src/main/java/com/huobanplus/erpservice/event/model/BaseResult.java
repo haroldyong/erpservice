@@ -29,6 +29,19 @@ public class BaseResult implements Serializable {
      * 重发机制(是否重发)
      */
     private boolean repeat;
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    /**
+     * 请求方法名称
+     */
+    private String methodName;
     /**
      * 重发次数
      */

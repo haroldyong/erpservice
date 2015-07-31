@@ -5,17 +5,14 @@ import com.huobanplus.erpprovider.netshop.support.BaseMonitor;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
-import com.huobanplus.erpservice.event.model.ERPInfo;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
-import com.huobanplus.erpservice.event.model.OrderInfo;
+import com.huobanplus.erpservice.event.model.*;
 import org.springframework.dao.DataAccessException;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 
 /**
- * 具体处理事件
+ * <b>类描述：<b/>具体处理事件
  */
 public class NetShopHandlerBuilder implements ERPHandlerBuilder {
     /**
@@ -23,7 +20,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
      * @param info 相关信息
      * @return 无法处理返回空，可以处理返回该erp事件处理器
      */
-       @Resource
+    @Resource
     private NetShopService netShopService;
 
     @Override
@@ -44,7 +41,11 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                     return true;
                 } else if (erpEvent instanceof OrderStatusInfoEvent) {
                     return true;
-                } else {
+                } else if(erpEvent instanceof  ProductInfoEvent)
+                {
+                    return true;
+                }
+                else {
                     return false;
                 }
             }
@@ -52,16 +53,22 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
             @Override
             public Monitor<EventResult> handleEvent(ERPBaseEvent erpEvent) throws IOException, IllegalAccessException, DataAccessException {
                 if (erpEvent instanceof CreateOrderEvent) {
-                    //
-                   return new BaseMonitor(netShopService.obtainOrderDetail());
+                    OrderInfo orderInfo = ((CreateOrderEvent) erpEvent).getOrderInfo();
+                    AuthBean authBean = ((CreateOrderEvent) erpEvent).getAuthBean();
+                    netShopService.obtainOrderDetail(authBean, orderInfo.getOrderCode());
                 }
                 else if (erpEvent instanceof InventoryEvent) {
+
 
                 }
                 else if (erpEvent instanceof DeliveryInfoEvent) {
 
                 }
                 else if (erpEvent instanceof OrderStatusInfoEvent) {
+
+                }
+                else if(erpEvent instanceof  ProductInfoEvent)
+                {
 
                 }
                 else

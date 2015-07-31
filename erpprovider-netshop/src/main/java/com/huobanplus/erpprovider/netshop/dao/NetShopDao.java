@@ -3,10 +3,9 @@ package com.huobanplus.erpprovider.netshop.dao;
 import org.springframework.stereotype.Repository;
 
 /**
- * Created by Administrator on 2015/7/24.
+ * <b>类描述：<b/>网店管家数据访问接口
  */
-@Repository
-public class NetShopDao {
+public interface NetShopDao {
 
 
 }

@@ -7,7 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 /**
- * Created by Administrator on 2015/7/24.
+ * 类描述：网店管家配置服务
  */
 @Configuration
 public class NetShopConfig {

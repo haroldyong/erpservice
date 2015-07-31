@@ -32,7 +32,6 @@ public class HttpUtil {
 
     /**
      * httpget请求
-     *
      * @param url
      * @throws IOException
      */
