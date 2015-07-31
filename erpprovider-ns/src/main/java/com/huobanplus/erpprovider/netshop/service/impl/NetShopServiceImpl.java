@@ -3,10 +3,7 @@ package com.huobanplus.erpprovider.netshop.service.impl;
 import com.huobanplus.erpprovider.netshop.bean.AuthBean;
 import com.huobanplus.erpprovider.netshop.dao.NetShopDao;
 import com.huobanplus.erpprovider.netshop.service.NetShopService;
-import com.huobanplus.erpservice.event.model.BaseResult;
-import com.huobanplus.erpservice.event.model.Monitor;
-import com.huobanplus.erpservice.event.model.OrderInfo;
-import com.huobanplus.erpservice.event.model.ProductInfo;
+import com.huobanplus.erpservice.event.model.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,9 +13,6 @@ import javax.annotation.Resource;
  */
 @Service
 public class NetShopServiceImpl implements NetShopService {
-
-    @Resource
-    private NetShopDao netShopDao;
 
     @Override
     public Monitor<OrderInfo> obtainOrderList(com.huobanplus.erpservice.event.model.AuthBean authBean, OrderInfo orderInfo) {
@@ -31,7 +25,7 @@ public class NetShopServiceImpl implements NetShopService {
     }
 
     @Override
-    public Monitor<BaseResult> deliveryNotice(com.huobanplus.erpservice.event.model.AuthBean authBean, OrderInfo orderInfo) {
+    public Monitor<BaseResult> deliveryNotice(com.huobanplus.erpservice.event.model.AuthBean authBean, DeliveryInfo deliveryInfo) {
         return null;
     }
 
@@ -41,7 +35,7 @@ public class NetShopServiceImpl implements NetShopService {
     }
 
     @Override
-    public Monitor<BaseResult> syncInventory(com.huobanplus.erpservice.event.model.AuthBean authBean, ProductInfo productInfo) {
+    public Monitor<BaseResult> syncInventory(com.huobanplus.erpservice.event.model.AuthBean authBean, InventoryInfo inventoryInfo) {
         return null;
     }
 }

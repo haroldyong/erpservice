@@ -36,10 +36,10 @@ public interface NetShopService {
     /**
      * 发货通知
      * @param authBean 授权安全验证
-     * @param orderInfo 订单信息
+     * @param deliveryInfo 发货物流信息
      * @return 返回发货结果（1、发货成功、2、发货失败）
      */
-    public Monitor<BaseResult> deliveryNotice(AuthBean authBean, OrderInfo orderInfo);
+    public Monitor<BaseResult> deliveryNotice(AuthBean authBean, DeliveryInfo deliveryInfo);
 
     //---商品
 
