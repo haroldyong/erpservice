@@ -17,8 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface HotApiController {
 
     /**
-     * 得到商品库存信息
-     *
+     * 写入订单信息
      * @param info
      * @param request
      */
@@ -27,19 +26,17 @@ public interface HotApiController {
 
     /**
      * 得到商品库存信息
-     *
      * @param erpInfo
      * @param request
      */
-    @RequestMapping("/getProInventory")
+    @RequestMapping("/getProInventory/{erpInfo}")
     void getProInventory(@PathVariable("erpInfo") String erpInfo, HttpServletRequest request);
 
     /**
-     * 得到订单信息
-     *
+     * 获取订单信息
      * @param erpInfo
      * @param request
      */
-    @RequestMapping("/getOrderInfo")
+    @RequestMapping("/getOrderInfo/{erpInfo}")
     void getOrderInfo(@PathVariable("erpInfo") String erpInfo, HttpServletRequest request);
 }

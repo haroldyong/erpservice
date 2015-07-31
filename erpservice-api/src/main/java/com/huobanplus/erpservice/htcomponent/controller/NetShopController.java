@@ -73,4 +73,6 @@ public class NetShopController {
         return new SimpleMonitor<EventResult>(result);
     }
     }
+
+
 }
