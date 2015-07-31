@@ -1,14 +1,10 @@
 package com.huobanplus.erpservice.htcomponent.controller;
 
-import com.huobanplus.erpservice.event.handler.ERPHandler;
-import com.huobanplus.erpservice.event.handler.ERPRegister;
-import com.huobanplus.erpservice.event.model.ERPInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * Created by allan on 2015/7/31.
@@ -18,6 +14,7 @@ public interface HotApiController {
 
     /**
      * 写入订单信息
+     *
      * @param info
      * @param request
      */
@@ -26,14 +23,16 @@ public interface HotApiController {
 
     /**
      * 得到商品库存信息
+     *
      * @param erpInfo
      * @param request
      */
-    @RequestMapping("/getProInventory/{erpInfo}")
-    void getProInventory(@PathVariable("erpInfo") String erpInfo, HttpServletRequest request);
+    @RequestMapping("/getProInventory")
+    void getProInventory(@PathVariable("erpInfo") String erpInfo, HttpServletRequest request) throws IOException, IllegalAccessException;
 
     /**
      * 获取订单信息
+     *
      * @param erpInfo
      * @param request
      */

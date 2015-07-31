@@ -37,8 +37,6 @@ public class ObtainDataController {
 
     @Resource
     private ERPRegister erpRegister;
-    //    @Resource
-//    private MallOrderRepository orderRepository;
     @Autowired
     private MallOrderService orderService;
     @Resource
@@ -263,17 +261,16 @@ public class ObtainDataController {
                     //处理edb模块
                     ERPHandler edbHandler = erpRegister.getERPHandler(info);
                     if (null != edbHandler) {
-                        CreateOrderEvent orderEvent = new CreateOrderEvent();
-                        if (edbHandler.eventSupported(orderEvent)) {
-                            try {
-                                edbHandler.handleEvent(orderEvent);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            } catch (DocumentException e) {
-                                e.printStackTrace();
-                            }
+                        if (edbHandler.eventSupported(CreateOrderEvent.class)) {
+//                            try {
+//                                edbHandler.handleEvent(CreateOrderEvent.class,new Orde);
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            } catch (IllegalAccessException e) {
+//                                e.printStackTrace();
+//                            } catch (DocumentException e) {
+//                                e.printStackTrace();
+//                            }
                         }
                     }
 
@@ -500,6 +497,6 @@ public class ObtainDataController {
     }
 
     public void Test(ERPInfo erpInfo) {
-        
+
     }
 }

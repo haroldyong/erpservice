@@ -22,5 +22,4 @@ public class CreateOrderEvent extends ERPBaseEvent {
         this.orderInfo = orderInfo;
     }
 
-
 }
