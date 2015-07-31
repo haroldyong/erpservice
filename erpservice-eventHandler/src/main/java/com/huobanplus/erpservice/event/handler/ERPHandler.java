@@ -34,7 +34,7 @@ public interface ERPHandler {
      * @throws IllegalAccessException 接口访问不合法异常
      * @throws DataAccessException    操作数据库时异常
      */
-    Monitor<EventResult> handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, DataAccessException, DocumentException;
+    Monitor<EventResult> handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, DataAccessException, IllegalArgumentException;
 
     /**
      * 处理事件
