@@ -1,7 +1,8 @@
 package com.huobanplus.erpprovider.netshop.util;
 
 
-import com.huobanplus.erpprovider.netshop.bean.AuthBean;
+
+import com.huobanplus.erpservice.event.model.AuthBean;
 
 import java.util.HashMap;
 import java.util.Iterator;

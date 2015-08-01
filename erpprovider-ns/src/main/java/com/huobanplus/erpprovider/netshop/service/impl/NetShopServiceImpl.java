@@ -1,6 +1,5 @@
 package com.huobanplus.erpprovider.netshop.service.impl;
 
-import com.huobanplus.erpprovider.netshop.bean.AuthBean;
 import com.huobanplus.erpprovider.netshop.dao.NetShopDao;
 import com.huobanplus.erpprovider.netshop.service.NetShopService;
 import com.huobanplus.erpservice.event.model.*;
@@ -15,27 +14,43 @@ import javax.annotation.Resource;
 public class NetShopServiceImpl implements NetShopService {
 
     @Override
-    public Monitor<OrderInfo> obtainOrderList(com.huobanplus.erpservice.event.model.AuthBean authBean, OrderInfo orderInfo) {
+    public Monitor<OrderInfo> commitOrderInfo(AuthBean authBean, OrderInfo orderInfo) {
+
         return null;
     }
 
     @Override
-    public Monitor<OrderInfo> obtainOrderDetail(com.huobanplus.erpservice.event.model.AuthBean authBean, String orderId) {
+    public Monitor<OrderInfo> obtainOrderList(AuthBean authBean, OrderInfo orderInfo) {
         return null;
     }
 
     @Override
-    public Monitor<BaseResult> deliveryNotice(com.huobanplus.erpservice.event.model.AuthBean authBean, DeliveryInfo deliveryInfo) {
+    public Monitor<OrderInfo> obtainOrderDetail(AuthBean authBean, String orderId) {
         return null;
     }
 
     @Override
-    public Monitor<ProductInfo> obtainGoods(com.huobanplus.erpservice.event.model.AuthBean authBean, ProductInfo productInfo) {
+    public Monitor<EventResult> deliveryNotice(AuthBean authBean, DeliveryInfo deliveryInfo) {
         return null;
     }
 
     @Override
-    public Monitor<BaseResult> syncInventory(com.huobanplus.erpservice.event.model.AuthBean authBean, InventoryInfo inventoryInfo) {
+    public Monitor<ProductInfo> obtainGoods(AuthBean authBean, ProductInfo productInfo) {
+        return null;
+    }
+
+    @Override
+    public Monitor<EventResult> syncInventory(AuthBean authBean, InventoryInfo inventoryInfo) {
+        return null;
+    }
+
+    @Override
+    public Monitor<EventResult> modifyOrderInfo(AuthBean authBean, OrderInfo orderInfo) {
+        return null;
+    }
+
+    @Override
+    public Monitor<EventResult> notifyFailedEvent(FailedBean failedBean) {
         return null;
     }
 }

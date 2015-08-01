@@ -3,7 +3,7 @@ package com.huobanplus.erpprovider.edb.bean;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
- * Created by allan on 2015/7/27.
+ * edb创建订单实体
  */
 public class EDBCreateOrderInfo {
     /**

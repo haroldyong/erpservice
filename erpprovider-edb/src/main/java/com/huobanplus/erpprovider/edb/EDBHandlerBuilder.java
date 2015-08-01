@@ -9,10 +9,7 @@ import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
-import com.huobanplus.erpservice.event.model.ERPInfo;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
-import com.huobanplus.erpservice.event.model.OrderInfo;
+import com.huobanplus.erpservice.event.model.*;
 import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -53,12 +50,17 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     return true;
                 } else if (baseEventClass == OrderStatusInfoEvent.class) {
                     return true;
-                } else {
+                }
+                else if(baseEventClass == ObtainOrderEvent.class) {
+
+                    return true;
+                }
+                else {
                     return false;
                 }
             }
 
-            public Monitor<EventResult> handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, DocumentException {
+            public Monitor<EventResult> handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException {
                 if (baseEventClass == CreateOrderEvent.class) {
                     OrderInfo orderInfo = (OrderInfo) data;
                     return orderHandler.createOrder(orderInfo);
@@ -68,7 +70,31 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     return orderHandler.getOrderInfo();
                 } else if (baseEventClass == OrderStatusInfoEvent.class) {
 
-                } else {
+                } else if(baseEventClass == ObtainOrderEvent.class) {
+
+                }
+                else
+                {
+
+                }
+                return null;
+            }
+
+            @Override
+            public Monitor<EventResult> handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean) {
+                if (baseEventClass == CreateOrderEvent.class) {
+
+                } else if (baseEventClass == InventoryEvent.class) {
+
+                } else if (baseEventClass == DeliveryInfoEvent.class) {
+
+                } else if (baseEventClass == OrderStatusInfoEvent.class) {
+
+                }
+                else if(baseEventClass == ObtainOrderEvent.class) {
+
+                }
+                else {
 
                 }
                 return null;

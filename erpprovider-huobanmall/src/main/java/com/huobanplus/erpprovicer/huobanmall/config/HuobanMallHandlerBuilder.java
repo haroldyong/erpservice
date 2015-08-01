@@ -5,6 +5,7 @@ import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
+import com.huobanplus.erpservice.event.model.FailedBean;
 import com.huobanplus.erpservice.event.model.Monitor;
 import org.dom4j.DocumentException;
 import org.springframework.dao.DataAccessException;
@@ -57,11 +58,40 @@ public class HuobanMallHandlerBuilder implements ERPHandlerBuilder {
             }
 
             @Override
-            public Monitor<EventResult> handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, DataAccessException, DocumentException {
+            public Monitor<EventResult> handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, DataAccessException {
                 HttpServletRequest request = (HttpServletRequest) data;
                 if (baseEventClass == CreateOrderEvent.class) {
                     request.getAttribute("uCode");
                     request.getAttribute("sign");
+
+                }
+                else if(baseEventClass == DeliveryInfoEvent.class)
+                {
+
+                }
+                else if(baseEventClass == InventoryEvent.class)
+                {
+
+                }
+                else if(baseEventClass == OrderStatusInfoEvent.class)
+                {
+
+                }
+                else if(baseEventClass == ProductInfoEvent.class)
+                {
+
+                }
+                else
+                {
+                    return null;
+                }
+                return null;
+            }
+
+            @Override
+            public Monitor<EventResult> handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean) {
+
+                if (baseEventClass == CreateOrderEvent.class) {
 
                 }
                 else if(baseEventClass == DeliveryInfoEvent.class)

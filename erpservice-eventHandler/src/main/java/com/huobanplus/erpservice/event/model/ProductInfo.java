@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 商品信息实体
  */
-public class ProductInfo extends BaseBean {
+public class ProductInfo extends EventResult {
 
     //商品编号
     private String productNo;

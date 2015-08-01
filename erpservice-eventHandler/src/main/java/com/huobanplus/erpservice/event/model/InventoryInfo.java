@@ -9,7 +9,7 @@ import java.util.Date;
  * @since  2015年7月27日 上午10:24:35
  * @version V1.0
  */
-public class InventoryInfo extends BaseResult {
+public class InventoryInfo extends EventResult {
 
     /**
      * 出库单号

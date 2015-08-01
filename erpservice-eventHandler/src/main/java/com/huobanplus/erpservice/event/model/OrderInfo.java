@@ -9,7 +9,7 @@ import java.util.Date;
  * @since  2015年7月27日 上午10:24:35
  * @version V1.0
  */
-public class OrderInfo extends BaseResult {
+public class OrderInfo extends EventResult {
 
     /**
      * 订单编号
