@@ -27,7 +27,6 @@ import java.util.Date;
  * @since 2015年7月25日 下午4:30:43
  */
 @Controller
-@RequestMapping("/app")
 public class OrderInfoController {
 
     @Resource
@@ -98,74 +97,69 @@ public class OrderInfoController {
      * @param timeStamp           时间戳
      * @param mType               方法名，不同接口分别传入不同的方法值。
      * @param signType            加密方式，默认为MD5
-     * @param erpName             erp名称
      * @return 处理结果
      */
-    @ResponseBody
-    @RequestMapping(value = "/commitOrder", method = RequestMethod.POST)
-    public Monitor<BaseResult> commitOrder(String orderId, @RequestParam(value = "syncStatus",
-            required = false, defaultValue = "0") int syncStatus,
-                                           @RequestParam(value = "memberId", required = false) String memberId,
-                                           @RequestParam(value = "orderStatus", required = false) String orderStatus,
-                                           @RequestParam(value = "payStatus", required = false) String payStatus,
-                                           @RequestParam(value = "shipStatus", required = false) String shipStatus,
-                                           @RequestParam(value = "memberStatus", required = false) String memberStatus,
-                                           @RequestParam(value = "isDelivery", required = false) int isDelivery,
-                                           @RequestParam(value = "deliverMethodId", required = false) String deliverMethodId,
-                                           @RequestParam(value = "deliverMethod", required = false) String deliverMethod,
-                                           @RequestParam(value = "deliverArea", required = false) String deliverArea,
-                                           @RequestParam(value = "weight", required = false) float weight,
-                                           @RequestParam(value = "orderName", required = false) String orderName,
-                                           @RequestParam(value = "itemNum", required = false) int itemNum,
-                                           @RequestParam(value = "actTime", required = false) long actTime,
-                                           @RequestParam(value = "createTime", required = false) long createTime,
-                                           @RequestParam(value = "createIP", required = false) String createIP,
-                                           @RequestParam(value = "shipName", required = false) String shipName,
-                                           @RequestParam(value = "shipArea", required = false) String shipArea,
-                                           @RequestParam(value = "shipAddr", required = false) String shipAddr,
-                                           @RequestParam(value = "shipZip", required = false) String shipZip,
-                                           @RequestParam(value = "shipTel", required = false) String shipTel,
-                                           @RequestParam(value = "shipEmail", required = false) String shipEmail,
-                                           @RequestParam(value = "shipTime", required = false) long shipTime,
-                                           @RequestParam(value = "shipMobile", required = false) String shipMobile,
-                                           @RequestParam(value = "costItem", required = false) double costItem,
-                                           @RequestParam(value = "isTax", required = false) int isTax,
-                                           @RequestParam(value = "costTax", required = false) float costTax,
-                                           @RequestParam(value = "taxCompany", required = false) String taxCompany,
-                                           @RequestParam(value = "costFreight", required = false) float costFreight,
-                                           @RequestParam(value = "isProtect", required = false) String isProtect,
-                                           @RequestParam(value = "costProtect", required = false) float costProtect,
-                                           @RequestParam(value = "costPayment", required = false) double costPayment,
-                                           @RequestParam(value = "scoreU", required = false) double scoreU,
-                                           @RequestParam(value = "discount", required = false) float discount,
-                                           @RequestParam(value = "usePmt", required = false) String usePmt,
-                                           @RequestParam(value = "totalAmount", required = false) float totalAmount,
-                                           @RequestParam(value = "finalAmount", required = false) float finalAmount,
-                                           @RequestParam(value = "pmtAmount", required = false) float pmtAmount,
-                                           @RequestParam(value = "payed", required = false) float payed,
-                                           @RequestParam(value = "memo", required = false) String memo,
-                                           @RequestParam(value = "lastChangeTime", required = false) long lastChangeTime,
-                                           @RequestParam(value = "customerId", required = false) String customerId,
-                                           @RequestParam(value = "cashOnDly", required = false) int cashOnDly,
-                                           @RequestParam(value = "onlinePayType", required = false) String onlinePayType,
-                                           @RequestParam(value = "scoreUAmount", required = false) double scoreUAmount,
-                                           @RequestParam(value = "payAgentId", required = false) String payAgentId,
-                                           @RequestParam(value = "payAgentScore", required = false) double payAgentScore,
-                                           @RequestParam(value = "payAgentScoreAmount", required = false) double payAgentScoreAmount,
-                                           @RequestParam(value = "payAgentPayed", required = false) double payAgentPayed,
-                                           @RequestParam(value = "hasPayed", required = false) double hasPayed,
-                                           @RequestParam(value = "hasPayedScore", required = false) double hasPayedScore,
-                                           @RequestParam(value = "onlineAmount", required = false) double onlineAmount,
-                                           @RequestParam(value = "hongbaoAmount", required = false) double hongbaoAmount,
-                                           @RequestParam(value = "payTime", required = false) long payTime,
-                                           @RequestParam(value = "virtualRecMobile", required = false) String virtualRecMobile,
+    public Monitor commitOrder(String orderId, int syncStatus,
+                                           String memberId,
+                                           String orderStatus,
+                                           String payStatus,
+                                           String shipStatus,
+                                           String memberStatus,
+                                           int isDelivery,
+                                           String deliverMethodId,
+                                           String deliverMethod,
+                                           String deliverArea,
+                                           float weight,
+                                           String orderName,
+                                           int itemNum,
+                                           long actTime,
+                                           long createTime,
+                                           String createIP,
+                                           String shipName,
+                                           String shipArea,
+                                           String shipAddr,
+                                           String shipZip,
+                                           String shipTel,
+                                           String shipEmail,
+                                           long shipTime,
+                                           String shipMobile,
+                                           double costItem,
+                                           int isTax,
+                                           float costTax,
+                                           String taxCompany,
+                                           float costFreight,
+                                           String isProtect,
+                                           float costProtect,
+                                           double costPayment,
+                                           double scoreU,
+                                           float discount,
+                                           String usePmt,
+                                           float totalAmount,
+                                           float finalAmount,
+                                           float pmtAmount,
+                                           float payed,
+                                           String memo,
+                                           long lastChangeTime,
+                                           String customerId,
+                                           int cashOnDly,
+                                           String onlinePayType,
+                                           double scoreUAmount,
+                                           String payAgentId,
+                                           double payAgentScore,
+                                           double payAgentScoreAmount,
+                                           double payAgentPayed,
+                                           double hasPayed,
+                                           double hasPayedScore,
+                                           double onlineAmount,
+                                           double hongbaoAmount,
+                                           long payTime,
+                                           String virtualRecMobile,
                                            String sign,
                                            String uCode,
                                            String secret,
                                            String timeStamp,
                                            String mType,
-                                           @RequestParam(value = "signType", required = false, defaultValue = "MD5") String signType,
-                                           String erpName) {
+                                           String signType) {
         BaseResult result;
         AuthBean authBean = new AuthBean();
         authBean.setSign(sign);
@@ -257,19 +251,15 @@ public class OrderInfoController {
      * @param timeStamp 时间戳
      * @param mType     方法名，不同接口分别传入不同的方法值。
      * @param signType  加密方式，默认为MD5
-     * @param erpName   erp名称
      * @param orderIds  订单编号
      * @return 返回订单详细
      */
-    @ResponseBody
-    @RequestMapping(value = "/obtainOrder", method = RequestMethod.POST)
-    public Monitor<OrderInfo> obtainOrder(String sign,
+    public Monitor obtainOrder(String sign,
                                           String uCode,
                                           String secret,
                                           String timeStamp,
                                           String mType,
-                                          @RequestParam(value = "signType", required = false, defaultValue = "MD5") String signType,
-                                          String erpName,
+                                          String signType,
                                           String orderIds) {
 
         AuthBean authBean = new AuthBean();
@@ -309,18 +299,14 @@ public class OrderInfoController {
      * @param timeStamp 时间戳
      * @param mType     方法名，不同接口分别传入不同的方法值。
      * @param signType  加密方式，默认为MD5
-     * @param erpName   erp名称
      * @return 返回订单列表
      */
-    @ResponseBody
-    @RequestMapping(value = "/obtainOrders", method = RequestMethod.POST)
     public Monitor<OrderInfo> obtainOrder(String sign,
                                           String uCode,
                                           String secret,
                                           String timeStamp,
                                           String mType,
-                                          @RequestParam(value = "signType", required = false, defaultValue = "MD5") String signType,
-                                          String erpName) {
+                                          String signType) {
 
         AuthBean authBean = new AuthBean();
         authBean.setSign(sign);
@@ -409,74 +395,69 @@ public class OrderInfoController {
      * @param timeStamp           时间戳
      * @param mType               方法名，不同接口分别传入不同的方法值。
      * @param signType            加密方式，默认为MD5
-     * @param erpName             erp名称
      * @return 处理结果
      */
-    @ResponseBody
-    @RequestMapping(value = "/modifyOrder", method = RequestMethod.POST)
-    public Monitor<BaseResult> modifyOrder(String orderId, @RequestParam(value = "syncStatus",
-            required = false, defaultValue = "0") int syncStatus,
-                                           @RequestParam(value = "memberId", required = false) String memberId,
-                                           @RequestParam(value = "orderStatus", required = false) String orderStatus,
-                                           @RequestParam(value = "payStatus", required = false) String payStatus,
-                                           @RequestParam(value = "shipStatus", required = false) String shipStatus,
-                                           @RequestParam(value = "memberStatus", required = false) String memberStatus,
-                                           @RequestParam(value = "isDelivery", required = false) int isDelivery,
-                                           @RequestParam(value = "deliverMethodId", required = false) String deliverMethodId,
-                                           @RequestParam(value = "deliverMethod", required = false) String deliverMethod,
-                                           @RequestParam(value = "deliverArea", required = false) String deliverArea,
-                                           @RequestParam(value = "weight", required = false) float weight,
-                                           @RequestParam(value = "orderName", required = false) String orderName,
-                                           @RequestParam(value = "itemNum", required = false) int itemNum,
-                                           @RequestParam(value = "actTime", required = false) long actTime,
-                                           @RequestParam(value = "createTime", required = false) long createTime,
-                                           @RequestParam(value = "createIP", required = false) String createIP,
-                                           @RequestParam(value = "shipName", required = false) String shipName,
-                                           @RequestParam(value = "shipArea", required = false) String shipArea,
-                                           @RequestParam(value = "shipAddr", required = false) String shipAddr,
-                                           @RequestParam(value = "shipZip", required = false) String shipZip,
-                                           @RequestParam(value = "shipTel", required = false) String shipTel,
-                                           @RequestParam(value = "shipEmail", required = false) String shipEmail,
-                                           @RequestParam(value = "shipTime", required = false) String shipTime,
-                                           @RequestParam(value = "shipMobile", required = false) String shipMobile,
-                                           @RequestParam(value = "costItem", required = false) double costItem,
-                                           @RequestParam(value = "isTax", required = false) int isTax,
-                                           @RequestParam(value = "costTax", required = false) float costTax,
-                                           @RequestParam(value = "taxCompany", required = false) String taxCompany,
-                                           @RequestParam(value = "costFreight", required = false) float costFreight,
-                                           @RequestParam(value = "isProtect", required = false) String isProtect,
-                                           @RequestParam(value = "costProtect", required = false) float costProtect,
-                                           @RequestParam(value = "costPayment", required = false) double costPayment,
-                                           @RequestParam(value = "scoreU", required = false) double scoreU,
-                                           @RequestParam(value = "discount", required = false) float discount,
-                                           @RequestParam(value = "usePmt", required = false) String usePmt,
-                                           @RequestParam(value = "totalAmount", required = false) float totalAmount,
-                                           @RequestParam(value = "finalAmount", required = false) float finalAmount,
-                                           @RequestParam(value = "pmtAmount", required = false) float pmtAmount,
-                                           @RequestParam(value = "payed", required = false) float payed,
-                                           @RequestParam(value = "memo", required = false) String memo,
-                                           @RequestParam(value = "lastChangeTime", required = false) long lastChangeTime,
-                                           @RequestParam(value = "customerId", required = false) String customerId,
-                                           @RequestParam(value = "cashOnDly", required = false) int cashOnDly,
-                                           @RequestParam(value = "onlinePayType", required = false) String onlinePayType,
-                                           @RequestParam(value = "scoreUAmount", required = false) double scoreUAmount,
-                                           @RequestParam(value = "payAgentId", required = false) String payAgentId,
-                                           @RequestParam(value = "payAgentScore", required = false) double payAgentScore,
-                                           @RequestParam(value = "payAgentScoreAmount", required = false) double payAgentScoreAmount,
-                                           @RequestParam(value = "payAgentPayed", required = false) double payAgentPayed,
-                                           @RequestParam(value = "hasPayed", required = false) double hasPayed,
-                                           @RequestParam(value = "hasPayedScore", required = false) double hasPayedScore,
-                                           @RequestParam(value = "onlineAmount", required = false) double onlineAmount,
-                                           @RequestParam(value = "hongbaoAmount", required = false) double hongbaoAmount,
-                                           @RequestParam(value = "payTime", required = false) long payTime,
-                                           @RequestParam(value = "virtualRecMobile", required = false) String virtualRecMobile,
+    public Monitor modifyOrder(String orderId, int syncStatus,
+                                           String memberId,
+                                           String orderStatus,
+                                           String payStatus,
+                                           String shipStatus,
+                                           String memberStatus,
+                                           int isDelivery,
+                                           String deliverMethodId,
+                                           String deliverMethod,
+                                           String deliverArea,
+                                           float weight,
+                                           String orderName,
+                                           int itemNum,
+                                           long actTime,
+                                           long createTime,
+                                           String createIP,
+                                           String shipName,
+                                           String shipArea,
+                                           String shipAddr,
+                                           String shipZip,
+                                           String shipTel,
+                                           String shipEmail,
+                                           long shipTime,
+                                           String shipMobile,
+                                           double costItem,
+                                           int isTax,
+                                           float costTax,
+                                           String taxCompany,
+                                           float costFreight,
+                                           String isProtect,
+                                           float costProtect,
+                                           double costPayment,
+                                           double scoreU,
+                                           float discount,
+                                           String usePmt,
+                                           float totalAmount,
+                                           float finalAmount,
+                                           float pmtAmount,
+                                           float payed,
+                                           String memo,
+                                           long lastChangeTime,
+                                           String customerId,
+                                           int cashOnDly,
+                                           String onlinePayType,
+                                           double scoreUAmount,
+                                           String payAgentId,
+                                           double payAgentScore,
+                                           double payAgentScoreAmount,
+                                           double payAgentPayed,
+                                           double hasPayed,
+                                           double hasPayedScore,
+                                           double onlineAmount,
+                                           double hongbaoAmount,
+                                           long payTime,
+                                           String virtualRecMobile,
                                            String sign,
                                            String uCode,
                                            String secret,
                                            String timeStamp,
                                            String mType,
-                                           @RequestParam(value = "signType", required = false, defaultValue = "MD5") String signType,
-                                           String erpName) {
+                                           String signType) {
         BaseResult result;
         AuthBean authBean = new AuthBean();
         authBean.setSign(sign);

@@ -41,19 +41,15 @@ public class InventoryController {
      * @param timeStamp  时间戳
      * @param mType      方法名，不同接口分别传入不同的方法值。
      * @param signType   加密方式，默认为MD5
-     * @param erpName    erp名称
      * @param storageIds 库存编号
      * @return 同步信息结果
      */
-    @ResponseBody
-    @RequestMapping(value = "/syncInventory", method = RequestMethod.POST)
     public Monitor<BaseResult> syncInventory(String sign,
                                              String uCode,
                                              String secret,
                                              String timeStamp,
                                              String mType,
-                                             @RequestParam(value = "signType", required = false, defaultValue = "MD5") String signType,
-                                             String erpName,
+                                             String signType,
                                              String storageIds) {
 
         AuthBean authBean = new AuthBean();
@@ -93,7 +89,6 @@ public class InventoryController {
      * @param timeStamp  时间戳
      * @param mType      方法名，不同接口分别传入不同的方法值。
      * @param signType   加密方式，默认为MD5
-     * @param erpName    erp名称
      * @param inStorageNo 入库单编号
      * @param freight 运费
      * @param freightAvgway 运费分摊方式1:按产品数量2：按产品重量默认为1
@@ -144,63 +139,60 @@ public class InventoryController {
      * @param freightAvg 运费均摊
      * @return 入库结果（成功、失败）
      */
-    @ResponseBody
-    @RequestMapping(value = "/commitInStorage", method = RequestMethod.POST)
-    public Monitor<BaseResult> commitInStorage(String sign,
+    public Monitor commitInStorage(String sign,
                                                String uCode,
                                                String secret,
                                                String timeStamp,
                                                String mType,
-                                               @RequestParam(value = "signType", required = false, defaultValue = "MD5") String signType,
-                                               String erpName,
+                                               String signType,
                                                String inStorageNo,
-                                               @RequestParam(value = "freight", required = false) double freight,
-                                               @RequestParam(value = "freightAvgway", required = false) String freightAvgway,
-                                               @RequestParam(value = "barCode", required = false) String barCode,
-                                               @RequestParam(value = "instorageNum", required = false) int instorageNum,
-                                               @RequestParam(value = "type", required = false) int type,
-                                               @RequestParam(value = "dateType", required = false) String dateType,
-                                               @RequestParam(value = "beginTime", required = false) long beginTime,
-                                               @RequestParam(value = "endTime", required = false) long endTime,
-                                               @RequestParam(value = "storageName", required = false) String storageName,
-                                               @RequestParam(value = "instorageStatus", required = false) int instorageStatus,
-                                               @RequestParam(value = "importMark", required = false) String importMark,
-                                               @RequestParam(value = "typeNo", required = false) String typeNo,
-                                               @RequestParam(value = "provider", required = false) String provider,
-                                               @RequestParam(value = "storage", required = false) String storage,
-                                               @RequestParam(value = "creater", required = false) String creater,
-                                               @RequestParam(value = "createTime", required = false) long createTime,
-                                               @RequestParam(value = "inTime", required = false) long inTime,
-                                               @RequestParam(value = "qualityInspctor", required = false) String qualityInspctor,
-                                               @RequestParam(value = "inspctTime", required = false) long inspctTime,
-                                               @RequestParam(value = "inspctResult", required = false) String inspctResult,
-                                               @RequestParam(value = "examiner", required = false) String examiner,
-                                               @RequestParam(value = "examineTime", required = false) long examineTime,
-                                               @RequestParam(value = "inReason", required = false) String inReason,
-                                               @RequestParam(value = "cost", required = false) double cost,
-                                               @RequestParam(value = "SourceTid", required = false) String SourceTid,
-                                               @RequestParam(value = "purchaseFee", required = false) double purchaseFee,
-                                               @RequestParam(value = "contractMoney", required = false) double contractMoney,
-                                               @RequestParam(value = "relevantTid", required = false) String relevantTid,
-                                               @RequestParam(value = "rate", required = false) double rate,
-                                               @RequestParam(value = "currency", required = false) String currency,
-                                               @RequestParam(value = "outContractTid", required = false) String outContractTid,
-                                               @RequestParam(value = "logistics", required = false) String logistics,
-                                               @RequestParam(value = "expressTid", required = false) String expressTid,
-                                               @RequestParam(value = "freightPayer", required = false) String freightPayer,
-                                               @RequestParam(value = "remarks", required = false) String remarks,
-                                               @RequestParam(value = "freightMode", required = false) String freightMode,
-                                               @RequestParam(value = "storageNo", required = false) String storageNo,
-                                               @RequestParam(value = "listSource", required = false) String listSource,
-                                               @RequestParam(value = "otherCost", required = false) double otherCost,
-                                               @RequestParam(value = "outPactNo", required = false) String outPactNo,
-                                               @RequestParam(value = "productItemNo", required = false) String productItemNo,
-                                               @RequestParam(value = "locationNo", required = false) String locationNo,
-                                               @RequestParam(value = "batch", required = false) String batch,
-                                               @RequestParam(value = "expireTime", required = false) long expireTime,
-                                               @RequestParam(value = "supplieNo", required = false) String supplieNo,
-                                               @RequestParam(value = "YSInstorageNo", required = false) String YSInstorageNo,
-                                               @RequestParam(value = "freightAvg", required = false) double freightAvg
+                                               double freight,
+                                               String freightAvgway,
+                                               String barCode,
+                                               int instorageNum,
+                                               int type,
+                                               String dateType,
+                                               long beginTime,
+                                               long endTime,
+                                               String storageName,
+                                               int instorageStatus,
+                                               String importMark,
+                                               String typeNo,
+                                               String provider,
+                                               String storage,
+                                               String creater,
+                                               long createTime,
+                                               long inTime,
+                                               String qualityInspctor,
+                                               long inspctTime,
+                                               String inspctResult,
+                                               String examiner,
+                                               long examineTime,
+                                               String inReason,
+                                               double cost,
+                                               String SourceTid,
+                                               double purchaseFee,
+                                               double contractMoney,
+                                               String relevantTid,
+                                               double rate,
+                                               String currency,
+                                               String outContractTid,
+                                               String logistics,
+                                               String expressTid,
+                                               String freightPayer,
+                                               String remarks,
+                                               String freightMode,
+                                               String storageNo,
+                                               String listSource,
+                                               double otherCost,
+                                               String outPactNo,
+                                               String productItemNo,
+                                               String locationNo,
+                                               String batch,
+                                               long expireTime,
+                                               String supplieNo,
+                                               String YSInstorageNo,
+                                               double freightAvg
                                                )
     {
 
@@ -286,19 +278,15 @@ public class InventoryController {
      * @param timeStamp  时间戳
      * @param mType      方法名，不同接口分别传入不同的方法值。
      * @param signType   加密方式，默认为MD5
-     * @param erpName    erp名称
      * @param inStorageIds 入库编号
      * @return 返回入库信息
      */
-    @ResponseBody
-    @RequestMapping(value = "/obtainInStorage", method = RequestMethod.POST)
     public Monitor<InventoryInfo> obtainInStorage(String sign,
                                              String uCode,
                                              String secret,
                                              String timeStamp,
                                              String mType,
-                                             @RequestParam(value = "signType", required = false, defaultValue = "MD5") String signType,
-                                             String erpName,
+                                             String signType,
                                              String inStorageIds) {
 
         AuthBean authBean = new AuthBean();
@@ -336,7 +324,6 @@ public class InventoryController {
      * @param timeStamp 时间戳
      * @param mType 方法名，不同接口分别传入不同的方法值。
      * @param signType 加密方式，默认为MD5
-     * @param erpName erp名称
      * @param outStorageNo 出库单编号
      * @param freight 运费
      * @param freightAvgway 运费分摊方式1:按产品数量2：按产品重量默认为1
@@ -386,62 +373,59 @@ public class InventoryController {
      * @param outStoreTypeName  出库类型名称
      * @return 出库结果（成功、失败）
      */
-    @ResponseBody
-    @RequestMapping(value = "/commitOutStorage", method = RequestMethod.POST)
-    public Monitor<BaseResult> commitOutStorage(String sign,
+    public Monitor commitOutStorage(String sign,
                                                String uCode,
                                                String secret,
                                                String timeStamp,
                                                String mType,
-                                               @RequestParam(value = "signType", required = false, defaultValue = "MD5") String signType,
-                                               String erpName,
+                                               String signType,
                                                String outStorageNo,
-                                               @RequestParam(value = "freight", required = false) double freight,
-                                               @RequestParam(value = "freightAvgway", required = false) String freightAvgway,
-                                               @RequestParam(value = "barCode", required = false) String barCode,
-                                               @RequestParam(value = "outstorageNum", required = false) int outstorageNum,
-                                               @RequestParam(value = "dateType", required = false) String dateType,
-                                               @RequestParam(value = "beginTime", required = false) long beginTime,
-                                               @RequestParam(value = "endTime", required = false) long endTime,
-                                               @RequestParam(value = "storageName", required = false) String storageName,
-                                               @RequestParam(value = "importMark", required = false) String importMark,
-                                               @RequestParam(value = "provider", required = false) String provider,
-                                               @RequestParam(value = "storage", required = false) String storage,
-                                               @RequestParam(value = "creater", required = false) String creater,
-                                               @RequestParam(value = "createTime", required = false) long createTime,
-                                               @RequestParam(value = "qualityInspctor", required = false) String qualityInspctor,
-                                               @RequestParam(value = "inspctTime", required = false) long inspctTime,
-                                               @RequestParam(value = "inspctResult", required = false) String inspctResult,
-                                               @RequestParam(value = "examiner", required = false) String examiner,
-                                               @RequestParam(value = "examineTime", required = false) long examineTime,
-                                               @RequestParam(value = "cost", required = false) double cost,
-                                               @RequestParam(value = "SourceTid", required = false) String SourceTid,
-                                               @RequestParam(value = "purchaseFee", required = false) double purchaseFee,
-                                               @RequestParam(value = "contractMoney", required = false) double contractMoney,
-                                               @RequestParam(value = "relevantTid", required = false) String relevantTid,
-                                               @RequestParam(value = "rate", required = false) double rate,
-                                               @RequestParam(value = "currency", required = false) String currency,
-                                               @RequestParam(value = "outContractTid", required = false) String outContractTid,
-                                               @RequestParam(value = "logistics", required = false) String logistics,
-                                               @RequestParam(value = "expressTid", required = false) String expressTid,
-                                               @RequestParam(value = "freightPayer", required = false) String freightPayer,
-                                               @RequestParam(value = "freightMode", required = false) String freightMode,
-                                               @RequestParam(value = "storageNo", required = false) String storageNo,
-                                               @RequestParam(value = "listSource", required = false) String listSource,
-                                               @RequestParam(value = "otherCost", required = false) double otherCost,
-                                               @RequestParam(value = "outPactNo", required = false) String outPactNo,
-                                               @RequestParam(value = "productItemNo", required = false) String productItemNo,
-                                               @RequestParam(value = "locationNo", required = false) String locationNo,
-                                               @RequestParam(value = "batch", required = false) String batch,
-                                               @RequestParam(value = "expireTime", required = false) long expireTime,
-                                               @RequestParam(value = "supplieNo", required = false) String supplieNo,
-                                               @RequestParam(value = "freightAvg", required = false) double freightAvg,
-                                               @RequestParam(value = "outstorageType", required = false) String outstorageType,
-                                               @RequestParam(value = "outstorageTime", required = false) long outstorageTime,
-                                               @RequestParam(value = "outStorageRemark", required = false) String outStorageRemark,
-                                               @RequestParam(value = "outstoragePrice", required = false) double outstoragePrice,
-                                               @RequestParam(value = "outstorageStatus", required = false) String outstorageStatus,
-                                               @RequestParam(value = "outStoreTypeName", required = false) String outStoreTypeName
+                                               double freight,
+                                               String freightAvgway,
+                                               String barCode,
+                                               int outstorageNum,
+                                               String dateType,
+                                               long beginTime,
+                                               long endTime,
+                                               String storageName,
+                                               String importMark,
+                                               String provider,
+                                               String storage,
+                                               String creater,
+                                               long createTime,
+                                               String qualityInspctor,
+                                               long inspctTime,
+                                               String inspctResult,
+                                               String examiner,
+                                               long examineTime,
+                                               double cost,
+                                               String SourceTid,
+                                               double purchaseFee,
+                                               double contractMoney,
+                                               String relevantTid,
+                                               double rate,
+                                               String currency,
+                                               String outContractTid,
+                                               String logistics,
+                                               String expressTid,
+                                               String freightPayer,
+                                               String freightMode,
+                                               String storageNo,
+                                               String listSource,
+                                               double otherCost,
+                                               String outPactNo,
+                                               String productItemNo,
+                                               String locationNo,
+                                               String batch,
+                                               long expireTime,
+                                               String supplieNo,
+                                               double freightAvg,
+                                               String outstorageType,
+                                               long outstorageTime,
+                                               String outStorageRemark,
+                                               double outstoragePrice,
+                                               String outstorageStatus,
+                                               String outStoreTypeName
                                                 )
     {
 
@@ -526,19 +510,15 @@ public class InventoryController {
      * @param timeStamp  时间戳
      * @param mType      方法名，不同接口分别传入不同的方法值。
      * @param signType   加密方式，默认为MD5
-     * @param erpName    erp名称
      * @param outStorageIds 出库编号
      * @return 返回入库信息
      */
-    @ResponseBody
-    @RequestMapping(value = "/obtainOutStorage", method = RequestMethod.POST)
     public Monitor<InventoryInfo> obtainOutStorage(String sign,
                                                   String uCode,
                                                   String secret,
                                                   String timeStamp,
                                                   String mType,
-                                                  @RequestParam(value = "signType", required = false, defaultValue = "MD5") String signType,
-                                                  String erpName,
+                                                  String signType,
                                                   String outStorageIds) {
 
         AuthBean authBean = new AuthBean();
@@ -577,7 +557,6 @@ public class InventoryController {
      * @param timeStamp  时间戳
      * @param mType      方法名，不同接口分别传入不同的方法值。
      * @param signType   加密方式，默认为MD5
-     * @param erpName    erp名称
      * @param inStorageNo 入库单编号
      * @param freight 运费
      * @param freightAvgway 运费分摊方式1:按产品数量2：按产品重量默认为1
@@ -628,63 +607,60 @@ public class InventoryController {
      * @param freightAvg 运费均摊
      * @return 入库结果（成功、失败）
      */
-    @ResponseBody
-    @RequestMapping(value = "/modifyInStorage", method = RequestMethod.POST)
     public Monitor<BaseResult> modifyInStorage(String sign,
                                                String uCode,
                                                String secret,
                                                String timeStamp,
                                                String mType,
-                                               @RequestParam(value = "signType", required = false, defaultValue = "MD5") String signType,
-                                               String erpName,
+                                               String signType,
                                                String inStorageNo,
-                                               @RequestParam(value = "freight", required = false) double freight,
-                                               @RequestParam(value = "freightAvgway", required = false) String freightAvgway,
-                                               @RequestParam(value = "barCode", required = false) String barCode,
-                                               @RequestParam(value = "instorageNum", required = false) int instorageNum,
-                                               @RequestParam(value = "type", required = false) int type,
-                                               @RequestParam(value = "dateType", required = false) String dateType,
-                                               @RequestParam(value = "beginTime", required = false) long beginTime,
-                                               @RequestParam(value = "endTime", required = false) long endTime,
-                                               @RequestParam(value = "storageName", required = false) String storageName,
-                                               @RequestParam(value = "instorageStatus", required = false) int instorageStatus,
-                                               @RequestParam(value = "importMark", required = false) String importMark,
-                                               @RequestParam(value = "typeNo", required = false) String typeNo,
-                                               @RequestParam(value = "provider", required = false) String provider,
-                                               @RequestParam(value = "storage", required = false) String storage,
-                                               @RequestParam(value = "creater", required = false) String creater,
-                                               @RequestParam(value = "createTime", required = false) long createTime,
-                                               @RequestParam(value = "inTime", required = false) long inTime,
-                                               @RequestParam(value = "qualityInspctor", required = false) String qualityInspctor,
-                                               @RequestParam(value = "inspctTime", required = false) long inspctTime,
-                                               @RequestParam(value = "inspctResult", required = false) String inspctResult,
-                                               @RequestParam(value = "examiner", required = false) String examiner,
-                                               @RequestParam(value = "examineTime", required = false) long examineTime,
-                                               @RequestParam(value = "inReason", required = false) String inReason,
-                                               @RequestParam(value = "cost", required = false) double cost,
-                                               @RequestParam(value = "SourceTid", required = false) String SourceTid,
-                                               @RequestParam(value = "purchaseFee", required = false) double purchaseFee,
-                                               @RequestParam(value = "contractMoney", required = false) double contractMoney,
-                                               @RequestParam(value = "relevantTid", required = false) String relevantTid,
-                                               @RequestParam(value = "rate", required = false) double rate,
-                                               @RequestParam(value = "currency", required = false) String currency,
-                                               @RequestParam(value = "outContractTid", required = false) String outContractTid,
-                                               @RequestParam(value = "logistics", required = false) String logistics,
-                                               @RequestParam(value = "expressTid", required = false) String expressTid,
-                                               @RequestParam(value = "freightPayer", required = false) String freightPayer,
-                                               @RequestParam(value = "remarks", required = false) String remarks,
-                                               @RequestParam(value = "freightMode", required = false) String freightMode,
-                                               @RequestParam(value = "storageNo", required = false) String storageNo,
-                                               @RequestParam(value = "listSource", required = false) String listSource,
-                                               @RequestParam(value = "otherCost", required = false) double otherCost,
-                                               @RequestParam(value = "outPactNo", required = false) String outPactNo,
-                                               @RequestParam(value = "productItemNo", required = false) String productItemNo,
-                                               @RequestParam(value = "locationNo", required = false) String locationNo,
-                                               @RequestParam(value = "batch", required = false) String batch,
-                                               @RequestParam(value = "expireTime", required = false) long expireTime,
-                                               @RequestParam(value = "supplieNo", required = false) String supplieNo,
-                                               @RequestParam(value = "YSInstorageNo", required = false) String YSInstorageNo,
-                                               @RequestParam(value = "freightAvg", required = false) double freightAvg
+                                               double freight,
+                                               String freightAvgway,
+                                               String barCode,
+                                               int instorageNum,
+                                               int type,
+                                               String dateType,
+                                               long beginTime,
+                                               long endTime,
+                                               String storageName,
+                                               int instorageStatus,
+                                               String importMark,
+                                               String typeNo,
+                                               String provider,
+                                               String storage,
+                                               String creater,
+                                               long createTime,
+                                               long inTime,
+                                               String qualityInspctor,
+                                               long inspctTime,
+                                               String inspctResult,
+                                               String examiner,
+                                               long examineTime,
+                                               String inReason,
+                                               double cost,
+                                               String SourceTid,
+                                               double purchaseFee,
+                                               double contractMoney,
+                                               String relevantTid,
+                                               double rate,
+                                               String currency,
+                                               String outContractTid,
+                                               String logistics,
+                                               String expressTid,
+                                               String freightPayer,
+                                               String remarks,
+                                               String freightMode,
+                                               String storageNo,
+                                               String listSource,
+                                               double otherCost,
+                                               String outPactNo,
+                                               String productItemNo,
+                                               String locationNo,
+                                               String batch,
+                                               long expireTime,
+                                               String supplieNo,
+                                               String YSInstorageNo,
+                                               double freightAvg
     )
     {
 
@@ -760,14 +736,13 @@ public class InventoryController {
     }
 
     /**
-     * 提交（新增）出库信息
+     * 更新出库信息
      * @param sign 授权签名
      * @param uCode 接入码，用于验证请求的有效性。主要用于区分店铺
      * @param secret 密钥
      * @param timeStamp 时间戳
      * @param mType 方法名，不同接口分别传入不同的方法值。
      * @param signType 加密方式，默认为MD5
-     * @param erpName erp名称
      * @param outStorageNo 出库单编号
      * @param freight 运费
      * @param freightAvgway 运费分摊方式1:按产品数量2：按产品重量默认为1
@@ -817,62 +792,59 @@ public class InventoryController {
      * @param outStoreTypeName  出库类型名称
      * @return 出库结果（成功、失败）
      */
-    @ResponseBody
-    @RequestMapping(value = "/modifyOutStorage", method = RequestMethod.POST)
     public Monitor<BaseResult> modifyOutStorage(String sign,
                                                 String uCode,
                                                 String secret,
                                                 String timeStamp,
                                                 String mType,
-                                                @RequestParam(value = "signType", required = false, defaultValue = "MD5") String signType,
-                                                String erpName,
+                                                String signType,
                                                 String outStorageNo,
-                                                @RequestParam(value = "freight", required = false) double freight,
-                                                @RequestParam(value = "freightAvgway", required = false) String freightAvgway,
-                                                @RequestParam(value = "barCode", required = false) String barCode,
-                                                @RequestParam(value = "outstorageNum", required = false) int outstorageNum,
-                                                @RequestParam(value = "dateType", required = false) String dateType,
-                                                @RequestParam(value = "beginTime", required = false) long beginTime,
-                                                @RequestParam(value = "endTime", required = false) long endTime,
-                                                @RequestParam(value = "storageName", required = false) String storageName,
-                                                @RequestParam(value = "importMark", required = false) String importMark,
-                                                @RequestParam(value = "provider", required = false) String provider,
-                                                @RequestParam(value = "storage", required = false) String storage,
-                                                @RequestParam(value = "creater", required = false) String creater,
-                                                @RequestParam(value = "createTime", required = false) long createTime,
-                                                @RequestParam(value = "qualityInspctor", required = false) String qualityInspctor,
-                                                @RequestParam(value = "inspctTime", required = false) long inspctTime,
-                                                @RequestParam(value = "inspctResult", required = false) String inspctResult,
-                                                @RequestParam(value = "examiner", required = false) String examiner,
-                                                @RequestParam(value = "examineTime", required = false) long examineTime,
-                                                @RequestParam(value = "cost", required = false) double cost,
-                                                @RequestParam(value = "SourceTid", required = false) String SourceTid,
-                                                @RequestParam(value = "purchaseFee", required = false) double purchaseFee,
-                                                @RequestParam(value = "contractMoney", required = false) double contractMoney,
-                                                @RequestParam(value = "relevantTid", required = false) String relevantTid,
-                                                @RequestParam(value = "rate", required = false) double rate,
-                                                @RequestParam(value = "currency", required = false) String currency,
-                                                @RequestParam(value = "outContractTid", required = false) String outContractTid,
-                                                @RequestParam(value = "logistics", required = false) String logistics,
-                                                @RequestParam(value = "expressTid", required = false) String expressTid,
-                                                @RequestParam(value = "freightPayer", required = false) String freightPayer,
-                                                @RequestParam(value = "freightMode", required = false) String freightMode,
-                                                @RequestParam(value = "storageNo", required = false) String storageNo,
-                                                @RequestParam(value = "listSource", required = false) String listSource,
-                                                @RequestParam(value = "otherCost", required = false) double otherCost,
-                                                @RequestParam(value = "outPactNo", required = false) String outPactNo,
-                                                @RequestParam(value = "productItemNo", required = false) String productItemNo,
-                                                @RequestParam(value = "locationNo", required = false) String locationNo,
-                                                @RequestParam(value = "batch", required = false) String batch,
-                                                @RequestParam(value = "expireTime", required = false) long expireTime,
-                                                @RequestParam(value = "supplieNo", required = false) String supplieNo,
-                                                @RequestParam(value = "freightAvg", required = false) double freightAvg,
-                                                @RequestParam(value = "outstorageType", required = false) String outstorageType,
-                                                @RequestParam(value = "outstorageTime", required = false) long outstorageTime,
-                                                @RequestParam(value = "outStorageRemark", required = false) String outStorageRemark,
-                                                @RequestParam(value = "outstoragePrice", required = false) double outstoragePrice,
-                                                @RequestParam(value = "outstorageStatus", required = false) String outstorageStatus,
-                                                @RequestParam(value = "outStoreTypeName", required = false) String outStoreTypeName
+                                                double freight,
+                                                String freightAvgway,
+                                                String barCode,
+                                                int outstorageNum,
+                                                String dateType,
+                                                long beginTime,
+                                                long endTime,
+                                                String storageName,
+                                                String importMark,
+                                                String provider,
+                                                String storage,
+                                                String creater,
+                                                long createTime,
+                                                String qualityInspctor,
+                                                long inspctTime,
+                                                String inspctResult,
+                                                String examiner,
+                                                long examineTime,
+                                                double cost,
+                                                String SourceTid,
+                                                double purchaseFee,
+                                                double contractMoney,
+                                                String relevantTid,
+                                                double rate,
+                                                String currency,
+                                                String outContractTid,
+                                                String logistics,
+                                                String expressTid,
+                                                String freightPayer,
+                                                String freightMode,
+                                                String storageNo,
+                                                String listSource,
+                                                double otherCost,
+                                                String outPactNo,
+                                                String productItemNo,
+                                                String locationNo,
+                                                String batch,
+                                                long expireTime,
+                                                String supplieNo,
+                                                double freightAvg,
+                                                String outstorageType,
+                                                long outstorageTime,
+                                                String outStorageRemark,
+                                                double outstoragePrice,
+                                                String outstorageStatus,
+                                                String outStoreTypeName
     )
     {
 
