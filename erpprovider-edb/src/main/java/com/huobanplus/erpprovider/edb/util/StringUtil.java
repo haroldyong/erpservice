@@ -459,6 +459,9 @@ public class StringUtil {
      * @return
      */
     public static String DateFormat(Date date, String newPattern) {
+        if (date == null) {
+            return null;
+        }
         SimpleDateFormat sdf = new SimpleDateFormat(newPattern);
 
         return sdf.format(date);

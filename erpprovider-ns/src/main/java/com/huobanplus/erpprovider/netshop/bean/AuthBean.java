@@ -43,7 +43,6 @@ public class AuthBean extends BaseResult {
 
     /**
      * 请求方法名
-
      */
     private String mType;
 

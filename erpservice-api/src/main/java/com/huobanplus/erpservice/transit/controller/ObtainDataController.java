@@ -14,6 +14,7 @@ import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.event.handler.ERPRegister;
 import com.huobanplus.erpservice.event.model.ERPInfo;
+import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,8 +37,6 @@ public class ObtainDataController {
 
     @Resource
     private ERPRegister erpRegister;
-    //    @Resource
-//    private MallOrderRepository orderRepository;
     @Autowired
     private MallOrderService orderService;
     @Resource
@@ -261,18 +260,17 @@ public class ObtainDataController {
                     info.setName(erpName);
                     //处理edb模块
                     ERPHandler edbHandler = erpRegister.getERPHandler(info);
-                    if(null != edbHandler)
-                    {
-                        CreateOrderEvent orderEvent = new CreateOrderEvent();
-                        if(edbHandler.eventSupported(orderEvent))
-                        {
-                            try {
-                                edbHandler.handleEvent(orderEvent);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
+                    if (null != edbHandler) {
+                        if (edbHandler.eventSupported(CreateOrderEvent.class)) {
+//                            try {
+//                                edbHandler.handleEvent(CreateOrderEvent.class,new Orde);
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            } catch (IllegalAccessException e) {
+//                                e.printStackTrace();
+//                            } catch (DocumentException e) {
+//                                e.printStackTrace();
+//                            }
                         }
                     }
 
@@ -498,4 +496,7 @@ public class ObtainDataController {
         }
     }
 
+    public void Test(ERPInfo erpInfo) {
+
+    }
 }

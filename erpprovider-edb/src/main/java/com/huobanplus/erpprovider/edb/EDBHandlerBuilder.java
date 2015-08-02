@@ -9,14 +9,13 @@ import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
-import com.huobanplus.erpservice.event.model.ERPInfo;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
-import com.huobanplus.erpservice.event.model.OrderInfo;
+import com.huobanplus.erpservice.event.model.*;
 import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -41,32 +40,61 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
             return null;
         }
         return new ERPHandler() {
-            public boolean eventSupported(ERPBaseEvent erpEvent) {
+            public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
                 //todo 判断事件是否可以处理
-                if (erpEvent instanceof CreateOrderEvent) {
+                if (baseEventClass == CreateOrderEvent.class) {
                     return true;
-                } else if (erpEvent instanceof InventoryEvent) {
+                } else if (baseEventClass == InventoryEvent.class) {
                     return true;
-                } else if (erpEvent instanceof DeliveryInfoEvent) {
+                } else if (baseEventClass == DeliveryInfoEvent.class) {
                     return true;
-                } else if (erpEvent instanceof OrderStatusInfoEvent) {
+                } else if (baseEventClass == OrderStatusInfoEvent.class) {
                     return true;
-                } else {
+                }
+                else if(baseEventClass == ObtainOrderEvent.class) {
+
+                    return true;
+                }
+                else {
                     return false;
                 }
             }
 
-            public Monitor<EventResult> handleEvent(ERPBaseEvent erpEvent) throws IOException, IllegalAccessException, DocumentException {
-                if (erpEvent instanceof CreateOrderEvent) {
-                    OrderInfo orderInfo = ((CreateOrderEvent) erpEvent).getOrderInfo();
+            public Monitor<EventResult> handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException {
+                if (baseEventClass == CreateOrderEvent.class) {
+                    OrderInfo orderInfo = (OrderInfo) data;
                     return orderHandler.createOrder(orderInfo);
-                } else if (erpEvent instanceof InventoryEvent) {
+                } else if (baseEventClass == InventoryEvent.class) {
                     return productHandler.getProInventoryInfo();
-                } else if (erpEvent instanceof DeliveryInfoEvent) {
+                } else if (baseEventClass == DeliveryInfoEvent.class) {
                     return orderHandler.getOrderInfo();
-                } else if (erpEvent instanceof OrderStatusInfoEvent) {
+                } else if (baseEventClass == OrderStatusInfoEvent.class) {
 
-                } else {
+                } else if(baseEventClass == ObtainOrderEvent.class) {
+
+                }
+                else
+                {
+
+                }
+                return null;
+            }
+
+            @Override
+            public Monitor<EventResult> handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean) {
+                if (baseEventClass == CreateOrderEvent.class) {
+
+                } else if (baseEventClass == InventoryEvent.class) {
+
+                } else if (baseEventClass == DeliveryInfoEvent.class) {
+
+                } else if (baseEventClass == OrderStatusInfoEvent.class) {
+
+                }
+                else if(baseEventClass == ObtainOrderEvent.class) {
+
+                }
+                else {
 
                 }
                 return null;

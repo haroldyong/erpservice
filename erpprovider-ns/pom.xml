@@ -9,8 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>erpprovider-netshop</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>erpprovider-ns</artifactId>
 
     <dependencies>
         <dependency>
@@ -39,5 +38,4 @@
             <version>1.16</version>
         </dependency>
     </dependencies>
-
 </project>

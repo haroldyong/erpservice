@@ -1,12 +1,8 @@
 package com.huobanplus.erpprovider.netshop.service.impl;
 
-import com.huobanplus.erpprovider.netshop.bean.AuthBean;
 import com.huobanplus.erpprovider.netshop.dao.NetShopDao;
 import com.huobanplus.erpprovider.netshop.service.NetShopService;
-import com.huobanplus.erpservice.event.model.BaseResult;
-import com.huobanplus.erpservice.event.model.Monitor;
-import com.huobanplus.erpservice.event.model.OrderInfo;
-import com.huobanplus.erpservice.event.model.ProductInfo;
+import com.huobanplus.erpservice.event.model.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -17,8 +13,11 @@ import javax.annotation.Resource;
 @Service
 public class NetShopServiceImpl implements NetShopService {
 
-    @Resource
-    private NetShopDao netShopDao;
+    @Override
+    public Monitor<OrderInfo> commitOrderInfo(AuthBean authBean, OrderInfo orderInfo) {
+
+        return null;
+    }
 
     @Override
     public Monitor<OrderInfo> obtainOrderList(com.huobanplus.erpservice.event.model.AuthBean authBean, OrderInfo orderInfo) {
@@ -31,7 +30,11 @@ public class NetShopServiceImpl implements NetShopService {
     }
 
     @Override
+<<<<<<< HEAD:erpprovider-netshop/src/main/java/com/huobanplus/erpprovider/netshop/service/impl/NetShopServiceImpl.java
     public Monitor<BaseResult> deliveryNotice(com.huobanplus.erpservice.event.model.AuthBean authBean, OrderInfo orderInfo) {
+=======
+    public Monitor<EventResult> deliveryNotice(AuthBean authBean, DeliveryInfo deliveryInfo) {
+>>>>>>> f8fbb306306fbd26a6555d53648a7fb7b8d5a885:erpprovider-ns/src/main/java/com/huobanplus/erpprovider/netshop/service/impl/NetShopServiceImpl.java
         return null;
     }
 
@@ -41,7 +44,21 @@ public class NetShopServiceImpl implements NetShopService {
     }
 
     @Override
+<<<<<<< HEAD:erpprovider-netshop/src/main/java/com/huobanplus/erpprovider/netshop/service/impl/NetShopServiceImpl.java
     public Monitor<BaseResult> syncInventory(com.huobanplus.erpservice.event.model.AuthBean authBean, ProductInfo productInfo) {
+=======
+    public Monitor<EventResult> syncInventory(AuthBean authBean, InventoryInfo inventoryInfo) {
+        return null;
+    }
+
+    @Override
+    public Monitor<EventResult> modifyOrderInfo(AuthBean authBean, OrderInfo orderInfo) {
+        return null;
+    }
+
+    @Override
+    public Monitor<EventResult> notifyFailedEvent(FailedBean failedBean) {
+>>>>>>> f8fbb306306fbd26a6555d53648a7fb7b8d5a885:erpprovider-ns/src/main/java/com/huobanplus/erpprovider/netshop/service/impl/NetShopServiceImpl.java
         return null;
     }
 }

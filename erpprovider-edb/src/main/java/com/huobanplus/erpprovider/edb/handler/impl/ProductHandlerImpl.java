@@ -23,7 +23,7 @@ import java.util.*;
 @Component
 public class ProductHandlerImpl implements ProductHandler {
     @Override
-    public Monitor<EventResult> getProInventoryInfo() throws IOException, DocumentException {
+    public Monitor<EventResult> getProInventoryInfo() throws IOException {
         Map<String, String> requestData = new HashMap<>();
         String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
         requestData.put("dbhost", Constant.DB_HOST);

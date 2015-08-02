@@ -24,7 +24,7 @@ public interface OrderHandler {
      * @throws IOException
      * @throws DocumentException
      */
-    Monitor<EventResult> createOrder(OrderInfo orderInfo) throws IOException, DocumentException;
+    Monitor<EventResult> createOrder(OrderInfo orderInfo) throws IOException;
 
     /**
      * 获取订单信息
@@ -34,5 +34,5 @@ public interface OrderHandler {
      * @throws IOException
      * @throws DocumentException
      */
-    Monitor<EventResult> getOrderInfo() throws IOException, DocumentException;
+    Monitor<EventResult> getOrderInfo() throws IOException;
 }

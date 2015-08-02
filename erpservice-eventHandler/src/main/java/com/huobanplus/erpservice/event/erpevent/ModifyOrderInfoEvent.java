@@ -1,13 +1,11 @@
 package com.huobanplus.erpservice.event.erpevent;
 
-import com.huobanplus.erpservice.event.model.AuthBean;
 import com.huobanplus.erpservice.event.model.OrderInfo;
 
 /**
- * <b>类描述：<b/>创建订单事件
- * Created by allan on 2015/7/21.
+ * 修改订单信息事件
  */
-public class CreateOrderEvent extends ERPBaseEvent {
+public class ModifyOrderInfoEvent extends ERPBaseEvent {
 
     /**
      * 订单信息实体
@@ -23,3 +21,4 @@ public class CreateOrderEvent extends ERPBaseEvent {
     }
 
 }
+
