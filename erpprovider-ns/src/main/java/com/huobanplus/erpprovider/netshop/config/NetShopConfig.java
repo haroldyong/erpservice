@@ -24,11 +24,11 @@ public class NetShopConfig {
         return new NetShopHandlerBuilder();
     }
 
-    @Resource
-    private NetShopHandlerBuilder edbHandlerBuilder;
+    @Autowired
+    private NetShopHandlerBuilder netShopHandlerBuilder;
 
     @PostConstruct
     public void init() {
-        register.addBuilders(new NetShopHandlerBuilder());
+        register.addBuilders(netShopHandlerBuilder);
     }
 }

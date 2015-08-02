@@ -37,5 +37,10 @@
             <artifactId>jox</artifactId>
             <version>1.16</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>2.6.0</version>
+        </dependency>
     </dependencies>
 </project>

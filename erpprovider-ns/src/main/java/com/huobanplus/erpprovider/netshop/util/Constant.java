@@ -32,6 +32,7 @@ public class Constant {
     public static final String SIGN_TIME_STAMP = "timeStamp";
 
     /**
+     * <<<<<<< Updated upstream
      * 请求成功
      */
     public final static String REQUEST_SUCCESS = "30000";
@@ -59,4 +60,10 @@ public class Constant {
      */
     public final static String TIME_FORMAT_ONE = "yyyy-MM-dd HH:mm:dd";
 
-    }
+    /**
+     * Secret是密钥
+     * 会在esAPI里面填写，商家自己这边需要设置，不会进行参数传值
+     */
+    public static final String SECRET = "";
+
+}

@@ -169,6 +169,6 @@ public class OrderHandlerImpl implements OrderHandler {
         String last = responseData.substring(lastRowIndex + 7, responseData.length());
         String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
         String resultJson = XmlUtil.xml2Json(resultXml);
-        return new SimpleMonitor<>(new EventResult(1, XmlUtil.xml2Json(resultJson)));
+        return new SimpleMonitor<>(new EventResult(1, resultJson));
     }
 }

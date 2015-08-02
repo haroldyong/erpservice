@@ -1,6 +1,5 @@
 package com.huobanplus.erpprovider.netshop.handler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 
@@ -8,8 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * Created by allan on 2015/7/31.
+ * 库存相关处理
+ * Created by allan on 2015/8/2.
  */
-public interface DeliverHandler {
-    Monitor<EventResult> deliverInform(HttpServletRequest request) throws IOException;
+public interface InventoryHandler {
+    /**
+     * 库存同步
+     *
+     * @return
+     */
+    Monitor<EventResult> synsInventory(HttpServletRequest request) throws IOException;
 }
