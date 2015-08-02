@@ -21,27 +21,27 @@ public class NetShopServiceImpl implements NetShopService {
     private NetShopDao netShopDao;
 
     @Override
-    public Monitor<OrderInfo> obtainOrderList(AuthBean authBean, OrderInfo orderInfo) {
+    public Monitor<OrderInfo> obtainOrderList(com.huobanplus.erpservice.event.model.AuthBean authBean, OrderInfo orderInfo) {
         return null;
     }
 
     @Override
-    public Monitor<OrderInfo> obtainOrderDetail(AuthBean authBean, String orderId) {
+    public Monitor<OrderInfo> obtainOrderDetail(com.huobanplus.erpservice.event.model.AuthBean authBean, String orderId) {
         return null;
     }
 
     @Override
-    public Monitor<BaseResult> deliveryNotice(AuthBean authBean, OrderInfo orderInfo) {
+    public Monitor<BaseResult> deliveryNotice(com.huobanplus.erpservice.event.model.AuthBean authBean, OrderInfo orderInfo) {
         return null;
     }
 
     @Override
-    public Monitor<ProductInfo> obtainGoods(AuthBean authBean, ProductInfo productInfo) {
+    public Monitor<ProductInfo> obtainGoods(com.huobanplus.erpservice.event.model.AuthBean authBean, ProductInfo productInfo) {
         return null;
     }
 
     @Override
-    public Monitor<BaseResult> syncInventory(AuthBean authBean, ProductInfo productInfo) {
+    public Monitor<BaseResult> syncInventory(com.huobanplus.erpservice.event.model.AuthBean authBean, ProductInfo productInfo) {
         return null;
     }
 }
