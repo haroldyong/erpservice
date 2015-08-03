@@ -50,12 +50,10 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     return true;
                 } else if (baseEventClass == OrderStatusInfoEvent.class) {
                     return true;
-                }
-                else if(baseEventClass == ObtainOrderEvent.class) {
+                } else if (baseEventClass == ObtainOrderEvent.class) {
 
                     return true;
-                }
-                else {
+                } else {
                     return false;
                 }
             }
@@ -69,12 +67,10 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                 } else if (baseEventClass == DeliveryInfoEvent.class) {
                     return orderHandler.getOrderInfo();
                 } else if (baseEventClass == OrderStatusInfoEvent.class) {
-
-                } else if(baseEventClass == ObtainOrderEvent.class) {
-
-                }
-                else
-                {
+                    return orderHandler.obtainOrderStatus();
+                } else if (baseEventClass == ObtainOrderEvent.class) {
+                    return orderHandler.obtainOrderList();
+                } else {
 
                 }
                 return null;
@@ -90,11 +86,9 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
 
                 } else if (baseEventClass == OrderStatusInfoEvent.class) {
 
-                }
-                else if(baseEventClass == ObtainOrderEvent.class) {
+                } else if (baseEventClass == ObtainOrderEvent.class) {
 
-                }
-                else {
+                } else {
 
                 }
                 return null;

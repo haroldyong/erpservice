@@ -52,6 +52,6 @@ public class ObtainDataControllerTest {
         ERPInfo erpInfo = new ERPInfo();
         erpInfo.setName("edb");
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
-        erpHandler.handleEvent(new InventoryEvent());
+        erpHandler.handleEvent(InventoryEvent.class, null);
     }
 }

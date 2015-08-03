@@ -152,7 +152,7 @@ public class OrderHandlerImpl implements OrderHandler {
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("page_no", "1");
         requestData.put("page_size", "10");
-        requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
+        //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
         TreeMap<String, String> signMap = new TreeMap<>(requestData);
         signMap.put("appscret", Constant.APP_SECRET);
         signMap.put("token", Constant.TOKEN);
@@ -169,6 +169,107 @@ public class OrderHandlerImpl implements OrderHandler {
         String last = responseData.substring(lastRowIndex + 7, responseData.length());
         String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
         String resultJson = XmlUtil.xml2Json(resultXml);
+        return new SimpleMonitor<>(new EventResult(1, resultJson));
+    }
+
+    @Override
+    public Monitor<EventResult> obtainOrderStatus() throws IOException {
+        Map<String, String> requestData = new HashMap<>();
+        String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
+        requestData.put("dbhost", Constant.DB_HOST);
+        requestData.put("appkey", Constant.APP_KEY);
+        requestData.put("method", Constant.GET_ORDER_INFO);
+        requestData.put("format", Constant.FORMAT);
+        requestData.put("timestamp", timestamp);
+        requestData.put("v", Constant.V);
+        requestData.put("slencry", Constant.SLENCRY);
+        requestData.put("ip", Constant.IP);
+        requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
+        requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
+        requestData.put("page_no", "1");
+        requestData.put("page_size", "10");
+        //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
+        TreeMap<String, String> signMap = new TreeMap<>(requestData);
+        signMap.put("appscret", Constant.APP_SECRET);
+        signMap.put("token", Constant.TOKEN);
+        requestData.put("sign", SignBuilder.buildSign(signMap, Constant.APP_KEY, ""));
+
+        String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
+        if (responseData == null) {
+            return new SimpleMonitor<>(new EventResult(0, responseData));
+        }
+        int firstRowIndex = responseData.indexOf("<Rows>");
+        int lastRowIndex = responseData.lastIndexOf("</Rows>");
+        String first = responseData.substring(0, firstRowIndex);
+        String middle = responseData.substring(firstRowIndex, lastRowIndex + 7);
+        String last = responseData.substring(lastRowIndex + 7, responseData.length());
+        String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
+        String resultJson = XmlUtil.xml2Json(resultXml);
+        return new SimpleMonitor<>(new EventResult(1, resultJson));
+    }
+
+    @Override
+    public Monitor<EventResult> obtainOrderList() throws IOException {
+        Map<String, String> requestData = new HashMap<>();
+        String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
+        requestData.put("dbhost", Constant.DB_HOST);
+        requestData.put("appkey", Constant.APP_KEY);
+        requestData.put("method", Constant.GET_ORDER_INFO);
+        requestData.put("format", Constant.FORMAT);
+        requestData.put("timestamp", timestamp);
+        requestData.put("v", Constant.V);
+        requestData.put("slencry", Constant.SLENCRY);
+        requestData.put("ip", Constant.IP);
+        requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
+        requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
+        requestData.put("page_no", "1");
+        requestData.put("page_size", "10");
+        //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
+        TreeMap<String, String> signMap = new TreeMap<>(requestData);
+        signMap.put("appscret", Constant.APP_SECRET);
+        signMap.put("token", Constant.TOKEN);
+        requestData.put("sign", SignBuilder.buildSign(signMap, Constant.APP_KEY, ""));
+
+        String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
+        if (responseData == null) {
+            return new SimpleMonitor<>(new EventResult(0, responseData));
+        }
+        int firstRowIndex = responseData.indexOf("<Rows>");
+        int lastRowIndex = responseData.lastIndexOf("</Rows>");
+        String first = responseData.substring(0, firstRowIndex);
+        String middle = responseData.substring(firstRowIndex, lastRowIndex + 7);
+        String last = responseData.substring(lastRowIndex + 7, responseData.length());
+        String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
+        String resultJson = XmlUtil.xml2Json(resultXml);
+        return new SimpleMonitor<>(new EventResult(1, resultJson));
+    }
+
+    @Override
+    public Monitor<EventResult> orderStatusUpdate(String numId, String tidType, String importMark) throws IOException {
+        Map<String, String> requestData = new HashMap<>();
+        String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
+        requestData.put("dbhost", Constant.DB_HOST);
+        requestData.put("appkey", Constant.APP_KEY);
+        requestData.put("method", Constant.GET_ORDER_INFO);
+        requestData.put("format", Constant.FORMAT);
+        requestData.put("timestamp", timestamp);
+        requestData.put("v", Constant.V);
+        requestData.put("slencry", Constant.SLENCRY);
+        requestData.put("ip", Constant.IP);
+        requestData.put("num_id", numId);
+        requestData.put("tid_type", tidType);
+        requestData.put("import_mark", importMark);
+
+        TreeMap<String, String> signMap = new TreeMap<>(requestData);
+        signMap.put("appscret", Constant.APP_SECRET);
+        signMap.put("token", Constant.TOKEN);
+        requestData.put("sign", SignBuilder.buildSign(signMap, Constant.APP_KEY, ""));
+
+        String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
+        if (responseData == null) {
+            return new SimpleMonitor<>(new EventResult(0, responseData));
+        }
+        String resultJson = XmlUtil.xml2Json(responseData);
         return new SimpleMonitor<>(new EventResult(1, resultJson));
     }
 }
