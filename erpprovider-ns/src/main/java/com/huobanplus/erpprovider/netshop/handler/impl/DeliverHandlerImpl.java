@@ -7,6 +7,7 @@ import com.huobanplus.erpprovider.netshop.handler.DeliverHandler;
 import com.huobanplus.erpprovider.netshop.net.HttpUtil;
 import com.huobanplus.erpprovider.netshop.support.BaseMonitor;
 import com.huobanplus.erpprovider.netshop.util.Constant;
+import com.huobanplus.erpprovider.netshop.util.SignBuilder;
 import com.huobanplus.erpprovider.netshop.util.SignStrategy;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by allan on 2015/7/31.
@@ -25,15 +27,15 @@ import java.util.Map;
 public class DeliverHandlerImpl implements DeliverHandler {
     @Override
     public Monitor<EventResult> deliverInform(HttpServletRequest request) throws IOException {
-        AuthBean authBean = new AuthBean();
-        authBean.setuCode(request.getParameter(Constant.SIGN_U_CODE));
-        authBean.setmType(request.getParameter(Constant.SIGN_M_TYPE));
-        authBean.setTimeStamp(request.getParameter(Constant.SIGN_TIME_STAMP));
-        authBean.setSecret(request.getParameter(Constant.SIGN_SECRET));
-        authBean.setSignType(Constant.SIGN_TYPE);
-        //authBean = SignStrategy.getInstance().buildSign(authBean);
-        if (!authBean.getSign().toUpperCase().equals(request.getParameter("Sign"))) {
-            //throw new IllegalArgumentException("签名不正确");
+        Map<String, String> signMap = new TreeMap<>();
+        signMap.put("uCode", request.getParameter(Constant.SIGN_U_CODE));
+        signMap.put("mType", request.getParameter(Constant.SIGN_M_TYPE));
+        signMap.put("TimeStamp", request.getParameter(Constant.SIGN_TIME_STAMP));
+        signMap.put("OrderNO", request.getParameter("OrderNO"));
+        signMap.put("SndStyle", request.getParameter("SndStyle"));
+        signMap.put("BillID", request.getParameter("BillID"));
+        String sign = SignBuilder.buildSign(signMap, Constant.SECRET, Constant.SECRET);
+        if (!sign.toUpperCase().equals(request.getParameter("Sign"))) {
             return new BaseMonitor<>(new EventResult(0,
                     "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>签名不正确</Cause></Rsp>"));
         }

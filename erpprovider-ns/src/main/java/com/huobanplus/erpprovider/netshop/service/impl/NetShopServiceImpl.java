@@ -30,11 +30,7 @@ public class NetShopServiceImpl implements NetShopService {
     }
 
     @Override
-<<<<<<< HEAD:erpprovider-netshop/src/main/java/com/huobanplus/erpprovider/netshop/service/impl/NetShopServiceImpl.java
-    public Monitor<BaseResult> deliveryNotice(com.huobanplus.erpservice.event.model.AuthBean authBean, OrderInfo orderInfo) {
-=======
     public Monitor<EventResult> deliveryNotice(AuthBean authBean, DeliveryInfo deliveryInfo) {
->>>>>>> f8fbb306306fbd26a6555d53648a7fb7b8d5a885:erpprovider-ns/src/main/java/com/huobanplus/erpprovider/netshop/service/impl/NetShopServiceImpl.java
         return null;
     }
 
@@ -44,9 +40,6 @@ public class NetShopServiceImpl implements NetShopService {
     }
 
     @Override
-<<<<<<< HEAD:erpprovider-netshop/src/main/java/com/huobanplus/erpprovider/netshop/service/impl/NetShopServiceImpl.java
-    public Monitor<BaseResult> syncInventory(com.huobanplus.erpservice.event.model.AuthBean authBean, ProductInfo productInfo) {
-=======
     public Monitor<EventResult> syncInventory(AuthBean authBean, InventoryInfo inventoryInfo) {
         return null;
     }
@@ -58,7 +51,6 @@ public class NetShopServiceImpl implements NetShopService {
 
     @Override
     public Monitor<EventResult> notifyFailedEvent(FailedBean failedBean) {
->>>>>>> f8fbb306306fbd26a6555d53648a7fb7b8d5a885:erpprovider-ns/src/main/java/com/huobanplus/erpprovider/netshop/service/impl/NetShopServiceImpl.java
         return null;
     }
 }
