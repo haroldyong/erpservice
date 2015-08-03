@@ -30,8 +30,23 @@ public class Constant {
      * 得到商品库存信息
      */
     public static final String GET_PRO_INFO = "edbProductGet";
+    /**
+     * 得到订单信息
+     */
     public static final String GET_ORDER_INFO = "edbTradeGet";
+    /**
+     * 订单状态更新
+     */
     public static final String ORDER_STATUS_UPDATE = "edbTradeImportStatusUpdate";
+    /**
+     * 订单发货
+     */
+    public static final String ORDER_DELIVER = "edbTradeDeliveryBatch";
+    /**
+     * 订单业务状态更新
+     */
+    public static final String ORDER_UPDATE = "edbTradeUpdate";
+
 
     //返回参数
     /**

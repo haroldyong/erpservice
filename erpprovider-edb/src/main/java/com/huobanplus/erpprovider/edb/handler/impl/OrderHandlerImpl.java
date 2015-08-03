@@ -3,6 +3,8 @@ package com.huobanplus.erpprovider.edb.handler.impl;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.edb.bean.EDBOrder;
 import com.huobanplus.erpprovider.edb.bean.EDBCreateOrderInfo;
+import com.huobanplus.erpprovider.edb.bean.EDBOrderForUpdate;
+import com.huobanplus.erpprovider.edb.bean.EDBUpdateOrder;
 import com.huobanplus.erpprovider.edb.handler.OrderHandler;
 import com.huobanplus.erpprovider.edb.net.HttpUtil;
 import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
@@ -24,6 +26,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * 订单处理事件实现类
  * Created by allan on 2015/7/24.
  */
 @Component
@@ -112,22 +115,10 @@ public class OrderHandlerImpl implements OrderHandler {
         XmlMapper xmlMapper = new XmlMapper();
         String resultStr = xmlMapper.writeValueAsString(edbOrder);
 
-        Map<String, String> requestData = new HashMap<>();
-        String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
-        requestData.put("dbhost", Constant.DB_HOST);
-        requestData.put("appkey", Constant.APP_KEY);
-        requestData.put("method", Constant.CREATE_ORDER);
-        requestData.put("format", Constant.FORMAT);
-        requestData.put("timestamp", timestamp);
-        requestData.put("v", Constant.V);
-        requestData.put("slencry", Constant.SLENCRY);
-        requestData.put("ip", Constant.IP);
+        Map<String, String> requestData = getSysRequestData(Constant.CREATE_ORDER);
         requestData.put("xmlvalues", resultStr);
 
-        TreeMap<String, String> signMap = new TreeMap<>(requestData);
-        signMap.put("appscret", Constant.APP_SECRET);
-        signMap.put("token", Constant.TOKEN);
-        requestData.put("sign", SignBuilder.buildSign(signMap, Constant.APP_KEY, ""));
+        requestData.put("sign", getSign(requestData));
 
         String responseData = htNetService.doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
@@ -138,97 +129,40 @@ public class OrderHandlerImpl implements OrderHandler {
 
     @Override
     public Monitor<EventResult> getOrderInfo() throws IOException {
-        Map<String, String> requestData = new HashMap<>();
-        String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
-        requestData.put("dbhost", Constant.DB_HOST);
-        requestData.put("appkey", Constant.APP_KEY);
-        requestData.put("method", Constant.GET_ORDER_INFO);
-        requestData.put("format", Constant.FORMAT);
-        requestData.put("timestamp", timestamp);
-        requestData.put("v", Constant.V);
-        requestData.put("slencry", Constant.SLENCRY);
-        requestData.put("ip", Constant.IP);
+        Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO);
         requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("page_no", "1");
         requestData.put("page_size", "10");
         //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
-        TreeMap<String, String> signMap = new TreeMap<>(requestData);
-        signMap.put("appscret", Constant.APP_SECRET);
-        signMap.put("token", Constant.TOKEN);
-        requestData.put("sign", SignBuilder.buildSign(signMap, Constant.APP_KEY, ""));
+        requestData.put("sign", getSign(requestData));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
+        //处理返回的xml
         int firstRowIndex = responseData.indexOf("<Rows>");
         int lastRowIndex = responseData.lastIndexOf("</Rows>");
         String first = responseData.substring(0, firstRowIndex);
         String middle = responseData.substring(firstRowIndex, lastRowIndex + 7);
         String last = responseData.substring(lastRowIndex + 7, responseData.length());
         String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
+        //转成json格式返回
         String resultJson = XmlUtil.xml2Json(resultXml);
         return new SimpleMonitor<>(new EventResult(1, resultJson));
     }
 
-    @Override
-    public Monitor<EventResult> obtainOrderStatus() throws IOException {
-        Map<String, String> requestData = new HashMap<>();
-        String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
-        requestData.put("dbhost", Constant.DB_HOST);
-        requestData.put("appkey", Constant.APP_KEY);
-        requestData.put("method", Constant.GET_ORDER_INFO);
-        requestData.put("format", Constant.FORMAT);
-        requestData.put("timestamp", timestamp);
-        requestData.put("v", Constant.V);
-        requestData.put("slencry", Constant.SLENCRY);
-        requestData.put("ip", Constant.IP);
-        requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
-        requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
-        requestData.put("page_no", "1");
-        requestData.put("page_size", "10");
-        //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
-        TreeMap<String, String> signMap = new TreeMap<>(requestData);
-        signMap.put("appscret", Constant.APP_SECRET);
-        signMap.put("token", Constant.TOKEN);
-        requestData.put("sign", SignBuilder.buildSign(signMap, Constant.APP_KEY, ""));
-
-        String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
-        if (responseData == null) {
-            return new SimpleMonitor<>(new EventResult(0, responseData));
-        }
-        int firstRowIndex = responseData.indexOf("<Rows>");
-        int lastRowIndex = responseData.lastIndexOf("</Rows>");
-        String first = responseData.substring(0, firstRowIndex);
-        String middle = responseData.substring(firstRowIndex, lastRowIndex + 7);
-        String last = responseData.substring(lastRowIndex + 7, responseData.length());
-        String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
-        String resultJson = XmlUtil.xml2Json(resultXml);
-        return new SimpleMonitor<>(new EventResult(1, resultJson));
-    }
 
     @Override
     public Monitor<EventResult> obtainOrderList() throws IOException {
-        Map<String, String> requestData = new HashMap<>();
-        String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
-        requestData.put("dbhost", Constant.DB_HOST);
-        requestData.put("appkey", Constant.APP_KEY);
-        requestData.put("method", Constant.GET_ORDER_INFO);
-        requestData.put("format", Constant.FORMAT);
-        requestData.put("timestamp", timestamp);
-        requestData.put("v", Constant.V);
-        requestData.put("slencry", Constant.SLENCRY);
-        requestData.put("ip", Constant.IP);
+        Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO);
         requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("page_no", "1");
         requestData.put("page_size", "10");
         //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
-        TreeMap<String, String> signMap = new TreeMap<>(requestData);
-        signMap.put("appscret", Constant.APP_SECRET);
-        signMap.put("token", Constant.TOKEN);
-        requestData.put("sign", SignBuilder.buildSign(signMap, Constant.APP_KEY, ""));
+        requestData.put("sign", getSign(requestData));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
@@ -245,25 +179,13 @@ public class OrderHandlerImpl implements OrderHandler {
     }
 
     @Override
-    public Monitor<EventResult> orderStatusUpdate(String numId, String tidType, String importMark) throws IOException {
-        Map<String, String> requestData = new HashMap<>();
-        String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
-        requestData.put("dbhost", Constant.DB_HOST);
-        requestData.put("appkey", Constant.APP_KEY);
-        requestData.put("method", Constant.GET_ORDER_INFO);
-        requestData.put("format", Constant.FORMAT);
-        requestData.put("timestamp", timestamp);
-        requestData.put("v", Constant.V);
-        requestData.put("slencry", Constant.SLENCRY);
-        requestData.put("ip", Constant.IP);
-        requestData.put("num_id", numId);
-        requestData.put("tid_type", tidType);
-        requestData.put("import_mark", importMark);
+    public Monitor<EventResult> orderStatusUpdate(OrderInfo orderInfo) throws IOException {
+        Map<String, String> requestData = getSysRequestData(Constant.ORDER_STATUS_UPDATE);
+        requestData.put("num_id", orderInfo.getOrderCode());
+        requestData.put("tid_type", orderInfo.getOrderType());
+        requestData.put("import_mark", orderInfo.getImportMark());
 
-        TreeMap<String, String> signMap = new TreeMap<>(requestData);
-        signMap.put("appscret", Constant.APP_SECRET);
-        signMap.put("token", Constant.TOKEN);
-        requestData.put("sign", SignBuilder.buildSign(signMap, Constant.APP_KEY, ""));
+        requestData.put("sign", getSign(requestData));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
@@ -271,5 +193,95 @@ public class OrderHandlerImpl implements OrderHandler {
         }
         String resultJson = XmlUtil.xml2Json(responseData);
         return new SimpleMonitor<>(new EventResult(1, resultJson));
+    }
+
+    @Override
+    public Monitor<EventResult> orderUpdate(OrderInfo orderInfo) throws IOException {
+        EDBOrderForUpdate orderForUpdate = new EDBOrderForUpdate();
+        orderForUpdate.setTid(orderInfo.getTid());
+        orderForUpdate.setOutTid(orderInfo.getOutTid());
+        orderForUpdate.setExpress(orderInfo.getExpress());
+        orderForUpdate.setExpressNo(orderInfo.getExpressNo());
+        orderForUpdate.setExpressCode(orderInfo.getExpressCode());
+        orderForUpdate.setPrinter(orderInfo.getPrinter());
+        orderForUpdate.setCargoOperator(orderInfo.getCargoOperator());
+        orderForUpdate.setCargoTime(StringUtil.DateFormat(orderInfo.getCargoTime(), StringUtil.TIME_PATTERN));
+        orderForUpdate.setPrintTime(StringUtil.DateFormat(orderInfo.getPrintTime(), StringUtil.TIME_PATTERN));
+        orderForUpdate.setInspecter(orderInfo.getInspecter());
+        orderForUpdate.setInspectTime(StringUtil.DateFormat(orderInfo.getInspecterTime(), StringUtil.TIME_PATTERN));
+        orderForUpdate.setIsInspectDelivery(orderInfo.getIsInspectDelivery());
+        orderForUpdate.setDeliveryOperator(orderInfo.getDeliveryOperator());
+        orderForUpdate.setDeliveryTime(StringUtil.DateFormat(orderInfo.getDeliveryTime(), StringUtil.TIME_PATTERN));
+        orderForUpdate.setGrossWeight(String.valueOf(orderInfo.getGrossWeight()));
+        orderForUpdate.setInternalNote(orderInfo.getInternalNote());
+        orderForUpdate.setOriginCode(orderInfo.getOriginCode());
+        orderForUpdate.setDestCode(orderInfo.getDestCode());
+        orderForUpdate.setBarCode(orderInfo.getBarCode());
+        orderForUpdate.setInspectionNum(orderInfo.getInspectionNum());
+        EDBUpdateOrder updateOrder = new EDBUpdateOrder(orderForUpdate);
+
+        XmlMapper xmlMapper = new XmlMapper();
+        String resultStr = xmlMapper.writeValueAsString(updateOrder);
+        Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER);
+        requestData.put("xmlValues", resultStr);
+        requestData.put("sign", getSign(requestData));
+
+        String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
+
+        if (responseData == null) {
+            return new SimpleMonitor<>(new EventResult(0, responseData));
+        }
+        return new SimpleMonitor<>(new EventResult(1, XmlUtil.xml2Json(responseData)));
+    }
+
+    @Override
+    public Monitor<EventResult> orderDeliver(OrderInfo orderInfo) throws IOException {
+        Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER);
+        requestData.put("OrderCode", orderInfo.getOrderCode());
+        requestData.put("delivery_time", StringUtil.DateFormat(orderInfo.getDeliveryTime(), StringUtil.TIME_PATTERN));
+        requestData.put("express_no", orderInfo.getExpressNo());
+        requestData.put("express", orderInfo.getExpress());
+        requestData.put("weight", orderInfo.getWeight());
+
+        requestData.put("sign", getSign(requestData));
+
+        String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
+        if (responseData == null) {
+            return new SimpleMonitor<>(new EventResult(0, responseData));
+        }
+        String resultJson = XmlUtil.xml2Json(responseData);
+        return new SimpleMonitor<>(new EventResult(1, resultJson));
+    }
+
+    /**
+     * 得到包含公用系统参数的requestData
+     *
+     * @return
+     */
+    private Map<String, String> getSysRequestData(String method) {
+        Map<String, String> requestData = new HashMap<>();
+        String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
+        requestData.put("dbhost", Constant.DB_HOST);
+        requestData.put("appkey", Constant.APP_KEY);
+        requestData.put("format", Constant.FORMAT);
+        requestData.put("timestamp", timestamp);
+        requestData.put("v", Constant.V);
+        requestData.put("slencry", Constant.SLENCRY);
+        requestData.put("ip", Constant.IP);
+        requestData.put("method", method);
+        return requestData;
+    }
+
+    /**
+     * 得到sign签名
+     *
+     * @param requestData
+     * @return
+     */
+    private String getSign(Map requestData) {
+        TreeMap<String, String> signMap = new TreeMap<>(requestData);
+        signMap.put("appscret", Constant.APP_SECRET);
+        signMap.put("token", Constant.TOKEN);
+        return SignBuilder.buildSign(signMap, Constant.APP_KEY, "");
     }
 }
