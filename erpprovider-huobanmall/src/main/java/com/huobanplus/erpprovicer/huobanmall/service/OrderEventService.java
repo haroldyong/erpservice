@@ -6,6 +6,7 @@ import com.huobanplus.erpservice.event.model.Monitor;
 import com.huobanplus.erpservice.event.model.OrderInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -64,4 +65,11 @@ public interface OrderEventService extends BaseEvent {
      * @since 2015年7月25日 下午4:30:43
      */
     public Monitor<BaseResult> modifyOrderInfo(AuthBean authBean, OrderInfo orderBean);
+
+    /**
+     * 获取订单信息
+     * @param orderData
+     * @return
+     */
+    OrderInfo obtainOrder(String orderData);
 }

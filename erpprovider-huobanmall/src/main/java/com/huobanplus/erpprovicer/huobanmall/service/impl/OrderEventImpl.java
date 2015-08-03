@@ -10,6 +10,7 @@ import com.huobanplus.erpservice.event.model.OrderInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -44,6 +45,11 @@ public class OrderEventImpl implements OrderEventService {
 
     @Override
     public Monitor<BaseResult> modifyOrderInfo(AuthBean authBean, OrderInfo orderBean) {
+        return null;
+    }
+
+    @Override
+    public OrderInfo obtainOrder(String orderData) {
         return null;
     }
 

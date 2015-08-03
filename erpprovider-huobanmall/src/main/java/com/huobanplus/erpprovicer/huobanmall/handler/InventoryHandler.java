@@ -1,4 +1,4 @@
-package com.huobanplus.erpprovider.netshop.handler;
+package com.huobanplus.erpprovicer.huobanmall.handler;
 
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
@@ -7,15 +7,17 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * 库存相关处理
- * Created by allan on 2015/8/2.
+ * <p>类描述：<p/>
+ * 伙伴商城库存事件接口
  */
 public interface InventoryHandler {
+
     /**
-     * 库存同步
+     * 提交库存信息
      * @param request 请求实体
-     * @return
+     * @return 返回提交库存信息的结果（成功、失败）
      * @throws IOException
      */
-    Monitor<EventResult> synsInventory(HttpServletRequest request) throws IOException;
+    Monitor<EventResult> commitInventoryInfo(HttpServletRequest request) throws IOException;
+
 }
