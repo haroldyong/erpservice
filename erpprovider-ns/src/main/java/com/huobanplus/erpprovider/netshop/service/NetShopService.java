@@ -61,10 +61,7 @@ public interface NetShopService {
      * @param inventoryInfo 库存查询参数
      * @return 返回同步结果
      */
-<<<<<<< HEAD:erpprovider-netshop/src/main/java/com/huobanplus/erpprovider/netshop/service/NetShopService.java
     public Monitor<BaseResult> syncInventory(AuthBean authBean, InventoryInfo inventoryInfo);
-=======
-    public Monitor<EventResult> syncInventory(AuthBean authBean, InventoryInfo inventoryInfo);
 
     /**
      * 修改订单状态
@@ -80,5 +77,4 @@ public interface NetShopService {
      * @return 返回提交失败事件的结果（成功、失败）
      */
     public Monitor<EventResult> notifyFailedEvent(FailedBean failedBean);
->>>>>>> f8fbb306306fbd26a6555d53648a7fb7b8d5a885:erpprovider-ns/src/main/java/com/huobanplus/erpprovider/netshop/service/NetShopService.java
 }
