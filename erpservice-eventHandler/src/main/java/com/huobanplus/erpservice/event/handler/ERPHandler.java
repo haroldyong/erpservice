@@ -1,13 +1,10 @@
 package com.huobanplus.erpservice.event.handler;
 
 import com.huobanplus.erpservice.event.erpevent.ERPBaseEvent;
-import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.FailedBean;
 import com.huobanplus.erpservice.event.model.Monitor;
-import org.dom4j.DocumentException;
 import org.springframework.dao.DataAccessException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**

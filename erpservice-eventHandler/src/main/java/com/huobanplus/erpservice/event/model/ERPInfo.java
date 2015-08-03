@@ -33,4 +33,13 @@ public class ERPInfo {
     public void setValidation(String validation) {
         this.validation = validation;
     }
+
+    public ERPInfo(String type, String name, String validation) {
+        this.type = type;
+        this.name = name;
+        this.validation = validation;
+    }
+
+    public ERPInfo() {
+    }
 }
