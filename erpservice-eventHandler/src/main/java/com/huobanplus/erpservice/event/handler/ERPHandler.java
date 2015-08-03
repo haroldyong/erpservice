@@ -38,22 +38,10 @@ public interface ERPHandler {
     Monitor handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, DataAccessException, IllegalArgumentException;
 
     /**
-     * 处理事件
-     * <p>被动式处理，由ERP请求我们响应，带入request信息</p>
-     *
-     * @param baseEventClass 事件
-     * @param request        erp请求的request
-     * @return
-     * @throws IOException
-     * @throws IllegalAccessException
-     * @throws DataAccessException
-     */
-//    Monitor<EventResult> handleEvent(Class<ERPBaseEvent> baseEventClass, HttpServletRequest request) throws IOException, IllegalAccessException, DataAccessException;
-
-    /**
      * 处理异常信息
+     *
      * @param baseEventClass 事件类
-     * @param failedBean 异常信息实体
+     * @param failedBean     异常信息实体
      * @return
      */
     Monitor handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean);
