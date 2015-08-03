@@ -20,8 +20,7 @@ import java.util.List;
  */
 @Service
 public class OrderEventImpl implements OrderEventService {
-
-
+    
     @Override
     public Monitor<BaseResult> commitOrder(AuthBean authBean, OrderInfo orderBean) {
         return null;
