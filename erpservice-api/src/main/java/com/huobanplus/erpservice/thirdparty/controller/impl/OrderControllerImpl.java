@@ -226,7 +226,9 @@ public class OrderControllerImpl implements OrderController {
         if (erpHandler != null) {
             if (erpHandler.eventSupported(ObtainOrderEvent.class)) {
                 try {
-                    Monitor<EventResult> resultMonitor = erpHandler.handleEvent(ObtainOrderEvent.class, null);
+                    ObtainOrderEvent obtainOrderEvent = new ObtainOrderEvent();
+                    obtainOrderEvent.setErpInfo(erpInfo);
+                    Monitor<EventResult> resultMonitor = erpHandler.handleEvent(obtainOrderEvent, null);
                     EventResult eventResult = resultMonitor.get();
                     baseResult.setResultMsg(eventResult.getSystemResult());
                 } catch (IOException e) {

@@ -1,6 +1,7 @@
 package com.huobanplus.erpservice.event.handler;
 
 import com.huobanplus.erpservice.event.erpevent.ERPBaseEvent;
+import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.FailedBean;
 import com.huobanplus.erpservice.event.model.Monitor;
 
@@ -25,12 +26,12 @@ public interface ERPHandler {
      * <p>ERP-Provider会具体执行一个事件的处理，比如访问第三方API或者保存到数据。</p>
      * <p>所以结果可能不是立刻可以获取的，但应该可以检测它的运行情况。</p>
      *
-     * @param baseEventClass 处理该事件
+     * @param erpBaseEvent 处理该事件
      * @return 事件处理结果
      * @throws IOException            网络操作异常
      * @throws IllegalAccessException 接口访问不合法异常
      */
-    Monitor handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, IllegalArgumentException;
+    Monitor handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException, IllegalAccessException, IllegalArgumentException;
 
     /**
      * 处理异常信息

@@ -1,5 +1,6 @@
 package com.huobanplus.erpprovider.edb.handler;
 
+import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import org.dom4j.DocumentException;
@@ -17,5 +18,5 @@ public interface EDBProductHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> getProInventoryInfo() throws IOException;
+    Monitor<EventResult> getProInventoryInfo(ERPInfo info) throws IOException;
 }

@@ -37,8 +37,10 @@ public class HotApiControllerImpl implements HotApiController {
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
         if (erpHandler.eventSupported(CreateOrderEvent.class)) {
             try {
+                CreateOrderEvent createOrderEvent = new CreateOrderEvent();
+                createOrderEvent.setErpInfo(erpInfo);
                 //处理生成订单信息接口
-                erpHandler.handleEvent(CreateOrderEvent.class, request);
+                erpHandler.handleEvent(createOrderEvent, request);
             } catch (IOException e) {
                 FailedBean failedBean = new FailedBean();
                 failedBean.setResultMsg("创建订单失败");
@@ -76,8 +78,10 @@ public class HotApiControllerImpl implements HotApiController {
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
         if (erpHandler.eventSupported(InventoryEvent.class)) {
             try {
+                InventoryEvent inventoryEvent = new InventoryEvent();
+                inventoryEvent.setErpInfo(erpInfo);
                 //处理生成订单信息接口
-                erpHandler.handleEvent(InventoryEvent.class, request);
+                erpHandler.handleEvent(inventoryEvent, request);
             } catch (IOException e) {
                 FailedBean failedBean = new FailedBean();
                 failedBean.setResultMsg("获取库存信息失败");
@@ -115,8 +119,10 @@ public class HotApiControllerImpl implements HotApiController {
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
         if (erpHandler.eventSupported(ObtainOrderEvent.class)) {
             try {
+                ObtainOrderEvent obtainOrderEvent = new ObtainOrderEvent();
+                obtainOrderEvent.setErpInfo(erpInfo);
                 //处理生成订单信息接口
-                erpHandler.handleEvent(ObtainOrderEvent.class, request);
+                erpHandler.handleEvent(obtainOrderEvent, request);
             } catch (IOException e) {
                 FailedBean failedBean = new FailedBean();
                 failedBean.setResultMsg("获取订单信息失败");
@@ -155,7 +161,9 @@ public class HotApiControllerImpl implements HotApiController {
         if (erpHandler.eventSupported(ModifyOrderInfoEvent.class)) {
             try {
                 //处理生成订单信息接口
-                erpHandler.handleEvent(ModifyOrderInfoEvent.class, request);
+                ModifyOrderInfoEvent modifyOrderInfoEvent = new ModifyOrderInfoEvent();
+                modifyOrderInfoEvent.setErpInfo(erpInfo);
+                erpHandler.handleEvent(modifyOrderInfoEvent, request);
             } catch (IOException e) {
                 FailedBean failedBean = new FailedBean();
                 failedBean.setResultMsg("修改订单信息失败");
@@ -194,7 +202,9 @@ public class HotApiControllerImpl implements HotApiController {
         if (erpHandler.eventSupported(ProductInfoEvent.class)) {
             try {
                 //处理生成订单信息接口
-                erpHandler.handleEvent(ProductInfoEvent.class, request);
+                ProductInfoEvent productInfoEvent = new ProductInfoEvent();
+                productInfoEvent.setErpInfo(erpInfo);
+                erpHandler.handleEvent(productInfoEvent, request);
             } catch (IOException e) {
                 FailedBean failedBean = new FailedBean();
                 failedBean.setResultMsg("获取商品信息失败");
@@ -233,7 +243,9 @@ public class HotApiControllerImpl implements HotApiController {
         if (erpHandler.eventSupported(DeliveryInfoEvent.class)) {
             try {
                 //处理生成订单信息接口
-                erpHandler.handleEvent(DeliveryInfoEvent.class, request);
+                DeliveryInfoEvent deliveryInfoEvent = new DeliveryInfoEvent();
+                deliveryInfoEvent.setErpInfo(erpInfo);
+                erpHandler.handleEvent(deliveryInfoEvent, request);
             } catch (IOException e) {
                 FailedBean failedBean = new FailedBean();
                 failedBean.setResultMsg("修改物流信息失败");
