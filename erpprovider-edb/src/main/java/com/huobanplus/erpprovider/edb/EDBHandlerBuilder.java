@@ -67,7 +67,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                 } else if (baseEventClass == DeliveryInfoEvent.class) {
                     return orderHandler.getOrderInfo();
                 } else if (baseEventClass == OrderStatusInfoEvent.class) {
-                    return orderHandler.obtainOrderStatus();
+                    return orderHandler.orderStatusUpdate((OrderInfo) data);
                 } else if (baseEventClass == ObtainOrderEvent.class) {
                     return orderHandler.obtainOrderList();
                 } else {

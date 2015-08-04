@@ -6,9 +6,10 @@ import java.util.Date;
 
 /**
  * 类描述：订单信息实体
+ *
  * @author aaron
- * @since  2015年7月27日 上午10:24:35
  * @version V1.0
+ * @since 2015年7月27日 上午10:24:35
  */
 public class OrderInfo extends EventResult {
 
@@ -91,7 +92,6 @@ public class OrderInfo extends EventResult {
     }
 
     /**
-
      * 订单净重
      */
     private String weight;
@@ -182,9 +182,22 @@ public class OrderInfo extends EventResult {
      */
     private String deliveryOperator;
     /**
-     * 发货时间、验货时间
+     * 发货时间
      */
     private Date deliveryTime;
+    /**
+     * 验货时间
+     */
+    private Date inspecterTime;
+
+    public Date getInspecterTime() {
+        return inspecterTime;
+    }
+
+    public void setInspecterTime(Date inspecterTime) {
+        this.inspecterTime = inspecterTime;
+    }
+
     /**
      * 毛重
      */
@@ -1102,15 +1115,15 @@ public class OrderInfo extends EventResult {
     /**
      * 是否送货前通知
      */
-    private String  isPreDeliveryNotice;
+    private String isPreDeliveryNotice;
     /**
      * 送货时间
      */
-    private Date  jdDeliveryTime;
+    private Date jdDeliveryTime;
     /**
      * 分拣代码
      */
-    private String  sortingCode;
+    private String sortingCode;
     /**
      * 货到付款结算凭证号
      */

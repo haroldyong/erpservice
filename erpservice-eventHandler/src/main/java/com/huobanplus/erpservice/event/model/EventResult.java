@@ -13,7 +13,6 @@ public class EventResult extends BaseResult{
      * 结果
      * <p>json格式数据</p>
      */
-
     private String systemResult;
 
     public EventResult()

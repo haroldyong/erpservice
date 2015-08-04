@@ -66,4 +66,21 @@ public class OrderHandlerTest {
     public void testGetOrderInfo() throws Exception {
         Monitor<EventResult> monitor = orderHandler.getOrderInfo();
     }
+
+    @Test
+    @Ignore
+    public void testOrderStatusUpdate() throws Exception {
+
+    }
+
+    @Test
+    @Ignore
+    public void testOrderUpdate() throws Exception {
+
+    }
+
+    @Test
+    public void testOrderDeliver() throws Exception {
+        
+    }
 }

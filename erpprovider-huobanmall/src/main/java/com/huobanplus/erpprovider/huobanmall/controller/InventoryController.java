@@ -78,118 +78,117 @@ public class InventoryController {
     /**
      * 提交（新增）入库信息
      *
-     * @param sign       授权签名
-     * @param uCode      接入码，用于验证请求的有效性。主要用于区分店铺
-     * @param secret     密钥
-     * @param timeStamp  时间戳
-     * @param mType      方法名，不同接口分别传入不同的方法值。
-     * @param signType   加密方式，默认为MD5
-     * @param inStorageNo 入库单编号
-     * @param freight 运费
-     * @param freightAvgway 运费分摊方式1:按产品数量2：按产品重量默认为1
-     * @param barCode 条形码
-     * @param instorageNum 入库数量
-     * @param type 入库类型；全部:1/其他入库:10/产成品入库:11/原料入库:12/盘盈入库:13/维修入库:14/差错入库:15/退货入库:3/归还入库:4/调拨入库:6/正常入库:8/采购入库:9
-     * @param dateType 日期类型--入库日期in_time,制单日期create_time,审核日期examine_time
-     * @param beginTime 开始时间;所查订单的开始时间,和日期类型配合使用.
-     * @param endTime 结束时间;所查订单的结束时间,和日期类型配合使用.如果没输入,则默认为此时此刻.
-     * @param storageName 仓库名称，用于查询指定仓库的入库单
+     * @param sign            授权签名
+     * @param uCode           接入码，用于验证请求的有效性。主要用于区分店铺
+     * @param secret          密钥
+     * @param timeStamp       时间戳
+     * @param mType           方法名，不同接口分别传入不同的方法值。
+     * @param signType        加密方式，默认为MD5
+     * @param inStorageNo     入库单编号
+     * @param freight         运费
+     * @param freightAvgway   运费分摊方式1:按产品数量2：按产品重量默认为1
+     * @param barCode         条形码
+     * @param instorageNum    入库数量
+     * @param type            入库类型；全部:1/其他入库:10/产成品入库:11/原料入库:12/盘盈入库:13/维修入库:14/差错入库:15/退货入库:3/归还入库:4/调拨入库:6/正常入库:8/采购入库:9
+     * @param dateType        日期类型--入库日期in_time,制单日期create_time,审核日期examine_time
+     * @param beginTime       开始时间;所查订单的开始时间,和日期类型配合使用.
+     * @param endTime         结束时间;所查订单的结束时间,和日期类型配合使用.如果没输入,则默认为此时此刻.
+     * @param storageName     仓库名称，用于查询指定仓库的入库单
      * @param instorageStatus 入库状态.0:未审核；1：已审核；2：已作废
-     * @param importMark 导入标记:不导入,未导入,已导入,已处理,已取消
-     * @param typeNo 入库类型编号
-     * @param provider 供应商编码
-     * @param storage 仓库
-     * @param creater 制单员
-     * @param createTime 制单时间
-     * @param inTime 入库时间
+     * @param importMark      导入标记:不导入,未导入,已导入,已处理,已取消
+     * @param typeNo          入库类型编号
+     * @param provider        供应商编码
+     * @param storage         仓库
+     * @param creater         制单员
+     * @param createTime      制单时间
+     * @param inTime          入库时间
      * @param qualityInspctor 质检员
-     * @param inspctTime 质检时间
-     * @param inspctResult 质检结果
-     * @param examiner 审核人
-     * @param examineTime 审核时间
-     * @param inReason 入库原因
-     * @param cost 成本价格
-     * @param SourceTid 来源单号
-     * @param purchaseFee 采购费用
-     * @param contractMoney 合同总额
-     * @param relevantTid 相关单号
-     * @param rate 汇率
-     * @param currency 币种
-     * @param outContractTid 外部合同号
-     * @param logistics 物流公司
-     * @param expressTid 快递单号
-     * @param freightPayer 运费承担方
-     * @param remarks 入库备注
-     * @param freightMode 运费均摊模式;按产品数量，按产品重量
-     * @param storageNo 仓库编码
-     * @param listSource 来源：不对外提供，固定默认值
-     * @param otherCost 其他费用
-     * @param outPactNo 外部合同单号
-     * @param productItemNo 产品明细编号
-     * @param locationNo 库位编号
-     * @param batch 批次
-     * @param expireTime 到期时间
-     * @param supplieNo 返厂供应商编号：在采购管理—供应商档案里查看
-     * @param YSInstorageNo 原始入库单号
-     * @param freightAvg 运费均摊
+     * @param inspctTime      质检时间
+     * @param inspctResult    质检结果
+     * @param examiner        审核人
+     * @param examineTime     审核时间
+     * @param inReason        入库原因
+     * @param cost            成本价格
+     * @param SourceTid       来源单号
+     * @param purchaseFee     采购费用
+     * @param contractMoney   合同总额
+     * @param relevantTid     相关单号
+     * @param rate            汇率
+     * @param currency        币种
+     * @param outContractTid  外部合同号
+     * @param logistics       物流公司
+     * @param expressTid      快递单号
+     * @param freightPayer    运费承担方
+     * @param remarks         入库备注
+     * @param freightMode     运费均摊模式;按产品数量，按产品重量
+     * @param storageNo       仓库编码
+     * @param listSource      来源：不对外提供，固定默认值
+     * @param otherCost       其他费用
+     * @param outPactNo       外部合同单号
+     * @param productItemNo   产品明细编号
+     * @param locationNo      库位编号
+     * @param batch           批次
+     * @param expireTime      到期时间
+     * @param supplieNo       返厂供应商编号：在采购管理—供应商档案里查看
+     * @param YSInstorageNo   原始入库单号
+     * @param freightAvg      运费均摊
      * @return 入库结果（成功、失败）
      */
     public Monitor commitInStorage(String sign,
-                                               String uCode,
-                                               String secret,
-                                               String timeStamp,
-                                               String mType,
-                                               String signType,
-                                               String inStorageNo,
-                                               double freight,
-                                               String freightAvgway,
-                                               String barCode,
-                                               int instorageNum,
-                                               int type,
-                                               String dateType,
-                                               long beginTime,
-                                               long endTime,
-                                               String storageName,
-                                               int instorageStatus,
-                                               String importMark,
-                                               String typeNo,
-                                               String provider,
-                                               String storage,
-                                               String creater,
-                                               long createTime,
-                                               long inTime,
-                                               String qualityInspctor,
-                                               long inspctTime,
-                                               String inspctResult,
-                                               String examiner,
-                                               long examineTime,
-                                               String inReason,
-                                               double cost,
-                                               String SourceTid,
-                                               double purchaseFee,
-                                               double contractMoney,
-                                               String relevantTid,
-                                               double rate,
-                                               String currency,
-                                               String outContractTid,
-                                               String logistics,
-                                               String expressTid,
-                                               String freightPayer,
-                                               String remarks,
-                                               String freightMode,
-                                               String storageNo,
-                                               String listSource,
-                                               double otherCost,
-                                               String outPactNo,
-                                               String productItemNo,
-                                               String locationNo,
-                                               String batch,
-                                               long expireTime,
-                                               String supplieNo,
-                                               String YSInstorageNo,
-                                               double freightAvg
-                                               )
-    {
+                                   String uCode,
+                                   String secret,
+                                   String timeStamp,
+                                   String mType,
+                                   String signType,
+                                   String inStorageNo,
+                                   double freight,
+                                   String freightAvgway,
+                                   String barCode,
+                                   int instorageNum,
+                                   int type,
+                                   String dateType,
+                                   long beginTime,
+                                   long endTime,
+                                   String storageName,
+                                   int instorageStatus,
+                                   String importMark,
+                                   String typeNo,
+                                   String provider,
+                                   String storage,
+                                   String creater,
+                                   long createTime,
+                                   long inTime,
+                                   String qualityInspctor,
+                                   long inspctTime,
+                                   String inspctResult,
+                                   String examiner,
+                                   long examineTime,
+                                   String inReason,
+                                   double cost,
+                                   String SourceTid,
+                                   double purchaseFee,
+                                   double contractMoney,
+                                   String relevantTid,
+                                   double rate,
+                                   String currency,
+                                   String outContractTid,
+                                   String logistics,
+                                   String expressTid,
+                                   String freightPayer,
+                                   String remarks,
+                                   String freightMode,
+                                   String storageNo,
+                                   String listSource,
+                                   double otherCost,
+                                   String outPactNo,
+                                   String productItemNo,
+                                   String locationNo,
+                                   String batch,
+                                   long expireTime,
+                                   String supplieNo,
+                                   String YSInstorageNo,
+                                   double freightAvg
+    ) {
 
         AuthBean authBean = new AuthBean();
         authBean.setSign(sign);
@@ -267,22 +266,22 @@ public class InventoryController {
      * {1、inStorageIds只包含一个入库编号时，只获取一个入库信息 2、inStorageIds包含多个入库编号时，批量获取入库信息}
      * inStorageIds包含多个库存编号时 每个入库编号以逗号隔开
      *
-     * @param sign       授权签名
-     * @param uCode      接入码，用于验证请求的有效性。主要用于区分店铺
-     * @param secret     密钥
-     * @param timeStamp  时间戳
-     * @param mType      方法名，不同接口分别传入不同的方法值。
-     * @param signType   加密方式，默认为MD5
+     * @param sign         授权签名
+     * @param uCode        接入码，用于验证请求的有效性。主要用于区分店铺
+     * @param secret       密钥
+     * @param timeStamp    时间戳
+     * @param mType        方法名，不同接口分别传入不同的方法值。
+     * @param signType     加密方式，默认为MD5
      * @param inStorageIds 入库编号
      * @return 返回入库信息
      */
     public Monitor<InventoryInfo> obtainInStorage(String sign,
-                                             String uCode,
-                                             String secret,
-                                             String timeStamp,
-                                             String mType,
-                                             String signType,
-                                             String inStorageIds) {
+                                                  String uCode,
+                                                  String secret,
+                                                  String timeStamp,
+                                                  String mType,
+                                                  String signType,
+                                                  String inStorageIds) {
 
         AuthBean authBean = new AuthBean();
         authBean.setSign(sign);
@@ -313,116 +312,116 @@ public class InventoryController {
 
     /**
      * 提交（新增）出库信息
-     * @param sign 授权签名
-     * @param uCode 接入码，用于验证请求的有效性。主要用于区分店铺
-     * @param secret 密钥
-     * @param timeStamp 时间戳
-     * @param mType 方法名，不同接口分别传入不同的方法值。
-     * @param signType 加密方式，默认为MD5
-     * @param outStorageNo 出库单编号
-     * @param freight 运费
-     * @param freightAvgway 运费分摊方式1:按产品数量2：按产品重量默认为1
-     * @param barCode 条形码
-     * @param outstorageNum 出库数量
-     * @param dateType 日期类型--入库日期in_time,制单日期create_time,审核日期examine_time
-     * @param beginTime 开始时间;所查订单的开始时间,和日期类型配合使用.
-     * @param endTime 结束时间;所查订单的结束时间,和日期类型配合使用.如果没输入,则默认为此时此刻.
-     * @param storageName 仓库名称，用于查询指定仓库的入库单
-     * @param importMark 导入标记:不导入,未导入,已导入,已处理,已取消
-     * @param provider 供应商编码
-     * @param storage 仓库
-     * @param creater  制单员
-     * @param createTime 制单时间
+     *
+     * @param sign             授权签名
+     * @param uCode            接入码，用于验证请求的有效性。主要用于区分店铺
+     * @param secret           密钥
+     * @param timeStamp        时间戳
+     * @param mType            方法名，不同接口分别传入不同的方法值。
+     * @param signType         加密方式，默认为MD5
+     * @param outStorageNo     出库单编号
+     * @param freight          运费
+     * @param freightAvgway    运费分摊方式1:按产品数量2：按产品重量默认为1
+     * @param barCode          条形码
+     * @param outstorageNum    出库数量
+     * @param dateType         日期类型--入库日期in_time,制单日期create_time,审核日期examine_time
+     * @param beginTime        开始时间;所查订单的开始时间,和日期类型配合使用.
+     * @param endTime          结束时间;所查订单的结束时间,和日期类型配合使用.如果没输入,则默认为此时此刻.
+     * @param storageName      仓库名称，用于查询指定仓库的入库单
+     * @param importMark       导入标记:不导入,未导入,已导入,已处理,已取消
+     * @param provider         供应商编码
+     * @param storage          仓库
+     * @param creater          制单员
+     * @param createTime       制单时间
      * @param qualityInspctor  质检员
-     * @param inspctTime 质检时间
-     * @param inspctResult 质检结果
-     * @param examiner 审核人
-     * @param examineTime 审核时间
-     * @param cost 成本价格
-     * @param SourceTid 来源单号
-     * @param purchaseFee 采购费用
-     * @param contractMoney 合同总额
-     * @param relevantTid 相关单号
-     * @param rate 汇率
-     * @param currency 币种
-     * @param outContractTid 外部合同号
-     * @param logistics 物流公司
-     * @param expressTid  快递单号
-     * @param freightPayer  运费承担方
-     * @param freightMode  运费均摊模式;按产品数量，按产品重量
-     * @param storageNo 仓库编码
-     * @param listSource 来源：不对外提供，固定默认值
-     * @param otherCost 其他费用
-     * @param outPactNo 外部合同单号
-     * @param productItemNo 产品明细编号
-     * @param locationNo 库位编号
-     * @param batch 批次
-     * @param expireTime 到期时间
-     * @param supplieNo 返厂供应商编号：在采购管理—供应商档案里查看
-     * @param freightAvg 运费均摊
-     * @param outstorageType 出库类型（可在档案管理-仓库档案-出库类型设置中查看）
-     * @param outstorageTime  出库时间
-     * @param outStorageRemark  出库备注
+     * @param inspctTime       质检时间
+     * @param inspctResult     质检结果
+     * @param examiner         审核人
+     * @param examineTime      审核时间
+     * @param cost             成本价格
+     * @param SourceTid        来源单号
+     * @param purchaseFee      采购费用
+     * @param contractMoney    合同总额
+     * @param relevantTid      相关单号
+     * @param rate             汇率
+     * @param currency         币种
+     * @param outContractTid   外部合同号
+     * @param logistics        物流公司
+     * @param expressTid       快递单号
+     * @param freightPayer     运费承担方
+     * @param freightMode      运费均摊模式;按产品数量，按产品重量
+     * @param storageNo        仓库编码
+     * @param listSource       来源：不对外提供，固定默认值
+     * @param otherCost        其他费用
+     * @param outPactNo        外部合同单号
+     * @param productItemNo    产品明细编号
+     * @param locationNo       库位编号
+     * @param batch            批次
+     * @param expireTime       到期时间
+     * @param supplieNo        返厂供应商编号：在采购管理—供应商档案里查看
+     * @param freightAvg       运费均摊
+     * @param outstorageType   出库类型（可在档案管理-仓库档案-出库类型设置中查看）
+     * @param outstorageTime   出库时间
+     * @param outStorageRemark 出库备注
      * @param outstoragePrice  出库价
-     * @param outstorageStatus  出库状态
-     * @param outStoreTypeName  出库类型名称
+     * @param outstorageStatus 出库状态
+     * @param outStoreTypeName 出库类型名称
      * @return 出库结果（成功、失败）
      */
     public Monitor commitOutStorage(String sign,
-                                               String uCode,
-                                               String secret,
-                                               String timeStamp,
-                                               String mType,
-                                               String signType,
-                                               String outStorageNo,
-                                               double freight,
-                                               String freightAvgway,
-                                               String barCode,
-                                               int outstorageNum,
-                                               String dateType,
-                                               long beginTime,
-                                               long endTime,
-                                               String storageName,
-                                               String importMark,
-                                               String provider,
-                                               String storage,
-                                               String creater,
-                                               long createTime,
-                                               String qualityInspctor,
-                                               long inspctTime,
-                                               String inspctResult,
-                                               String examiner,
-                                               long examineTime,
-                                               double cost,
-                                               String SourceTid,
-                                               double purchaseFee,
-                                               double contractMoney,
-                                               String relevantTid,
-                                               double rate,
-                                               String currency,
-                                               String outContractTid,
-                                               String logistics,
-                                               String expressTid,
-                                               String freightPayer,
-                                               String freightMode,
-                                               String storageNo,
-                                               String listSource,
-                                               double otherCost,
-                                               String outPactNo,
-                                               String productItemNo,
-                                               String locationNo,
-                                               String batch,
-                                               long expireTime,
-                                               String supplieNo,
-                                               double freightAvg,
-                                               String outstorageType,
-                                               long outstorageTime,
-                                               String outStorageRemark,
-                                               double outstoragePrice,
-                                               String outstorageStatus,
-                                               String outStoreTypeName
-                                                )
-    {
+                                    String uCode,
+                                    String secret,
+                                    String timeStamp,
+                                    String mType,
+                                    String signType,
+                                    String outStorageNo,
+                                    double freight,
+                                    String freightAvgway,
+                                    String barCode,
+                                    int outstorageNum,
+                                    String dateType,
+                                    long beginTime,
+                                    long endTime,
+                                    String storageName,
+                                    String importMark,
+                                    String provider,
+                                    String storage,
+                                    String creater,
+                                    long createTime,
+                                    String qualityInspctor,
+                                    long inspctTime,
+                                    String inspctResult,
+                                    String examiner,
+                                    long examineTime,
+                                    double cost,
+                                    String SourceTid,
+                                    double purchaseFee,
+                                    double contractMoney,
+                                    String relevantTid,
+                                    double rate,
+                                    String currency,
+                                    String outContractTid,
+                                    String logistics,
+                                    String expressTid,
+                                    String freightPayer,
+                                    String freightMode,
+                                    String storageNo,
+                                    String listSource,
+                                    double otherCost,
+                                    String outPactNo,
+                                    String productItemNo,
+                                    String locationNo,
+                                    String batch,
+                                    long expireTime,
+                                    String supplieNo,
+                                    double freightAvg,
+                                    String outstorageType,
+                                    long outstorageTime,
+                                    String outStorageRemark,
+                                    double outstoragePrice,
+                                    String outstorageStatus,
+                                    String outStoreTypeName
+    ) {
 
         AuthBean authBean = new AuthBean();
         authBean.setSign(sign);
@@ -499,22 +498,22 @@ public class InventoryController {
      * {1、outStorageIds只包含一个入库编号时，只获取一个出库信息 2、outStorageIds包含多个出库编号时，批量获取出库信息}
      * outStorageIds包含多个出库编号时 每个出库编号以逗号隔开
      *
-     * @param sign       授权签名
-     * @param uCode      接入码，用于验证请求的有效性。主要用于区分店铺
-     * @param secret     密钥
-     * @param timeStamp  时间戳
-     * @param mType      方法名，不同接口分别传入不同的方法值。
-     * @param signType   加密方式，默认为MD5
+     * @param sign          授权签名
+     * @param uCode         接入码，用于验证请求的有效性。主要用于区分店铺
+     * @param secret        密钥
+     * @param timeStamp     时间戳
+     * @param mType         方法名，不同接口分别传入不同的方法值。
+     * @param signType      加密方式，默认为MD5
      * @param outStorageIds 出库编号
      * @return 返回入库信息
      */
     public Monitor<InventoryInfo> obtainOutStorage(String sign,
-                                                  String uCode,
-                                                  String secret,
-                                                  String timeStamp,
-                                                  String mType,
-                                                  String signType,
-                                                  String outStorageIds) {
+                                                   String uCode,
+                                                   String secret,
+                                                   String timeStamp,
+                                                   String mType,
+                                                   String signType,
+                                                   String outStorageIds) {
 
         AuthBean authBean = new AuthBean();
         authBean.setSign(sign);
@@ -546,60 +545,60 @@ public class InventoryController {
     /**
      * 更新入库信息
      *
-     * @param sign       授权签名
-     * @param uCode      接入码，用于验证请求的有效性。主要用于区分店铺
-     * @param secret     密钥
-     * @param timeStamp  时间戳
-     * @param mType      方法名，不同接口分别传入不同的方法值。
-     * @param signType   加密方式，默认为MD5
-     * @param inStorageNo 入库单编号
-     * @param freight 运费
-     * @param freightAvgway 运费分摊方式1:按产品数量2：按产品重量默认为1
-     * @param barCode 条形码
-     * @param instorageNum 入库数量
-     * @param type 入库类型；全部:1/其他入库:10/产成品入库:11/原料入库:12/盘盈入库:13/维修入库:14/差错入库:15/退货入库:3/归还入库:4/调拨入库:6/正常入库:8/采购入库:9
-     * @param dateType 日期类型--入库日期in_time,制单日期create_time,审核日期examine_time
-     * @param beginTime 开始时间;所查订单的开始时间,和日期类型配合使用.
-     * @param endTime 结束时间;所查订单的结束时间,和日期类型配合使用.如果没输入,则默认为此时此刻.
-     * @param storageName 仓库名称，用于查询指定仓库的入库单
+     * @param sign            授权签名
+     * @param uCode           接入码，用于验证请求的有效性。主要用于区分店铺
+     * @param secret          密钥
+     * @param timeStamp       时间戳
+     * @param mType           方法名，不同接口分别传入不同的方法值。
+     * @param signType        加密方式，默认为MD5
+     * @param inStorageNo     入库单编号
+     * @param freight         运费
+     * @param freightAvgway   运费分摊方式1:按产品数量2：按产品重量默认为1
+     * @param barCode         条形码
+     * @param instorageNum    入库数量
+     * @param type            入库类型；全部:1/其他入库:10/产成品入库:11/原料入库:12/盘盈入库:13/维修入库:14/差错入库:15/退货入库:3/归还入库:4/调拨入库:6/正常入库:8/采购入库:9
+     * @param dateType        日期类型--入库日期in_time,制单日期create_time,审核日期examine_time
+     * @param beginTime       开始时间;所查订单的开始时间,和日期类型配合使用.
+     * @param endTime         结束时间;所查订单的结束时间,和日期类型配合使用.如果没输入,则默认为此时此刻.
+     * @param storageName     仓库名称，用于查询指定仓库的入库单
      * @param instorageStatus 入库状态.0:未审核；1：已审核；2：已作废
-     * @param importMark 导入标记:不导入,未导入,已导入,已处理,已取消
-     * @param typeNo 入库类型编号
-     * @param provider 供应商编码
-     * @param storage 仓库
-     * @param creater 制单员
-     * @param createTime 制单时间
-     * @param inTime 入库时间
+     * @param importMark      导入标记:不导入,未导入,已导入,已处理,已取消
+     * @param typeNo          入库类型编号
+     * @param provider        供应商编码
+     * @param storage         仓库
+     * @param creater         制单员
+     * @param createTime      制单时间
+     * @param inTime          入库时间
      * @param qualityInspctor 质检员
-     * @param inspctTime 质检时间
-     * @param inspctResult 质检结果
-     * @param examiner 审核人
-     * @param examineTime 审核时间
-     * @param inReason 入库原因
-     * @param cost 成本价格
-     * @param SourceTid 来源单号
-     * @param purchaseFee 采购费用
-     * @param contractMoney 合同总额
-     * @param relevantTid 相关单号
-     * @param rate 汇率
-     * @param currency 币种
-     * @param outContractTid 外部合同号
-     * @param logistics 物流公司
-     * @param expressTid 快递单号
-     * @param freightPayer 运费承担方
-     * @param remarks 入库备注
-     * @param freightMode 运费均摊模式;按产品数量，按产品重量
-     * @param storageNo 仓库编码
-     * @param listSource 来源：不对外提供，固定默认值
-     * @param otherCost 其他费用
-     * @param outPactNo 外部合同单号
-     * @param productItemNo 产品明细编号
-     * @param locationNo 库位编号
-     * @param batch 批次
-     * @param expireTime 到期时间
-     * @param supplieNo 返厂供应商编号：在采购管理—供应商档案里查看
-     * @param YSInstorageNo 原始入库单号
-     * @param freightAvg 运费均摊
+     * @param inspctTime      质检时间
+     * @param inspctResult    质检结果
+     * @param examiner        审核人
+     * @param examineTime     审核时间
+     * @param inReason        入库原因
+     * @param cost            成本价格
+     * @param SourceTid       来源单号
+     * @param purchaseFee     采购费用
+     * @param contractMoney   合同总额
+     * @param relevantTid     相关单号
+     * @param rate            汇率
+     * @param currency        币种
+     * @param outContractTid  外部合同号
+     * @param logistics       物流公司
+     * @param expressTid      快递单号
+     * @param freightPayer    运费承担方
+     * @param remarks         入库备注
+     * @param freightMode     运费均摊模式;按产品数量，按产品重量
+     * @param storageNo       仓库编码
+     * @param listSource      来源：不对外提供，固定默认值
+     * @param otherCost       其他费用
+     * @param outPactNo       外部合同单号
+     * @param productItemNo   产品明细编号
+     * @param locationNo      库位编号
+     * @param batch           批次
+     * @param expireTime      到期时间
+     * @param supplieNo       返厂供应商编号：在采购管理—供应商档案里查看
+     * @param YSInstorageNo   原始入库单号
+     * @param freightAvg      运费均摊
      * @return 入库结果（成功、失败）
      */
     public Monitor<BaseResult> modifyInStorage(String sign,
@@ -656,8 +655,7 @@ public class InventoryController {
                                                String supplieNo,
                                                String YSInstorageNo,
                                                double freightAvg
-    )
-    {
+    ) {
 
         AuthBean authBean = new AuthBean();
         authBean.setSign(sign);
@@ -732,59 +730,60 @@ public class InventoryController {
 
     /**
      * 更新出库信息
-     * @param sign 授权签名
-     * @param uCode 接入码，用于验证请求的有效性。主要用于区分店铺
-     * @param secret 密钥
-     * @param timeStamp 时间戳
-     * @param mType 方法名，不同接口分别传入不同的方法值。
-     * @param signType 加密方式，默认为MD5
-     * @param outStorageNo 出库单编号
-     * @param freight 运费
-     * @param freightAvgway 运费分摊方式1:按产品数量2：按产品重量默认为1
-     * @param barCode 条形码
-     * @param outstorageNum 出库数量
-     * @param dateType 日期类型--入库日期in_time,制单日期create_time,审核日期examine_time
-     * @param beginTime 开始时间;所查订单的开始时间,和日期类型配合使用.
-     * @param endTime 结束时间;所查订单的结束时间,和日期类型配合使用.如果没输入,则默认为此时此刻.
-     * @param storageName 仓库名称，用于查询指定仓库的入库单
-     * @param importMark 导入标记:不导入,未导入,已导入,已处理,已取消
-     * @param provider 供应商编码
-     * @param storage 仓库
-     * @param creater  制单员
-     * @param createTime 制单时间
+     *
+     * @param sign             授权签名
+     * @param uCode            接入码，用于验证请求的有效性。主要用于区分店铺
+     * @param secret           密钥
+     * @param timeStamp        时间戳
+     * @param mType            方法名，不同接口分别传入不同的方法值。
+     * @param signType         加密方式，默认为MD5
+     * @param outStorageNo     出库单编号
+     * @param freight          运费
+     * @param freightAvgway    运费分摊方式1:按产品数量2：按产品重量默认为1
+     * @param barCode          条形码
+     * @param outstorageNum    出库数量
+     * @param dateType         日期类型--入库日期in_time,制单日期create_time,审核日期examine_time
+     * @param beginTime        开始时间;所查订单的开始时间,和日期类型配合使用.
+     * @param endTime          结束时间;所查订单的结束时间,和日期类型配合使用.如果没输入,则默认为此时此刻.
+     * @param storageName      仓库名称，用于查询指定仓库的入库单
+     * @param importMark       导入标记:不导入,未导入,已导入,已处理,已取消
+     * @param provider         供应商编码
+     * @param storage          仓库
+     * @param creater          制单员
+     * @param createTime       制单时间
      * @param qualityInspctor  质检员
-     * @param inspctTime 质检时间
-     * @param inspctResult 质检结果
-     * @param examiner 审核人
-     * @param examineTime 审核时间
-     * @param cost 成本价格
-     * @param SourceTid 来源单号
-     * @param purchaseFee 采购费用
-     * @param contractMoney 合同总额
-     * @param relevantTid 相关单号
-     * @param rate 汇率
-     * @param currency 币种
-     * @param outContractTid 外部合同号
-     * @param logistics 物流公司
-     * @param expressTid  快递单号
-     * @param freightPayer  运费承担方
-     * @param freightMode  运费均摊模式;按产品数量，按产品重量
-     * @param storageNo 仓库编码
-     * @param listSource 来源：不对外提供，固定默认值
-     * @param otherCost 其他费用
-     * @param outPactNo 外部合同单号
-     * @param productItemNo 产品明细编号
-     * @param locationNo 库位编号
-     * @param batch 批次
-     * @param expireTime 到期时间
-     * @param supplieNo 返厂供应商编号：在采购管理—供应商档案里查看
-     * @param freightAvg 运费均摊
-     * @param outstorageType 出库类型（可在档案管理-仓库档案-出库类型设置中查看）
-     * @param outstorageTime  出库时间
-     * @param outStorageRemark  出库备注
+     * @param inspctTime       质检时间
+     * @param inspctResult     质检结果
+     * @param examiner         审核人
+     * @param examineTime      审核时间
+     * @param cost             成本价格
+     * @param SourceTid        来源单号
+     * @param purchaseFee      采购费用
+     * @param contractMoney    合同总额
+     * @param relevantTid      相关单号
+     * @param rate             汇率
+     * @param currency         币种
+     * @param outContractTid   外部合同号
+     * @param logistics        物流公司
+     * @param expressTid       快递单号
+     * @param freightPayer     运费承担方
+     * @param freightMode      运费均摊模式;按产品数量，按产品重量
+     * @param storageNo        仓库编码
+     * @param listSource       来源：不对外提供，固定默认值
+     * @param otherCost        其他费用
+     * @param outPactNo        外部合同单号
+     * @param productItemNo    产品明细编号
+     * @param locationNo       库位编号
+     * @param batch            批次
+     * @param expireTime       到期时间
+     * @param supplieNo        返厂供应商编号：在采购管理—供应商档案里查看
+     * @param freightAvg       运费均摊
+     * @param outstorageType   出库类型（可在档案管理-仓库档案-出库类型设置中查看）
+     * @param outstorageTime   出库时间
+     * @param outStorageRemark 出库备注
      * @param outstoragePrice  出库价
-     * @param outstorageStatus  出库状态
-     * @param outStoreTypeName  出库类型名称
+     * @param outstorageStatus 出库状态
+     * @param outStoreTypeName 出库类型名称
      * @return 出库结果（成功、失败）
      */
     public Monitor<BaseResult> modifyOutStorage(String sign,
@@ -840,8 +839,7 @@ public class InventoryController {
                                                 double outstoragePrice,
                                                 String outstorageStatus,
                                                 String outStoreTypeName
-    )
-    {
+    ) {
 
         AuthBean authBean = new AuthBean();
         authBean.setSign(sign);
