@@ -1,6 +1,7 @@
 package com.huobanplus.erpservice.datacenter.service;
 
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import org.springframework.data.domain.Page;
 
 /**
  * 订单业务
@@ -16,10 +17,22 @@ public interface MallOrderService {
     MallOrderBean save(MallOrderBean orderBean);
 
     /**
-     * 得到订单详情
+     * 获取订单详情
      *
      * @param orderId
      * @return
      */
     MallOrderBean findByOrderId(String orderId);
+
+    /**
+     * 条件分组查询订单
+     *
+     * @param orderStatus 订单状态
+     * @param payStatus   支付状态
+     * @param orderId     订单号
+     * @param pageIndex   页码
+     * @param pageSize    每页数量
+     * @return
+     */
+    Page<MallOrderBean> findAll(Integer orderStatus, Integer payStatus, String orderId, int pageIndex, int pageSize);
 }
