@@ -69,15 +69,15 @@ public class MallInventoryBean {
     @Column(name = "Storage_Status")
     private int storageStatus;
     /**
-     * 页大小，如果不填，则默认为200.每页最多返回记录数为200.
-     */
-    @Column(name = "Page_Size")
-    private int pageSize;
-    /**
      * 当前页，如果不填，默认为1
      */
     @Column(name = "Page_No")
     private int pageNo;
+    /**
+     * 页大小，如果不填，则默认为200.每页最多返回记录数为200.
+     */
+    @Column(name = "Page_Size")
+    private int pageSize;
     /**
      * 导入标记:不导入,未导入,已导入,已处理,已取消
      */
