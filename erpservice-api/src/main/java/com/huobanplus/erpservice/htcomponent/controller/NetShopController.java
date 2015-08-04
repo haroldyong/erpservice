@@ -46,7 +46,7 @@ public class NetShopController {
         authBean.setSecret(secret);
         authBean.setmType(mType);
         authBean.setSignType(signType);
-        orderBaseEvent.setAuthBean(authBean);
+        //orderBaseEvent.setAuthBean(authBean);
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setOrderCode(orderId);
 //        if (erpHandler.eventSupported(orderBaseEvent)) {

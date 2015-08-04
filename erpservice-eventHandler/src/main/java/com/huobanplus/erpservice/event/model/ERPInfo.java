@@ -6,9 +6,23 @@ package com.huobanplus.erpservice.event.model;
  */
 public class ERPInfo {
     //todo erp相关信息，如类型，名称，验证信息等
+    /**
+     * erp类型
+     */
     private String type;//erp类型
+    /**
+     * erp名称
+     */
     private String name;//ERP名称
+    /**
+     * erp验证信息
+     */
     private String validation;//验证信息
+    /**
+     * erp系统级参数
+     * <p>json</p>
+     */
+    private String sysDataJson;
 
     public String getType() {
         return type;
@@ -32,6 +46,14 @@ public class ERPInfo {
 
     public void setValidation(String validation) {
         this.validation = validation;
+    }
+
+    public String getSysDataJson() {
+        return sysDataJson;
+    }
+
+    public void setSysDataJson(String sysDataJson) {
+        this.sysDataJson = sysDataJson;
     }
 
     public ERPInfo(String type, String name, String validation) {

@@ -38,21 +38,18 @@ public class MallOrderServiceImpl implements MallOrderService {
 
     @Override
     public Page<MallOrderBean> findAll(Integer orderStatus, Integer payStatus, String orderId, int pageIndex, int pageSize) {
-        Specification<MallOrderBean> specification = new Specification<MallOrderBean>() {
-            @Override
-            public Predicate toPredicate(Root<MallOrderBean> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<>();
-                if (orderStatus != null) {
-                    list.add(cb.equal(root.get("orderStatus").as(Integer.class), orderStatus));
-                }
-                if (payStatus != null) {
-                    list.add(cb.equal(root.get("payStatus").as(Integer.class), payStatus));
-                }
-                if (!StringUtils.isEmpty(orderId)) {
-                    list.add(cb.equal(root.get("orderCode").as(String.class), orderId));
-                }
-                return cb.and(list.toArray(new Predicate[list.size()]));
+        Specification<MallOrderBean> specification = (root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            if (orderStatus != null) {
+                list.add(cb.equal(root.get("orderStatus").as(Integer.class), orderStatus));
             }
+            if (payStatus != null) {
+                list.add(cb.equal(root.get("payStatus").as(Integer.class), payStatus));
+            }
+            if (!StringUtils.isEmpty(orderId)) {
+                list.add(cb.equal(root.get("orderCode").as(String.class), orderId));
+            }
+            return cb.and(list.toArray(new Predicate[list.size()]));
         };
         return orderRepository.findAll(specification, new PageRequest(pageIndex - 1, pageSize));
     }

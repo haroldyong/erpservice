@@ -58,18 +58,18 @@ public class HuobanMallHandlerBuilder implements ERPHandlerBuilder {
             }
 
             @Override
-            public Monitor<EventResult> handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException {
+            public Monitor<EventResult> handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException, IllegalAccessException {
                 HttpServletRequest request = (HttpServletRequest) data;
-                if (baseEventClass == CreateOrderEvent.class) {
+                if (erpBaseEvent instanceof CreateOrderEvent) {
                     mallOrderHandler.commitOrder(request);
-                } else if (baseEventClass == ObtainOrderEvent.class) {
+                } else if (erpBaseEvent instanceof ObtainOrderEvent) {
                     mallOrderHandler.obtainOrder(request);
-                } else if (baseEventClass == DeliveryInfoEvent.class) {
-                } else if (baseEventClass == InventoryEvent.class) {
+                } else if (erpBaseEvent instanceof DeliveryInfoEvent) {
+                } else if (erpBaseEvent instanceof InventoryEvent) {
                     mallInventoryHandler.commitInventoryInfo(request);
-                } else if (baseEventClass == OrderStatusInfoEvent.class) {
+                } else if (erpBaseEvent instanceof OrderStatusInfoEvent) {
                     return mallOrderHandler.modifyOrder(request);
-                } else if (baseEventClass == ProductInfoEvent.class) {
+                } else if (erpBaseEvent instanceof ProductInfoEvent) {
                 } else {
                     return null;
                 }

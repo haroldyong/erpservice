@@ -1,5 +1,6 @@
 package com.huobanplus.erpprovider.edb.handler;
 
+import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import com.huobanplus.erpservice.event.model.OrderInfo;
@@ -25,7 +26,7 @@ public interface EDBOrderHandler {
      * @throws IOException
      * @throws DocumentException
      */
-    Monitor<EventResult> createOrder(OrderInfo orderInfo) throws IOException;
+    Monitor<EventResult> createOrder(OrderInfo orderInfo, ERPInfo info) throws IOException;
 
     /**
      * 获取订单信息
@@ -35,7 +36,7 @@ public interface EDBOrderHandler {
      * @throws IOException
      * @throws DocumentException
      */
-    Monitor<EventResult> getOrderInfo() throws IOException;
+    Monitor<EventResult> getOrderInfo(ERPInfo info) throws IOException;
 
     /**
      * 获取订单列表
@@ -44,7 +45,7 @@ public interface EDBOrderHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> obtainOrderList() throws IOException;
+    Monitor<EventResult> obtainOrderList(ERPInfo info) throws IOException;
 
     /**
      * 更新订单状态
@@ -55,7 +56,7 @@ public interface EDBOrderHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> orderStatusUpdate(OrderInfo orderInfo) throws IOException;
+    Monitor<EventResult> orderStatusUpdate(OrderInfo orderInfo, ERPInfo info) throws IOException;
 
     /**
      * 订单业务状态更新
@@ -64,7 +65,7 @@ public interface EDBOrderHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> orderUpdate(OrderInfo orderInfo) throws IOException;
+    Monitor<EventResult> orderUpdate(OrderInfo orderInfo, ERPInfo info) throws IOException;
 
     /**
      * 订单发货
@@ -73,5 +74,5 @@ public interface EDBOrderHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> orderDeliver(OrderInfo orderInfo) throws IOException;
+    Monitor<EventResult> orderDeliver(OrderInfo orderInfo, ERPInfo info) throws IOException;
 }

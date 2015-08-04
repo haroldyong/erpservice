@@ -52,18 +52,18 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                 }
             }
 
-            public Monitor<EventResult> handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException {
-                if (baseEventClass == CreateOrderEvent.class) {
+            public Monitor<EventResult> handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException, IllegalAccessException {
+                if (erpBaseEvent instanceof CreateOrderEvent) {
                     OrderInfo orderInfo = (OrderInfo) data;
-                    return EDBOrderHandler.createOrder(orderInfo);
-                } else if (baseEventClass == InventoryEvent.class) {
-                    return EDBProductHandler.getProInventoryInfo();
-                } else if (baseEventClass == DeliveryInfoEvent.class) {
-                    return EDBOrderHandler.getOrderInfo();
-                } else if (baseEventClass == OrderStatusInfoEvent.class) {
-                    return EDBOrderHandler.orderStatusUpdate((OrderInfo) data);
-                } else if (baseEventClass == ObtainOrderEvent.class) {
-                    return EDBOrderHandler.obtainOrderList();
+                    return EDBOrderHandler.createOrder(orderInfo, erpBaseEvent.getErpInfo());
+                } else if (erpBaseEvent instanceof InventoryEvent) {
+                    return EDBProductHandler.getProInventoryInfo(erpBaseEvent.getErpInfo());
+                } else if (erpBaseEvent instanceof DeliveryInfoEvent) {
+                    return EDBOrderHandler.getOrderInfo(erpBaseEvent.getErpInfo());
+                } else if (erpBaseEvent instanceof OrderStatusInfoEvent) {
+                    return EDBOrderHandler.orderStatusUpdate((OrderInfo) data, erpBaseEvent.getErpInfo());
+                } else if (erpBaseEvent instanceof ObtainOrderEvent) {
+                    return EDBOrderHandler.obtainOrderList(erpBaseEvent.getErpInfo());
                 } else {
 
                 }

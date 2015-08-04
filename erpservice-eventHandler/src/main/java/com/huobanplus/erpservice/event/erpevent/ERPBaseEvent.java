@@ -10,11 +10,6 @@ import com.huobanplus.erpservice.event.model.ERPInfo;
 public class ERPBaseEvent {
     private ERPInfo erpInfo;
 
-    /**
-     * 授权验证实体
-     */
-    private AuthBean authBean;
-
     public ERPInfo getErpInfo() {
         return erpInfo;
     }
@@ -23,11 +18,10 @@ public class ERPBaseEvent {
         this.erpInfo = erpInfo;
     }
 
-    public AuthBean getAuthBean() {
-        return authBean;
+    public ERPBaseEvent(ERPInfo erpInfo) {
+        this.erpInfo = erpInfo;
     }
 
-    public void setAuthBean(AuthBean authBean) {
-        this.authBean = authBean;
+    public ERPBaseEvent() {
     }
 }

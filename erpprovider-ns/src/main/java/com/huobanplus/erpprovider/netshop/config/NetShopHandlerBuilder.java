@@ -69,17 +69,17 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
             }
 
             @Override
-            public Monitor handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, IllegalArgumentException {
+            public Monitor handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException, IllegalAccessException, IllegalArgumentException {
                 HttpServletRequest request = (HttpServletRequest) data;
-                if (baseEventClass == CreateOrderEvent.class) {
+                if (erpBaseEvent instanceof CreateOrderEvent) {
                     return NSOrderHandler.commitOrderInfo(request);
-                } else if (baseEventClass == InventoryEvent.class) {
+                } else if (erpBaseEvent instanceof InventoryEvent) {
                     return NSInventoryHandler.synsInventory(request);
-                } else if (baseEventClass == DeliveryInfoEvent.class) {
+                } else if (erpBaseEvent instanceof DeliveryInfoEvent) {
                     return NSDeliverHandler.deliverInform(request);
-                } else if (baseEventClass == OrderStatusInfoEvent.class) {
+                } else if (erpBaseEvent instanceof OrderStatusInfoEvent) {
                     return NSOrderHandler.orderStatusInfo(request);
-                } else if (baseEventClass == ProductInfoEvent.class) {
+                } else if (erpBaseEvent instanceof ProductInfoEvent) {
                     //商品信息
                     ProductInfo productInfo;
                     //构造Auth对象
@@ -106,7 +106,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                         productInfo = new ProductInfo();
                         return netShopService.obtainGoods(authBean, productInfo);
                     }
-                } else if (baseEventClass == ObtainOrderEvent.class) {
+                } else if (erpBaseEvent instanceof ObtainOrderEvent) {
                     return NSOrderHandler.obtainOrderInfo(request);
                 } else {
                     return null;

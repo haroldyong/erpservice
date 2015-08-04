@@ -7,6 +7,7 @@ import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpprovider.edb.util.SignBuilder;
 import com.huobanplus.erpprovider.edb.util.StringUtil;
 import com.huobanplus.erpprovider.edb.util.XmlUtil;
+import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ import java.util.*;
 @Component
 public class EDBProductHandlerImpl implements EDBProductHandler {
     @Override
-    public Monitor<EventResult> getProInventoryInfo() throws IOException {
+    public Monitor<EventResult> getProInventoryInfo(ERPInfo erpInfo) throws IOException {
         Map<String, String> requestData = new HashMap<>();
         String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
         requestData.put("dbhost", Constant.DB_HOST);

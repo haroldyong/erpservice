@@ -12,6 +12,7 @@ import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpprovider.edb.util.SignBuilder;
 import com.huobanplus.erpprovider.edb.util.StringUtil;
 import com.huobanplus.erpprovider.edb.util.XmlUtil;
+import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import com.huobanplus.erpservice.event.model.OrderInfo;
@@ -32,7 +33,7 @@ import java.util.TreeMap;
 public class EDBOrderHandlerImpl implements EDBOrderHandler {
 
     @Override
-    public Monitor<EventResult> createOrder(OrderInfo orderInfo) throws IOException {
+    public Monitor<EventResult> createOrder(OrderInfo orderInfo, ERPInfo info) throws IOException {
         HttpUtil htNetService = HttpUtil.getInstance();
 
         EDBCreateOrderInfo edbCreateOrderInfo = new EDBCreateOrderInfo();
@@ -114,10 +115,10 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
         XmlMapper xmlMapper = new XmlMapper();
         String resultStr = xmlMapper.writeValueAsString(edbOrder);
 
-        Map<String, String> requestData = getSysRequestData(Constant.CREATE_ORDER);
+        Map<String, String> requestData = getSysRequestData(Constant.CREATE_ORDER, info);
         requestData.put("xmlvalues", resultStr);
 
-        requestData.put("sign", getSign(requestData));
+        requestData.put("sign", getSign(requestData, info));
 
         String responseData = htNetService.doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
@@ -127,14 +128,14 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
     }
 
     @Override
-    public Monitor<EventResult> getOrderInfo() throws IOException {
-        Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO);
+    public Monitor<EventResult> getOrderInfo(ERPInfo info) throws IOException {
+        Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, info);
         requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("page_no", "1");
         requestData.put("page_size", "10");
         //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
-        requestData.put("sign", getSign(requestData));
+        requestData.put("sign", getSign(requestData, info));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
@@ -154,14 +155,14 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
 
 
     @Override
-    public Monitor<EventResult> obtainOrderList() throws IOException {
-        Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO);
+    public Monitor<EventResult> obtainOrderList(ERPInfo info) throws IOException {
+        Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, info);
         requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("page_no", "1");
         requestData.put("page_size", "10");
         //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
-        requestData.put("sign", getSign(requestData));
+        requestData.put("sign", getSign(requestData, info));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
@@ -178,13 +179,13 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
     }
 
     @Override
-    public Monitor<EventResult> orderStatusUpdate(OrderInfo orderInfo) throws IOException {
-        Map<String, String> requestData = getSysRequestData(Constant.ORDER_STATUS_UPDATE);
+    public Monitor<EventResult> orderStatusUpdate(OrderInfo orderInfo, ERPInfo info) throws IOException {
+        Map<String, String> requestData = getSysRequestData(Constant.ORDER_STATUS_UPDATE, info);
         requestData.put("num_id", orderInfo.getOrderCode());
         requestData.put("tid_type", orderInfo.getOrderType());
         requestData.put("import_mark", orderInfo.getImportMark());
 
-        requestData.put("sign", getSign(requestData));
+        requestData.put("sign", getSign(requestData, info));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
@@ -195,7 +196,7 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
     }
 
     @Override
-    public Monitor<EventResult> orderUpdate(OrderInfo orderInfo) throws IOException {
+    public Monitor<EventResult> orderUpdate(OrderInfo orderInfo, ERPInfo info) throws IOException {
         EDBOrderForUpdate orderForUpdate = new EDBOrderForUpdate();
         orderForUpdate.setTid(orderInfo.getTid());
         orderForUpdate.setOutTid(orderInfo.getOutTid());
@@ -221,9 +222,9 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
 
         XmlMapper xmlMapper = new XmlMapper();
         String resultStr = xmlMapper.writeValueAsString(updateOrder);
-        Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER);
+        Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER, info);
         requestData.put("xmlValues", resultStr);
-        requestData.put("sign", getSign(requestData));
+        requestData.put("sign", getSign(requestData, info));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
 
@@ -234,15 +235,15 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
     }
 
     @Override
-    public Monitor<EventResult> orderDeliver(OrderInfo orderInfo) throws IOException {
-        Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER);
+    public Monitor<EventResult> orderDeliver(OrderInfo orderInfo, ERPInfo info) throws IOException {
+        Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER, info);
         requestData.put("OrderCode", orderInfo.getOrderCode());
         requestData.put("delivery_time", StringUtil.DateFormat(orderInfo.getDeliveryTime(), StringUtil.TIME_PATTERN));
         requestData.put("express_no", orderInfo.getExpressNo());
         requestData.put("express", orderInfo.getExpress());
         requestData.put("weight", orderInfo.getWeight());
 
-        requestData.put("sign", getSign(requestData));
+        requestData.put("sign", getSign(requestData, info));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
@@ -257,7 +258,7 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
      *
      * @return
      */
-    private Map<String, String> getSysRequestData(String method) {
+    private Map<String, String> getSysRequestData(String method, ERPInfo info) {
         Map<String, String> requestData = new HashMap<>();
         String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
         requestData.put("dbhost", Constant.DB_HOST);
@@ -277,7 +278,7 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
      * @param requestData
      * @return
      */
-    private String getSign(Map requestData) {
+    private String getSign(Map requestData, ERPInfo info) {
         TreeMap<String, String> signMap = new TreeMap<>(requestData);
         signMap.put("appscret", Constant.APP_SECRET);
         signMap.put("token", Constant.TOKEN);
