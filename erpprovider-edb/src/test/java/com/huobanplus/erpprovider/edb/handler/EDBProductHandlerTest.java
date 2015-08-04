@@ -8,20 +8,18 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by allan on 2015/7/28.
  */
 @ActiveProfiles("test")
 @ContextConfiguration(classes = {EDBConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class ProductHandlerTest {
+public class EDBProductHandlerTest {
     @Autowired
-    private ProductHandler productHandler;
+    private EDBProductHandler EDBProductHandler;
 
     @Test
     public void testGetProInventoryInfo() throws Exception {
-        productHandler.getProInventoryInfo();
+        EDBProductHandler.getProInventoryInfo();
     }
 }

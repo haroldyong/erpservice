@@ -2,12 +2,13 @@ package com.huobanplus.erpprovider.huobanmall.handler.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.huobanmall.common.SimpleMonitor;
-import com.huobanplus.erpprovider.huobanmall.handler.InventoryHandler;
+import com.huobanplus.erpprovider.huobanmall.handler.MallInventoryHandler;
 import com.huobanplus.erpprovider.huobanmall.util.Constant;
 import com.huobanplus.erpprovider.huobanmall.util.HttpUtil;
 import com.huobanplus.erpprovider.huobanmall.util.SignBuilder;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -18,7 +19,8 @@ import java.util.TreeMap;
  * <p>类描述：<p/>
  * 伙伴商城库存事件实现
  */
-public class InventoryHandlerImpl implements InventoryHandler {
+@Component
+public class MallInventoryHandlerImpl implements MallInventoryHandler {
 
     @Override
     public Monitor<EventResult> commitInventoryInfo(HttpServletRequest request) throws IOException {

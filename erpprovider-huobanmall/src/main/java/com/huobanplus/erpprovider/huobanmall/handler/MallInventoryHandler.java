@@ -10,7 +10,7 @@ import java.io.IOException;
  * <p>类描述：<p/>
  * 伙伴商城库存事件接口
  */
-public interface InventoryHandler {
+public interface MallInventoryHandler {
 
     /**
      * 提交库存信息

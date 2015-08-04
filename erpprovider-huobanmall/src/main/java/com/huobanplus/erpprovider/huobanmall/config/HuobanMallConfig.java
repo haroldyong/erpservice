@@ -1,6 +1,7 @@
 package com.huobanplus.erpprovider.huobanmall.config;
 
 import com.huobanplus.erpservice.event.handler.ERPRegister;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,7 @@ public class HuobanMallConfig {
     /**
      * erp注册对象
      */
-    @Resource
+    @Autowired
     private ERPRegister erpRegister;
 
     @Bean
@@ -27,12 +28,12 @@ public class HuobanMallConfig {
         return new HuobanMallHandlerBuilder();
     }
 
-    @Resource
-    private HuobanMallHandlerBuilder edbHandlerBuilder;
+    @Autowired
+    private HuobanMallHandlerBuilder huobanMallHandlerBuilder;
 
     @PostConstruct
     public void init() {
-        erpRegister.addBuilders(new HuobanMallHandlerBuilder());
+        erpRegister.addBuilders(huobanMallHandlerBuilder);
     }
 
 }

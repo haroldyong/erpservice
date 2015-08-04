@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * 订单方法处理接口
  */
-public interface OrderHandler {
+public interface NSOrderHandler {
 
     /**
      * 新增订单信息

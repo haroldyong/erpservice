@@ -10,6 +10,6 @@ import java.io.IOException;
 /**
  * Created by allan on 2015/7/31.
  */
-public interface DeliverHandler {
+public interface NSDeliverHandler {
     Monitor<EventResult> deliverInform(HttpServletRequest request) throws IOException;
 }

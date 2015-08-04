@@ -1,6 +1,5 @@
 package com.huobanplus.erpservice.event.model;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
 

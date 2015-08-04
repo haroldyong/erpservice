@@ -7,15 +7,15 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * 库存相关处理
- * Created by allan on 2015/8/2.
+ * 商品处理事件接口
  */
-public interface InventoryHandler {
+public interface NSProductHandler {
+
     /**
-     * 库存同步
-     * @param request 请求实体
+     * 获取商品信息
+     * @param request
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> synsInventory(HttpServletRequest request) throws IOException;
+    Monitor<EventResult> obtainGood(HttpServletRequest request) throws IOException;
 }

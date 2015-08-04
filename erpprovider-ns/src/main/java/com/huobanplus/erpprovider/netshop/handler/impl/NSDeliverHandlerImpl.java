@@ -1,17 +1,13 @@
 package com.huobanplus.erpprovider.netshop.handler.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huobanplus.erpprovider.netshop.bean.AuthBean;
-import com.huobanplus.erpprovider.netshop.handler.DeliverHandler;
+import com.huobanplus.erpprovider.netshop.handler.NSDeliverHandler;
 import com.huobanplus.erpprovider.netshop.net.HttpUtil;
 import com.huobanplus.erpprovider.netshop.support.BaseMonitor;
 import com.huobanplus.erpprovider.netshop.util.Constant;
 import com.huobanplus.erpprovider.netshop.util.SignBuilder;
-import com.huobanplus.erpprovider.netshop.util.SignStrategy;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +20,7 @@ import java.util.TreeMap;
  * Created by allan on 2015/7/31.
  */
 @Component
-public class DeliverHandlerImpl implements DeliverHandler {
+public class NSDeliverHandlerImpl implements NSDeliverHandler {
     @Override
     public Monitor<EventResult> deliverInform(HttpServletRequest request) throws IOException {
         Map<String, String> signMap = new TreeMap<>();

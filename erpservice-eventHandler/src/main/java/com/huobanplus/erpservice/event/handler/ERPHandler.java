@@ -3,7 +3,6 @@ package com.huobanplus.erpservice.event.handler;
 import com.huobanplus.erpservice.event.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.event.model.FailedBean;
 import com.huobanplus.erpservice.event.model.Monitor;
-import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;
 
@@ -30,9 +29,8 @@ public interface ERPHandler {
      * @return 事件处理结果
      * @throws IOException            网络操作异常
      * @throws IllegalAccessException 接口访问不合法异常
-     * @throws DataAccessException    操作数据库时异常
      */
-    Monitor handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, DataAccessException, IllegalArgumentException;
+    Monitor handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, IllegalArgumentException;
 
     /**
      * 处理异常信息
