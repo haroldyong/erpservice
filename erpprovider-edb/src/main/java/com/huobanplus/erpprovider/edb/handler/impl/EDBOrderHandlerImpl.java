@@ -5,7 +5,7 @@ import com.huobanplus.erpprovider.edb.bean.EDBOrder;
 import com.huobanplus.erpprovider.edb.bean.EDBCreateOrderInfo;
 import com.huobanplus.erpprovider.edb.bean.EDBOrderForUpdate;
 import com.huobanplus.erpprovider.edb.bean.EDBUpdateOrder;
-import com.huobanplus.erpprovider.edb.handler.OrderHandler;
+import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.net.HttpUtil;
 import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
 import com.huobanplus.erpprovider.edb.util.Constant;
@@ -15,7 +15,6 @@ import com.huobanplus.erpprovider.edb.util.XmlUtil;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import com.huobanplus.erpservice.event.model.OrderInfo;
-import org.dom4j.DocumentException;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -30,7 +29,7 @@ import java.util.TreeMap;
  * Created by allan on 2015/7/24.
  */
 @Component
-public class OrderHandlerImpl implements OrderHandler {
+public class EDBOrderHandlerImpl implements EDBOrderHandler {
 
     @Override
     public Monitor<EventResult> createOrder(OrderInfo orderInfo) throws IOException {

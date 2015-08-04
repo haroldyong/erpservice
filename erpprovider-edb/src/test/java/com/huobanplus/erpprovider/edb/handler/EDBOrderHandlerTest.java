@@ -1,7 +1,6 @@
 package com.huobanplus.erpprovider.edb.handler;
 
 import com.huobanplus.erpprovider.edb.EDBConfig;
-import com.huobanplus.erpprovider.edb.util.StringUtil;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import com.huobanplus.erpservice.event.model.OrderInfo;
@@ -15,17 +14,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Date;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by allan on 2015/7/29.
  */
 @ActiveProfiles("test")
 @ContextConfiguration(classes = {EDBConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class OrderHandlerTest {
+public class EDBOrderHandlerTest {
     @Autowired
-    private OrderHandler orderHandler;
+    private EDBOrderHandler EDBOrderHandler;
 
     @Test
     public void testCreateOrder() throws Exception {
@@ -59,12 +56,12 @@ public class OrderHandlerTest {
         orderInfo.setBookDeliveryTime(new Date());
         orderInfo.setPayDate(new Date());
         orderInfo.setFinishDate(new Date());
-        orderHandler.createOrder(orderInfo);
+        EDBOrderHandler.createOrder(orderInfo);
     }
 
     @Test
     public void testGetOrderInfo() throws Exception {
-        Monitor<EventResult> monitor = orderHandler.getOrderInfo();
+        Monitor<EventResult> monitor = EDBOrderHandler.getOrderInfo();
     }
 
     @Test

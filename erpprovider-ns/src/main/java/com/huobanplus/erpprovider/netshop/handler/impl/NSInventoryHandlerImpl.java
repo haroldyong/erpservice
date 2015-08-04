@@ -1,9 +1,8 @@
 package com.huobanplus.erpprovider.netshop.handler.impl;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.huobanplus.erpprovider.netshop.handler.InventoryHandler;
+import com.huobanplus.erpprovider.netshop.handler.NSInventoryHandler;
 import com.huobanplus.erpprovider.netshop.net.HttpUtil;
 import com.huobanplus.erpprovider.netshop.support.BaseMonitor;
 import com.huobanplus.erpprovider.netshop.util.Constant;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -23,7 +21,7 @@ import java.util.TreeMap;
  * Created by allan on 2015/8/2.
  */
 @Component
-public class InventoryHandlerImpl implements InventoryHandler {
+public class NSInventoryHandlerImpl implements NSInventoryHandler {
 
     @Override
     public Monitor<EventResult> synsInventory(HttpServletRequest request) throws IOException {

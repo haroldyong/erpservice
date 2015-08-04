@@ -1,32 +1,28 @@
 package com.huobanplus.erpprovider.netshop.config;
 
-import com.huobanplus.erpprovider.netshop.bean.*;
-import com.huobanplus.erpprovider.netshop.handler.DeliverHandler;
-import com.huobanplus.erpprovider.netshop.handler.InventoryHandler;
-import com.huobanplus.erpprovider.netshop.handler.OrderHandler;
+import com.huobanplus.erpprovider.netshop.handler.NSDeliverHandler;
+import com.huobanplus.erpprovider.netshop.handler.NSInventoryHandler;
+import com.huobanplus.erpprovider.netshop.handler.NSOrderHandler;
 import com.huobanplus.erpprovider.netshop.service.NetShopService;
 import com.huobanplus.erpprovider.netshop.support.BaseMonitor;
 import com.huobanplus.erpprovider.netshop.util.Constant;
-import com.huobanplus.erpprovider.netshop.util.SignBuilder;
 import com.huobanplus.erpprovider.netshop.util.SignStrategy;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.event.model.*;
 import com.huobanplus.erpservice.event.model.AuthBean;
-import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * <b>类描述：<b/>具体处理事件
  */
+@Component
 public class NetShopHandlerBuilder implements ERPHandlerBuilder {
     /**
      * @param info 相关信息
@@ -36,13 +32,13 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
     private NetShopService netShopService;
 
     @Autowired
-    private DeliverHandler deliverHandler;
+    private NSDeliverHandler NSDeliverHandler;
 
     @Resource
-    private OrderHandler orderHandler;
+    private NSOrderHandler NSOrderHandler;
 
     @Resource
-    private InventoryHandler inventoryHandler;
+    private NSInventoryHandler NSInventoryHandler;
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
@@ -57,49 +53,33 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
 
                 if (baseEventClass == CreateOrderEvent.class) {
                     return true;
-                }
-                else if(baseEventClass == DeliveryInfoEvent.class)
-                {
+                } else if (baseEventClass == DeliveryInfoEvent.class) {
                     return true;
-                }
-                else if(baseEventClass == InventoryEvent.class)
-                {
+                } else if (baseEventClass == InventoryEvent.class) {
                     return true;
-                }
-                else if(baseEventClass == OrderStatusInfoEvent.class)
-                {
+                } else if (baseEventClass == OrderStatusInfoEvent.class) {
                     return true;
-                }
-                else if(baseEventClass == ProductInfoEvent.class)
-                {
+                } else if (baseEventClass == ProductInfoEvent.class) {
                     return true;
-                }
-                else if(baseEventClass == ObtainOrderEvent.class)
-                {
+                } else if (baseEventClass == ObtainOrderEvent.class) {
                     return true;
-                }
-                else
-                {
+                } else {
                     return false;
                 }
             }
 
             @Override
-            public Monitor handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, DataAccessException, IllegalArgumentException {
+            public Monitor handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException, IllegalArgumentException {
                 HttpServletRequest request = (HttpServletRequest) data;
                 if (baseEventClass == CreateOrderEvent.class) {
-                    return orderHandler.commitOrderInfo(request);
+                    return NSOrderHandler.commitOrderInfo(request);
                 } else if (baseEventClass == InventoryEvent.class) {
-                    return inventoryHandler.synsInventory(request);
+                    return NSInventoryHandler.synsInventory(request);
                 } else if (baseEventClass == DeliveryInfoEvent.class) {
-                    return deliverHandler.deliverInform(request);
-                }
-                else if(baseEventClass == OrderStatusInfoEvent.class)
-                {
-                    return orderHandler.orderStatusInfo(request);
-                }
-                else if(baseEventClass == ProductInfoEvent.class)
-                {
+                    return NSDeliverHandler.deliverInform(request);
+                } else if (baseEventClass == OrderStatusInfoEvent.class) {
+                    return NSOrderHandler.orderStatusInfo(request);
+                } else if (baseEventClass == ProductInfoEvent.class) {
                     //商品信息
                     ProductInfo productInfo;
                     //构造Auth对象
@@ -126,13 +106,9 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                         productInfo = new ProductInfo();
                         return netShopService.obtainGoods(authBean, productInfo);
                     }
-                }
-                else if(baseEventClass == ObtainOrderEvent.class)
-                {
-                    return orderHandler.obtainOrderInfo(request);
-                }
-                else
-                {
+                } else if (baseEventClass == ObtainOrderEvent.class) {
+                    return NSOrderHandler.obtainOrderInfo(request);
+                } else {
                     return null;
                 }
             }
@@ -140,32 +116,20 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
             @Override
             public Monitor handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean) {
 
-                if (baseEventClass == CreateOrderEvent.class)
-                {
+                if (baseEventClass == CreateOrderEvent.class) {
                     return netShopService.notifyFailedEvent(failedBean);
-                } else if(baseEventClass == DeliveryInfoEvent.class)
-                {
+                } else if (baseEventClass == DeliveryInfoEvent.class) {
                     return netShopService.notifyFailedEvent(failedBean);
-                }
-                else if(baseEventClass == InventoryEvent.class)
-                {
+                } else if (baseEventClass == InventoryEvent.class) {
                     return netShopService.notifyFailedEvent(failedBean);
-                }
-                else if(baseEventClass == OrderStatusInfoEvent.class)
-                {
+                } else if (baseEventClass == OrderStatusInfoEvent.class) {
                     return netShopService.notifyFailedEvent(failedBean);
-                }
-                else if(baseEventClass == ProductInfoEvent.class)
-                {
+                } else if (baseEventClass == ProductInfoEvent.class) {
                     return netShopService.notifyFailedEvent(failedBean);
-                }
-                else if(baseEventClass == ObtainOrderEvent.class)
-                {
+                } else if (baseEventClass == ObtainOrderEvent.class) {
                     return netShopService.notifyFailedEvent(failedBean);
-                }
-                else
-                {
-                    return  null;
+                } else {
+                    return null;
                 }
 
             }

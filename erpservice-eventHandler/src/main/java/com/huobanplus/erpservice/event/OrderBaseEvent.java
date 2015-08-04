@@ -1,6 +1,5 @@
 package com.huobanplus.erpservice.event;
 
-//import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.event.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.event.model.OrderInfo;
 

@@ -14,7 +14,7 @@ import java.io.UnsupportedEncodingException;
  * 订单相关
  * Created by allan on 2015/7/24.
  */
-public interface OrderHandler {
+public interface EDBOrderHandler {
     /**
      * 创建订单
      * <p>返回json</p>

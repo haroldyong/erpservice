@@ -1,10 +1,7 @@
 package com.huobanplus.erpservice.datacenter.bean;
 
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -13,7 +10,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "Mall_Inventorys")
-public class mallInventoryBean {
+public class MallInventoryBean {
 
     /**
      * 库存单号

@@ -1,15 +1,15 @@
 package com.huobanplus.erpprovider.netshop.handler.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huobanplus.erpprovider.netshop.handler.ProductHandler;
+import com.huobanplus.erpprovider.netshop.handler.NSProductHandler;
 import com.huobanplus.erpprovider.netshop.net.HttpUtil;
 import com.huobanplus.erpprovider.netshop.support.BaseMonitor;
 import com.huobanplus.erpprovider.netshop.util.Constant;
 import com.huobanplus.erpprovider.netshop.util.SignBuilder;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
-import com.huobanplus.erpservice.event.model.OrderInfo;
 import com.huobanplus.erpservice.event.model.ProductInfo;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -19,7 +19,8 @@ import java.util.TreeMap;
 /**
  * 商品事件实现类
  */
-public class ProductHandlerImpl implements ProductHandler {
+@Component
+public class NSProductHandlerImpl implements NSProductHandler {
     @Override
     public Monitor<EventResult> obtainGood(HttpServletRequest request) throws IOException {
 

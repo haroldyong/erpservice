@@ -101,114 +101,115 @@ public class OrderControllerImpl implements OrderController {
                            String capCode,
                            String timeStamp,
                            String erpName) {
-        Map<String, String> resultMap;
-        MallOrderBean order;
-        if (!SecurityUtils.getInstance().validateSign(sign, appKey, operation, capCode, timeStamp)) {
-            resultMap = new HashMap<String, String>();
-            resultMap.put("resut_message", "sign验证失败");
-            resultMap.put("resut_code", ResponseCode.SING_ERROR);
-            return resultMap;
-        } else {
-            order = new MallOrderBean();
-            order.setOrderId(orderId);
-            order.setSyncStatus(syncStatus);
-            order.setMemberId(memberId);
-            order.setOrderStatus(orderStatus);
-            order.setPayStatus(payStatus);
-            order.setShipStatus(shipStatus);
-            order.setMemberStatus(memberStatus);
-            order.setIsDelivery(isDelivery);
-            order.setDeliverMethodId(deliverMethodId);
-            order.setDeliverMethod(deliverMethod);
-            order.setDeliverArea(deliverArea);
-            order.setWeight(weight);
-            order.setOrderName(orderName);
-            order.setItemNum(itemNum);
-            order.setActTime(new Date(actTime));
-            order.setCreateTime(new Date(createTime));
-            order.setCreateIP(createIP);
-            order.setShipName(shipName);
-            order.setShipArea(shipArea);
-            order.setShipAddr(shipAddr);
-            order.setShipZip(shipZip);
-            order.setShipTel(shipTel);
-            order.setShipEmail(shipEmail);
-            order.setShipTime(shipTime);
-            order.setShipMobile(shipMobile);
-            order.setCostItem(costItem);
-            order.setIsTax(isTax);
-            order.setCostTax(costTax);
-            order.setTaxCompany(taxCompany);
-            order.setCostFreight(costFreight);
-            order.setIsProtect(isProtect);
-            order.setCostProtect(costProtect);
-            order.setCostPayment(costPayment);
-            order.setScoreU(scoreU);
-            order.setDiscount(discount);
-            order.setUsePmt(usePmt);
-            order.setTotalAmount(totalAmount);
-            order.setFinalAmount(finalAmount);
-            order.setPmtAmount(pmtAmount);
-            order.setPayed(payed);
-            order.setMemo(memo);
-            order.setLastChangeTime(new Date(lastChangeTime));
-            order.setCustomerId(customerId);
-            order.setCashOnDly(cashOnDly);
-            order.setOnlinePayType(onlinePayType);
-            order.setScoreUAmount(scoreUAmount);
-            order.setPayAgentId(payAgentId);
-            order.setPayAgentScore(payAgentScore);
-            order.setPayAgentScoreAmount(payAgentScoreAmount);
-            order.setPayAgentPayed(payAgentPayed);
-            order.setHasPayed(hasPayed);
-            order.setHasPayedScore(hasPayedScore);
-            order.setOnlineAmount(onlineAmount);
-            order.setHongbaoAmount(hongbaoAmount);
-            order.setPayTime(new Date(payTime));
-            order.setVirtualRecMobile(virtualRecMobile);
-            order = orderService.save(order);
-            if (null == order) {
-
-                //插入数据失败
-                resultMap = new HashMap<String, String>();
-                resultMap.put("resut_message", "订单数据保存失败");
-                resultMap.put("resut_code", ResponseCode.DATABASE_ERROR);
-                return resultMap;
-            } else {
-                if (null == erpName || !"".equals(erpName.trim())) {
-                    //erp信息错误
-                    resultMap = new HashMap<String, String>();
-                    resultMap.put("resut_message", "ERP信息出错");
-                    resultMap.put("resut_code", ResponseCode.ERP_INFO_ERROR);
-                    return resultMap;
-                } else {
-                    ERPInfo info = new ERPInfo();
-                    info.setName(erpName);
-                    //处理edb模块
-                    ERPHandler edbHandler = erpRegister.getERPHandler(info);
-                    if (null != edbHandler) {
-                        if (edbHandler.eventSupported(CreateOrderEvent.class)) {
-//                            try {
-//                                edbHandler.handleEvent(CreateOrderEvent.class,new Orde);
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            } catch (IllegalAccessException e) {
-//                                e.printStackTrace();
-//                            } catch (DocumentException e) {
-//                                e.printStackTrace();
-//                            }
-                        }
-                    }
-
-                    //返回操作成功结果
-                    resultMap = new HashMap<String, String>();
-                    resultMap.put("resut_message", "订单接收成功");
-                    resultMap.put("resut_code", ResponseCode.SUCCESS);
-                    return resultMap;
-                }
-            }
-
-        }
+//        Map<String, String> resultMap;
+//        MallOrderBean order;
+//        if (!SecurityUtils.getInstance().validateSign(sign, appKey, operation, capCode, timeStamp)) {
+//            resultMap = new HashMap<String, String>();
+//            resultMap.put("resut_message", "sign验证失败");
+//            resultMap.put("resut_code", ResponseCode.SING_ERROR);
+//            return resultMap;
+//        } else {
+//            order = new MallOrderBean();
+//            order.setOrderId(orderId);
+//            order.setSyncStatus(syncStatus);
+//            order.setMemberId(memberId);
+//            order.setOrderStatus(orderStatus);
+//            order.setPayStatus(payStatus);
+//            order.setShipStatus(shipStatus);
+//            order.setMemberStatus(memberStatus);
+//            order.setIsDelivery(isDelivery);
+//            order.setDeliverMethodId(deliverMethodId);
+//            order.setDeliverMethod(deliverMethod);
+//            order.setDeliverArea(deliverArea);
+//            order.setWeight(weight);
+//            order.setOrderName(orderName);
+//            order.setItemNum(itemNum);
+//            order.setActTime(new Date(actTime));
+//            order.setCreateTime(new Date(createTime));
+//            order.setCreateIP(createIP);
+//            order.setShipName(shipName);
+//            order.setShipArea(shipArea);
+//            order.setShipAddr(shipAddr);
+//            order.setShipZip(shipZip);
+//            order.setShipTel(shipTel);
+//            order.setShipEmail(shipEmail);
+//            order.setShipTime(shipTime);
+//            order.setShipMobile(shipMobile);
+//            order.setCostItem(costItem);
+//            order.setIsTax(isTax);
+//            order.setCostTax(costTax);
+//            order.setTaxCompany(taxCompany);
+//            order.setCostFreight(costFreight);
+//            order.setIsProtect(isProtect);
+//            order.setCostProtect(costProtect);
+//            order.setCostPayment(costPayment);
+//            order.setScoreU(scoreU);
+//            order.setDiscount(discount);
+//            order.setUsePmt(usePmt);
+//            order.setTotalAmount(totalAmount);
+//            order.setFinalAmount(finalAmount);
+//            order.setPmtAmount(pmtAmount);
+//            order.setPayed(payed);
+//            order.setMemo(memo);
+//            order.setLastChangeTime(new Date(lastChangeTime));
+//            order.setCustomerId(customerId);
+//            order.setCashOnDly(cashOnDly);
+//            order.setOnlinePayType(onlinePayType);
+//            order.setScoreUAmount(scoreUAmount);
+//            order.setPayAgentId(payAgentId);
+//            order.setPayAgentScore(payAgentScore);
+//            order.setPayAgentScoreAmount(payAgentScoreAmount);
+//            order.setPayAgentPayed(payAgentPayed);
+//            order.setHasPayed(hasPayed);
+//            order.setHasPayedScore(hasPayedScore);
+//            order.setOnlineAmount(onlineAmount);
+//            order.setHongbaoAmount(hongbaoAmount);
+//            order.setPayTime(new Date(payTime));
+//            order.setVirtualRecMobile(virtualRecMobile);
+//            order = orderService.save(order);
+//            if (null == order) {
+//
+//                //插入数据失败
+//                resultMap = new HashMap<String, String>();
+//                resultMap.put("resut_message", "订单数据保存失败");
+//                resultMap.put("resut_code", ResponseCode.DATABASE_ERROR);
+//                return resultMap;
+//            } else {
+//                if (null == erpName || !"".equals(erpName.trim())) {
+//                    //erp信息错误
+//                    resultMap = new HashMap<String, String>();
+//                    resultMap.put("resut_message", "ERP信息出错");
+//                    resultMap.put("resut_code", ResponseCode.ERP_INFO_ERROR);
+//                    return resultMap;
+//                } else {
+//                    ERPInfo info = new ERPInfo();
+//                    info.setName(erpName);
+//                    //处理edb模块
+//                    ERPHandler edbHandler = erpRegister.getERPHandler(info);
+//                    if (null != edbHandler) {
+//                        if (edbHandler.eventSupported(CreateOrderEvent.class)) {
+////                            try {
+////                                edbHandler.handleEvent(CreateOrderEvent.class,new Orde);
+////                            } catch (IOException e) {
+////                                e.printStackTrace();
+////                            } catch (IllegalAccessException e) {
+////                                e.printStackTrace();
+////                            } catch (DocumentException e) {
+////                                e.printStackTrace();
+////                            }
+//                        }
+//                    }
+//
+//                    //返回操作成功结果
+//                    resultMap = new HashMap<String, String>();
+//                    resultMap.put("resut_message", "订单接收成功");
+//                    resultMap.put("resut_code", ResponseCode.SUCCESS);
+//                    return resultMap;
+//                }
+//            }
+//
+//        }
+        return null;
     }
 
     @Override

@@ -103,7 +103,6 @@ public class MallOrderBean {
     }
 
     /**
-
      * 订单净重
      */
     @Column(name = "Weight")
@@ -805,7 +804,7 @@ public class MallOrderBean {
     /**
      * 实付运费
      */
-    @Column(name = "Real_Income_Freight")
+    @Column(name = "Real_Pay_Freight")
     private double realPayFreight;
     /**
      * 毛重运费
@@ -1309,17 +1308,17 @@ public class MallOrderBean {
      * 是否送货前通知
      */
     @Column(name = "Is_PreDelivery_Notice")
-    private String  isPreDeliveryNotice;
+    private String isPreDeliveryNotice;
     /**
      * 送货时间
      */
     @Column(name = "Jd_Delivery_Time")
-    private Date  jdDeliveryTime;
+    private Date jdDeliveryTime;
     /**
      * 分拣代码
      */
     @Column(name = "Sorting_Code")
-    private String  sortingCode;
+    private String sortingCode;
     /**
      * 货到付款结算凭证号
      */

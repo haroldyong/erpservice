@@ -1,6 +1,5 @@
 package com.huobanplus.erpservice.event.erpevent;
 
-import com.huobanplus.erpservice.event.model.AuthBean;
 import com.huobanplus.erpservice.event.model.OrderInfo;
 
 /**

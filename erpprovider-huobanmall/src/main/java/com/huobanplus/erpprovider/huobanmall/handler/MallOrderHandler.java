@@ -10,7 +10,7 @@ import java.io.IOException;
  * <p>类描述：<p/>
  * 伙伴商城订单事件接口
  */
-public interface OrderHandler {
+public interface MallOrderHandler {
 
     /**
      * 方法描述：提交（创建）单个订单信息

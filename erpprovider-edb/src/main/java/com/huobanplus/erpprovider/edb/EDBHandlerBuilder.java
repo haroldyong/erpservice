@@ -1,21 +1,15 @@
 package com.huobanplus.erpprovider.edb;
 
 
-import com.huobanplus.erpprovider.edb.handler.OrderHandler;
-import com.huobanplus.erpprovider.edb.handler.ProductHandler;
-import com.huobanplus.erpprovider.edb.net.HttpUtil;
-import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
-import com.huobanplus.erpprovider.edb.util.Constant;
+import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
+import com.huobanplus.erpprovider.edb.handler.EDBProductHandler;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.event.model.*;
-import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -25,9 +19,9 @@ import java.io.IOException;
 @Component
 public class EDBHandlerBuilder implements ERPHandlerBuilder {
     @Autowired
-    private OrderHandler orderHandler;
+    private EDBOrderHandler EDBOrderHandler;
     @Autowired
-    private ProductHandler productHandler;
+    private EDBProductHandler EDBProductHandler;
 
     /**
      * 根据erp信息判断是否由该erp-provider处理
@@ -61,15 +55,15 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
             public Monitor<EventResult> handleEvent(Class<? extends ERPBaseEvent> baseEventClass, Object data) throws IOException, IllegalAccessException {
                 if (baseEventClass == CreateOrderEvent.class) {
                     OrderInfo orderInfo = (OrderInfo) data;
-                    return orderHandler.createOrder(orderInfo);
+                    return EDBOrderHandler.createOrder(orderInfo);
                 } else if (baseEventClass == InventoryEvent.class) {
-                    return productHandler.getProInventoryInfo();
+                    return EDBProductHandler.getProInventoryInfo();
                 } else if (baseEventClass == DeliveryInfoEvent.class) {
-                    return orderHandler.getOrderInfo();
+                    return EDBOrderHandler.getOrderInfo();
                 } else if (baseEventClass == OrderStatusInfoEvent.class) {
-                    return orderHandler.orderStatusUpdate((OrderInfo) data);
+                    return EDBOrderHandler.orderStatusUpdate((OrderInfo) data);
                 } else if (baseEventClass == ObtainOrderEvent.class) {
-                    return orderHandler.obtainOrderList();
+                    return EDBOrderHandler.obtainOrderList();
                 } else {
 
                 }

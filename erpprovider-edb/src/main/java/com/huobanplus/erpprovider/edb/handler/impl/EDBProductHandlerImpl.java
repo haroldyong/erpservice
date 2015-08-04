@@ -1,7 +1,6 @@
 package com.huobanplus.erpprovider.edb.handler.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huobanplus.erpprovider.edb.handler.ProductHandler;
+import com.huobanplus.erpprovider.edb.handler.EDBProductHandler;
 import com.huobanplus.erpprovider.edb.net.HttpUtil;
 import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
 import com.huobanplus.erpprovider.edb.util.Constant;
@@ -10,7 +9,6 @@ import com.huobanplus.erpprovider.edb.util.StringUtil;
 import com.huobanplus.erpprovider.edb.util.XmlUtil;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
-import org.dom4j.DocumentException;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -21,7 +19,7 @@ import java.util.*;
  * Created by allan on 2015/7/28.
  */
 @Component
-public class ProductHandlerImpl implements ProductHandler {
+public class EDBProductHandlerImpl implements EDBProductHandler {
     @Override
     public Monitor<EventResult> getProInventoryInfo() throws IOException {
         Map<String, String> requestData = new HashMap<>();
