@@ -1,284 +1,311 @@
-package com.huobanplus.erpservice.event.model;
+package com.huobanplus.erpservice.datacenter.bean;
 
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.Column;
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * <b>类描述：</b>库存信息实体
- * @author aaron
- * @since  2015年7月27日 上午10:24:35
- * @version V1.0
+ * <p>类描述：<p/>
+ * 库存信息
  */
-public class InventoryInfo extends EventResult {
-
-    public String getInventoryNo() {
-        return inventoryNo;
-    }
-
-    public void setInventoryNo(String inventoryNo) {
-        this.inventoryNo = inventoryNo;
-    }
+@Entity
+@Table(name = "Mall_Inventorys")
+public class mallInventoryBean {
 
     /**
      * 库存单号
      */
-
+    @Id
+    @Column(name = "Inventory_No")
     private String inventoryNo;
-    /**
-     * 出库单号
-     */
-    private String outStorageNo;
     /**
      * 运费
      */
+    @Column(name = "Freight")
     private double freight;
     /**
      * 运费分摊方式1:按产品数量2：按产品重量默认为1
      */
+    @Column(name = "Freight_Avgway")
     private String freightAvgway;
-    /**
-     * 入库单号
-     */
-    private String inStorageNo;
     /**
      * 条形码
      */
+    @Column(name = "Bar_Code")
     private String barCode;
     /**
-     * 入库数量
+     * 库存库数量
      */
-    private int instorageNum;
-    /**
-     * 出库数量
-     */
-    private int outstorageNum;
+    @Column(name = "storage_Num")
+    private int storageNum;
     /**
      * 入库类型；全部:1/其他入库:10/产成品入库:11/原料入库:12/盘盈入库:13/维修入库:14/差错入库:15/退货入库:3/归还入库:4/调拨入库:6/正常入库:8/采购入库:9
      */
+    @Column(name = "Type")
     private int type;
     /**
      * 日期类型--入库日期in_time,制单日期create_time,审核日期examine_time
      */
+    @Column(name = "Date_Type")
     private String dateType;
     /**
      * 开始时间;所查订单的开始时间,和日期类型配合使用.
      */
+    @Column(name = "Begin_Time")
     private Date beginTime;
     /**
      * 结束时间;所查订单的结束时间,和日期类型配合使用.如果没输入,则默认为此时此刻.
      */
+    @Column(name = "End_Time")
     private Date endTime;
     /**
      * 仓库名称，用于查询指定仓库的入库单
      */
+    @Column(name = "Storage_Name")
     private String storageName;
     /**
-     * 入库状态.0:未审核；1：已审核；2：已作废
+     * 库存状态.0:未审核；1：已审核；2：已作废
      */
-    private int instorageStatus;
+    @Column(name = "Storage_Status")
+    private int storageStatus;
     /**
      * 页大小，如果不填，则默认为200.每页最多返回记录数为200.
      */
+    @Column(name = "Page_Size")
     private int pageSize;
     /**
      * 当前页，如果不填，默认为1
      */
+    @Column(name = "Page_No")
     private int pageNo;
     /**
      * 导入标记:不导入,未导入,已导入,已处理,已取消
      */
+    @Column(name = "Import_Mark")
     private String importMark;
     /**
      * 入库类型编号
      */
+    @Column(name = "Type_No")
     private String typeNo;
     /**
      * 供应商编码
      */
+    @Column(name = "Provider")
     private String provider;
     /**
      * 仓库
      */
+    @Column(name = "Storage")
     private String storage;
     /**
      * 制单员
      */
+    @Column(name = "Creater")
     private String creater;
     /**
      * 制单时间
      */
+    @Column(name = "Create_Time")
     private Date createTime;
     /**
      * 入库时间
      */
+    @Column(name = "In_Time")
     private Date inTime;
     /**
      * 质检员
      */
+    @Column(name = "Quality_Inspctor")
     private String qualityInspctor;
     /**
      * 质检时间
      */
+    @Column(name = "Inspct_Time")
     private Date inspctTime;
     /**
      * 质检结果
      */
+    @Column(name = "Inspct_Result")
     private String inspctResult;
     /**
      * 审核人
      */
+    @Column(name = "Examiner")
     private String examiner;
     /**
      * 审核时间
      */
+    @Column(name = "Examine_Time")
     private Date examineTime;
     /**
      * 发货单号
      */
+    @Column(name = "Send_Tid")
     private String sendTid;
     /**
      * 入库原因
      */
+    @Column(name = "In_Reason")
     private String inReason;
     /**
      * 成本价格
      */
+    @Column(name = "Cost")
     private double cost;
     /**
      * 来源单号
      */
-    private String SourceTid;
+    @Column(name = "Source_Tid")
+    private String sourceTid;
     /**
      * 采购费用
      */
+    @Column(name = "Purchase_Fee")
     private double purchaseFee;
     /**
      * 合同总额
      */
+    @Column(name = "Contract_Money")
     private double contractMoney;
     /**
      * 相关单号
      */
+    @Column(name = "Relevant_Tid")
     private String relevantTid;
     /**
      * 汇率
      */
+    @Column(name = "Rate")
     private double rate;
     /**
      * 币种
      */
+    @Column(name = "Currency")
     private String currency;
     /**
      * 外部合同号
      */
+    @Column(name = "Out_Contract_Tid")
     private String outContractTid;
     /**
      * 物流公司
      */
+    @Column(name = "Logistics")
     private String logistics;
     /**
      * 快递单号
      */
+    @Column(name = "Express_Tid")
     private String expressTid;
     /**
      * 运费承担方
      */
+    @Column(name = "Freight_Payer")
     private String freightPayer;
     /**
      * 入库备注
      */
+    @Column(name = "Remarks")
     private String remarks;
     /**
      * 运费均摊模式;按产品数量，按产品重量
      */
+    @Column(name = "Freight_Mode")
     private String freightMode;
     /**
      * 总记录数
      */
+    @Column(name = "Total_Count")
     private int totalCount;
-    /**
-     * 子节点
-     */
-    private InventoryInfo[] instoreTid;
     /**
      * 仓库编码
      */
+    @Column(name = "Storage_No")
     private String storageNo;
     /**
      * 来源：不对外提供，固定默认值
      */
+    @Column(name = "List_Source")
     private String listSource;
     /**
      * 其他费用
      */
+    @Column(name = "Other_Cost")
     private double otherCost;
     /**
      * 外部合同单号
      */
+    @Column(name = "Out_Pact_No")
     private String outPactNo;
     /**
      * 产品明细编号
      */
+    @Column(name = "Product_Item_No")
     private String productItemNo;
     /**
      * 库位编号
      */
+    @Column(name = "Location_No")
     private String locationNo;
     /**
      * 批次
      */
+    @Column(name = "Batch")
     private String batch;
     /**
      * 到期时间
      */
+    @Column(name = "Expire_Time")
     private Date expireTime;
     /**
      * 出库类型（可在档案管理-仓库档案-出库类型设置中查看）
      */
+    @Column(name = "Out_storage_Type")
     private String outstorageType;
     /**
      * 出库时间
      */
+    @Column(name = "Out_Storage_Time")
     private Date outstorageTime;
     /**
      * 返厂供应商编号：在采购管理—供应商档案里查看
      */
+    @Column(name = "Supplie_No")
     private String supplieNo;
     /**
      * 原始入库单号
      */
+    @Column(name = "YS_In_Storage_No")
     private String YSInstorageNo;
     /**
      * 出库备注
      */
+    @Column(name = "Out_Storage_Remark")
     private String outStorageRemark;
     /**
      * 出库价
      */
+    @Column(name = "Out_Storage_Price")
     private double outstoragePrice;
     /**
      * 运费均摊
      */
+    @Column(name = "Freight_Avg")
     private double freightAvg;
     /**
      * 出库状态
      */
+    @Column(name = "Out_Storage_Status")
     private String outstorageStatus;
     /**
      * 出库类型名称
      */
+    @Column(name = "Out_Store_Type_Name")
     private String outStoreTypeName;
-
-    public String getOutStorageNo() {
-        return outStorageNo;
-    }
-
-    public void setOutStorageNo(String outStorageNo) {
-        this.outStorageNo = outStorageNo;
-    }
 
     public double getFreight() {
         return freight;
@@ -296,12 +323,12 @@ public class InventoryInfo extends EventResult {
         this.freightAvgway = freightAvgway;
     }
 
-    public String getInStorageNo() {
-        return inStorageNo;
+    public String getInventoryNo() {
+        return inventoryNo;
     }
 
-    public void setInStorageNo(String inStorageNo) {
-        this.inStorageNo = inStorageNo;
+    public void setInventoryNo(String inventoryNo) {
+        this.inventoryNo = inventoryNo;
     }
 
     public String getBarCode() {
@@ -312,20 +339,12 @@ public class InventoryInfo extends EventResult {
         this.barCode = barCode;
     }
 
-    public int getInstorageNum() {
-        return instorageNum;
+    public int getStorageNum() {
+        return storageNum;
     }
 
-    public void setInstorageNum(int instorageNum) {
-        this.instorageNum = instorageNum;
-    }
-
-    public int getOutstorageNum() {
-        return outstorageNum;
-    }
-
-    public void setOutstorageNum(int outstorageNum) {
-        this.outstorageNum = outstorageNum;
+    public void setStorageNum(int storageNum) {
+        this.storageNum = storageNum;
     }
 
     public int getType() {
@@ -368,12 +387,12 @@ public class InventoryInfo extends EventResult {
         this.storageName = storageName;
     }
 
-    public int getInstorageStatus() {
-        return instorageStatus;
+    public int getStorageStatus() {
+        return storageStatus;
     }
 
-    public void setInstorageStatus(int instorageStatus) {
-        this.instorageStatus = instorageStatus;
+    public void setStorageStatus(int storageStatus) {
+        this.storageStatus = storageStatus;
     }
 
     public int getPageSize() {
@@ -513,11 +532,11 @@ public class InventoryInfo extends EventResult {
     }
 
     public String getSourceTid() {
-        return SourceTid;
+        return sourceTid;
     }
 
     public void setSourceTid(String sourceTid) {
-        SourceTid = sourceTid;
+        this.sourceTid = sourceTid;
     }
 
     public double getPurchaseFee() {
@@ -614,14 +633,6 @@ public class InventoryInfo extends EventResult {
 
     public void setTotalCount(int totalCount) {
         this.totalCount = totalCount;
-    }
-
-    public InventoryInfo[] getInstoreTid() {
-        return instoreTid;
-    }
-
-    public void setInstoreTid(InventoryInfo[] instoreTid) {
-        this.instoreTid = instoreTid;
     }
 
     public String getStorageNo() {

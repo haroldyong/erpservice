@@ -1,5 +1,6 @@
 package com.huobanplus.erpservice.event.model;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -1068,6 +1069,33 @@ public class OrderInfo extends EventResult {
      */
     private String deliverCentre;
     /**
+     * 抵用积分
+     */
+    private float scoreU;
+
+    /**
+     * 在线支付类型
+     */
+    private String onlinePayType;
+
+    public String getOnlinePayType() {
+        return onlinePayType;
+    }
+
+    public void setOnlinePayType(String onlinePayType) {
+        this.onlinePayType = onlinePayType;
+    }
+
+    public float getScoreU() {
+        return scoreU;
+    }
+
+    public void setScoreU(float scoreU) {
+        this.scoreU = scoreU;
+    }
+
+    /**
+
      * 配送站点名称
      */
     private String deliverStation;

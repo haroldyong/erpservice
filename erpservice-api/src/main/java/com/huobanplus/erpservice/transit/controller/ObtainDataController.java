@@ -65,7 +65,6 @@ public class ObtainDataController {
      * @param createTime
      * @param createIP
      * @param shipName
-     * @param shipArea
      * @param shipAddr
      * @param shipZip
      * @param shipTel
@@ -115,37 +114,36 @@ public class ObtainDataController {
     @RequestMapping(value = "/commitOrderInfo", method = RequestMethod.POST)
     public Map obtainOrderInfo(String orderId, @RequestParam(value = "syncStatus",
             required = false, defaultValue = "0") int syncStatus,
-                               int memberId,
-                               int orderStatus,
-                               int payStatus,
-                               int shipStatus,
-                               int memberStatus,
+                               String memberId,
+                               String orderStatus,
+                               String payStatus,
+                               String shipStatus,
+                               String memberStatus,
                                int isDelivery,
-                               @RequestParam(value = "deliverMethodId", required = false, defaultValue = "0") int deliverMethodId,
+                               @RequestParam(value = "deliverMethodId", required = false, defaultValue = "0") String deliverMethodId,
                                String deliverMethod,
                                String deliverArea,
-                               float weight,
+                               String weight,
                                String orderName,
                                int itemNum,
                                @RequestParam(value = "actTime", required = false, defaultValue = "0") long actTime,
                                @RequestParam(value = "createTime", required = false, defaultValue = "0") long createTime,
                                @RequestParam(value = "createIP", required = false, defaultValue = "") String createIP,
                                String shipName,
-                               String shipArea,
                                String shipAddr,
                                @RequestParam(value = "shipZip", required = false, defaultValue = "") String shipZip,
                                String shipTel,
                                @RequestParam(value = "shipEmail", required = false, defaultValue = "") String shipEmail,
-                               @RequestParam(value = "shipTime", required = false, defaultValue = "") String shipTime,
+                               @RequestParam(value = "shipTime", required = false, defaultValue = "") long shipTime,
                                String shipMobile,
                                float costItem,
                                @RequestParam(value = "isTax", required = false, defaultValue = "0") int isTax,
                                @RequestParam(value = "costTax", required = false, defaultValue = "0") float costTax,
                                @RequestParam(value = "taxCompany", required = false, defaultValue = "") String taxCompany,
                                @RequestParam(value = "costFreight", required = false, defaultValue = "0") float costFreight,
-                               @RequestParam(value = "isProtect", required = false, defaultValue = "0") int isProtect,
+                               @RequestParam(value = "isProtect", required = false, defaultValue = "0") String isProtect,
                                @RequestParam(value = "costProtect", required = false, defaultValue = "0") float costProtect,
-                               float costPayment,
+                               String costPayment,
                                @RequestParam(value = "scoreU", required = false, defaultValue = "0") float scoreU,
                                @RequestParam(value = "discount", required = false, defaultValue = "0") float discount,
                                @RequestParam(value = "usePmt", required = false, defaultValue = "") String usePmt,
@@ -157,9 +155,9 @@ public class ObtainDataController {
                                @RequestParam(value = "lastChangeTime", required = false, defaultValue = "0") long lastChangeTime,
                                int customerId,
                                @RequestParam(value = "cashOnDly", required = false, defaultValue = "0") int cashOnDly,
-                               int onlinePayType,
+                               String onlinePayType,
                                @RequestParam(value = "scoreUAmount", required = false, defaultValue = "0") float scoreUAmount,
-                               @RequestParam(value = "payAgentId", required = false, defaultValue = "0") int payAgentId,
+                               @RequestParam(value = "payAgentId", required = false, defaultValue = "0") String payAgentId,
                                @RequestParam(value = "payAgentScore", required = false, defaultValue = "0") float payAgentScore,
                                @RequestParam(value = "payAgentScoreAmount", required = false, defaultValue = "0") float payAgentScoreAmount,
                                @RequestParam(value = "payAgentPayed", required = false, defaultValue = "0") float payAgentPayed,
@@ -184,50 +182,49 @@ public class ObtainDataController {
             return resultMap;
         } else {
             order = new MallOrderBean();
-            order.setOrderId(orderId);
+            order.setOrderCode(orderId);
             order.setSyncStatus(syncStatus);
-            order.setMemberId(memberId);
+            order.setCustomerId(memberId);
             order.setOrderStatus(orderStatus);
             order.setPayStatus(payStatus);
-            order.setShipStatus(shipStatus);
-            order.setMemberStatus(memberStatus);
+            order.setDeliveryStatus(shipStatus);
+            order.setCustomerStatus(memberStatus);
             order.setIsDelivery(isDelivery);
-            order.setDeliverMethodId(deliverMethodId);
-            order.setDeliverMethod(deliverMethod);
-            order.setDeliverArea(deliverArea);
+            order.setSendingTypeId(deliverMethodId);
+            order.setSendingType(deliverMethod);
+            order.setSendingArea(deliverArea);
             order.setWeight(weight);
             order.setOrderName(orderName);
             order.setItemNum(itemNum);
-            order.setActTime(new Date(actTime));
-            order.setCreateTime(new Date(createTime));
+            order.setBeginTime(new Date(actTime));
+            order.setOrderTime(new Date(createTime));
             order.setCreateIP(createIP);
-            order.setShipName(shipName);
-            order.setShipArea(shipArea);
-            order.setShipAddr(shipAddr);
-            order.setShipZip(shipZip);
-            order.setShipTel(shipTel);
-            order.setShipEmail(shipEmail);
-            order.setShipTime(shipTime);
-            order.setShipMobile(shipMobile);
-            order.setCostItem(costItem);
-            order.setIsTax(isTax);
+            order.setReceiverName(shipName);
+            order.setAddress(shipAddr);
+            order.setPost(shipZip);
+            order.setPhone(shipTel);
+            order.setEmail(shipEmail);
+            order.setCargoTime(new Date(shipTime));
+            order.setReceiverMobile(shipMobile);
+            order.setProTotalFee(costItem);
+            order.setInvoiceIsopen(isTax);
             order.setCostTax(costTax);
-            order.setTaxCompany(taxCompany);
+            order.setInvoiceTitle(taxCompany);
             order.setCostFreight(costFreight);
             order.setIsProtect(isProtect);
             order.setCostProtect(costProtect);
-            order.setCostPayment(costPayment);
+            order.setOtherFee(costPayment);
             order.setScoreU(scoreU);
             order.setDiscount(discount);
             order.setUsePmt(usePmt);
-            order.setTotalAmount(totalAmount);
+            order.setOrderTotalFee(totalAmount);
             order.setFinalAmount(finalAmount);
-            order.setPmtAmount(pmtAmount);
+            order.setDiscountFee(pmtAmount);
             order.setPayed(payed);
             order.setMemo(memo);
-            order.setLastChangeTime(new Date(lastChangeTime));
-            order.setCustomerId(customerId);
-            order.setCashOnDly(cashOnDly);
+            order.setLastRefundTime(new Date(lastChangeTime));
+            order.setCustomerId(memberId);
+            order.setIsCod(cashOnDly);
             order.setOnlinePayType(onlinePayType);
             order.setScoreUAmount(scoreUAmount);
             order.setPayAgentId(payAgentId);
