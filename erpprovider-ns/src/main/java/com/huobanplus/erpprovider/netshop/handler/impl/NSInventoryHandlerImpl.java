@@ -11,6 +11,7 @@ import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,11 +19,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Created by allan on 2015/8/2.
+ * <p>类描述：<p/>
+ * 网店管家库存事件处理类。
  */
 @Component
 public class NSInventoryHandlerImpl implements NSInventoryHandler {
 
+    @Resource
+    private
     @Override
     public Monitor<EventResult> synsInventory(HttpServletRequest request) throws IOException {
         Map<String, String> signMap = new TreeMap<>();
