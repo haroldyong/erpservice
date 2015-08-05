@@ -1,5 +1,6 @@
 package com.huobanplus.erpservice.commons.boot;
 
+import com.huobanplus.erpprovider.edb.EDBConfig;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
 import com.huobanplus.erpservice.commons.config.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
