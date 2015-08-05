@@ -49,9 +49,9 @@ public class ObtainDataControllerTest {
 
     @Test
     public void testTest() throws Exception {
-        ERPInfo erpInfo = new ERPInfo();
-        erpInfo.setName("edb");
-        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
-        erpHandler.handleEvent(InventoryEvent.class, null);
+//        ERPInfo erpInfo = new ERPInfo();
+//        erpInfo.setName("edb");
+//        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
+//        erpHandler.handleEvent(InventoryEvent.class, null);
     }
 }

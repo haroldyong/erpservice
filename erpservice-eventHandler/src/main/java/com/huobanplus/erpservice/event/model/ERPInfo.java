@@ -1,10 +1,14 @@
 package com.huobanplus.erpservice.event.model;
 
+import java.io.Serializable;
+
 /**
  * 事件中携带的erp相关信息，用于erphandler选择合适的erp-provider处理
  * Created by allan on 2015/7/13.
  */
-public class ERPInfo {
+public class ERPInfo implements Serializable {
+    private static final long serialVersionUID = 52479859658664542L;
+
     //todo erp相关信息，如类型，名称，验证信息等
     /**
      * erp类型
@@ -20,9 +24,13 @@ public class ERPInfo {
     private String validation;//验证信息
     /**
      * erp系统级参数
-     * <p>json</p>
+     * <p>json格式</p>
      */
     private String sysDataJson;
+    /**
+     * 商户id
+     */
+    private int customerId;
 
     public String getType() {
         return type;

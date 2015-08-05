@@ -3,6 +3,7 @@ package com.huobanplus.erpprovider.edb;
 
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.handler.EDBProductHandler;
+import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
@@ -54,14 +55,14 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
 
             public Monitor<EventResult> handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException, IllegalAccessException {
                 if (erpBaseEvent instanceof CreateOrderEvent) {
-                    OrderInfo orderInfo = (OrderInfo) data;
+                    MallOrderBean orderInfo = (MallOrderBean) data;
                     return EDBOrderHandler.createOrder(orderInfo, erpBaseEvent.getErpInfo());
                 } else if (erpBaseEvent instanceof InventoryEvent) {
                     return EDBProductHandler.getProInventoryInfo(erpBaseEvent.getErpInfo());
                 } else if (erpBaseEvent instanceof DeliveryInfoEvent) {
                     return EDBOrderHandler.getOrderInfo(erpBaseEvent.getErpInfo());
                 } else if (erpBaseEvent instanceof OrderStatusInfoEvent) {
-                    return EDBOrderHandler.orderStatusUpdate((OrderInfo) data, erpBaseEvent.getErpInfo());
+                    return EDBOrderHandler.orderStatusUpdate((MallOrderBean) data, erpBaseEvent.getErpInfo());
                 } else if (erpBaseEvent instanceof ObtainOrderEvent) {
                     return EDBOrderHandler.obtainOrderList(erpBaseEvent.getErpInfo());
                 } else {
