@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "Mall_Orders")
-public class MallOrderBean {
+public class MallOrderBean   {
     /**
      * 订单id
      */

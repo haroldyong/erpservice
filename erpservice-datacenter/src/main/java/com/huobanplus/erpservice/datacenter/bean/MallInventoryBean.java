@@ -304,6 +304,20 @@ public class MallInventoryBean {
     @Column(name = "Out_Store_Type_Name")
     private String outStoreTypeName;
 
+    /**
+     * 库存规格
+     */
+    @Column(name = "Sku_Id")
+    private String skuId;
+
+    public String getSkuId() {
+        return skuId;
+    }
+
+    public void setSkuId(String skuId) {
+        this.skuId = skuId;
+    }
+
     public double getFreight() {
         return freight;
     }

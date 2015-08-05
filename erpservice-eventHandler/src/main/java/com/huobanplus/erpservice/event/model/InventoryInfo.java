@@ -49,9 +49,24 @@ public class InventoryInfo extends EventResult {
      * 入库数量
      */
     private int instorageNum;
+
+    /**
+     * 库存规格
+     */
+    private String skuId;
+
+    public String getSkuId() {
+        return skuId;
+    }
+
+    public void setSkuId(String skuId) {
+        this.skuId = skuId;
+    }
+
     /**
      * 出库数量
      */
+
     private int outstorageNum;
     /**
      * 入库类型；全部:1/其他入库:10/产成品入库:11/原料入库:12/盘盈入库:13/维修入库:14/差错入库:15/退货入库:3/归还入库:4/调拨入库:6/正常入库:8/采购入库:9
