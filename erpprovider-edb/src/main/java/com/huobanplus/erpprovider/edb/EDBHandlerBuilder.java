@@ -46,11 +46,11 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                 } else if (baseEventClass == OrderStatusInfoEvent.class) {
                     return true;
                 } else if (baseEventClass == ObtainOrderEvent.class) {
-
                     return true;
-                } else {
-                    return false;
+                } else if (baseEventClass == OrderDeliverEvent.class) {
+
                 }
+                return false;
             }
 
             public Monitor<EventResult> handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException, IllegalAccessException {
@@ -65,8 +65,12 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     return EDBOrderHandler.orderStatusUpdate((MallOrderBean) data, erpBaseEvent.getErpInfo());
                 } else if (erpBaseEvent instanceof ObtainOrderEvent) {
                     return EDBOrderHandler.obtainOrderList(erpBaseEvent.getErpInfo());
-                } else {
-
+                } else if (erpBaseEvent instanceof OrderDeliverEvent) {
+                    return EDBOrderHandler.orderDeliver((MallOrderBean) data, erpBaseEvent.getErpInfo());
+                } else if (erpBaseEvent instanceof OrderStatusUpdateEvent) {
+                    return EDBOrderHandler.orderStatusUpdate((MallOrderBean) data, erpBaseEvent.getErpInfo());
+                } else if (erpBaseEvent instanceof OrderUpdateEvent) {
+                    return EDBOrderHandler.orderUpdate((MallOrderBean) data, erpBaseEvent.getErpInfo());
                 }
                 return null;
             }
