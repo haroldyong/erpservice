@@ -8,7 +8,9 @@ import com.huobanplus.erpprovider.huobanmall.util.SignStrategy;
 import com.huobanplus.erpservice.event.model.BaseResult;
 import com.huobanplus.erpservice.event.model.InventoryInfo;
 import com.huobanplus.erpservice.event.model.Monitor;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Date;
