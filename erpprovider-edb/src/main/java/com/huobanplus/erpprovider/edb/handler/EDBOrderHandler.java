@@ -1,5 +1,6 @@
 package com.huobanplus.erpprovider.edb.handler;
 
+import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
@@ -26,7 +27,7 @@ public interface EDBOrderHandler {
      * @throws IOException
      * @throws DocumentException
      */
-    Monitor<EventResult> createOrder(OrderInfo orderInfo, ERPInfo info) throws IOException;
+    Monitor<EventResult> createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 
     /**
      * 获取订单信息
@@ -56,7 +57,7 @@ public interface EDBOrderHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> orderStatusUpdate(OrderInfo orderInfo, ERPInfo info) throws IOException;
+    Monitor<EventResult> orderStatusUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 
     /**
      * 订单业务状态更新
@@ -65,7 +66,7 @@ public interface EDBOrderHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> orderUpdate(OrderInfo orderInfo, ERPInfo info) throws IOException;
+    Monitor<EventResult> orderUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 
     /**
      * 订单发货
@@ -74,5 +75,5 @@ public interface EDBOrderHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> orderDeliver(OrderInfo orderInfo, ERPInfo info) throws IOException;
+    Monitor<EventResult> orderDeliver(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 }

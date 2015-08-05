@@ -112,8 +112,8 @@ public class ObtainDataController {
      */
     @ResponseBody
     @RequestMapping(value = "/commitOrderInfo", method = RequestMethod.POST)
-    public Map obtainOrderInfo(String orderId, @RequestParam(value = "syncStatus",
-            required = false, defaultValue = "0") int syncStatus,
+    public Map obtainOrderInfo(String orderId,
+                               @RequestParam(value = "syncStatus",required = false, defaultValue = "0") int syncStatus,
                                String memberId,
                                String orderStatus,
                                String payStatus,

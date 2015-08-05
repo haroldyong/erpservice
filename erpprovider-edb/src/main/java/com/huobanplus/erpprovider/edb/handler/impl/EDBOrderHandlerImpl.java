@@ -12,6 +12,7 @@ import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpprovider.edb.util.SignBuilder;
 import com.huobanplus.erpprovider.edb.util.StringUtil;
 import com.huobanplus.erpprovider.edb.util.XmlUtil;
+import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
@@ -33,7 +34,7 @@ import java.util.TreeMap;
 public class EDBOrderHandlerImpl implements EDBOrderHandler {
 
     @Override
-    public Monitor<EventResult> createOrder(OrderInfo orderInfo, ERPInfo info) throws IOException {
+    public Monitor<EventResult> createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException {
         HttpUtil htNetService = HttpUtil.getInstance();
 
         EDBCreateOrderInfo edbCreateOrderInfo = new EDBCreateOrderInfo();
@@ -159,8 +160,8 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
         Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, info);
         requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
-        requestData.put("page_no", "1");
-        requestData.put("page_size", "10");
+//        requestData.put("page_no", "1");
+//        requestData.put("page_size", "10");
         //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
         requestData.put("sign", getSign(requestData, info));
 
@@ -179,7 +180,7 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
     }
 
     @Override
-    public Monitor<EventResult> orderStatusUpdate(OrderInfo orderInfo, ERPInfo info) throws IOException {
+    public Monitor<EventResult> orderStatusUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException {
         Map<String, String> requestData = getSysRequestData(Constant.ORDER_STATUS_UPDATE, info);
         requestData.put("num_id", orderInfo.getOrderCode());
         requestData.put("tid_type", orderInfo.getOrderType());
@@ -189,14 +190,14 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
-            return new SimpleMonitor<>(new EventResult(0, responseData));
+            return new SimpleMonitor<>(new EventResult(0, "系统请求失败"));
         }
         String resultJson = XmlUtil.xml2Json(responseData);
         return new SimpleMonitor<>(new EventResult(1, resultJson));
     }
 
     @Override
-    public Monitor<EventResult> orderUpdate(OrderInfo orderInfo, ERPInfo info) throws IOException {
+    public Monitor<EventResult> orderUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException {
         EDBOrderForUpdate orderForUpdate = new EDBOrderForUpdate();
         orderForUpdate.setTid(orderInfo.getTid());
         orderForUpdate.setOutTid(orderInfo.getOutTid());
@@ -208,7 +209,7 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
         orderForUpdate.setCargoTime(StringUtil.DateFormat(orderInfo.getCargoTime(), StringUtil.TIME_PATTERN));
         orderForUpdate.setPrintTime(StringUtil.DateFormat(orderInfo.getPrintTime(), StringUtil.TIME_PATTERN));
         orderForUpdate.setInspecter(orderInfo.getInspecter());
-        orderForUpdate.setInspectTime(StringUtil.DateFormat(orderInfo.getInspecterTime(), StringUtil.TIME_PATTERN));
+        orderForUpdate.setInspectTime(StringUtil.DateFormat(orderInfo.getInspectTime(), StringUtil.TIME_PATTERN));
         orderForUpdate.setIsInspectDelivery(orderInfo.getIsInspectDelivery());
         orderForUpdate.setDeliveryOperator(orderInfo.getDeliveryOperator());
         orderForUpdate.setDeliveryTime(StringUtil.DateFormat(orderInfo.getDeliveryTime(), StringUtil.TIME_PATTERN));
@@ -235,7 +236,7 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
     }
 
     @Override
-    public Monitor<EventResult> orderDeliver(OrderInfo orderInfo, ERPInfo info) throws IOException {
+    public Monitor<EventResult> orderDeliver(MallOrderBean orderInfo, ERPInfo info) throws IOException {
         Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER, info);
         requestData.put("OrderCode", orderInfo.getOrderCode());
         requestData.put("delivery_time", StringUtil.DateFormat(orderInfo.getDeliveryTime(), StringUtil.TIME_PATTERN));

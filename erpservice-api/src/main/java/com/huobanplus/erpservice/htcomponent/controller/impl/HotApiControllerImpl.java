@@ -29,7 +29,7 @@ public class HotApiControllerImpl implements HotApiController {
      * @param request http请求，网络请求携带参数。
      */
     @Override
-    @RequestMapping("/createOrder/{erpInfo}")
+    @RequestMapping("/createOrder/{erpInfo}/{erpCode}")
     public void createOrder(@PathVariable("erpInfo") String info, HttpServletRequest request) {
 
         ERPInfo erpInfo = new ERPInfo();

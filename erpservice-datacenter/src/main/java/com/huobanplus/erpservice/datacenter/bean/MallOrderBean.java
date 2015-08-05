@@ -213,10 +213,24 @@ public class MallOrderBean {
     @Column(name = "Delivery_Operator")
     private String deliveryOperator;
     /**
-     * 发货时间、验货时间
+     * 发货时间
      */
     @Column(name = "Delivery_Time")
     private Date deliveryTime;
+    /**
+     * 验货时间
+     */
+    @Column(name = "Inspect_Time")
+    private Date inspectTime;
+
+    public Date getInspectTime() {
+        return inspectTime;
+    }
+
+    public void setInspectTime(Date inspectTime) {
+        this.inspectTime = inspectTime;
+    }
+
     /**
      * 毛重
      */
