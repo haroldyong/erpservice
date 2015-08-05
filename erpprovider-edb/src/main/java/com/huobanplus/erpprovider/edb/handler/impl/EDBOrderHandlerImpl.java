@@ -133,8 +133,8 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
         Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, info);
         requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
-        requestData.put("page_no", "1");
-        requestData.put("page_size", "10");
+//        requestData.put("page_no", "1");
+//        requestData.put("page_size", "10");
         //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
         requestData.put("sign", getSign(requestData, info));
 
