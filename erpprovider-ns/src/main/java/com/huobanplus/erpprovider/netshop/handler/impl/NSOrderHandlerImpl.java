@@ -1,18 +1,23 @@
 package com.huobanplus.erpprovider.netshop.handler.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.netshop.handler.NSOrderHandler;
 import com.huobanplus.erpprovider.netshop.net.HttpUtil;
 import com.huobanplus.erpprovider.netshop.support.BaseMonitor;
 import com.huobanplus.erpprovider.netshop.util.Constant;
 import com.huobanplus.erpprovider.netshop.util.SignBuilder;
+import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import com.huobanplus.erpservice.event.model.OrderInfo;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -21,6 +26,10 @@ import java.util.TreeMap;
  */
 @Component
 public class NSOrderHandlerImpl implements NSOrderHandler {
+
+    @Resource
+    private MallOrderService mallOrderService;
+
     @Override
     public Monitor<EventResult> commitOrderInfo(HttpServletRequest request) throws IOException {
 
@@ -96,18 +105,74 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             return new BaseMonitor<>(new EventResult(0,
                     "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>签名不正确</Cause></Rsp>"));
         } else {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String resultJson = objectMapper.writeValueAsString(orderMap);
-            //todo 将获取的信息推送给伙伴商城
-
-            String result = HttpUtil.getInstance().doPost(null, null);
-
+            ///ObjectMapper objectMapper = new ObjectMapper();
+            //String resultJson = objectMapper.writeValueAsString(orderMap);
+            //String result = HttpUtil.getInstance().doPost(null, null);
+            //将订单信息保存到数据库
+            MallOrderBean orderBean = new MallOrderBean();
+            orderBean.setOrderCode(orderMap.get("orderId"));
+            orderBean.setNumId(orderMap.get("memberId"));
+            orderBean.setSyncStatus(Integer.parseInt(orderMap.get("syncStatus")));
+            orderBean.setOrderStatus(orderMap.get("orderStatus"));
+            orderBean.setPayStatus(orderMap.get("payStatus"));
+            orderBean.setDeliveryStatus(orderMap.get("shipStatus"));
+            orderBean.setCustomerStatus(orderMap.get("memberStatus"));
+            orderBean.setIsDelivery(Integer.parseInt(orderMap.get("isDelivery")));
+            orderBean.setSendingTypeId(orderMap.get("deliverMethodId"));
+            orderBean.setSendingType(orderMap.get("deliverMethod"));
+            orderBean.setSendingArea(orderMap.get("deliverArea"));
+            orderBean.setTotalWeight(Double.parseDouble(orderMap.get("weight")));
+            orderBean.setOrderName(orderMap.get("orderName"));
+            orderBean.setItemNum(Integer.parseInt(orderMap.get("itemNum")));
+            orderBean.setBeginTime(new Date(Long.parseLong(orderMap.get("createTime"))));
+            orderBean.setFinishTime(new Date(Long.parseLong(orderMap.get("actTime"))));
+            orderBean.setCreateIP(orderMap.get("createIP"));
+            orderBean.setBuyerName(orderMap.get("shipName"));
+            orderBean.setAddress(orderMap.get("shipAddr"));
+            orderBean.setPost(orderMap.get("shipZip"));
+            orderBean.setPhone(orderMap.get("shipTel"));
+            orderBean.setEmail(orderMap.get("shipEmail"));
+            orderBean.setJdDeliveryTime(new Date(Long.parseLong(orderMap.get("shipTime"))));
+            orderBean.setReceiverMobile(orderMap.get("shipMobile"));
+            orderBean.setProTotalFee(Double.parseDouble(orderMap.get("costItem")));
+            orderBean.setInvoiceIsopen(Integer.parseInt(orderMap.get("isTax")));
+            orderBean.setCostTax(Double.parseDouble(orderMap.get("costTax")));
+            orderBean.setInvoiceTitle(orderMap.get("taxCompany"));
+            orderBean.setCostFreight(Double.parseDouble(orderMap.get("costFreight")));
+            orderBean.setIsProtect(orderMap.get("isProtect"));
+            orderBean.setCostProtect(Double.parseDouble(orderMap.get("costProtect")));
+            orderBean.setOtherFee(orderMap.get("costPayment"));
+            orderBean.setScoreU(Float.parseFloat(orderMap.get("scoreU")));
+            orderBean.setDiscount(Double.parseDouble(orderMap.get("discount")));
+            orderBean.setUsePmt(orderMap.get("usePmt"));
+            orderBean.setOrderTotalFee(Double.parseDouble(orderMap.get("totalAmount")));
+            orderBean.setFinalAmount(Double.parseDouble(orderMap.get("finalAmount")));
+            orderBean.setPayed(Double.parseDouble(orderMap.get("pmtAmount")));
+            orderBean.setMemo(orderMap.get("memo"));
+            orderBean.setFileTime(new Date(Long.parseLong(orderMap.get("lastChangeTime"))));
+            orderBean.setIsCod(Integer.parseInt(orderMap.get("cashOnDly")));
+            orderBean.setOnlinePayType(orderMap.get("onlinePayType"));
+            orderBean.setScoreUAmount(Double.parseDouble(orderMap.get("scoreUAmount")));
+            orderBean.setPayAgentId(orderMap.get("payAgentId"));
+            orderBean.setPayAgentScore(Double.parseDouble(orderMap.get("payAgentScore")));
+            orderBean.setPayAgentScoreAmount(Double.parseDouble(orderMap.get("payAgentScoreAmount")));
+            orderBean.setPayAgentPayed(Double.parseDouble(orderMap.get("payAgentPayed")));
+            orderBean.setHasPayed(Double.parseDouble(orderMap.get("hasPayed")));
+            orderBean.setHasPayedScore(Double.parseDouble(orderMap.get("hasPayedScore")));
+            orderBean.setOnlineAmount(Double.parseDouble(orderMap.get("onlineAmount")));
+            orderBean.setHongbaoAmount(Double.parseDouble(orderMap.get("hongbaoAmount")));
+            orderBean.setPayTime(new Date(Long.parseLong(orderMap.get("payTime"))));
+            orderBean.setVirtualRecMobile(orderMap.get("virtualRecMobile"));
+            MallOrderBean result = mallOrderService.save(orderBean);
             if (result == null) {
                 return new BaseMonitor<>(new EventResult(0,
                         "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
             }
+            else
+            {
+                return new BaseMonitor<>(new EventResult(1, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</Result></Rsp>"));
+            }
 
-            return new BaseMonitor<>(new EventResult(1, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</Result></Rsp>"));
         }
     }
 
@@ -187,11 +252,63 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             return new BaseMonitor<>(new EventResult(0,
                     "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>签名不正确</Cause></Rsp>"));
         } else {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String resultJson = objectMapper.writeValueAsString(orderMap);
-            //todo 将获取的信息推送给伙伴商城
-
-            String result = HttpUtil.getInstance().doPost(null, null);
+            //ObjectMapper objectMapper = new ObjectMapper();
+            //String resultJson = objectMapper.writeValueAsString(orderMap);
+            MallOrderBean orderBean = new MallOrderBean();
+            orderBean.setOrderCode(orderMap.get("orderId"));
+            orderBean.setNumId(orderMap.get("memberId"));
+            orderBean.setSyncStatus(Integer.parseInt(orderMap.get("syncStatus")));
+            orderBean.setOrderStatus(orderMap.get("orderStatus"));
+            orderBean.setPayStatus(orderMap.get("payStatus"));
+            orderBean.setDeliveryStatus(orderMap.get("shipStatus"));
+            orderBean.setCustomerStatus(orderMap.get("memberStatus"));
+            orderBean.setIsDelivery(Integer.parseInt(orderMap.get("isDelivery")));
+            orderBean.setSendingTypeId(orderMap.get("deliverMethodId"));
+            orderBean.setSendingType(orderMap.get("deliverMethod"));
+            orderBean.setSendingArea(orderMap.get("deliverArea"));
+            orderBean.setTotalWeight(Double.parseDouble(orderMap.get("weight")));
+            orderBean.setOrderName(orderMap.get("orderName"));
+            orderBean.setItemNum(Integer.parseInt(orderMap.get("itemNum")));
+            orderBean.setBeginTime(new Date(Long.parseLong(orderMap.get("createTime"))));
+            orderBean.setFinishTime(new Date(Long.parseLong(orderMap.get("actTime"))));
+            orderBean.setCreateIP(orderMap.get("createIP"));
+            orderBean.setBuyerName(orderMap.get("shipName"));
+            orderBean.setAddress(orderMap.get("shipAddr"));
+            orderBean.setPost(orderMap.get("shipZip"));
+            orderBean.setPhone(orderMap.get("shipTel"));
+            orderBean.setEmail(orderMap.get("shipEmail"));
+            orderBean.setJdDeliveryTime(new Date(Long.parseLong(orderMap.get("shipTime"))));
+            orderBean.setReceiverMobile(orderMap.get("shipMobile"));
+            orderBean.setProTotalFee(Double.parseDouble(orderMap.get("costItem")));
+            orderBean.setInvoiceIsopen(Integer.parseInt(orderMap.get("isTax")));
+            orderBean.setCostTax(Double.parseDouble(orderMap.get("costTax")));
+            orderBean.setInvoiceTitle(orderMap.get("taxCompany"));
+            orderBean.setCostFreight(Double.parseDouble(orderMap.get("costFreight")));
+            orderBean.setIsProtect(orderMap.get("isProtect"));
+            orderBean.setCostProtect(Double.parseDouble(orderMap.get("costProtect")));
+            orderBean.setOtherFee(orderMap.get("costPayment"));
+            orderBean.setScoreU(Float.parseFloat(orderMap.get("scoreU")));
+            orderBean.setDiscount(Double.parseDouble(orderMap.get("discount")));
+            orderBean.setUsePmt(orderMap.get("usePmt"));
+            orderBean.setOrderTotalFee(Double.parseDouble(orderMap.get("totalAmount")));
+            orderBean.setFinalAmount(Double.parseDouble(orderMap.get("finalAmount")));
+            orderBean.setPayed(Double.parseDouble(orderMap.get("pmtAmount")));
+            orderBean.setMemo(orderMap.get("memo"));
+            orderBean.setFileTime(new Date(Long.parseLong(orderMap.get("lastChangeTime"))));
+            orderBean.setIsCod(Integer.parseInt(orderMap.get("cashOnDly")));
+            orderBean.setOnlinePayType(orderMap.get("onlinePayType"));
+            orderBean.setScoreUAmount(Double.parseDouble(orderMap.get("scoreUAmount")));
+            orderBean.setPayAgentId(orderMap.get("payAgentId"));
+            orderBean.setPayAgentScore(Double.parseDouble(orderMap.get("payAgentScore")));
+            orderBean.setPayAgentScoreAmount(Double.parseDouble(orderMap.get("payAgentScoreAmount")));
+            orderBean.setPayAgentPayed(Double.parseDouble(orderMap.get("payAgentPayed")));
+            orderBean.setHasPayed(Double.parseDouble(orderMap.get("hasPayed")));
+            orderBean.setHasPayedScore(Double.parseDouble(orderMap.get("hasPayedScore")));
+            orderBean.setOnlineAmount(Double.parseDouble(orderMap.get("onlineAmount")));
+            orderBean.setHongbaoAmount(Double.parseDouble(orderMap.get("hongbaoAmount")));
+            orderBean.setPayTime(new Date(Long.parseLong(orderMap.get("payTime"))));
+            orderBean.setVirtualRecMobile(orderMap.get("virtualRecMobile"));
+            MallOrderBean result = mallOrderService.save(orderBean);
 
             if (result == null) {
                 return new BaseMonitor<>(new EventResult(0,
@@ -221,20 +338,21 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             return new BaseMonitor<>(new EventResult(0,
                     "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>签名不正确</Cause></Rsp>"));
         } else {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String resultJson = objectMapper.writeValueAsString(orderMap);
-            //todo 将获取的信息推送给伙伴商城
+            //ObjectMapper objectMapper = new ObjectMapper();
+            //String resultJson = objectMapper.writeValueAsString(orderMap);
 
-            String result = HttpUtil.getInstance().doPost(null, null);
+           // String result = HttpUtil.getInstance().doPost(null, null);
+            //根据条件查询订单信息
 
+            MallOrderBean result = mallOrderService.findByOrderId(orderMap.get("orderId"));
             if (result == null) {
                 return new BaseMonitor<>(new EventResult(0,
                         "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
             }
-
+            XmlMapper xmlMapper = new XmlMapper();
+            String xmlResult = xmlMapper.writeValueAsString(result);
             //获取伙伴商城的订单信息
-            OrderInfo orderInfo = new OrderInfo();
-            return new BaseMonitor<>(orderInfo);
+            return new BaseMonitor<>(new EventResult(1, xmlResult));
         }
     }
 }

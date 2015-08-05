@@ -43,7 +43,6 @@ public class NSProductHandlerImpl implements NSProductHandler {
         } else {
             ObjectMapper objectMapper = new ObjectMapper();
             String resultJson = objectMapper.writeValueAsString(productMap);
-            //todo 将获取的信息推送给伙伴商城
 
             String result = HttpUtil.getInstance().doPost(null, null);
 

@@ -13,12 +13,6 @@ import java.util.Date;
 public class MallInventoryBean {
 
     /**
-     * 库存单号
-     */
-    @Id
-    @Column(name = "Inventory_No")
-    private String inventoryNo;
-    /**
      * 运费
      */
     @Column(name = "Freight")
@@ -38,6 +32,12 @@ public class MallInventoryBean {
      */
     @Column(name = "storage_Num")
     private int storageNum;
+    /**
+     * 库存单号
+     */
+    @Id
+    @Column(name = "Inventory_No")
+    private String inventoryNo;
     /**
      * 入库类型；全部:1/其他入库:10/产成品入库:11/原料入库:12/盘盈入库:13/维修入库:14/差错入库:15/退货入库:3/归还入库:4/调拨入库:6/正常入库:8/采购入库:9
      */
@@ -303,6 +303,20 @@ public class MallInventoryBean {
      */
     @Column(name = "Out_Store_Type_Name")
     private String outStoreTypeName;
+
+    /**
+     * 库存规格
+     */
+    @Column(name = "Sku_Id")
+    private String skuId;
+
+    public String getSkuId() {
+        return skuId;
+    }
+
+    public void setSkuId(String skuId) {
+        this.skuId = skuId;
+    }
 
     public double getFreight() {
         return freight;
