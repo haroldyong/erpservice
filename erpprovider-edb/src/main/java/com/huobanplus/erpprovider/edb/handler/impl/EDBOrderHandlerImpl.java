@@ -1,10 +1,9 @@
 package com.huobanplus.erpprovider.edb.handler.impl;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.huobanplus.erpprovider.edb.bean.EDBOrder;
-import com.huobanplus.erpprovider.edb.bean.EDBCreateOrderInfo;
-import com.huobanplus.erpprovider.edb.bean.EDBOrderForUpdate;
-import com.huobanplus.erpprovider.edb.bean.EDBUpdateOrder;
+import com.huobanplus.erpprovider.edb.bean.*;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.net.HttpUtil;
 import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
@@ -116,84 +115,92 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
         XmlMapper xmlMapper = new XmlMapper();
         String resultStr = xmlMapper.writeValueAsString(edbOrder);
 
-        Map<String, String> requestData = getSysRequestData(Constant.CREATE_ORDER, info);
+        EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
+
+        Map<String, String> requestData = getSysRequestData(Constant.CREATE_ORDER, sysData);
         requestData.put("xmlvalues", resultStr);
 
-        requestData.put("sign", getSign(requestData, info));
+        requestData.put("sign", getSign(requestData, sysData));
 
         String responseData = htNetService.doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
-        return new SimpleMonitor<>(new EventResult(1, XmlUtil.xml2Json(responseData)));
+        return new SimpleMonitor<>(new EventResult(1, responseData));
     }
 
     @Override
     public Monitor<EventResult> getOrderInfo(ERPInfo info) throws IOException {
-        Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, info);
+        EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
+
+        Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, sysData);
         requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
 //        requestData.put("page_no", "1");
 //        requestData.put("page_size", "10");
         //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
-        requestData.put("sign", getSign(requestData, info));
+        requestData.put("sign", getSign(requestData, sysData));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
         //处理返回的xml
-        int firstRowIndex = responseData.indexOf("<Rows>");
-        int lastRowIndex = responseData.lastIndexOf("</Rows>");
-        String first = responseData.substring(0, firstRowIndex);
-        String middle = responseData.substring(firstRowIndex, lastRowIndex + 7);
-        String last = responseData.substring(lastRowIndex + 7, responseData.length());
-        String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
-        //转成json格式返回
-        String resultJson = XmlUtil.xml2Json(resultXml);
-        return new SimpleMonitor<>(new EventResult(1, resultJson));
+//        int firstRowIndex = responseData.indexOf("<Rows>");
+//        int lastRowIndex = responseData.lastIndexOf("</Rows>");
+//        String first = responseData.substring(0, firstRowIndex);
+//        String middle = responseData.substring(firstRowIndex, lastRowIndex + 7);
+//        String last = responseData.substring(lastRowIndex + 7, responseData.length());
+//        String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
+//        //转成json格式返回
+//        String resultJson = XmlUtil.xml2Json(resultXml);
+        return new SimpleMonitor<>(new EventResult(1, responseData));
     }
 
 
     @Override
     public Monitor<EventResult> obtainOrderList(ERPInfo info) throws IOException {
-        Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, info);
+        EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
+
+        Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, sysData);
         requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
 //        requestData.put("page_no", "1");
 //        requestData.put("page_size", "10");
         //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
-        requestData.put("sign", getSign(requestData, info));
+        requestData.put("sign", getSign(requestData, sysData));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
-        int firstRowIndex = responseData.indexOf("<Rows>");
-        int lastRowIndex = responseData.lastIndexOf("</Rows>");
-        String first = responseData.substring(0, firstRowIndex);
-        String middle = responseData.substring(firstRowIndex, lastRowIndex + 7);
-        String last = responseData.substring(lastRowIndex + 7, responseData.length());
-        String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
-        String resultJson = XmlUtil.xml2Json(resultXml);
-        return new SimpleMonitor<>(new EventResult(1, resultJson));
+//        int firstRowIndex = responseData.indexOf("<Rows>");
+//        int lastRowIndex = responseData.lastIndexOf("</Rows>");
+//        String first = responseData.substring(0, firstRowIndex);
+//        String middle = responseData.substring(firstRowIndex, lastRowIndex + 7);
+//        String last = responseData.substring(lastRowIndex + 7, responseData.length());
+//        String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
+//        String resultJson = XmlUtil.xml2Json(resultXml);
+        return new SimpleMonitor<>(new EventResult(1, responseData));
     }
 
     @Override
     public Monitor<EventResult> orderStatusUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException {
-        Map<String, String> requestData = getSysRequestData(Constant.ORDER_STATUS_UPDATE, info);
+        EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
+
+        Map<String, String> requestData = getSysRequestData(Constant.ORDER_STATUS_UPDATE, sysData);
         requestData.put("num_id", orderInfo.getOrderCode());
         requestData.put("tid_type", orderInfo.getOrderType());
         requestData.put("import_mark", orderInfo.getImportMark());
 
-        requestData.put("sign", getSign(requestData, info));
+        requestData.put("sign", getSign(requestData, sysData));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, "系统请求失败"));
         }
-        String resultJson = XmlUtil.xml2Json(responseData);
-        return new SimpleMonitor<>(new EventResult(1, resultJson));
+//        String resultJson = XmlUtil.xml2Json(responseData);
+        return new SimpleMonitor<>(new EventResult(1, responseData));
     }
 
     @Override
@@ -223,35 +230,40 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
 
         XmlMapper xmlMapper = new XmlMapper();
         String resultStr = xmlMapper.writeValueAsString(updateOrder);
-        Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER, info);
+
+        EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
+
+        Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER, sysData);
         requestData.put("xmlValues", resultStr);
-        requestData.put("sign", getSign(requestData, info));
+        requestData.put("sign", getSign(requestData, sysData));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
 
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
-        return new SimpleMonitor<>(new EventResult(1, XmlUtil.xml2Json(responseData)));
+        return new SimpleMonitor<>(new EventResult(1, responseData));
     }
 
     @Override
     public Monitor<EventResult> orderDeliver(MallOrderBean orderInfo, ERPInfo info) throws IOException {
-        Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER, info);
+        EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
+
+        Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER, sysData);
         requestData.put("OrderCode", orderInfo.getOrderCode());
         requestData.put("delivery_time", StringUtil.DateFormat(orderInfo.getDeliveryTime(), StringUtil.TIME_PATTERN));
         requestData.put("express_no", orderInfo.getExpressNo());
         requestData.put("express", orderInfo.getExpress());
         requestData.put("weight", orderInfo.getWeight());
 
-        requestData.put("sign", getSign(requestData, info));
+        requestData.put("sign", getSign(requestData, sysData));
 
         String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
-        String resultJson = XmlUtil.xml2Json(responseData);
-        return new SimpleMonitor<>(new EventResult(1, resultJson));
+//        String resultJson = XmlUtil.xml2Json(responseData);
+        return new SimpleMonitor<>(new EventResult(1, responseData));
     }
 
     /**
@@ -259,16 +271,23 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
      *
      * @return
      */
-    private Map<String, String> getSysRequestData(String method, ERPInfo info) {
+    private Map<String, String> getSysRequestData(String method, EDBSysData sysData) throws IOException {
         Map<String, String> requestData = new HashMap<>();
         String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
-        requestData.put("dbhost", Constant.DB_HOST);
-        requestData.put("appkey", Constant.APP_KEY);
-        requestData.put("format", Constant.FORMAT);
+//        requestData.put("dbhost", Constant.DB_HOST);
+//        requestData.put("appkey", Constant.APP_KEY);
+//        requestData.put("format", Constant.FORMAT);
+//        requestData.put("timestamp", timestamp);
+//        requestData.put("v", Constant.V);
+//        requestData.put("slencry", Constant.SLENCRY);
+//        requestData.put("ip", Constant.IP);
+        requestData.put("dbhost", sysData.getDbHost());
+        requestData.put("appkey", sysData.getAppKey());
+        requestData.put("format", sysData.getFormat());
         requestData.put("timestamp", timestamp);
         requestData.put("v", Constant.V);
         requestData.put("slencry", Constant.SLENCRY);
-        requestData.put("ip", Constant.IP);
+        requestData.put("ip", sysData.getIp());
         requestData.put("method", method);
         return requestData;
     }
@@ -279,10 +298,12 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
      * @param requestData
      * @return
      */
-    private String getSign(Map requestData, ERPInfo info) {
+    private String getSign(Map requestData, EDBSysData sysData) {
         TreeMap<String, String> signMap = new TreeMap<>(requestData);
-        signMap.put("appscret", Constant.APP_SECRET);
-        signMap.put("token", Constant.TOKEN);
-        return SignBuilder.buildSign(signMap, Constant.APP_KEY, "");
+//        signMap.put("appscret", Constant.APP_SECRET);
+//        signMap.put("token", Constant.TOKEN);
+        signMap.put("appscret", sysData.getAppSecret());
+        signMap.put("token", sysData.getToken());
+        return SignBuilder.buildSign(signMap, sysData.getAppKey(), "");
     }
 }

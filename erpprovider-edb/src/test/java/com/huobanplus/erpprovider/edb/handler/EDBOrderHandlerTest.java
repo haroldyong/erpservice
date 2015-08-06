@@ -1,10 +1,15 @@
 package com.huobanplus.erpprovider.edb.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.edb.EDBConfig;
+import com.huobanplus.erpprovider.edb.bean.EDBSysData;
+import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import com.huobanplus.erpservice.event.model.OrderInfo;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +29,28 @@ import java.util.Date;
 public class EDBOrderHandlerTest {
     @Autowired
     private EDBOrderHandler EDBOrderHandler;
+
+    private ERPInfo mockERP;
+
+    @Before
+    public void setUp() throws Exception {
+        mockERP = new ERPInfo();
+        mockERP.setName("edb");
+        EDBSysData sysData = new EDBSysData();
+        sysData.setRequestUrl(Constant.REQUEST_URI);
+        sysData.setDbHost(Constant.DB_HOST);
+        sysData.setAppKey(Constant.APP_KEY);
+        sysData.setAppSecret(Constant.APP_SECRET);
+        sysData.setToken(Constant.TOKEN);
+        sysData.setFormat(Constant.FORMAT);
+        sysData.setV(Constant.V);
+        sysData.setSlencry(Constant.SLENCRY);
+        sysData.setIp(Constant.IP);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        mockERP.setSysDataJson(objectMapper.writeValueAsString(sysData));
+
+    }
 
     @Test
     public void testCreateOrder() throws Exception {
@@ -57,12 +84,14 @@ public class EDBOrderHandlerTest {
         orderInfo.setBookDeliveryTime(new Date());
         orderInfo.setPayDate(new Date());
         orderInfo.setFinishDate(new Date());
-        //EDBOrderHandler.createOrder(orderInfo);
+        orderInfo.setOrderDate(new Date());
+        Monitor<EventResult> monitor = EDBOrderHandler.createOrder(orderInfo, mockERP);
+        System.out.println(monitor.get().getSystemResult());
     }
 
     @Test
     public void testGetOrderInfo() throws Exception {
-        //Monitor<EventResult> monitor = EDBOrderHandler.getOrderInfo();
+        Monitor<EventResult> monitor = EDBOrderHandler.getOrderInfo(mockERP);
     }
 
     @Test
@@ -79,6 +108,6 @@ public class EDBOrderHandlerTest {
 
     @Test
     public void testOrderDeliver() throws Exception {
-        
+
     }
 }

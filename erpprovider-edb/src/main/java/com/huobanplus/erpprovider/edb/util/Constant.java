@@ -15,7 +15,7 @@ public class Constant {
     public static final String APP_KEY = "6f55e36b";
     public static final String APP_SECRET = "adeaac8b252e4ed6a564cdcb1a064082";
     public static final String TOKEN = "a266066b633c429890bf4df1690789a3";
-    public static final String FORMAT = "XML";
+    public static final String FORMAT = "json";
     public static final String V = "2.0";
     public static final String SLENCRY = "0";
     public static final String IP = "117.79.148.228";
