@@ -10,9 +10,8 @@ import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import com.huobanplus.erpservice.transit.Common.ResultCode;
 import com.huobanplus.erpservice.transit.bean.ApiResult;
+import com.huobanplus.erpservice.transit.Common.HotBaseController;
 import com.huobanplus.erpservice.transit.controller.HotOrderController;
-import com.huobanplus.erpservice.transit.utils.DesUtil;
-import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/hotClientOrderApi")
-public class HotOrderControllerImpl implements HotOrderController {
+public class HotOrderControllerImpl extends HotBaseController implements HotOrderController {
     @Autowired
     private ERPRegister erpRegister;
     @Autowired
@@ -74,33 +73,6 @@ public class HotOrderControllerImpl implements HotOrderController {
                 ObtainOrderEvent obtainOrderEvent = new ObtainOrderEvent();
                 obtainOrderEvent.setErpInfo(info);
                 Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(obtainOrderEvent, null);
-                if (eventResultMonitor.get().getSystemStatus() == 1) {
-                    return new ApiResult(ResultCode.SUCCESS.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.SUCCESS.getValue());
-                } else {
-                    return new ApiResult(ResultCode.ERP_BAD_REQUEST.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.ERP_BAD_REQUEST.getValue());
-                }
-            } else {
-                return new ApiResult(ResultCode.EVENT_NOT_SUPPORT.getKey(), null, ResultCode.EVENT_NOT_SUPPORT.getValue());
-            }
-        } catch (Exception e) {
-            return new ApiResult(ResultCode.SYSTEM_BAD_REQUEST.getKey(), e.getMessage(), ResultCode.SYSTEM_BAD_REQUEST.getValue());
-        }
-    }
-
-    @Override
-    @RequestMapping(value = "/obtainInventory", method = RequestMethod.GET)
-    @ResponseBody
-    public ApiResult obtainInventory(ERPInfo erpInfo) {
-        try {
-            ERPInfo info = encryptInfo(erpInfo);
-            ERPHandler erpHandler = erpRegister.getERPHandler(info);
-            if (erpHandler == null) {
-                return new ApiResult(ResultCode.NO_SUCH_ERPHANDLER.getKey(), null, ResultCode.NO_SUCH_ERPHANDLER.getValue());
-            }
-            if (erpHandler.eventSupported(InventoryEvent.class)) {
-                InventoryEvent inventoryEvent = new InventoryEvent();
-                inventoryEvent.setErpInfo(erpInfo);
-                Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(inventoryEvent, null);
                 if (eventResultMonitor.get().getSystemStatus() == 1) {
                     return new ApiResult(ResultCode.SUCCESS.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.SUCCESS.getValue());
                 } else {
@@ -193,22 +165,5 @@ public class HotOrderControllerImpl implements HotOrderController {
         } catch (Exception e) {
             return new ApiResult(ResultCode.SYSTEM_BAD_REQUEST.getKey(), e.getMessage(), ResultCode.SYSTEM_BAD_REQUEST.getValue());
         }
-    }
-
-    /**
-     * 转换ERPInfo为明文状态
-     *
-     * @param preInfo 根据不同erp传递不同的必须参数
-     * @return 返回密文形式的erp信息
-     * @throws Exception
-     */
-    private ERPInfo encryptInfo(ERPInfo preInfo) throws Exception {
-        ERPInfo erpInfo = new ERPInfo();
-        erpInfo.setName(DesUtil.decrypt(preInfo.getName()));
-        erpInfo.setType(DesUtil.decrypt(preInfo.getType()));
-        erpInfo.setSysDataJson(DesUtil.decrypt(preInfo.getSysDataJson()));
-        erpInfo.setValidation(DesUtil.decrypt(preInfo.getValidation()));
-
-        return erpInfo;
     }
 }
