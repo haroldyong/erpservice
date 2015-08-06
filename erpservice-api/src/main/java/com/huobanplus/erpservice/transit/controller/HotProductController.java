@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
+ * 产品相关接口
  * Created by allan on 2015/8/6.
  */
 public interface HotProductController {
@@ -27,6 +28,6 @@ public interface HotProductController {
      * @param erpInfo erp关联信息（参数为des加密后的参数）
      * @return 返回库存信息列表
      */
-    @RequestMapping(value = "/obtainInventory", method = RequestMethod.GET)
-    ApiResult obtainInventory(ERPInfo erpInfo);
+    @RequestMapping(value = "/obtainInventory", method = RequestMethod.POST)
+    ApiResult obtainInventory(ERPInfo erpInfo, String sign);
 }

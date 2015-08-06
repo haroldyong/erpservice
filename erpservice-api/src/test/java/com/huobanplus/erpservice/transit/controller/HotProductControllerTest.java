@@ -6,7 +6,6 @@ import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
 import com.huobanplus.erpservice.commons.config.WebConfig;
-import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.transit.utils.DesUtil;
 import org.junit.Before;
@@ -20,22 +19,20 @@ import org.springframework.util.StreamUtils;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
-import java.util.Date;
 
 import static org.junit.Assert.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Created by allan on 2015/8/4.
+ * Created by allan on 2015/8/6.
  */
 @ActiveProfiles("test")
 @ContextConfiguration(classes = {ApplicationConfig.class, WebConfig.class})
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
-public class HotOrderControllerTest extends SpringWebTest {
-
+public class HotProductControllerTest extends SpringWebTest {
     private ERPInfo mockERP;
 
     @Before
@@ -58,31 +55,15 @@ public class HotOrderControllerTest extends SpringWebTest {
     }
 
     @Test
-    public void testCreateOrder() throws Exception {
-
-    }
-
-    @Test
-    public void testObtainOrder() throws Exception {
-        mockMvc.perform(get("/hotClientOrderApi/obtainOrder")
+    public void testObtainInventory() throws Exception {
+        byte[] result = mockMvc.perform(get("/hotClientOrderApi/obtainInventory")
                 .param("name", DesUtil.encrypt(mockERP.getName()))
                 .param("sysDataJson", DesUtil.encrypt(mockERP.getSysDataJson())))
                 .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void testOrderDeliver() throws Exception {
-
-    }
-
-    @Test
-    public void testOrderUpdate() throws Exception {
-
-    }
-
-    @Test
-    public void testOrderStatusUpdate() throws Exception {
-
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse().getContentAsByteArray();
+        String ddd = StreamUtils.copyToString(new ByteArrayInputStream(result), Charset.forName("utf-8"));
+        System.out.println(ddd);
     }
 }

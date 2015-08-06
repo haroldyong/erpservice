@@ -27,12 +27,12 @@ public interface HotOrderController {
      * </p>
      * <p>参数均为des加密后的字符串</p>
      *
-     * @param orderInfo 订单信息
-     * @param erpInfo   erp关联信息（参数为des加密后的参数）
+     * @param orderInfoJson 订单信息,有MallOrderBean对象序列化成的json格式字符串
+     * @param erpInfo       erp关联信息（参数为des加密后的参数）
      * @return 返回创建订单结果
      */
     @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
-    ApiResult createOrder(MallOrderBean orderInfo, ERPInfo erpInfo);
+    ApiResult createOrder(String orderInfoJson, ERPInfo erpInfo, String sign);
 
     /**
      * <p>方法描述：<p/>
@@ -44,42 +44,42 @@ public interface HotOrderController {
      * @param erpInfo erp关联信息（参数为des加密后的参数）
      * @return 返回订单信息列表
      */
-    @RequestMapping(value = "/obtainOrder", method = RequestMethod.GET)
-    ApiResult obtainOrder(ERPInfo erpInfo);
+    @RequestMapping(value = "/obtainOrder", method = RequestMethod.POST)
+    ApiResult obtainOrder(ERPInfo erpInfo, String sign);
 
     /**
      * <p>方法描述：<p/>
      * 订单发货
      * <p>sysDateJson定义参照方法createOrder<p/>
      *
-     * @param orderInfo 根据不同erp传递不同的必须参数
+     * @param orderInfoJson 根据不同erp传递不同的必须参数
      * @param erpInfo   erp关联信息（参数为des加密后的参数）
      * @return 返回发货结果信息
      */
     @RequestMapping(value = "/orderDeliver", method = RequestMethod.POST)
-    ApiResult orderDeliver(MallOrderBean orderInfo, ERPInfo erpInfo);
+    ApiResult orderDeliver(String orderInfoJson, ERPInfo erpInfo, String sign);
 
     /**
      * <p>方法描述：<p/>
      * 订单业务信息更新
      * <p>sysDateJson定义参照方法createOrder<p/>
      *
-     * @param orderInfo 根据不同erp传递不同的必须参数
+     * @param orderInfoJson 根据不同erp传递不同的必须参数
      * @param erpInfo   erp关联信息（参数为des加密后的参数）
      * @return 返回订单更新结果信息
      */
     @RequestMapping(value = "/orderUpdate", method = RequestMethod.POST)
-    ApiResult orderUpdate(MallOrderBean orderInfo, ERPInfo erpInfo);
+    ApiResult orderUpdate(String orderInfoJson, ERPInfo erpInfo, String sign);
 
     /**
      * <p>方法描述：<p/>
      * 订单状态更新
      * <p>sysDateJson定义参照方法createOrder<p/>
      *
-     * @param orderInfo 根据不同erp传递不同的必须参数
+     * @param orderInfoJson 根据不同erp传递不同的必须参数
      * @param erpInfo   erp关联信息（参数为des加密后的参数）
      * @return 返回订单更新结果信息
      */
     @RequestMapping(value = "/orderStatusUpdate", method = RequestMethod.POST)
-    ApiResult orderStatusUpdate(MallOrderBean orderInfo, ERPInfo erpInfo);
+    ApiResult orderStatusUpdate(String orderInfoJson, ERPInfo erpInfo, String sign);
 }
