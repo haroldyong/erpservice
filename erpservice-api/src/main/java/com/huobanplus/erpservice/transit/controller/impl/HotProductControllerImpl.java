@@ -12,9 +12,13 @@ import com.huobanplus.erpservice.transit.Common.HotBaseController;
 import com.huobanplus.erpservice.transit.controller.HotProductController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * <p>类描述：API对接伙伴商城商品（库存）操作实现类</p>
@@ -25,11 +29,26 @@ public class HotProductControllerImpl extends HotBaseController implements HotPr
     private ERPRegister erpRegister;
 
     @Override
-    @RequestMapping(value = "/obtainInventory", method = RequestMethod.GET)
+    @RequestMapping(value = "/obtainInventory", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResult obtainInventory(ERPInfo erpInfo) {
+    public ApiResult obtainInventory(ERPInfo erpInfo, String sign) {
         try {
             ERPInfo info = encryptInfo(erpInfo);
+            //签名验证
+            if (StringUtils.isEmpty(sign)) {
+                return new ApiResult(ResultCode.EMPTY_SIGN_CODE.getKey(), null, ResultCode.EMPTY_SIGN_CODE.getValue());
+            }
+            Map<String, String> signMap = new TreeMap<>();
+            signMap.put("name", info.getName());
+            signMap.put("type", info.getType());
+            signMap.put("validation", info.getValidation());
+            signMap.put("sysDataJson", info.getSysDataJson());
+            String checkSign = buildSign(signMap, null, null);
+
+            if (!sign.equals(checkSign)) {
+                return new ApiResult(ResultCode.WRONG_SIGN_CODE.getKey(), null, ResultCode.WRONG_SIGN_CODE.getValue());
+            }
+
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {
                 return new ApiResult(ResultCode.NO_SUCH_ERPHANDLER.getKey(), null, ResultCode.NO_SUCH_ERPHANDLER.getValue());
