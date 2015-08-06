@@ -21,8 +21,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * <p>类描述：<p/>
- * 网店管家库存事件处理类。
+ * <html>
+ *     <body>
+ *         <b>类描述:   网店管家库存事件处理类。<b/>
+ *     </body>
+ * </html>
  */
 @Component
 public class NSInventoryHandlerImpl implements NSInventoryHandler {

@@ -3,7 +3,7 @@ package com.huobanplus.erpprovider.netshop.bean;
 import com.huobanplus.erpservice.event.model.BaseResult;
 
 /**
- * 类描述：授权 签名字段
+ * <p>类描述：授权 签名字段</p>
  * @author aaron
  * @since 2015年7月27日 上午10:26:48
  * @version V1.0

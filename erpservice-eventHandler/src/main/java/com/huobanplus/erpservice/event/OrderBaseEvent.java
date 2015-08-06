@@ -17,7 +17,7 @@ public class OrderBaseEvent extends ERPBaseEvent {
     /**
      * 更新订单状态
      *
-     * @return
+     * @return 订单信息
      */
     private OrderInfo tradeImportStatusUpdate() {
         return new OrderInfo();
@@ -26,7 +26,7 @@ public class OrderBaseEvent extends ERPBaseEvent {
     /**
      * 订单作废
      *
-     * @return
+     * @return 订单信息
      */
     private OrderInfo tradeCancel() {
         return new OrderInfo();
@@ -35,7 +35,7 @@ public class OrderBaseEvent extends ERPBaseEvent {
     /**
      * 根据条件得到外部订单信息
      *
-     * @return
+     * @return 订单信息
      */
     private OrderInfo outTradeGet() {
         return new OrderInfo();
@@ -44,7 +44,7 @@ public class OrderBaseEvent extends ERPBaseEvent {
     /**
      * 订单批量发  货
      *
-     * @return
+     * @return 订单信息
      */
     private OrderInfo tradeDeliveryBatch() {
         return new OrderInfo();
@@ -53,7 +53,7 @@ public class OrderBaseEvent extends ERPBaseEvent {
     /**
      * 未确认订单中添加赠品
      *
-     * @return
+     * @return 订单信息
      */
     private OrderInfo tradeGiftAdd() {
         return new OrderInfo();
@@ -62,7 +62,7 @@ public class OrderBaseEvent extends ERPBaseEvent {
     /**
      * 订单业务状态更新
      *
-     * @return
+     * @return 订单信息
      */
     private OrderInfo tradeUpdate() {
         return new OrderInfo();
@@ -71,7 +71,7 @@ public class OrderBaseEvent extends ERPBaseEvent {
     /**
      * 批量更改订单信息中的内部便签
      *
-     * @return
+     * @return 订单信息
      */
     private OrderInfo inNoteUpdate() {
         return new OrderInfo();
@@ -80,7 +80,7 @@ public class OrderBaseEvent extends ERPBaseEvent {
     /**
      * 获取订单信息
      *
-     * @return
+     * @return 订单信息
      */
     private OrderInfo tradeGet() {
         return new OrderInfo();
@@ -89,7 +89,7 @@ public class OrderBaseEvent extends ERPBaseEvent {
     /**
      * 写入订单
      *
-     * @return
+     * @return 订单信息
      */
     private OrderInfo tradeAdd() {
         return new OrderInfo();

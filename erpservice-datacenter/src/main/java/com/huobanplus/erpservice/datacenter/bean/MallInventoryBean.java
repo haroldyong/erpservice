@@ -5,8 +5,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * <p>类描述：<p/>
- * 库存信息
+ * <p>类描述：库存信息</p>
  */
 @Entity
 @Table(name = "Mall_Inventorys")
