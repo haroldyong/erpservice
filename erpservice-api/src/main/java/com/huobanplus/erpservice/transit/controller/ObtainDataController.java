@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <p>和伙伴客交互的控制层<p/>
+ * <p>和伙伴客交互的控制层</p>
  */
 @Controller
 @RequestMapping("/app")
@@ -285,26 +285,26 @@ public class ObtainDataController {
     /**
      * 获取伙伴商城支付信息
      *
-     * @param paymentId
-     * @param orderId
-     * @param memberId
-     * @param account
-     * @param bank
-     * @param payAccount
-     * @param currency
-     * @param money
-     * @param payCost
-     * @param curMoney
-     * @param payType
-     * @param payMethod
-     * @param ip
-     * @param beginTime
-     * @param endTime
-     * @param status
-     * @param memo
-     * @param tradeNo
-     * @param customerId
-     * @param wxOpenId
+     * @param paymentId 支付编号
+     * @param orderId 订单编号
+     * @param memberId 会员编号
+     * @param account 账户
+     * @param bank 银行
+     * @param payAccount 支付账户
+     * @param currency 币种
+     * @param money 钱币
+     * @param payCost 支付金额
+     * @param curMoney 当前钱币
+     * @param payType 支付类型
+     * @param payMethod 支付方法
+     * @param ip ip
+     * @param beginTime 开始时间
+     * @param endTime 结束时间
+     * @param status 状态
+     * @param memo 备注
+     * @param tradeNo 订单编号
+     * @param customerId 客户编号
+     * @param wxOpenId 微信开放编号
      * @param wxIsSubscribe
      * @param onlinePayType
      * @param payAgentId

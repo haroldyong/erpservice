@@ -128,7 +128,7 @@ public class MallOrderBean   {
     @Column(name = "Out_Tid")
     private String outTid;
     /**
-     * 原始订单编号/外部订单编号
+     * 商品、订单扫码
      */
     @Column(name = "Bar_Code")
     private String barCode;
@@ -306,8 +306,7 @@ public class MallOrderBean   {
     @Column(name = "Payment_Status")
     private String paymentStatus;
     /**
-     * 待退货部分退货/待退货全部退货/待退货所有/退货到货部分退货
-     * 退货到货全部退货/退货到货所有/未发货/已发货
+     *订单状态
      */
     @Column(name = "Order_Status")
     private String orderStatus;
@@ -317,8 +316,7 @@ public class MallOrderBean   {
     @Column(name = "Proce_Status")
     private String proceStatus;
     /**
-     * 待退款部分退款/待退款全部退款/等待买家付款/货到付款/交易成功/交易关闭/买家已付款
-     * 缺货订单未付款/已发货/已付款/已签收/交易成功/已取消/预退款
+     * 平台状态
      */
     @Column(name = "Platform_Status")
     private String platformStatus;

@@ -13,9 +13,9 @@ public interface NSProductHandler {
 
     /**
      * 获取商品信息
-     * @param request
-     * @return
-     * @throws IOException
+     * @param request 请求实体
+     * @return 返回返回结果值统一处理信息
+     * @throws IOException IO 异常
      */
     Monitor<EventResult> obtainGood(HttpServletRequest request) throws IOException;
 }

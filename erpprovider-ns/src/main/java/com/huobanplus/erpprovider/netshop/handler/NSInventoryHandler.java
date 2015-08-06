@@ -15,7 +15,7 @@ public interface NSInventoryHandler {
      * 库存同步
      * @param request 请求实体
      * @return 返回一个统一结果处理实体
-     * @throws IOException
+     * @throws IOException IO异常
      */
     Monitor<EventResult> synsInventory(HttpServletRequest request) throws IOException;
 }

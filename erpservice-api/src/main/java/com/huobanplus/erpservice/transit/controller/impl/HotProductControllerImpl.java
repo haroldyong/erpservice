@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Created by allan on 2015/8/6.
+ * <p>类描述：API对接伙伴商城商品（库存）操作实现类</p>
  */
 @Controller
 public class HotProductControllerImpl extends HotBaseController implements HotProductController {

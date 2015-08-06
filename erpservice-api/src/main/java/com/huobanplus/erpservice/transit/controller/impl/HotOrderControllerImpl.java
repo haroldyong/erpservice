@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * <p>类描述：<p/>
+ * <p>类描述：</p>
  * API对接伙伴商城订单操作实现类
  */
 @Controller

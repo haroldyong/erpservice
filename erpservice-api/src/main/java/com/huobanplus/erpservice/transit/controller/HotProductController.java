@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Created by allan on 2015/8/6.
+ * <p>类描述：API对接伙伴商城产品（库存）操作接口</p>
  */
 public interface HotProductController {
     /**
-     * <p>方法描述：<p/>
+     * <p>方法描述：</p>
      * 获取产品库存信息
      * <p>erpInfo:需要传递参数为name，sysDateJson</p>
      * <p>sysDateJson包含：
