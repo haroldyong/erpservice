@@ -1,6 +1,7 @@
 package com.huobanplus.erpservice.transit.controller.impl;
 
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPRegister;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class HotOrderControllerImpl implements HotOrderController {
     @Autowired
     private ERPRegister erpRegister;
+    @Autowired
+    private MallOrderService orderService;
 
     @Override
     @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
@@ -44,6 +47,7 @@ public class HotOrderControllerImpl implements HotOrderController {
                 createOrderEvent.setErpInfo(info);
                 Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(createOrderEvent, orderInfo);
                 if (eventResultMonitor.get().getSystemStatus() == 1) {
+                    orderService.save(orderInfo);
                     return new ApiResult(ResultCode.SUCCESS.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.SUCCESS.getValue());
                 } else {
                     return new ApiResult(ResultCode.ERP_BAD_REQUEST.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.ERP_BAD_REQUEST.getValue());
