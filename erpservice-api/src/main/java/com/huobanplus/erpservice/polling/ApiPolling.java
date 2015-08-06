@@ -14,8 +14,9 @@ public class ApiPolling {
      * 每天每隔2小时轮询一次 cron 可配置
      */
     @Scheduled(cron = "0 0 0/2 * * ?")
-    private void job()
+    private void polling()
     {
         //
+
     }
 }

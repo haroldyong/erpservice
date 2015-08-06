@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Created by allan on 2015/8/4.
+ * <p>类描述：<p/>
+ * API对接伙伴商城订单操作实现类
  */
 @Controller
 @RequestMapping("/hotClientOrderApi")
@@ -193,8 +194,8 @@ public class HotOrderControllerImpl implements HotOrderController {
     /**
      * 转换ERPInfo为明文状态
      *
-     * @param preInfo
-     * @return
+     * @param preInfo 根据不同erp传递不同的必须参数
+     * @return 返回密文形式的erp信息
      * @throws Exception
      */
     private ERPInfo encryptInfo(ERPInfo preInfo) throws Exception {

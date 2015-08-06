@@ -16,7 +16,7 @@ public class SignBuilder {
      * @param params 代签名参数，key排序的map
      * @param prefix 前缀
      * @param suffix 后缀
-     * @return
+     * @return 返回加鉴权后生成的Sign
      */
     public static String buildSign(Map<String, String> params, String prefix, String suffix) {
         StringBuilder stringBuilder = new StringBuilder(prefix);

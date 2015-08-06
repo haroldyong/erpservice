@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 
 /**
- * <b>类描述：<b/>对接网店管家的控制类
+ * <p>类描述：对接网店管家的控制类<p/>
  */
 @Controller
 public class NetShopController {

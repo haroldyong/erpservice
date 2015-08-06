@@ -32,7 +32,6 @@ public class Constant {
     public static final String SIGN_TIME_STAMP = "timeStamp";
 
     /**
-     * <<<<<<< Updated upstream
      * 请求成功
      */
     public final static String REQUEST_SUCCESS = "30000";

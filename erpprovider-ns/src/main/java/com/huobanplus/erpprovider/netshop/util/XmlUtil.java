@@ -21,9 +21,9 @@ public class XmlUtil<T> {
     /**
      * xml转T类BEAN
      *
-     * @param xml
-     * @param t
-     * @return
+     * @param xml xml格式的字符串
+     * @param t 要转换成的实体BEAN
+     * @return 返回转换成功的实体
      */
     public T formXml(String xml, T t) {
         ByteArrayInputStream xmlData = new ByteArrayInputStream
@@ -47,8 +47,8 @@ public class XmlUtil<T> {
     /**
      * T类转xml
      *
-     * @param t
-     * @return
+     * @param t 需要转换成xml格式的实体
+     * @return 返回转换后的xml字符串
      */
     public String toXml(T t) {
         ByteArrayOutputStream xmlData = new ByteArrayOutputStream();
@@ -72,8 +72,8 @@ public class XmlUtil<T> {
     /**
      * 构造xml对象树
      *
-     * @param t
-     * @return
+     * @param t 待转换xml的实体
+     * @return 返回转换参数的字符串
      */
     private String beanName(T t) {
         String fullClassName = t.getClass().getName();
@@ -113,6 +113,11 @@ public class XmlUtil<T> {
     }
 
 
+    /**
+     * dom格式的xml转map数据类型
+     * @param e dom中的元素，包含相关数据
+     * @return 返回转换后的map数据
+     */
     public static Map dom2Map(Element e) {
         Map map = new HashMap();
         List list = e.elements();
@@ -162,8 +167,9 @@ public class XmlUtil<T> {
     /**
      * xml格式转换成json
      *
-     * @param xmlContent
-     * @return
+     * @param xmlContent xml格式的字符串
+     * @return 返回转换后的json格式的数据
+     * @throws IOException
      */
     public static String xml2Json(String xmlContent) throws IOException {
         Map map = dom2Map(xmlContent);

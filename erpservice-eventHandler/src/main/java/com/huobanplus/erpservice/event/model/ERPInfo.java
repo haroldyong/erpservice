@@ -7,24 +7,26 @@ import java.io.Serializable;
  * Created by allan on 2015/7/13.
  */
 public class ERPInfo implements Serializable {
+
+
     private static final long serialVersionUID = 52479859658664542L;
 
-    //todo erp相关信息，如类型，名称，验证信息等
     /**
      * erp类型
      */
-    private String type;//erp类型
+    private String type;
     /**
      * erp名称
      */
-    private String name;//ERP名称
+    private String name;
     /**
      * erp验证信息
      */
-    private String validation;//验证信息
+    private String validation;
     /**
      * erp系统级参数
      * <p>json格式</p>
+     * <p><p/>
      */
     private String sysDataJson;
     /**
