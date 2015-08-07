@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface HotStorageController {
     /**
      * <p>方法描述：<p/>
-     * 创建订单
+     * 新增出库单
      * <p>erpInfo:需要传递参数为name，sysDateJson</p>
      * <p>sysDateJson包含：
      * 1、dbhost 软件注册用户，比如edb_aXXXXX（接口调用的唯一标识），用户的主帐号
@@ -25,11 +25,36 @@ public interface HotStorageController {
      * </p>
      * <p>参数均为des加密后的字符串</p>
      *
-     * @param outStoreJson 订单信息,有MallOutStoreBean对象序列化成的json格式字符串
+     * @param outStoreJson json格式，出库单信息,有MallOutStoreBean对象序列化成的json格式字符串
      * @param erpInfo      erp关联信息（参数为des加密后的参数）
      * @param sign         签名
-     * @return 返回创建订单结果
+     * @return 返回结果
      */
     @RequestMapping(value = "/outStoreAdd", method = RequestMethod.POST)
     ApiResult outStoreAdd(String outStoreJson, ERPInfo erpInfo, String sign);
+
+    /**
+     * <p>方法描述：</p>
+     * 根据出库单号，对出库单进行确认。出库单确认后系统库存会减少
+     * <p>sysDateJson定义参照方法createOrder</p>
+     *
+     * @param outStoreJson json格式，根据不同erp传递不同的必须参数(e.g. edb:outStorage_no,freight,freight_avgway)
+     * @param erpInfo      erp关联信息（参数为des加密后的参数）
+     * @param sign         签名
+     * @return 返回结果
+     */
+    @RequestMapping(value = "/outStoreConfirm", method = RequestMethod.POST)
+    ApiResult outStoreConfirm(String outStoreJson, ERPInfo erpInfo, String sign);
+
+    /**
+     * <p>方法描述：</p>
+     * 根据出库单号，对出库单进行确认。出库单确认后系统库存会减少
+     * <p>sysDateJson定义参照方法createOrder</p>
+     *
+     * @param proOutJson json格式，根据MallProductOutBean，所需参数（bar_code，outstorage_no，outstorage_num,edb为例）
+     * @param erpInfo    erp关联信息（参数为des加密后的参数）
+     * @param sign       签名
+     * @return 返回结果
+     */
+    ApiResult outStoreWriteBack(String proOutJson, ERPInfo erpInfo, String sign);
 }

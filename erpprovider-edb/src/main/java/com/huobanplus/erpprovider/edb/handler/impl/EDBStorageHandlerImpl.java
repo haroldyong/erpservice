@@ -3,6 +3,7 @@ package com.huobanplus.erpprovider.edb.handler.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.edb.bean.EDBOutStoreInfo;
+import com.huobanplus.erpprovider.edb.bean.EDBOutStoreWriteBack;
 import com.huobanplus.erpprovider.edb.bean.EDBProductOut;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.handler.BaseHandler;
@@ -76,6 +77,46 @@ public class EDBStorageHandlerImpl extends BaseHandler implements EDBStorageHand
 
         String responseData = HttpUtil.getInstance().doPost(edbSysData.getRequestUrl(), requestData);
 
+        if (responseData == null) {
+            return new SimpleMonitor<>(new EventResult(0, responseData));
+        }
+        return new SimpleMonitor<>(new EventResult(1, responseData));
+    }
+
+    @Override
+    public Monitor<EventResult> outStoreConfirm(MallOutStoreBean outStoreBean, ERPInfo erpInfo) throws IOException {
+        EDBSysData edbSysData = new ObjectMapper().readValue(erpInfo.getSysDataJson(), EDBSysData.class);
+        Map<String, String> requestData = getSysRequestData("edbOutStoreConfirm", edbSysData);
+        Map<String, String> signMap = new TreeMap<>(requestData);
+        requestData.put("outStorage_no", outStoreBean.getOutStorageNo());
+        requestData.put("freight", outStoreBean.getFreight());
+        requestData.put("freight_avgway", outStoreBean.getFreightAvgWay());
+        signMap.put("outStorage_no", URLEncoder.encode(outStoreBean.getOutStorageNo(), "utf-8"));
+        requestData.put("sign", getSign(signMap, edbSysData));
+        String responseData = HttpUtil.getInstance().doPost(edbSysData.getRequestUrl(), requestData);
+        if (responseData == null) {
+            return new SimpleMonitor<>(new EventResult(0, responseData));
+        }
+        return new SimpleMonitor<>(new EventResult(1, responseData));
+    }
+
+    @Override
+    public Monitor<EventResult> outStoreWriteback(MallProductOutBean productOutBean, ERPInfo erpInfo) throws IOException {
+        EDBOutStoreWriteBack writeBack = new EDBOutStoreWriteBack();
+        writeBack.setBarCode(productOutBean.getBarCode());
+        writeBack.setOutStorageNo(productOutBean.getOutStoreBean().getOutStorageNo());
+        writeBack.setOutStorageNum(productOutBean.getOutStorageNum());
+
+        String resultXml = new XmlMapper().writeValueAsString(writeBack);
+        String xmlValues = "<order>" + resultXml + "</order>";
+
+        EDBSysData edbSysData = new ObjectMapper().readValue(erpInfo.getSysDataJson(), EDBSysData.class);
+        Map<String, String> requestData = getSysRequestData("edbOutStoreWriteback", edbSysData);
+        Map<String, String> signMap = new TreeMap<>(requestData);
+        requestData.put("xmlValues", URLEncoder.encode(xmlValues, "utf-8"));
+        signMap.put("xmlValues", xmlValues);
+        requestData.put("sign", getSign(signMap, edbSysData));
+        String responseData = HttpUtil.getInstance().doPost(edbSysData.getRequestUrl(), requestData);
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
