@@ -5,11 +5,10 @@ import com.huobanplus.erpprovider.edb.EDBConfig;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.bean.MallProductBean;
+import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
-import com.huobanplus.erpservice.event.model.OrderInfo;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -19,6 +18,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -61,9 +62,16 @@ public class EDBOrderHandlerTest {
         orderInfo.setStorageId("1");
         orderInfo.setExpress("dddd");
         orderInfo.setOrderDate(new Date());
+        orderInfo.setOrderCode("1232222132");
 
-        MallProductBean productBean = new MallProductBean();
-        
+        MallOrderItem productBean = new MallOrderItem();
+        productBean.setBarcode("22222");
+        productBean.setProName("方便面");
+        productBean.setSpecification("大碗");
+        productBean.setOutTid("1232222132");
+        productBean.setOrderBean(orderInfo);
+        orderInfo.setProductBeans(Arrays.asList(productBean));
+
         Monitor<EventResult> monitor = EDBOrderHandler.createOrder(orderInfo, mockERP);
         System.out.println(monitor.get().getSystemResult());
     }

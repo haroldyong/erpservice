@@ -1553,13 +1553,13 @@ public class MallOrderBean {
     private double hongbaoAmount;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBean", orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<MallProductBean> productBeans;
+    private List<MallOrderItem> productBeans;
 
-    public List<MallProductBean> getProductBeans() {
+    public List<MallOrderItem> getProductBeans() {
         return productBeans;
     }
 
-    public void setProductBeans(List<MallProductBean> productBeans) {
+    public void setProductBeans(List<MallOrderItem> productBeans) {
         this.productBeans = productBeans;
     }
 

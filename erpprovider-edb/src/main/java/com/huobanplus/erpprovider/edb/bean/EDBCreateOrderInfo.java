@@ -296,7 +296,7 @@ public class EDBCreateOrderInfo {
     @JacksonXmlProperty(localName = "is_needInvoice")
     private int isNeedInvoice;
     @JacksonXmlProperty(localName = "product_item")
-    List<EDBProductInfo> productInfos;
+    List<EDBOrderItem> productInfos;
 
     public String getTid() {
         return tid;
@@ -762,11 +762,11 @@ public class EDBCreateOrderInfo {
         this.isNeedInvoice = isNeedInvoice;
     }
 
-    public List<EDBProductInfo> getProductInfos() {
+    public List<EDBOrderItem> getProductInfos() {
         return productInfos;
     }
 
-    public void setProductInfos(List<EDBProductInfo> productInfos) {
+    public void setProductInfos(List<EDBOrderItem> productInfos) {
         this.productInfos = productInfos;
     }
 }

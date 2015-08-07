@@ -1,6 +1,5 @@
 package com.huobanplus.erpprovider.edb.handler.impl;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.edb.bean.*;
@@ -9,15 +8,12 @@ import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.net.HttpUtil;
 import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
 import com.huobanplus.erpprovider.edb.util.Constant;
-import com.huobanplus.erpprovider.edb.util.SignBuilder;
 import com.huobanplus.erpprovider.edb.util.StringUtil;
-import com.huobanplus.erpprovider.edb.util.XmlUtil;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.bean.MallProductBean;
+import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
-import com.huobanplus.erpservice.event.model.OrderInfo;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -92,31 +88,34 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         edbCreateOrderInfo.setDeliverDatePlan(StringUtil.DateFormat(orderInfo.getBookDeliveryTime(), StringUtil.TIME_PATTERN));
         edbCreateOrderInfo.setIsScorePay(orderInfo.getPointPay());
         edbCreateOrderInfo.setIsNeedInvoice(orderInfo.getInvoiceIsopen());
-        List<EDBProductInfo> edbProductInfoList = new ArrayList<>();
-        for (MallProductBean productBean : orderInfo.getProductBeans()) {
-            EDBProductInfo edbProductInfo = new EDBProductInfo();
-            edbProductInfo.setBarCode(productBean.getBarCode());
-            edbProductInfo.setProductTitle(productBean.getProductName());
-            edbProductInfo.setStandard(productBean.getStandard());
-            edbProductInfo.setOutPrice(productBean.getMarketPrice());
-            edbProductInfo.setFavoriteMoney(productBean);
-            edbProductInfo.setOrderGoodsNum(productBean.getOrderGoodsNum());
-            edbProductInfo.setGiftNum(productBean.getGiftNum());
-            edbProductInfo.setCostPrice(productBean.getCostPrice());
-            edbProductInfo.setProductStockout(productBean.getProductStockout());
-            edbProductInfo.setIsBook(productBean.getIsBook());
-            edbProductInfo.setIsPreSell(productBean.getIsAdvSale());
-            edbProductInfo.setIsGift(productBean.getIsGift());
-            edbProductInfo.setAvgPrice(productBean.getAvgPrice());
-            edbProductInfo.setProductFreight(String.valueOf(productBean.getProductFreight()));
-            edbProductInfo.setOutProductId(productBean.getOutProductId());
-            edbProductInfo.setOutBarCode(productBean.getOutBarCode());
-            edbProductInfo.setProductIntro(productBean.getProductIntro());
-            edbProductInfoList.add(edbProductInfo);
+        List<EDBOrderItem> edbOrderItemList = new ArrayList<>();
+        for (MallOrderItem orderItem : orderInfo.getProductBeans()) {
+            EDBOrderItem edbOrderItem = new EDBOrderItem();
+            edbOrderItem.setBarCode(orderItem.getBarcode());
+            edbOrderItem.setProductTitle(orderItem.getProName());
+            edbOrderItem.setStandard(orderItem.getSpecification());
+            edbOrderItem.setOutPrice(orderItem.getSellPrice());
+            edbOrderItem.setFavoriteMoney(orderItem.getItemDiscountFee());
+            edbOrderItem.setOrderGoodsNum(orderItem.getProNum());
+            edbOrderItem.setGiftNum(orderItem.getGiftNum());
+            edbOrderItem.setCostPrice(orderItem.getCostPrice());
+            edbOrderItem.setTid(orderItem.getTid());
+            edbOrderItem.setProductStockout(orderItem.getStockSituation());
+            edbOrderItem.setIsBook(orderItem.getIsScheduled());
+            edbOrderItem.setIsPreSell(orderItem.getIsBookPro());
+            edbOrderItem.setIsGift(orderItem.getIsGifts());
+            edbOrderItem.setAvgPrice(orderItem.getAveragePrice());
+            edbOrderItem.setProductFreight(String.valueOf(orderItem.getFreight()));
+            edbOrderItem.setShopId(orderItem.getShopId());
+            edbOrderItem.setOutTid(orderItem.getOutTid());
+            edbOrderItem.setOutProductId(orderItem.getOutProId());
+            edbOrderItem.setOutBarCode(orderItem.getSecondBarcode());
+            edbOrderItem.setProductIntro(orderItem.getProExplain());
+            edbOrderItemList.add(edbOrderItem);
         }
-        edbCreateOrderInfo.setProductInfos(edbProductInfoList);
+        edbCreateOrderInfo.setProductInfos(edbOrderItemList);
 
-        String xmlResult = new XmlMapper().writeValueAsString(edbProductInfoList);
+        String xmlResult = new XmlMapper().writeValueAsString(edbCreateOrderInfo);
         int firstIndex = xmlResult.indexOf("<product_item>");
         int lastIndex = xmlResult.lastIndexOf("</product_item>");
         String firstPanel = xmlResult.substring(0, firstIndex);
@@ -125,14 +124,14 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
         EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
-        Map<String, String> requestData = getSysRequestData(sysData.getRequestUrl(), sysData);
+        Map<String, String> requestData = getSysRequestData(Constant.CREATE_ORDER, sysData);
         Map<String, String> signMap = new TreeMap<>(requestData);
         requestData.put("xmlValues", URLEncoder.encode(xmlValues, "utf-8"));
         signMap.put("xmlValues", xmlValues);
 
         requestData.put("sign", getSign(signMap, sysData));
 
-        String responseData = htNetService.doPost(Constant.REQUEST_URI, requestData);
+        String responseData = htNetService.doPost(sysData.getRequestUrl(), requestData);
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
@@ -147,9 +146,6 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
         Map<String, String> signMap = new TreeMap<>(requestData);
-//        requestData.put("page_no", "1");
-//        requestData.put("page_size", "10");
-        //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
         requestData.put("sign", getSign(signMap, sysData));
 
         String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);

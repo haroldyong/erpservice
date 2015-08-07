@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 /**
  * Created by allan on 2015/8/7.
  */
-public class EDBProductInfo {
+public class EDBOrderItem {
     /**
      * 条形码，必填
      */
@@ -52,25 +52,22 @@ public class EDBProductInfo {
      * 缺货状态（0：否 1：是）默认：0
      */
     @JacksonXmlProperty(localName = "product_stockout")
+    private String productStockout;
     /**
      * 是否预订（0：否 1：是）默认：0
      */
-    private String productStockout;
-    /**
-     * 是否预售
-     */
     @JacksonXmlProperty(localName = "is_Book")
-    private int isBook;
+    private String isBook;
     /**
      * 是否预售
      */
     @JacksonXmlProperty(localName = "is_presell")
-    private int isPreSell;
+    private String isPreSell;
     /**
      * 是否赠品（0：否 1：是）默认：0
      */
     @JacksonXmlProperty(localName = "is_Gift")
-    private int isGift;
+    private String isGift;
     /**
      * 加权平均单价
      */
@@ -187,27 +184,27 @@ public class EDBProductInfo {
         this.productStockout = productStockout;
     }
 
-    public int getIsBook() {
+    public String getIsBook() {
         return isBook;
     }
 
-    public void setIsBook(int isBook) {
+    public void setIsBook(String isBook) {
         this.isBook = isBook;
     }
 
-    public int getIsPreSell() {
+    public String getIsPreSell() {
         return isPreSell;
     }
 
-    public void setIsPreSell(int isPreSell) {
+    public void setIsPreSell(String isPreSell) {
         this.isPreSell = isPreSell;
     }
 
-    public int getIsGift() {
+    public String getIsGift() {
         return isGift;
     }
 
-    public void setIsGift(int isGift) {
+    public void setIsGift(String isGift) {
         this.isGift = isGift;
     }
 
