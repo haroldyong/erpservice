@@ -80,5 +80,5 @@ public interface EDBOrderHandler {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    Monitor<EventResult> orderDeliver(MallOrderBean orderInfo, ERPInfo info) throws IOException;
+        Monitor<EventResult> orderDeliver(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 }

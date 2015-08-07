@@ -19,13 +19,13 @@ public class EventResult extends BaseResult{
     {
 
     }
+    public int getSystemStatus() {
+        return systemStatus;
+    }
+
     public EventResult(int systemStatus, String systemResult) {
         this.systemStatus = systemStatus;
         this.systemResult = systemResult;
-    }
-
-    public int getSystemStatus() {
-        return systemStatus;
     }
 
     public void setSystemStatus(int systemStatus) {
