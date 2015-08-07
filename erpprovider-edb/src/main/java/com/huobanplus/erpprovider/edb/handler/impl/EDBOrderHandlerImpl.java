@@ -267,9 +267,11 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
     }
 
     /**
-     * 得到包含公用系统参数的requestData
-     *
-     * @return
+     * <p>得到包含公用系统参数的requestData</p>
+     * @param method 请求的方法名
+     * @param sysData 系统级参数
+     * @return 返回当前请求的请求参数的MAP形式
+     * @throws IOException IO 异常
      */
     private Map<String, String> getSysRequestData(String method, EDBSysData sysData) throws IOException {
         Map<String, String> requestData = new HashMap<>();
@@ -294,9 +296,9 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
 
     /**
      * 得到sign签名
-     *
-     * @param requestData
-     * @return
+     * @param requestData 请求参数
+     * @param sysData 系统级参数
+     * @return 返回当前请求的请求参数的MAP形式
      */
     private String getSign(Map requestData, EDBSysData sysData) {
         TreeMap<String, String> signMap = new TreeMap<>(requestData);

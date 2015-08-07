@@ -33,6 +33,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/app")
+@Deprecated
 public class ObtainDataController {
 
     @Resource
@@ -305,9 +306,9 @@ public class ObtainDataController {
      * @param tradeNo 订单编号
      * @param customerId 客户编号
      * @param wxOpenId 微信开放编号
-     * @param wxIsSubscribe
-     * @param onlinePayType
-     * @param payAgentId
+     * @param wxIsSubscribe 微信描述
+     * @param onlinePayType 在线支付方式
+     * @param payAgentId 支付用户编号
      * @param sign
      * @param appKey
      * @param operation

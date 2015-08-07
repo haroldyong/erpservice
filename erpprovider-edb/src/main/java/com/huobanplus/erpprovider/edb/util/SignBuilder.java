@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
- * 创建sign签名
+ * <p>创建sign签名</p>
  * Created by allan on 2015/7/28.
  */
 public class SignBuilder {
@@ -14,9 +14,9 @@ public class SignBuilder {
      * 创建一个sign签名
      *
      * @param params 代签名参数，key排序的map
-     * @param prefix
-     * @param suffix
-     * @return
+     * @param prefix 签名前缀
+     * @param suffix 签名后缀
+     * @return 返回鉴权信息字符串
      */
     public static String buildSign(Map<String, String> params, String prefix, String suffix) {
         StringBuilder stringBuilder = new StringBuilder(prefix);

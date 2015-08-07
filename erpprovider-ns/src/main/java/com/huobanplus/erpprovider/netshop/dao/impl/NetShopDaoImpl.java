@@ -4,10 +4,11 @@ import com.huobanplus.erpprovider.netshop.dao.NetShopDao;
 import org.springframework.stereotype.Repository;
 
 /**
- * <b>类描述：<b/>网店管家数据访问实现
+ * <p>类描述：网店管家数据访问实现</p>
  */
 @Repository
 public class NetShopDaoImpl implements NetShopDao {
+
 
 
 }

@@ -229,7 +229,7 @@ public class StringUtil {
     }
 
     /**
-     * 根据表格宽度解决字符串换行问?
+     * 根据表格宽度解决字符串换行问题
      *
      * @param locale
      * @param tableWidth
@@ -266,9 +266,9 @@ public class StringUtil {
     }
 
     /**
-     * 判断str是否为空?
+     * 判断str是否为空
      *
-     * @param str 要判断的字符?
+     * @param str 要判断的字符
      * @return str为null或?为""则返回true,否则返回false
      */
     public static boolean isEmptyStr(String str) {
