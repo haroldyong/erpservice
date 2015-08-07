@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * <p>类描述：<p/>
+ * <p>类描述：</p>
  * API对接伙伴商城订单操作实现类
  */
 @Controller

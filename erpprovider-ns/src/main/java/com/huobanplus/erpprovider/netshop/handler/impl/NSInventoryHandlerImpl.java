@@ -21,8 +21,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * <p>类描述：<p/>
- * 网店管家库存事件处理类。
+ *  <p>类描述:   网店管家库存事件处理类。</p>
  */
 @Component
 public class NSInventoryHandlerImpl implements NSInventoryHandler {

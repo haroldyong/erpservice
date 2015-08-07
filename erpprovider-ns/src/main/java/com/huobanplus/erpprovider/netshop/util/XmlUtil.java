@@ -169,7 +169,7 @@ public class XmlUtil<T> {
      *
      * @param xmlContent xml格式的字符串
      * @return 返回转换后的json格式的数据
-     * @throws IOException
+     * @throws IOException IO异常
      */
     public static String xml2Json(String xmlContent) throws IOException {
         Map map = dom2Map(xmlContent);

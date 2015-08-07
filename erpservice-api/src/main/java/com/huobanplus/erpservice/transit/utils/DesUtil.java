@@ -13,7 +13,7 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 /**
- * Created by allan on 2015/8/4.
+ * <p>des对称加密方法</p>
  */
 public class DesUtil {
     private final static String DES = "DES";
@@ -24,7 +24,6 @@ public class DesUtil {
      * Description 根据键值进行加密
      *
      * @param data
-     * @param key  加密键byte数组
      * @return
      * @throws Exception
      */
@@ -38,7 +37,6 @@ public class DesUtil {
      * Description 根据键值进行解密
      *
      * @param data
-     * @param key  加密键byte数组
      * @return
      * @throws IOException
      * @throws Exception

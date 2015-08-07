@@ -6,13 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * <p>类描述：<p/>
- * API对接伙伴商城订单操作接口
+ * <p>类描述：API对接伙伴商城订单操作接口</p>
  */
 @RequestMapping("/hotClientOrderApi")
 public interface HotOrderController {
     /**
-     * <p>方法描述：<p/>
+     * <p>方法描述：</p>
      * 创建订单
      * <p>erpInfo:需要传递参数为name，sysDateJson</p>
      * <p>sysDateJson包含：
@@ -34,10 +33,10 @@ public interface HotOrderController {
     ApiResult createOrder(String orderInfoJson, ERPInfo erpInfo, String sign);
 
     /**
-     * <p>方法描述：<p/>
+     * <p>方法描述：</p>
      * 获取订单列表
      * <p>erpInfo:需要传递参数为name，sysDateJson</p>
-     * <p>sysDateJson定义参照方法createOrder<p/>
+     * <p>sysDateJson定义参照方法createOrder</p>
      * <p>参数均为des加密后的字符串</p>
      *
      * @param erpInfo erp关联信息（参数为des加密后的参数）
@@ -47,9 +46,9 @@ public interface HotOrderController {
     ApiResult obtainOrder(ERPInfo erpInfo, String sign);
 
     /**
-     * <p>方法描述：<p/>
+     * <p>方法描述：</p>
      * 订单发货
-     * <p>sysDateJson定义参照方法createOrder<p/>
+     * <p>sysDateJson定义参照方法createOrder</p>
      *
      * @param orderInfoJson 根据不同erp传递不同的必须参数
      * @param erpInfo       erp关联信息（参数为des加密后的参数）
@@ -59,9 +58,9 @@ public interface HotOrderController {
     ApiResult orderDeliver(String orderInfoJson, ERPInfo erpInfo, String sign);
 
     /**
-     * <p>方法描述：<p/>
+     * <p>方法描述：</p>
      * 订单业务信息更新
-     * <p>sysDateJson定义参照方法createOrder<p/>
+     * <p>sysDateJson定义参照方法createOrder</p>
      *
      * @param orderInfoJson 根据不同erp传递不同的必须参数
      * @param erpInfo       erp关联信息（参数为des加密后的参数）
@@ -71,9 +70,8 @@ public interface HotOrderController {
     ApiResult orderUpdate(String orderInfoJson, ERPInfo erpInfo, String sign);
 
     /**
-     * <p>方法描述：<p/>
-     * 订单状态更新
-     * <p>sysDateJson定义参照方法createOrder<p/>
+     * <p>方法描述：订单状态更新</p>
+     * <p>sysDateJson定义参照方法createOrder</p>
      *
      * @param orderInfoJson 根据不同erp传递不同的必须参数
      * @param erpInfo       erp关联信息（参数为des加密后的参数）

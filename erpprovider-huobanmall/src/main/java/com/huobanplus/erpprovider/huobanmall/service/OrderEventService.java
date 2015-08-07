@@ -67,8 +67,8 @@ public interface OrderEventService extends BaseEvent {
 
     /**
      * 获取订单信息
-     * @param orderData
-     * @return
+     * @param orderData 安全签名参数集合
+     * @return 返回订单信息实体
      */
     OrderInfo obtainOrder(String orderData);
 }

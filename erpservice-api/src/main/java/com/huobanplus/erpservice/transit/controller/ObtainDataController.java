@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 和伙伴客交互的控制层
+ * <p>和伙伴客交互的控制层</p>
  */
 @Controller
 @RequestMapping("/app")
@@ -47,68 +47,68 @@ public class ObtainDataController {
     /**
      * 获取伙伴客的订单数据，并插入数据库
      *
-     * @param orderId
-     * @param syncStatus
-     * @param memberId
-     * @param orderStatus
-     * @param payStatus
-     * @param shipStatus
-     * @param memberStatus
-     * @param isDelivery
-     * @param deliverMethodId
-     * @param deliverMethod
-     * @param deliverArea
-     * @param weight
-     * @param orderName
-     * @param itemNum
-     * @param actTime
-     * @param createTime
-     * @param createIP
-     * @param shipName
-     * @param shipAddr
-     * @param shipZip
-     * @param shipTel
-     * @param shipEmail
-     * @param shipTime
-     * @param shipMobile
-     * @param costItem
-     * @param isTax
-     * @param costTax
-     * @param taxCompany
-     * @param costFreight
-     * @param isProtect
-     * @param costProtect
-     * @param costPayment
-     * @param scoreU
-     * @param discount
-     * @param usePmt
-     * @param totalAmount
-     * @param finalAmount
-     * @param pmtAmount
-     * @param payed
-     * @param memo
-     * @param lastChangeTime
-     * @param customerId
-     * @param cashOnDly
-     * @param onlinePayType
-     * @param scoreUAmount
-     * @param payAgentId
-     * @param payAgentScore
-     * @param payAgentScoreAmount
-     * @param payAgentPayed
-     * @param hasPayed
-     * @param hasPayedScore
-     * @param onlineAmount
-     * @param hongbaoAmount
-     * @param payTime
-     * @param virtualRecMobile
-     * @param sign
-     * @param appKey
-     * @param operation
-     * @param capCode
-     * @param timeStamp
-     * @param erpName
-     * @return
+     * @param orderId 订单编号
+     * @param syncStatus 同步标记，1表示已抓取
+     * @param memberId 会员ID
+     * @param orderStatus 订单状态
+     * @param payStatus 支付状态
+     * @param shipStatus 发货状态
+     * @param memberStatus 会员状态
+     * @param isDelivery 是否需要发货
+     * @param deliverMethodId 配送方式id
+     * @param deliverMethod 配送方式
+     * @param deliverArea 配送区域
+     * @param weight 重量
+     * @param orderName 订单名称
+     * @param itemNum 商品数量
+     * @param actTime 活动时间
+     * @param createTime 创建时间
+     * @param createIP 创建ip
+     * @param shipName 收货人
+     * @param shipAddr 收货人地址
+     * @param shipZip 收货人邮编
+     * @param shipTel 收货人电话
+     * @param shipEmail 收货人邮箱
+     * @param shipTime 收货人建议送货时间
+     * @param shipMobile 收货人手机
+     * @param costItem 商品总金额
+     * @param isTax 是否开发票
+     * @param costTax 税金
+     * @param taxCompany 开票公司抬头
+     * @param costFreight 配送费用
+     * @param isProtect 是否保价
+     * @param costProtect 保价费用
+     * @param costPayment 支付手续费
+     * @param scoreU 抵用积分
+     * @param discount 折扣省下的金额
+     * @param usePmt 是否使用优惠
+     * @param totalAmount 订单总金额
+     * @param finalAmount 最终金额
+     * @param pmtAmount 优惠金额
+     * @param payed 用余额支付的金额
+     * @param memo 订单备注
+     * @param lastChangeTime 最后变动时间
+     * @param customerId 商户Id
+     * @param cashOnDly 是否货到付款
+     * @param onlinePayType 在线支付方式
+     * @param scoreUAmount 积分抵用金额
+     * @param payAgentId 代付人ID
+     * @param payAgentScore 代付积分
+     * @param payAgentScoreAmount 代付积分金额
+     * @param payAgentPayed 余额代付
+     * @param hasPayed 订单已付金额
+     * @param hasPayedScore 订单已付积分
+     * @param onlineAmount 在线支付金额
+     * @param hongbaoAmount 红包抵用金额
+     * @param payTime 支付时间
+     * @param virtualRecMobile 虚拟商品收货手机
+     * @param sign 鉴权
+     * @param appKey appkey
+     * @param operation 操作平台
+     * @param capCode 平台码
+     * @param timeStamp 时间戳
+     * @param erpName erp名称
+     * @return 返回map数据
      */
     @ResponseBody
     @RequestMapping(value = "/commitOrderInfo", method = RequestMethod.POST)
@@ -285,26 +285,26 @@ public class ObtainDataController {
     /**
      * 获取伙伴商城支付信息
      *
-     * @param paymentId
-     * @param orderId
-     * @param memberId
-     * @param account
-     * @param bank
-     * @param payAccount
-     * @param currency
-     * @param money
-     * @param payCost
-     * @param curMoney
-     * @param payType
-     * @param payMethod
-     * @param ip
-     * @param beginTime
-     * @param endTime
-     * @param status
-     * @param memo
-     * @param tradeNo
-     * @param customerId
-     * @param wxOpenId
+     * @param paymentId 支付编号
+     * @param orderId 订单编号
+     * @param memberId 会员编号
+     * @param account 账户
+     * @param bank 银行
+     * @param payAccount 支付账户
+     * @param currency 币种
+     * @param money 钱币
+     * @param payCost 支付金额
+     * @param curMoney 当前钱币
+     * @param payType 支付类型
+     * @param payMethod 支付方法
+     * @param ip ip
+     * @param beginTime 开始时间
+     * @param endTime 结束时间
+     * @param status 状态
+     * @param memo 备注
+     * @param tradeNo 订单编号
+     * @param customerId 客户编号
+     * @param wxOpenId 微信开放编号
      * @param wxIsSubscribe
      * @param onlinePayType
      * @param payAgentId

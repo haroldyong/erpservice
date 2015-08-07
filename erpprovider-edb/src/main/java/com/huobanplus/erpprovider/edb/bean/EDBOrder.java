@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
  * Created by allan on 2015/7/27.
+ * <p>edb 订单实体转xml 预存实体：已废弃</p>
  */
 @JacksonXmlRootElement(localName = "order")
 public class EDBOrder {
