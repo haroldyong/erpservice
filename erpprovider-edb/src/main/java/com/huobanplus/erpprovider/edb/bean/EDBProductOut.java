@@ -24,6 +24,7 @@ public class EDBProductOut {
     private String freightAvg;
     @JacksonXmlProperty(localName = "outstorage_remark")
     private String outStorageRemark;
+    @JacksonXmlProperty(localName = "bar_code")
     private String barCode;
 
     public String getOutStorageNo() {

@@ -6,6 +6,7 @@ import com.huobanplus.erpprovider.edb.handler.EDBProductHandler;
 import com.huobanplus.erpprovider.edb.handler.EDBStorageHandler;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
+import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
@@ -59,6 +60,10 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     return true;
                 } else if (baseEventClass == AddOutStoreEvent.class) {
                     return true;
+                } else if (baseEventClass == ConfirmOutStoreEvent.class) {
+                    return true;
+                } else if (baseEventClass == OutStoreWriteBackEvent.class) {
+                    return true;
                 }
                 return false;
             }
@@ -83,6 +88,10 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     return EDBOrderHandler.orderUpdate((MallOrderBean) data, erpBaseEvent.getErpInfo());
                 } else if (erpBaseEvent instanceof AddOutStoreEvent) {
                     return edbStorageHandler.outStorageAdd((MallOutStoreBean) data, erpBaseEvent.getErpInfo());
+                } else if (erpBaseEvent instanceof ConfirmOutStoreEvent) {
+                    return edbStorageHandler.outStoreConfirm((MallOutStoreBean) data, erpBaseEvent.getErpInfo());
+                } else if (erpBaseEvent instanceof OutStoreWriteBackEvent) {
+                    return edbStorageHandler.outStoreWriteback((MallProductOutBean) data, erpBaseEvent.getErpInfo());
                 }
                 return null;
             }
