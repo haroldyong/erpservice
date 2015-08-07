@@ -2,38 +2,36 @@ package com.huobanplus.erpservice.transit.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
+import com.huobanplus.erpservice.event.erpevent.AddOutStoreEvent;
 import com.huobanplus.erpservice.event.erpevent.InventoryEvent;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPRegister;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.transit.Common.HotBaseController;
 import com.huobanplus.erpservice.transit.Common.ResultCode;
 import com.huobanplus.erpservice.transit.bean.ApiResult;
-import com.huobanplus.erpservice.transit.Common.HotBaseController;
-import com.huobanplus.erpservice.transit.controller.HotProductController;
+import com.huobanplus.erpservice.transit.controller.HotStorageController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Created by allan on 2015/8/6.
+ * Created by allan on 2015/8/7.
  */
 @Controller
-public class HotProductControllerImpl extends HotBaseController implements HotProductController {
+@RequestMapping("/hotClientStorageApi")
+public class HotStorageControllerImpl extends HotBaseController implements HotStorageController {
     @Autowired
     private ERPRegister erpRegister;
 
     @Override
-    @RequestMapping(value = "/obtainInventory", method = RequestMethod.POST)
-    @ResponseBody
-    public ApiResult obtainInventory(ERPInfo erpInfo, String sign) {
+    public ApiResult outStoreAdd(String outStoreJson, ERPInfo erpInfo, String sign) {
         try {
             ERPInfo info = encryptInfo(erpInfo);
             //签名验证
@@ -55,10 +53,12 @@ public class HotProductControllerImpl extends HotBaseController implements HotPr
             if (erpHandler == null) {
                 return new ApiResult(ResultCode.NO_SUCH_ERPHANDLER.getKey(), null, ResultCode.NO_SUCH_ERPHANDLER.getValue());
             }
-            if (erpHandler.eventSupported(InventoryEvent.class)) {
-                InventoryEvent inventoryEvent = new InventoryEvent();
-                inventoryEvent.setErpInfo(erpInfo);
-                Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(inventoryEvent, null);
+
+            if (erpHandler.eventSupported(AddOutStoreEvent.class)) {
+                AddOutStoreEvent outStoreEvent = new AddOutStoreEvent();
+                outStoreEvent.setErpInfo(erpInfo);
+                MallOutStoreBean outStoreBean = new ObjectMapper().readValue(outStoreJson, MallOutStoreBean.class);
+                Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(outStoreEvent, outStoreBean);
                 if (eventResultMonitor.get().getSystemStatus() == 1) {
                     return new ApiResult(ResultCode.SUCCESS.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.SUCCESS.getValue());
                 } else {

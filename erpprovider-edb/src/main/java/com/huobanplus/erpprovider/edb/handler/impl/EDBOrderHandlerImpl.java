@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.edb.bean.*;
+import com.huobanplus.erpprovider.edb.handler.BaseHandler;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.net.HttpUtil;
 import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
@@ -30,7 +31,7 @@ import java.util.TreeMap;
  * Created by allan on 2015/7/24.
  */
 @Component
-public class EDBOrderHandlerImpl implements EDBOrderHandler {
+public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler {
 
     @Override
     public Monitor<EventResult> createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException {
@@ -117,10 +118,12 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
 
         EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
-        Map<String, String> requestData = getSysRequestData(Constant.CREATE_ORDER, sysData);
-        requestData.put("xmlvalues", resultStr);
+        Map<String, String> requestData = getSysRequestData(sysData.getRequestUrl(), sysData);
+        Map<String, String> signMap = new TreeMap<>(requestData);
+        requestData.put("xmlValues", URLEncoder.encode(resultStr, "utf-8"));
+        signMap.put("xmlValues", resultStr);
 
-        requestData.put("sign", getSign(requestData, sysData));
+        requestData.put("sign", getSign(signMap, sysData));
 
         String responseData = htNetService.doPost(Constant.REQUEST_URI, requestData);
         if (responseData == null) {
@@ -134,14 +137,16 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
         EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
         Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, sysData);
+
         requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
+        Map<String, String> signMap = new TreeMap<>(requestData);
 //        requestData.put("page_no", "1");
 //        requestData.put("page_size", "10");
         //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
-        requestData.put("sign", getSign(requestData, sysData));
+        requestData.put("sign", getSign(signMap, sysData));
 
-        String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
+        String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
@@ -165,22 +170,16 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
         Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, sysData);
         requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
+        Map<String, String> signMap = new TreeMap<>(requestData);
 //        requestData.put("page_no", "1");
 //        requestData.put("page_size", "10");
         //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
-        requestData.put("sign", getSign(requestData, sysData));
+        requestData.put("sign", getSign(signMap, sysData));
 
-        String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
+        String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
-//        int firstRowIndex = responseData.indexOf("<Rows>");
-//        int lastRowIndex = responseData.lastIndexOf("</Rows>");
-//        String first = responseData.substring(0, firstRowIndex);
-//        String middle = responseData.substring(firstRowIndex, lastRowIndex + 7);
-//        String last = responseData.substring(lastRowIndex + 7, responseData.length());
-//        String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
-//        String resultJson = XmlUtil.xml2Json(resultXml);
         return new SimpleMonitor<>(new EventResult(1, responseData));
     }
 
@@ -192,14 +191,14 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
         requestData.put("num_id", orderInfo.getOrderCode());
         requestData.put("tid_type", orderInfo.getOrderType());
         requestData.put("import_mark", orderInfo.getImportMark());
+        Map<String, String> signMap = new TreeMap<>(requestData);
 
-        requestData.put("sign", getSign(requestData, sysData));
+        requestData.put("sign", getSign(signMap, sysData));
 
-        String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
+        String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, "系统请求失败"));
         }
-//        String resultJson = XmlUtil.xml2Json(responseData);
         return new SimpleMonitor<>(new EventResult(1, responseData));
     }
 
@@ -234,10 +233,12 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
         EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
         Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER, sysData);
-        requestData.put("xmlValues", resultStr);
+        Map<String, String> signMap = new TreeMap<>(requestData);
+        requestData.put("xmlValues", URLEncoder.encode(resultStr, "utf-8"));
+        signMap.put("xmlValues", resultStr);
         requestData.put("sign", getSign(requestData, sysData));
 
-        String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
+        String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
 
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, responseData));
@@ -250,60 +251,26 @@ public class EDBOrderHandlerImpl implements EDBOrderHandler {
         EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
         Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER, sysData);
-        requestData.put("OrderCode", orderInfo.getOrderCode());
-        requestData.put("delivery_time", StringUtil.DateFormat(orderInfo.getDeliveryTime(), StringUtil.TIME_PATTERN));
-        requestData.put("express_no", orderInfo.getExpressNo());
-        requestData.put("express", orderInfo.getExpress());
-        requestData.put("weight", orderInfo.getWeight());
+        Map<String, String> signMap = new TreeMap<>(requestData);
+        requestData.put("OrderCode", URLEncoder.encode(orderInfo.getOrderCode(), "utf-8"));
+        requestData.put("delivery_time", URLEncoder.encode(StringUtil.DateFormat(orderInfo.getDeliveryTime(), StringUtil.TIME_PATTERN), "utf-8"));
+        requestData.put("express_no", URLEncoder.encode(orderInfo.getExpressNo(), "utf-8"));
+        requestData.put("express", URLEncoder.encode(orderInfo.getExpress(), "utf-8"));
+        requestData.put("weight", URLEncoder.encode(orderInfo.getWeight(), "utf-8"));
+        signMap.put("OrderCode", orderInfo.getOrderCode());
+        signMap.put("delivery_time", StringUtil.DateFormat(orderInfo.getDeliveryTime(), StringUtil.TIME_PATTERN));
+        signMap.put("express_no", orderInfo.getExpressNo());
+        signMap.put("express", orderInfo.getExpress());
+        signMap.put("weight", orderInfo.getWeight());
 
-        requestData.put("sign", getSign(requestData, sysData));
+        requestData.put("sign", getSign(signMap, sysData));
 
-        String responseData = HttpUtil.getInstance().doPost(Constant.REQUEST_URI, requestData);
+        String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
         if (responseData == null) {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
-//        String resultJson = XmlUtil.xml2Json(responseData);
         return new SimpleMonitor<>(new EventResult(1, responseData));
     }
 
-    /**
-     * 得到包含公用系统参数的requestData
-     *
-     * @return
-     */
-    private Map<String, String> getSysRequestData(String method, EDBSysData sysData) throws IOException {
-        Map<String, String> requestData = new HashMap<>();
-        String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
-//        requestData.put("dbhost", Constant.DB_HOST);
-//        requestData.put("appkey", Constant.APP_KEY);
-//        requestData.put("format", Constant.FORMAT);
-//        requestData.put("timestamp", timestamp);
-//        requestData.put("v", Constant.V);
-//        requestData.put("slencry", Constant.SLENCRY);
-//        requestData.put("ip", Constant.IP);
-        requestData.put("dbhost", sysData.getDbHost());
-        requestData.put("appkey", sysData.getAppKey());
-        requestData.put("format", sysData.getFormat());
-        requestData.put("timestamp", timestamp);
-        requestData.put("v", Constant.V);
-        requestData.put("slencry", Constant.SLENCRY);
-        requestData.put("ip", sysData.getIp());
-        requestData.put("method", method);
-        return requestData;
-    }
 
-    /**
-     * 得到sign签名
-     *
-     * @param requestData
-     * @return
-     */
-    private String getSign(Map requestData, EDBSysData sysData) {
-        TreeMap<String, String> signMap = new TreeMap<>(requestData);
-//        signMap.put("appscret", Constant.APP_SECRET);
-//        signMap.put("token", Constant.TOKEN);
-        signMap.put("appscret", sysData.getAppSecret());
-        signMap.put("token", sysData.getToken());
-        return SignBuilder.buildSign(signMap, sysData.getAppKey(), "");
-    }
 }
