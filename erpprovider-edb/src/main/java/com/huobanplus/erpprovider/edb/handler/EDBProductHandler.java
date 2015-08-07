@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public interface EDBProductHandler {
     /**
-     * 得到货品库存信息
+     * 获取货品库存信息
      * @param info erp信息
      * @return 返回结果
      * @throws IOException IO 异常
