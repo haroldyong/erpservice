@@ -5,6 +5,7 @@ import com.huobanplus.erpprovider.edb.EDBConfig;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.bean.MallProductBean;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
@@ -55,43 +56,21 @@ public class EDBOrderHandlerTest {
     @Test
     public void testCreateOrder() throws Exception {
         MallOrderBean orderInfo = new MallOrderBean();
-        orderInfo.setTid("s123123213");
-        orderInfo.setOutTid("sdfsdfsdf");
-        orderInfo.setShopId("mockShipId");
-        orderInfo.setStorageId("0");
-        orderInfo.setBuyerId("1");
-        orderInfo.setBuyerMessage("sdfdf");
-        orderInfo.setBuyerEmail("sdfd@133.com");
-        orderInfo.setBuyerAlipay("sdfsdf");
-        orderInfo.setServiceRemarks("sdfsdf");
-        orderInfo.setConsignee("ddd");
-        orderInfo.setAddress("sdfsdf");
-        orderInfo.setPost("12321");
-        orderInfo.setPhone("82125585");
-        orderInfo.setReceiverMobile("15067144855");
-        orderInfo.setProvince("bj");
-        orderInfo.setCity("bj");
-        orderInfo.setArea("bj");
-        orderInfo.setSendingType("sdf");
-        orderInfo.setExpress("jdddd");
-        orderInfo.setInvoiceType("1232");
-        orderInfo.setInvoiceTitle("sdfd");
+        orderInfo.setOutTid("1232222132");
+        orderInfo.setShopId("12");
+        orderInfo.setStorageId("1");
+        orderInfo.setExpress("dddd");
         orderInfo.setOrderDate(new Date());
-        orderInfo.setBarCode("123213");
-        orderInfo.setProductTitle("1231232132");
-        orderInfo.setStandard("sjlkdjf");
-        orderInfo.setAdvDistributTime(new Date());
-        orderInfo.setBookDeliveryTime(new Date());
-        orderInfo.setPayDate(new Date());
-        orderInfo.setFinishDate(new Date());
-        orderInfo.setOrderDate(new Date());
+
+        MallProductBean productBean = new MallProductBean();
+        
         Monitor<EventResult> monitor = EDBOrderHandler.createOrder(orderInfo, mockERP);
         System.out.println(monitor.get().getSystemResult());
     }
 
     @Test
     public void testGetOrderInfo() throws Exception {
-        Monitor<EventResult> monitor = EDBOrderHandler.getOrderInfo(mockERP);
+
     }
 
     @Test

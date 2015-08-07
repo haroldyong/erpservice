@@ -13,6 +13,7 @@ import com.huobanplus.erpprovider.edb.util.SignBuilder;
 import com.huobanplus.erpprovider.edb.util.StringUtil;
 import com.huobanplus.erpprovider.edb.util.XmlUtil;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.bean.MallProductBean;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
@@ -21,10 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * 订单处理事件实现类
@@ -94,34 +92,43 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         edbCreateOrderInfo.setDeliverDatePlan(StringUtil.DateFormat(orderInfo.getBookDeliveryTime(), StringUtil.TIME_PATTERN));
         edbCreateOrderInfo.setIsScorePay(orderInfo.getPointPay());
         edbCreateOrderInfo.setIsNeedInvoice(orderInfo.getInvoiceIsopen());
-        edbCreateOrderInfo.setBarCode(orderInfo.getBarCode());
-        edbCreateOrderInfo.setProductTitle(orderInfo.getProductTitle());
-        edbCreateOrderInfo.setStandard(orderInfo.getStandard());
-        edbCreateOrderInfo.setOutPrice(orderInfo.getOutPrice());
-        edbCreateOrderInfo.setFavoriteMoney(orderInfo.getDiscountFee());
-        edbCreateOrderInfo.setOrderGoodsNum(orderInfo.getOrderGoodsNum());
-        edbCreateOrderInfo.setGiftNum(orderInfo.getGiftNum());
-        edbCreateOrderInfo.setCostPrice(orderInfo.getCostPrice());
-        edbCreateOrderInfo.setProductStockOut(orderInfo.getProductStockout());
-        edbCreateOrderInfo.setIsBook(orderInfo.getIsBook());
-        edbCreateOrderInfo.setIsPreSell(orderInfo.getIsAdvSale());
-        edbCreateOrderInfo.setIsGift(orderInfo.getIsGift());
-        edbCreateOrderInfo.setAvgPrice(orderInfo.getAvgPrice());
-        edbCreateOrderInfo.setProductFreight(orderInfo.getProductFreight());
-        edbCreateOrderInfo.setOutProductId(orderInfo.getOutProductId());
-        edbCreateOrderInfo.setOutBarCode(orderInfo.getOutBarCode());
-        edbCreateOrderInfo.setProductIntro(orderInfo.getProductIntro());
-        EDBOrder edbOrder = new EDBOrder(edbCreateOrderInfo);
+        List<EDBProductInfo> edbProductInfoList = new ArrayList<>();
+        for (MallProductBean productBean : orderInfo.getProductBeans()) {
+            EDBProductInfo edbProductInfo = new EDBProductInfo();
+            edbProductInfo.setBarCode(productBean.getBarCode());
+            edbProductInfo.setProductTitle(productBean.getProductName());
+            edbProductInfo.setStandard(productBean.getStandard());
+            edbProductInfo.setOutPrice(productBean.getMarketPrice());
+            edbProductInfo.setFavoriteMoney(productBean);
+            edbProductInfo.setOrderGoodsNum(productBean.getOrderGoodsNum());
+            edbProductInfo.setGiftNum(productBean.getGiftNum());
+            edbProductInfo.setCostPrice(productBean.getCostPrice());
+            edbProductInfo.setProductStockout(productBean.getProductStockout());
+            edbProductInfo.setIsBook(productBean.getIsBook());
+            edbProductInfo.setIsPreSell(productBean.getIsAdvSale());
+            edbProductInfo.setIsGift(productBean.getIsGift());
+            edbProductInfo.setAvgPrice(productBean.getAvgPrice());
+            edbProductInfo.setProductFreight(String.valueOf(productBean.getProductFreight()));
+            edbProductInfo.setOutProductId(productBean.getOutProductId());
+            edbProductInfo.setOutBarCode(productBean.getOutBarCode());
+            edbProductInfo.setProductIntro(productBean.getProductIntro());
+            edbProductInfoList.add(edbProductInfo);
+        }
+        edbCreateOrderInfo.setProductInfos(edbProductInfoList);
 
-        XmlMapper xmlMapper = new XmlMapper();
-        String resultStr = xmlMapper.writeValueAsString(edbOrder);
+        String xmlResult = new XmlMapper().writeValueAsString(edbProductInfoList);
+        int firstIndex = xmlResult.indexOf("<product_item>");
+        int lastIndex = xmlResult.lastIndexOf("</product_item>");
+        String firstPanel = xmlResult.substring(0, firstIndex);
+        String productPanel = xmlResult.substring(firstIndex + 14, lastIndex);
+        String xmlValues = "<info>" + firstPanel + "<product_info>" + productPanel + "</product_info></orderInfo></info>";
 
         EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
         Map<String, String> requestData = getSysRequestData(sysData.getRequestUrl(), sysData);
         Map<String, String> signMap = new TreeMap<>(requestData);
-        requestData.put("xmlValues", URLEncoder.encode(resultStr, "utf-8"));
-        signMap.put("xmlValues", resultStr);
+        requestData.put("xmlValues", URLEncoder.encode(xmlValues, "utf-8"));
+        signMap.put("xmlValues", xmlValues);
 
         requestData.put("sign", getSign(signMap, sysData));
 
@@ -131,37 +138,6 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         }
         return new SimpleMonitor<>(new EventResult(1, responseData));
     }
-
-    @Override
-    public Monitor<EventResult> getOrderInfo(ERPInfo info) throws IOException {
-        EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
-
-        Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, sysData);
-
-        requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
-        requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
-        Map<String, String> signMap = new TreeMap<>(requestData);
-//        requestData.put("page_no", "1");
-//        requestData.put("page_size", "10");
-        //requestData.put("field", URLEncoder.encode(Constant.GET_ORDER_INFO_FIELD, "utf-8"));
-        requestData.put("sign", getSign(signMap, sysData));
-
-        String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
-        if (responseData == null) {
-            return new SimpleMonitor<>(new EventResult(0, responseData));
-        }
-        //处理返回的xml
-//        int firstRowIndex = responseData.indexOf("<Rows>");
-//        int lastRowIndex = responseData.lastIndexOf("</Rows>");
-//        String first = responseData.substring(0, firstRowIndex);
-//        String middle = responseData.substring(firstRowIndex, lastRowIndex + 7);
-//        String last = responseData.substring(lastRowIndex + 7, responseData.length());
-//        String resultXml = first + "<RowRoot>" + middle + "</RowRoot>" + last;
-//        //转成json格式返回
-//        String resultJson = XmlUtil.xml2Json(resultXml);
-        return new SimpleMonitor<>(new EventResult(1, responseData));
-    }
-
 
     @Override
     public Monitor<EventResult> obtainOrderList(ERPInfo info) throws IOException {

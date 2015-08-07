@@ -30,16 +30,6 @@ public interface EDBOrderHandler {
     Monitor<EventResult> createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 
     /**
-     * 获取订单信息
-     * <p>返回json</p>
-     *
-     * @return
-     * @throws IOException
-     * @throws DocumentException
-     */
-    Monitor<EventResult> getOrderInfo(ERPInfo info) throws IOException;
-
-    /**
      * 获取订单列表
      * <p>返回json</p>
      *

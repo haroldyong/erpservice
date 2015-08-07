@@ -1,10 +1,8 @@
 package com.huobanplus.erpservice.datacenter.bean;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 订单实体
@@ -12,7 +10,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "Mall_Orders")
-public class MallOrderBean   {
+public class MallOrderBean {
     /**
      * 订单id
      */
@@ -306,7 +304,7 @@ public class MallOrderBean   {
     @Column(name = "Payment_Status")
     private String paymentStatus;
     /**
-     *订单状态
+     * 订单状态
      */
     @Column(name = "Order_Status")
     private String orderStatus;
@@ -1553,6 +1551,17 @@ public class MallOrderBean   {
      */
     @Column(name = "Hongbao_Amount")
     private double hongbaoAmount;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBean", orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<MallProductBean> productBeans;
+
+    public List<MallProductBean> getProductBeans() {
+        return productBeans;
+    }
+
+    public void setProductBeans(List<MallProductBean> productBeans) {
+        this.productBeans = productBeans;
+    }
 
     public double getHongbaoAmount() {
         return hongbaoAmount;

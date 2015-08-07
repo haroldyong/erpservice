@@ -72,12 +72,12 @@ public class EDBStorageHandlerTest {
         MallProductOutBean productOutBean1 = new MallProductOutBean();
         productOutBean1.setOutStoreBean(outStoreBean);
         productOutBean1.setProductItemNo("5558");
-        productOutBean.setLocationNo("1");
-        productOutBean.setStorageNo("1");
-        productOutBean.setOutStorageNum(1);
-        productOutBean.setOutStoragePrice(1);
-        productOutBean.setBatch("1");
-        productOutBean.setBarCode("123123223");
+        productOutBean1.setLocationNo("1");
+        productOutBean1.setStorageNo("1");
+        productOutBean1.setOutStorageNum(1);
+        productOutBean1.setOutStoragePrice(1);
+        productOutBean1.setBatch("1");
+        productOutBean1.setBarCode("123123223");
         outStoreBean.setMallProductOutBeans(Arrays.asList(productOutBean, productOutBean1));
         storageHandler.outStorageAdd(outStoreBean, mockERP);
     }
