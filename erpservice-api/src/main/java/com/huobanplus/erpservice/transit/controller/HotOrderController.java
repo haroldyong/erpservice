@@ -1,6 +1,5 @@
 package com.huobanplus.erpservice.transit.controller;
 
-import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.transit.bean.ApiResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,7 +54,7 @@ public interface HotOrderController {
      *
      * @param sign       远程传过来的鉴权参数
      * @param orderInfoJson 根据不同erp传递不同的必须参数
-     * @param erpInfo   erp关联信息（参数为des加密后的参数）
+     * @param erpInfo       erp关联信息（参数为des加密后的参数）
      * @return 返回发货结果信息
      */
     @RequestMapping(value = "/orderDeliver", method = RequestMethod.POST)
@@ -68,7 +67,7 @@ public interface HotOrderController {
      *
      * @param sign       远程传过来的鉴权参数
      * @param orderInfoJson 根据不同erp传递不同的必须参数
-     * @param erpInfo   erp关联信息（参数为des加密后的参数）
+     * @param erpInfo       erp关联信息（参数为des加密后的参数）
      * @return 返回订单更新结果信息
      */
     @RequestMapping(value = "/orderUpdate", method = RequestMethod.POST)
@@ -80,7 +79,7 @@ public interface HotOrderController {
      *
      * @param sign       远程传过来的鉴权参数
      * @param orderInfoJson 根据不同erp传递不同的必须参数
-     * @param erpInfo   erp关联信息（参数为des加密后的参数）
+     * @param erpInfo       erp关联信息（参数为des加密后的参数）
      * @return 返回订单更新结果信息
      */
     @RequestMapping(value = "/orderStatusUpdate", method = RequestMethod.POST)
