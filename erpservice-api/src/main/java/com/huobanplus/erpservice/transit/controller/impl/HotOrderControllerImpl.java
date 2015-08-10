@@ -66,9 +66,10 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
                 CreateOrderEvent createOrderEvent = new CreateOrderEvent();
                 createOrderEvent.setErpInfo(info);
                 MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
+                orderService.save(orderInfo);
                 Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(createOrderEvent, orderInfo);
                 if (eventResultMonitor.get().getSystemStatus() == 1) {
-                    orderService.save(orderInfo);
+
                     return new ApiResult(ResultCode.SUCCESS.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.SUCCESS.getValue());
                 } else {
                     return new ApiResult(ResultCode.ERP_BAD_REQUEST.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.ERP_BAD_REQUEST.getValue());

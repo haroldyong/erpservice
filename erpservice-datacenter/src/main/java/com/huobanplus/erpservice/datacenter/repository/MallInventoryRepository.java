@@ -13,7 +13,4 @@ import org.springframework.data.jpa.repository.Query;
  * 库存信息数据库处理接口
  */
 public interface MallInventoryRepository extends JpaRepository<MallInventoryBean, String>, JpaSpecificationExecutor {
-
-    @Query("select orderBean from MallOrderBean orderBean where orderBean.orderStatus=?1 and orderBean.payStatus=?2 and orderBean.orderCode like %?3%")
-    Page<MallInventoryBean> findAll(Integer storageStatus, String inventoryNo, Pageable pageable);
 }

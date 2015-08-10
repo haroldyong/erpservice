@@ -11,13 +11,10 @@ import java.util.List;
 @Entity
 @Table(name = "Mall_Orders")
 public class MallOrderBean {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
     /**
      * 订单id
      */
+    @Id
     @Column(name = "Order_Id")
     private String orderId;
 
@@ -996,15 +993,6 @@ public class MallOrderBean {
     }
 
     //END
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getStorageId() {
         return storageId;

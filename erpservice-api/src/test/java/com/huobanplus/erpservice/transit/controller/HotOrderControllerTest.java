@@ -7,6 +7,7 @@ import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
 import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.transit.utils.DesUtil;
 import org.junit.Before;
@@ -20,6 +21,7 @@ import org.springframework.util.StreamUtils;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -59,7 +61,28 @@ public class HotOrderControllerTest extends SpringWebTest {
 
     @Test
     public void testCreateOrder() throws Exception {
+        MallOrderBean orderInfo = new MallOrderBean();
+        orderInfo.setOutTid("1232222132");
+        orderInfo.setShopId("12");
+        orderInfo.setStorageId("1");
+        orderInfo.setExpress("dddd");
+        orderInfo.setTidTime(new Date());
+        orderInfo.setOrderId("1232222132");
 
+        MallOrderItem orderItem = new MallOrderItem();
+        orderItem.setBarcode("22222");
+        orderItem.setProName("方便面");
+        orderItem.setSpecification("大碗");
+        orderItem.setOutTid("1232222132");
+        orderItem.setProNum(1);
+        orderInfo.setOrderItems(Arrays.asList(orderItem));
+        mockMvc.perform(post("/hotClientOrderApi/createOrder")
+                .param("orderInfoJson", new ObjectMapper().writeValueAsString(orderInfo))
+                .param("name", DesUtil.encrypt(mockERP.getName()))
+                .param("sysDataJson", DesUtil.encrypt(mockERP.getSysDataJson())))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(1));
     }
 
     @Test
