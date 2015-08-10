@@ -243,6 +243,4 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         }
         return new SimpleMonitor<>(new EventResult(1, responseData));
     }
-
-
 }

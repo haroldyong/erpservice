@@ -38,7 +38,19 @@ public class MallInventoryBean {
     @Column(name = "Inventory_No")
     private String inventoryNo;
     /**
-     * 入库类型；全部:1/其他入库:10/产成品入库:11/原料入库:12/盘盈入库:13/维修入库:14/差错入库:15/退货入库:3/归还入库:4/调拨入库:6/正常入库:8/采购入库:9
+     * 入库类型；
+     * 全部:1
+     * 其他入库:10
+     * 产成品入库:11
+     * 原料入库:12
+     * 盘盈入库:13
+     * 维修入库:14
+     * 差错入库:15
+     * 退货入库:3
+     * 归还入库:4
+     * 调拨入库:6
+     * 正常入库:8
+     * 采购入库:9
      */
     @Column(name = "Type")
     private int type;
@@ -63,7 +75,10 @@ public class MallInventoryBean {
     @Column(name = "Storage_Name")
     private String storageName;
     /**
-     * 库存状态.0:未审核；1：已审核；2：已作废
+     * 库存状态.0:
+     * 未审核；1：
+     * 已审核；2：
+     * 已作废 3:
      */
     @Column(name = "Storage_Status")
     private int storageStatus;

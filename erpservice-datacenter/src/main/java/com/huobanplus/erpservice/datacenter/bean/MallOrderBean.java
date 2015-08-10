@@ -1,8 +1,10 @@
 package com.huobanplus.erpservice.datacenter.bean;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 订单实体
@@ -11,433 +13,97 @@ import java.util.List;
 @Entity
 @Table(name = "Mall_Orders")
 public class MallOrderBean {
-    /**
-     * 订单id
-     */
-    @Id
-    @Column(name = "Order_Code")
-    private String orderCode;
-    /**
-     * 单据号
-     */
-    @Column(name = "Num_Id")
-    private String numId;
-    /**
-     * 单据类型,例如:Order订单/salesReturn退货单/stock_in_detail入库单/stock_out_detail出库单(请填入英文)
-     */
-    @Column(name = "Tid_Type")
-    private String tidType;
-    /**
-     * 导入标记
-     */
-    @Column(name = "Import_Mark")
-    private String importMark;
 
-    public int getSyncStatus() {
-        return syncStatus;
-    }
-
-    public void setSyncStatus(int syncStatus) {
-        this.syncStatus = syncStatus;
-    }
-
-    /**
-     * 同步标记，1表示已抓取
-     */
-    @Column(name = "Sync_Status")
-    private int syncStatus;
-    /**
-     * 订单编号(E店宝中订单编号)
-     */
-    @Column(name = "Tid")
-    private String tid;
-    /**
-     * 订单创建时间
-     */
-    @Column(name = "Order_Time")
-    private Date orderTime;
-    /**
-     * 订单付款时间
-     */
-    @Column(name = "Pay_Time")
-    private Date payTime;
-    /**
-     * 系统写入时间
-     */
-    @Column(name = "In_Sys_Time")
-    private Date inSysTime;
-    /**
-     * 商家编码
-     */
-    @Column(name = "Chlid_Bar_Code")
-    private String chlidBarCode;
-    /**
-     * 订单数量
-     */
-    @Column(name = "Num")
-    private String num;
-    /**
-     * 快递单号
-     */
-    @Column(name = "Express_No")
-    private String expressNo;
-    /**
-     * 快递公司名：需要在EDB中存在
-     */
-    @Column(name = "Express")
-    private String express;
-    /**
-     * 是否需要发货
-     */
-    @Column(name = "Is_Delivery")
-    private int isDelivery;
-
-    public int getIsDelivery() {
-        return isDelivery;
-    }
-
-    public void setIsDelivery(int isDelivery) {
-        this.isDelivery = isDelivery;
-    }
-
-    /**
-     * 订单净重
-     */
-    @Column(name = "Weight")
-    private String weight;
-    /**
-     * 收货地址
-     */
-    @Column(name = "Address")
-    private String address;
-    /**
-     * 买家留言
-     */
-    @Column(name = "Buyer_Message")
-    private String buyerMessage;
-    /**
-     * 客服备注
-     */
-    @Column(name = "Service_Remarks")
-    private String serviceRemarks;
-    /**
-     * 原始订单编号/外部订单编号
-     */
-    @Column(name = "Out_Tid")
-    private String outTid;
-    /**
-     * 商品、订单扫码
-     */
-    @Column(name = "Bar_Code")
-    private String barCode;
-    /**
-     * 网店品名
-     */
-    @Column(name = "Product_Title")
-    private String productTitle;
-    /**
-     * 网店规格
-     */
-    @Column(name = "Standard")
-    private String standard;
-    /**
-     * 产品类型（值为赠品）
-     */
-    @Column(name = "Pro_Type")
-    private String proType;
-    /**
-     * 订货数量
-     */
-    @Column(name = "Order_Goods_Num")
-    private int orderGoodsNum;
-    /**
-     * 成交单价
-     */
-    @Column(name = "Cost_Price")
-    private double costPrice;
-    /**
-     * 快递代码
-     */
-    @Column(name = "Express_Code")
-    private String expressCode;
-    /**
-     * 打印员
-     */
-    @Column(name = "Printer")
-    private String printer;
-    /**
-     * 客户状态
-     */
-    @Column(name = "Customer_Status")
-    private String customerStatus;
-
-    public String getCustomerStatus() {
-        return customerStatus;
-    }
-
-    public void setCustomerStatus(String customerStatus) {
-        this.customerStatus = customerStatus;
-    }
-
-    /**
-     * 配货员
-     */
-    @Column(name = "Cargo_Operator")
-    private String cargoOperator;
-
-    /**
-     * 配货时间
-     */
-    @Column(name = "Cargo_Time")
-    private Date cargoTime;
-    /**
-     * 打印时间
-     */
-    @Column(name = "Print_Time")
-    private Date printTime;
-    /**
-     * 验货员
-     */
-    @Column(name = "Inspecter")
-    private String inspecter;
-    /**
-     * 是否验货后回传快递信息,验货后回传验货信息必须传,打印后回传快递信息传
-     */
-    @Column(name = "Is_Inspect_Delivery")
-    private String isInspectDelivery;
-    /**
-     * 发货员
-     */
-    @Column(name = "Delivery_Operator")
-    private String deliveryOperator;
-    /**
-     * 发货时间
-     */
-    @Column(name = "Delivery_Time")
-    private Date deliveryTime;
-    /**
-     * 验货时间
-     */
-    @Column(name = "Inspect_Time")
-    private Date inspectTime;
-
-    public Date getInspectTime() {
-        return inspectTime;
-    }
-
-    public void setInspectTime(Date inspectTime) {
-        this.inspectTime = inspectTime;
-    }
-
-    /**
-     * 毛重
-     */
-    @Column(name = "Gross_Weight")
-    private float grossWeight;
-    /**
-     * 内部便签
-     */
-    @Column(name = "Internal_Note")
-    private String internalNote;
-    /**
-     * 原寄地代码
-     */
-    @Column(name = "Origin_Code")
-    private String originCode;
-    /**
-     * 目的地代码
-     */
-    @Column(name = "Dest_Code")
-    private String destCode;
-
-    /**
-     * 代付人ID
-     */
-    @Column(name = "Pay_Agent_Id")
-    private String payAgentId;
-
-    public String getPayAgentId() {
-        return payAgentId;
-    }
-
-    public void setPayAgentId(String payAgentId) {
-        this.payAgentId = payAgentId;
-    }
-
-    /**
-     * 验货数量
-     */
-    @Column(name = "In_spection_Num")
-    private String inspectionNum;
-    /**
-     * 是否覆盖原来内容（ 0 叠加 1 覆盖）
-     */
-    @Column(name = "Is_Cover")
-    private int isCover;
-    /**
-     * 日期类型支持下面几种,
-     * 默认订货日期/订货日期/付款日期/发货日期/归档日期/预计归档日期
-     * 到货日期/订单修改日期/验货日期/核销日期/生成应收时间/称重时间
-     * 审单时间/取消时间/完成时间
-     */
-    @Column(name = "Date_Type")
-    private String dateType;
-    /**
-     * 开始时间
-     */
-    @Column(name = "Begin_Time")
-    private Date beginTime;
-    /**
-     * 结束时间
-     */
-    @Column(name = "End_Time")
-    private Date endTime;
-    /**
-     * 时间排序类型：审单时间
-     */
-    @Column(name = "Order_Type")
-    private String orderType;
-    /**
-     * 待退款部分退款/待退款全部退款/待退款所有/货到付款/交易关闭
-     * 未付款/已付款/已退款部分退款/已退款全部退款/已退款所有
-     */
-    @Column(name = "Payment_Status")
-    private String paymentStatus;
-    /**
-     * 订单状态
-     */
-    @Column(name = "Order_Status")
-    private String orderStatus;
-    /**
-     * 未确认/已确认/已财务审核/已作废/已归档
-     */
-    @Column(name = "Proce_Status")
-    private String proceStatus;
-    /**
-     * 平台状态
-     */
-    @Column(name = "Platform_Status")
-    private String platformStatus;
     /**
      * 库房id、仓库编号
      */
     @Column(name = "Storage_Id")
     private String storageId;
-    /**
-     * 店铺id
-     */
-    @Column(name = "Shop_Id")
-    private String shopId;
-    /**
-     * 发票打印情况(0:未打印，1:已打印)
-     */
-    @Column(name = "Invoice_Isprint")
-    private String invoiceIsprint;
-    /**
-     * 是否保价
-     */
-    @Column(name = "Is_Protect")
-    private String isProtect;
 
     /**
-     * 保价费用
+     * 订单编号(E店宝中订单编号)
      */
-    @Column(name = "Cost_Protect")
-    private double costProtect;
+    @Column(name = "Tid")
+    private String tid;
 
-    public String getIsProtect() {
-        return isProtect;
-    }
-
-    public void setIsProtect(String isProtect) {
-        this.isProtect = isProtect;
-    }
-
-    public double getCostProtect() {
-        return costProtect;
-    }
-
-    public void setCostProtect(double costProtect) {
-        this.costProtect = costProtect;
-    }
-
-
-    /**
-     * 是否开发票 (0:未开/1:已开
-     */
-    @Column(name = "Invoice_Isopen")
-    private int invoiceIsopen;
-    /**
-     * 页码
-     */
-    @Column(name = "PageNo")
-    private String pageNo;
-    /**
-     * 每页数量
-     */
-    @Column(name = "Page_Size")
-    private String pageSize;
-    /**
-     * 是否产品套装:3单品与套装:显示单品信息+套装信息;1单品与套装明细:显示单品信息+套装明细信息;
-     * 2单品与套装以及套装明细:显示单品信息+套装信息+套装明细信息(默认)
-     */
-    @Column(name = "Product_InfoType")
-    private int productInfoType;
     /**
      * 交易编号
      */
     @Column(name = "Transaction_Id")
     private String transactionId;
+
     /**
      * 客户编号
      */
     @Column(name = "Customer_Id")
     private String customerId;
+
     /**
      * 分销商编号
      */
     @Column(name = "Distributor_Id")
     private String distributorId;
+
     /**
      * 店铺名称
      */
     @Column(name = "Shop_Name")
     private String shopName;
+
+    /**
+     * 原始订单编号/外部订单编号
+     */
+    @Column(name = "Out_Tid")
+    private String outTid;
+
     /**
      * 外部平台付款单号
      */
     @Column(name = "Out_Pay_Tid")
     private String outPayTid;
+
     /**
      * 凭证单号
      */
     @Column(name = "Voucher_Id")
     private String voucherId;
+
+    /**
+     * 店铺id
+     */
+    @Column(name = "Shop_Id")
+    private String shopId;
+
     /**
      * 流水号
      */
     @Column(name = "Serial_Num")
     private String serialNum;
+
     /**
      * 订单渠道
      */
     @Column(name = "Order_Channel")
     private String orderChannel;
+
     /**
      * 订单来源
      */
     @Column(name = "Order_From")
     private String orderFrom;
+
     /**
      * 买家ID
      */
     @Column(name = "Buyer_Id")
     private String buyerId;
+
     /**
      * 买家姓名
      */
     @Column(name = "Buyer_Name")
     private String buyerName;
+
     /**
      * 订单类型
      */
@@ -445,44 +111,35 @@ public class MallOrderBean {
     private String type;
 
     /**
-     * 订单名称
-     */
-    @Column(name = "Order_Name")
-    private String orderName;
-
-    public String getOrderName() {
-        return orderName;
-    }
-
-    public void setOrderName(String orderName) {
-        this.orderName = orderName;
-    }
-
-    /**
      * 处理状态
      */
     @Column(name = "Status")
     private String status;
+
     /**
      * 异常状态
      */
     @Column(name = "Abnormal_Status")
     private String abnormalStatus;
+
     /**
      * 合并状态
      */
     @Column(name = "Merge_Status")
     private String mergeStatus;
+
     /**
      * 收货人
      */
     @Column(name = "Receiver_Name")
     private String receiverName;
+
     /**
      * 收货手机
      */
     @Column(name = "Receiver_Mobile")
     private String receiverMobile;
+
     /**
      * 电话
      */
@@ -503,6 +160,13 @@ public class MallOrderBean {
      */
     @Column(name = "District")
     private String district;
+
+    /**
+     * 地址
+     */
+    @Column(name = "Address")
+    private String address;
+
     /**
      * 邮编
      */
@@ -513,6 +177,13 @@ public class MallOrderBean {
      */
     @Column(name = "Email")
     private String email;
+
+    /**
+     * 是否开发票 (0:未开/1:已开
+     */
+    @Column(name = "Is_bill")
+    private int isBill;
+
     /**
      * 发票名称
      */
@@ -557,34 +228,6 @@ public class MallOrderBean {
     private double referencePricePaid;
 
     /**
-     * 最终金额
-     */
-    @Column(name = "Final_Amount")
-    private double finalAmount;
-
-    public double getFinalAmount() {
-        return finalAmount;
-    }
-
-    public void setFinalAmount(double finalAmount) {
-        this.finalAmount = finalAmount;
-    }
-
-    /**
-     * 税金
-     */
-    @Column(name = "Cost_Tax")
-    private double costTax;
-
-    public double getCostTax() {
-        return costTax;
-    }
-
-    public void setCostTax(double costTax) {
-        this.costTax = costTax;
-    }
-
-    /**
      * 发票金额
      */
     @Column(name = "Invoice_Fee")
@@ -604,19 +247,6 @@ public class MallOrderBean {
      */
     @Column(name = "Refund_Total_Fee")
     private String refundTotalFee;
-    /**
-     * 是否启用优惠
-     */
-    @Column(name = "Use_Pmt")
-    private String usePmt;
-
-    public String getUsePmt() {
-        return usePmt;
-    }
-
-    public void setUsePmt(String usePmt) {
-        this.usePmt = usePmt;
-    }
 
     /**
      * 优惠金额
@@ -683,75 +313,38 @@ public class MallOrderBean {
      */
     @Column(name = "External_Point")
     private String externalPoint;
-    /**
-     * 代付积分
-     */
-    @Column(name = "Pay_Agent_Score")
-    private double payAgentScore;
 
     /**
-     * 代付积分金额
+     * 快递单号
      */
-    @Column(name = "Pay_Agent_Score_Amount")
-    private double payAgentScoreAmount;
+    @Column(name = "Express_No")
+    private String expressNo;
 
     /**
-     * 订单已付金额
+     * 赠品添加
      */
-    @Column(name = "Has_Payed")
-    private double hasPayed;
+    @Column(name = "Trade_Gifadd")
+    private String tradeGifadd;
 
-    /**
-     * 订单已付积分
-     */
-    @Column(name = "Has_Payed_Score")
-    private double hasPayedScore;
-
-    public double getHasPayedScore() {
-        return hasPayedScore;
+    public String getTradeGifadd() {
+        return tradeGifadd;
     }
 
-    public void setHasPayedScore(double hasPayedScore) {
-        this.hasPayedScore = hasPayedScore;
-    }
-
-    public double getHasPayed() {
-        return hasPayed;
-    }
-
-    public void setHasPayed(double hasPayed) {
-        this.hasPayed = hasPayed;
+    public void setTradeGifadd(String tradeGifadd) {
+        this.tradeGifadd = tradeGifadd;
     }
 
     /**
-     * 余额代付
+     * 快递公司名：需要在EDB中存在
      */
-    @Column(name = "Pay_Agent_Payed")
-    private double payAgentPayed;
+    @Column(name = "Express")
+    private String express;
 
-    public double getPayAgentPayed() {
-        return payAgentPayed;
-    }
-
-    public void setPayAgentPayed(double payAgentPayed) {
-        this.payAgentPayed = payAgentPayed;
-    }
-
-    public double getPayAgentScoreAmount() {
-        return payAgentScoreAmount;
-    }
-
-    public void setPayAgentScoreAmount(double payAgentScoreAmount) {
-        this.payAgentScoreAmount = payAgentScoreAmount;
-    }
-
-    public double getPayAgentScore() {
-        return payAgentScore;
-    }
-
-    public void setPayAgentScore(double payAgentScore) {
-        this.payAgentScore = payAgentScore;
-    }
+    /**
+     * 快递代码
+     */
+    @Column(name = "Express_Coding")
+    private String expressCoding;
 
     /**
      * 线上快递公司
@@ -763,48 +356,6 @@ public class MallOrderBean {
      */
     @Column(name = "Sending_Type")
     private String sendingType;
-
-    /**
-     * 配送方式编号
-     */
-    @Column(name = "Sending_Type_Id")
-    private String sendingTypeId;
-
-    /**
-     * 配送费用
-     */
-    @Column(name = "Cost_Freight")
-    private double costFreight;
-
-    public double getCostFreight() {
-        return costFreight;
-    }
-
-    public void setCostFreight(double costFreight) {
-        this.costFreight = costFreight;
-    }
-
-    /**
-     * 配送区域
-     */
-    @Column(name = "Sending_Area")
-    private String sendingArea;
-
-    public String getSendingArea() {
-        return sendingArea;
-    }
-
-    public void setSendingArea(String sendingArea) {
-        this.sendingArea = sendingArea;
-    }
-
-    public String getSendingTypeId() {
-        return sendingTypeId;
-    }
-
-    public void setSendingTypeId(String sendingTypeId) {
-        this.sendingTypeId = sendingTypeId;
-    }
 
     /**
      * 实收运费
@@ -836,11 +387,25 @@ public class MallOrderBean {
      */
     @Column(name = "Total_Weight")
     private double totalWeight;
+
+    /**
+     * 订单净重
+     */
+    @Column(name = "Tid_Net_Weight")
+    private double tidNetWeight;
+
     /**
      * 订货时间
      */
     @Column(name = "Tid_Time")
     private Date tidTime;
+
+    /**
+     * 订单付款时间
+     */
+    @Column(name = "Pay_Time")
+    private Date payTime;
+
     /**
      * 获取时间
      */
@@ -891,6 +456,19 @@ public class MallOrderBean {
      */
     @Column(name = "Advance_Printer")
     private String advancePrinter;
+
+    /**
+     * 打印员
+     */
+    @Column(name = "Printer")
+    private String printer;
+
+    /**
+     * 打印时间
+     */
+    @Column(name = "Print_Time")
+    private Date printTime;
+
     /**
      * 是否打印
      */
@@ -906,6 +484,31 @@ public class MallOrderBean {
      */
     @Column(name = "Adv_DistributTime")
     private Date advDistributTime;
+
+    /**
+     * 配货员
+     */
+    @Column(name = "Distributer")
+    private String distributer;
+
+    /**
+     * 配货时间
+     */
+    @Column(name = "Distribut_Time")
+    private Date distributTime;
+
+    /**
+     * 验货员
+     */
+    @Column(name = "Inspecter")
+    private String inspecter;
+
+    /**
+     * 验货时间
+     */
+    @Column(name = "Inspect_Time")
+    private Date inspectTime;
+
     /**
      * 取消员
      */
@@ -953,18 +556,16 @@ public class MallOrderBean {
     private Date bookDeliveryTime;
 
     /**
-     * 创建IP
+     * 发货员
      */
-    @Column(name = "Create_IP")
-    private String createIP;
+    @Column(name = "Delivery_Operator")
+    private String deliveryOperator;
+    /**
+     * 发货时间
+     */
+    @Column(name = "Delivery_Time")
+    private Date deliveryTime;
 
-    public String getCreateIP() {
-        return createIP;
-    }
-
-    public void setCreateIP(String createIP) {
-        this.createIP = createIP;
-    }
 
     /**
      * 锁定员
@@ -1061,6 +662,14 @@ public class MallOrderBean {
      */
     @Column(name = "Pay_Mothed")
     private String payMothed;
+
+    /**
+     * 外部平台状态
+     */
+    @Column(name = "Platform_Status")
+    private String platformStatus;
+
+
     /**
      * 汇率
      */
@@ -1076,6 +685,24 @@ public class MallOrderBean {
      */
     @Column(name = "Delivery_Status")
     private String deliveryStatus;
+
+    /**
+     * 买家留言
+     */
+    @Column(name = "Buyer_Message")
+    private String buyerMessage;
+    /**
+     * 客服备注
+     */
+    @Column(name = "Service_Remarks")
+    private String serviceRemarks;
+
+    /**
+     * 内部便签
+     */
+    @Column(name = "Inner_Lable")
+    private String innerLable;
+
     /**
      * 分销商便签
      */
@@ -1116,11 +743,19 @@ public class MallOrderBean {
      */
     @Column(name = "Related_Orders_Type")
     private String relatedOrdersType;
+
+    /**
+     * 导入标记
+     */
+    @Column(name = "Import_Mark")
+    private String importMark;
+
     /**
      * 第三方快递名称
      */
     @Column(name = "Delivery_Name")
     private String deliveryName;
+
     /**
      * 是否新客户
      */
@@ -1151,20 +786,6 @@ public class MallOrderBean {
      */
     @Column(name = "Sku")
     private String sku;
-
-    /**
-     * 用余额支付的金额
-     */
-    @Column(name = "Payed")
-    private double payed;
-
-    public double getPayed() {
-        return payed;
-    }
-
-    public void setPayed(double payed) {
-        this.payed = payed;
-    }
 
     /**
      * 单品条数
@@ -1201,6 +822,7 @@ public class MallOrderBean {
      */
     @Column(name = "Taobao_Delivery_Method")
     private String taobaoDeliveryMethod;
+
     /**
      * 处理订单需要的时间戳
      */
@@ -1208,46 +830,10 @@ public class MallOrderBean {
     private long orderProcessTime;
 
     /**
-     * 订单备注
-     */
-    @Column(name = "Memo")
-    private String memo;
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-
-    /**
      * 是否中断
      */
     @Column(name = "Is_Break")
     private String isBreak;
-
-    /**
-     * 抵用积分
-     */
-    @Column(name = "Score_U")
-    private float scoreU;
-
-    public float getScoreU() {
-        return scoreU;
-    }
-
-    public void setScoreU(float scoreU) {
-        this.scoreU = scoreU;
-    }
-
-    public String getOnlinePayType() {
-        return onlinePayType;
-    }
-
-    public void setOnlinePayType(String onlinePayType) {
-        this.onlinePayType = onlinePayType;
-    }
 
     /**
      * 中断员
@@ -1334,610 +920,8 @@ public class MallOrderBean {
      */
     @Column(name = "Cod_Settlement_Vouchernumber")
     private String codSettlementVouchernumber;
-    /**
-     * 总数
-     */
-    @Column(name = "Total_Num")
-    private String totalNum;
-    /**
-     * 买家邮件地址
-     */
-    @Column(name = "Buyer_Email")
-    private String buyerEmail;
-    /**
-     * 买家支付宝账号
-     */
-    @Column(name = "Buyer_Alipay")
-    private String buyerAlipay;
-    /**
-     * 收货人姓名
-     */
-    @Column(name = "Consignee")
-    private String consignee;
-    /**
-     * 收货人省份
-     */
-    @Column(name = "Privince")
-    private String privince;
-    /**
-     * 收货人城市
-     */
-    @Column(name = "Citys")
-    private String citys;
-    /**
-     * 收货人地区
-     */
-    @Column(name = "Area")
-    private String area;
-    /**
-     * 开票金额
-     */
-    @Column(name = "Invoice_Money")
-    private double invoiceMoney;
-    /**
-     * 支付佣金
-     */
-    @Column(name = "Pay_Commission")
-    private double payCommission;
-    /**
-     * 支付积分
-     */
-    @Column(name = "Pay_Score")
-    private int payScore;
-    /**
-     * 积分抵用金额
-     */
-    @Column(name = "Score_UAmount")
-    private double scoreUAmount;
+    //END
 
-    public double getScoreUAmount() {
-        return scoreUAmount;
-    }
-
-    public void setScoreUAmount(double scoreUAmount) {
-        this.scoreUAmount = scoreUAmount;
-    }
-
-    /**
-     * 返点积分
-     */
-    @Column(name = "Return_Score")
-    private int returnScore;
-    /**
-     * 支付宝交易号
-     */
-    @Column(name = "Alipay_Transaction_No")
-    private String alipayTransactionNo;
-    /**
-     * 外部平台快递方式
-     */
-    @Column(name = "Out_Express_Method")
-    private String outExpressMethod;
-    /**
-     * 外部平台快递订单状态
-     */
-    @Column(name = "Out_Order_Status")
-    private String outOrderStatus;
-    /**
-     * 订货日期（订货日期距当前时间不可超过一个月）
-     */
-    @Column(name = "Order_Date")
-    private Date orderDate;
-    /**
-     * 付款日期
-     */
-    @Column(name = "Pay_Date")
-    private Date payDate;
-    /**
-     * 完成日期
-     */
-    @Column(name = "Finish_Date")
-    private Date finishDate;
-    /**
-     * 物流公司
-     */
-    @Column(name = "Wu_Liu")
-    private String wuLiu;
-    /**
-     * 物流单号
-     */
-    @Column(name = "Wu_Liu_No")
-    private String wuLiuNo;
-    /**
-     * 终端类型
-     */
-    @Column(name = "Terminal_Type")
-    private String terminalType;
-
-    /**
-     * 虚拟商品收货手机
-     */
-    @Column(name = "Virtual_RecMobile")
-    private String virtualRecMobile;
-
-    public String getVirtualRecMobile() {
-        return virtualRecMobile;
-    }
-
-    public void setVirtualRecMobile(String virtualRecMobile) {
-        this.virtualRecMobile = virtualRecMobile;
-    }
-
-    /**
-     * 外部单价
-     */
-    @Column(name = "Out_Price")
-    private double outPrice;
-
-    /**
-     * 在线支付金额
-     */
-    @Column(name = "Online_Amount")
-    private double onlineAmount;
-
-    public double getOnlineAmount() {
-        return onlineAmount;
-    }
-
-    public void setOnlineAmount(double onlineAmount) {
-        this.onlineAmount = onlineAmount;
-    }
-
-    /**
-     * 赠品数量
-     */
-    @Column(name = "Gift_Num")
-    private int giftNum;
-    /**
-     * 产品缺货情况
-     */
-    @Column(name = "Product_Stockout")
-    private String productStockout;
-    /**
-     * 是否预订
-     */
-    @Column(name = "Is_Book")
-    private int isBook;
-    /**
-     * 是否赠品
-     */
-    @Column(name = "Is_Gift")
-    private int isGift;
-    /**
-     * 加权平均单价
-     */
-    @Column(name = "Avg_Price")
-    private double avgPrice;
-    /**
-     * 产品运费
-     */
-    @Column(name = "Product_Freight")
-    private double productFreight;
-    /**
-     * 外部平台产品Id
-     */
-    @Column(name = "Out_Product_Id")
-    private String outProductId;
-    /**
-     * 外部平台条形码
-     */
-    @Column(name = "Out_Bar_Code")
-    private String outBarCode;
-    /**
-     * 产品简介
-     */
-    @Column(name = "Product_Intro")
-    private String productIntro;
-    /**
-     * 国家
-     */
-    @Column(name = "Country")
-    private String country;
-
-    /**
-     * 在线支付类型
-     */
-    @Column(name = "Online_Pay_Type")
-    private String onlinePayType;
-
-    /**
-     * 客户备注
-     */
-    @Column(name = "Customer_Remark")
-    private String customerRemark;
-
-    /**
-     * 红包抵用金额
-     */
-    @Column(name = "Hongbao_Amount")
-    private double hongbaoAmount;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBean", orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<MallOrderItem> productBeans;
-
-    public List<MallOrderItem> getProductBeans() {
-        return productBeans;
-    }
-
-    public void setProductBeans(List<MallOrderItem> productBeans) {
-        this.productBeans = productBeans;
-    }
-
-    public double getHongbaoAmount() {
-        return hongbaoAmount;
-    }
-
-    public void setHongbaoAmount(double hongbaoAmount) {
-        this.hongbaoAmount = hongbaoAmount;
-    }
-
-    public String getOrderCode() {
-        return orderCode;
-    }
-
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode;
-    }
-
-    public String getNumId() {
-        return numId;
-    }
-
-    public void setNumId(String numId) {
-        this.numId = numId;
-    }
-
-    public String getTidType() {
-        return tidType;
-    }
-
-    public void setTidType(String tidType) {
-        this.tidType = tidType;
-    }
-
-    public String getImportMark() {
-        return importMark;
-    }
-
-    public void setImportMark(String importMark) {
-        this.importMark = importMark;
-    }
-
-    public String getTid() {
-        return tid;
-    }
-
-    public void setTid(String tid) {
-        this.tid = tid;
-    }
-
-    public Date getOrderTime() {
-        return orderTime;
-    }
-
-    public void setOrderTime(Date orderTime) {
-        this.orderTime = orderTime;
-    }
-
-    public Date getPayTime() {
-        return payTime;
-    }
-
-    public void setPayTime(Date payTime) {
-        this.payTime = payTime;
-    }
-
-    public Date getInSysTime() {
-        return inSysTime;
-    }
-
-    public void setInSysTime(Date inSysTime) {
-        this.inSysTime = inSysTime;
-    }
-
-    public String getChlidBarCode() {
-        return chlidBarCode;
-    }
-
-    public void setChlidBarCode(String chlidBarCode) {
-        this.chlidBarCode = chlidBarCode;
-    }
-
-    public String getNum() {
-        return num;
-    }
-
-    public void setNum(String num) {
-        this.num = num;
-    }
-
-    public String getExpressNo() {
-        return expressNo;
-    }
-
-    public void setExpressNo(String expressNo) {
-        this.expressNo = expressNo;
-    }
-
-    public String getExpress() {
-        return express;
-    }
-
-    public void setExpress(String express) {
-        this.express = express;
-    }
-
-    public String getWeight() {
-        return weight;
-    }
-
-    public void setWeight(String weight) {
-        this.weight = weight;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getBuyerMessage() {
-        return buyerMessage;
-    }
-
-    public void setBuyerMessage(String buyerMessage) {
-        this.buyerMessage = buyerMessage;
-    }
-
-    public String getServiceRemarks() {
-        return serviceRemarks;
-    }
-
-    public void setServiceRemarks(String serviceRemarks) {
-        this.serviceRemarks = serviceRemarks;
-    }
-
-    public String getOutTid() {
-        return outTid;
-    }
-
-    public void setOutTid(String outTid) {
-        this.outTid = outTid;
-    }
-
-    public String getBarCode() {
-        return barCode;
-    }
-
-    public void setBarCode(String barCode) {
-        this.barCode = barCode;
-    }
-
-    public String getProductTitle() {
-        return productTitle;
-    }
-
-    public void setProductTitle(String productTitle) {
-        this.productTitle = productTitle;
-    }
-
-    public String getStandard() {
-        return standard;
-    }
-
-    public void setStandard(String standard) {
-        this.standard = standard;
-    }
-
-    public String getProType() {
-        return proType;
-    }
-
-    public void setProType(String proType) {
-        this.proType = proType;
-    }
-
-    public int getOrderGoodsNum() {
-        return orderGoodsNum;
-    }
-
-    public void setOrderGoodsNum(int orderGoodsNum) {
-        this.orderGoodsNum = orderGoodsNum;
-    }
-
-    public double getCostPrice() {
-        return costPrice;
-    }
-
-    public void setCostPrice(double costPrice) {
-        this.costPrice = costPrice;
-    }
-
-    public String getExpressCode() {
-        return expressCode;
-    }
-
-    public void setExpressCode(String expressCode) {
-        this.expressCode = expressCode;
-    }
-
-    public String getPrinter() {
-        return printer;
-    }
-
-    public void setPrinter(String printer) {
-        this.printer = printer;
-    }
-
-    public String getCargoOperator() {
-        return cargoOperator;
-    }
-
-    public void setCargoOperator(String cargoOperator) {
-        this.cargoOperator = cargoOperator;
-    }
-
-    public Date getCargoTime() {
-        return cargoTime;
-    }
-
-    public void setCargoTime(Date cargoTime) {
-        this.cargoTime = cargoTime;
-    }
-
-    public Date getPrintTime() {
-        return printTime;
-    }
-
-    public void setPrintTime(Date printTime) {
-        this.printTime = printTime;
-    }
-
-    public String getInspecter() {
-        return inspecter;
-    }
-
-    public void setInspecter(String inspecter) {
-        this.inspecter = inspecter;
-    }
-
-    public String getIsInspectDelivery() {
-        return isInspectDelivery;
-    }
-
-    public void setIsInspectDelivery(String isInspectDelivery) {
-        this.isInspectDelivery = isInspectDelivery;
-    }
-
-    public String getDeliveryOperator() {
-        return deliveryOperator;
-    }
-
-    public void setDeliveryOperator(String deliveryOperator) {
-        this.deliveryOperator = deliveryOperator;
-    }
-
-    public Date getDeliveryTime() {
-        return deliveryTime;
-    }
-
-    public void setDeliveryTime(Date deliveryTime) {
-        this.deliveryTime = deliveryTime;
-    }
-
-    public float getGrossWeight() {
-        return grossWeight;
-    }
-
-    public void setGrossWeight(float grossWeight) {
-        this.grossWeight = grossWeight;
-    }
-
-    public String getInternalNote() {
-        return internalNote;
-    }
-
-    public void setInternalNote(String internalNote) {
-        this.internalNote = internalNote;
-    }
-
-    public String getOriginCode() {
-        return originCode;
-    }
-
-    public void setOriginCode(String originCode) {
-        this.originCode = originCode;
-    }
-
-    public String getDestCode() {
-        return destCode;
-    }
-
-    public void setDestCode(String destCode) {
-        this.destCode = destCode;
-    }
-
-    public String getInspectionNum() {
-        return inspectionNum;
-    }
-
-    public void setInspectionNum(String inspectionNum) {
-        this.inspectionNum = inspectionNum;
-    }
-
-    public int getIsCover() {
-        return isCover;
-    }
-
-    public void setIsCover(int isCover) {
-        this.isCover = isCover;
-    }
-
-    public String getDateType() {
-        return dateType;
-    }
-
-    public void setDateType(String dateType) {
-        this.dateType = dateType;
-    }
-
-    public Date getBeginTime() {
-        return beginTime;
-    }
-
-    public void setBeginTime(Date beginTime) {
-        this.beginTime = beginTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getOrderType() {
-        return orderType;
-    }
-
-    public void setOrderType(String orderType) {
-        this.orderType = orderType;
-    }
-
-    public String getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(String paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public String getProceStatus() {
-        return proceStatus;
-    }
-
-    public void setProceStatus(String proceStatus) {
-        this.proceStatus = proceStatus;
-    }
-
-    public String getPlatformStatus() {
-        return platformStatus;
-    }
-
-    public void setPlatformStatus(String platformStatus) {
-        this.platformStatus = platformStatus;
-    }
 
     public String getStorageId() {
         return storageId;
@@ -1947,52 +931,12 @@ public class MallOrderBean {
         this.storageId = storageId;
     }
 
-    public String getShopId() {
-        return shopId;
+    public String getTid() {
+        return tid;
     }
 
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
-    }
-
-    public String getInvoiceIsprint() {
-        return invoiceIsprint;
-    }
-
-    public void setInvoiceIsprint(String invoiceIsprint) {
-        this.invoiceIsprint = invoiceIsprint;
-    }
-
-    public int getInvoiceIsopen() {
-        return invoiceIsopen;
-    }
-
-    public void setInvoiceIsopen(int invoiceIsopen) {
-        this.invoiceIsopen = invoiceIsopen;
-    }
-
-    public String getPageNo() {
-        return pageNo;
-    }
-
-    public void setPageNo(String pageNo) {
-        this.pageNo = pageNo;
-    }
-
-    public String getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(String pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public int getProductInfoType() {
-        return productInfoType;
-    }
-
-    public void setProductInfoType(int productInfoType) {
-        this.productInfoType = productInfoType;
+    public void setTid(String tid) {
+        this.tid = tid;
     }
 
     public String getTransactionId() {
@@ -2027,6 +971,14 @@ public class MallOrderBean {
         this.shopName = shopName;
     }
 
+    public String getOutTid() {
+        return outTid;
+    }
+
+    public void setOutTid(String outTid) {
+        this.outTid = outTid;
+    }
+
     public String getOutPayTid() {
         return outPayTid;
     }
@@ -2041,6 +993,14 @@ public class MallOrderBean {
 
     public void setVoucherId(String voucherId) {
         this.voucherId = voucherId;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
     }
 
     public String getSerialNum() {
@@ -2163,6 +1123,14 @@ public class MallOrderBean {
         this.district = district;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getPost() {
         return post;
     }
@@ -2177,6 +1145,14 @@ public class MallOrderBean {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getIsBill() {
+        return isBill;
+    }
+
+    public void setIsBill(int isBill) {
+        this.isBill = isBill;
     }
 
     public String getInvoiceName() {
@@ -2379,6 +1355,30 @@ public class MallOrderBean {
         this.externalPoint = externalPoint;
     }
 
+    public String getExpressNo() {
+        return expressNo;
+    }
+
+    public void setExpressNo(String expressNo) {
+        this.expressNo = expressNo;
+    }
+
+    public String getExpress() {
+        return express;
+    }
+
+    public void setExpress(String express) {
+        this.express = express;
+    }
+
+    public String getExpressCoding() {
+        return expressCoding;
+    }
+
+    public void setExpressCoding(String expressCoding) {
+        this.expressCoding = expressCoding;
+    }
+
     public String getOnlineExpress() {
         return onlineExpress;
     }
@@ -2443,12 +1443,28 @@ public class MallOrderBean {
         this.totalWeight = totalWeight;
     }
 
+    public double getTidNetWeight() {
+        return tidNetWeight;
+    }
+
+    public void setTidNetWeight(double tidNetWeight) {
+        this.tidNetWeight = tidNetWeight;
+    }
+
     public Date getTidTime() {
         return tidTime;
     }
 
     public void setTidTime(Date tidTime) {
         this.tidTime = tidTime;
+    }
+
+    public Date getPayTime() {
+        return payTime;
+    }
+
+    public void setPayTime(Date payTime) {
+        this.payTime = payTime;
     }
 
     public Date getGetTime() {
@@ -2531,6 +1547,22 @@ public class MallOrderBean {
         this.advancePrinter = advancePrinter;
     }
 
+    public String getPrinter() {
+        return printer;
+    }
+
+    public void setPrinter(String printer) {
+        this.printer = printer;
+    }
+
+    public Date getPrintTime() {
+        return printTime;
+    }
+
+    public void setPrintTime(Date printTime) {
+        this.printTime = printTime;
+    }
+
     public String getIsPrint() {
         return isPrint;
     }
@@ -2553,6 +1585,38 @@ public class MallOrderBean {
 
     public void setAdvDistributTime(Date advDistributTime) {
         this.advDistributTime = advDistributTime;
+    }
+
+    public String getDistributer() {
+        return distributer;
+    }
+
+    public void setDistributer(String distributer) {
+        this.distributer = distributer;
+    }
+
+    public Date getDistributTime() {
+        return distributTime;
+    }
+
+    public void setDistributTime(Date distributTime) {
+        this.distributTime = distributTime;
+    }
+
+    public String getInspecter() {
+        return inspecter;
+    }
+
+    public void setInspecter(String inspecter) {
+        this.inspecter = inspecter;
+    }
+
+    public Date getInspectTime() {
+        return inspectTime;
+    }
+
+    public void setInspectTime(Date inspectTime) {
+        this.inspectTime = inspectTime;
     }
 
     public String getCancelOperator() {
@@ -2625,6 +1689,22 @@ public class MallOrderBean {
 
     public void setBookDeliveryTime(Date bookDeliveryTime) {
         this.bookDeliveryTime = bookDeliveryTime;
+    }
+
+    public String getDeliveryOperator() {
+        return deliveryOperator;
+    }
+
+    public void setDeliveryOperator(String deliveryOperator) {
+        this.deliveryOperator = deliveryOperator;
+    }
+
+    public Date getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(Date deliveryTime) {
+        this.deliveryTime = deliveryTime;
     }
 
     public String getLocker() {
@@ -2763,6 +1843,14 @@ public class MallOrderBean {
         this.alipayStatus = alipayStatus;
     }
 
+    public String getPayStatus() {
+        return payStatus;
+    }
+
+    public void setPayStatus(String payStatus) {
+        this.payStatus = payStatus;
+    }
+
     public String getPayMothed() {
         return payMothed;
     }
@@ -2771,12 +1859,12 @@ public class MallOrderBean {
         this.payMothed = payMothed;
     }
 
-    public String getPayStatus() {
-        return payStatus;
+    public String getPlatformStatus() {
+        return platformStatus;
     }
 
-    public void setPayStatus(String payStatus) {
-        this.payStatus = payStatus;
+    public void setPlatformStatus(String platformStatus) {
+        this.platformStatus = platformStatus;
     }
 
     public String getRate() {
@@ -2801,6 +1889,30 @@ public class MallOrderBean {
 
     public void setDeliveryStatus(String deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
+    }
+
+    public String getBuyerMessage() {
+        return buyerMessage;
+    }
+
+    public void setBuyerMessage(String buyerMessage) {
+        this.buyerMessage = buyerMessage;
+    }
+
+    public String getServiceRemarks() {
+        return serviceRemarks;
+    }
+
+    public void setServiceRemarks(String serviceRemarks) {
+        this.serviceRemarks = serviceRemarks;
+    }
+
+    public String getInnerLable() {
+        return innerLable;
+    }
+
+    public void setInnerLable(String innerLable) {
+        this.innerLable = innerLable;
     }
 
     public String getDistributorMark() {
@@ -2865,6 +1977,14 @@ public class MallOrderBean {
 
     public void setRelatedOrdersType(String relatedOrdersType) {
         this.relatedOrdersType = relatedOrdersType;
+    }
+
+    public String getImportMark() {
+        return importMark;
+    }
+
+    public void setImportMark(String importMark) {
+        this.importMark = importMark;
     }
 
     public String getDeliveryName() {
@@ -3129,261 +2249,5 @@ public class MallOrderBean {
 
     public void setCodSettlementVouchernumber(String codSettlementVouchernumber) {
         this.codSettlementVouchernumber = codSettlementVouchernumber;
-    }
-
-    public String getTotalNum() {
-        return totalNum;
-    }
-
-    public void setTotalNum(String totalNum) {
-        this.totalNum = totalNum;
-    }
-
-    public String getBuyerEmail() {
-        return buyerEmail;
-    }
-
-    public void setBuyerEmail(String buyerEmail) {
-        this.buyerEmail = buyerEmail;
-    }
-
-    public String getBuyerAlipay() {
-        return buyerAlipay;
-    }
-
-    public void setBuyerAlipay(String buyerAlipay) {
-        this.buyerAlipay = buyerAlipay;
-    }
-
-    public String getConsignee() {
-        return consignee;
-    }
-
-    public void setConsignee(String consignee) {
-        this.consignee = consignee;
-    }
-
-    public String getPrivince() {
-        return privince;
-    }
-
-    public void setPrivince(String privince) {
-        this.privince = privince;
-    }
-
-    public String getCitys() {
-        return citys;
-    }
-
-    public void setCitys(String citys) {
-        this.citys = citys;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public double getInvoiceMoney() {
-        return invoiceMoney;
-    }
-
-    public void setInvoiceMoney(double invoiceMoney) {
-        this.invoiceMoney = invoiceMoney;
-    }
-
-    public double getPayCommission() {
-        return payCommission;
-    }
-
-    public void setPayCommission(double payCommission) {
-        this.payCommission = payCommission;
-    }
-
-    public int getPayScore() {
-        return payScore;
-    }
-
-    public void setPayScore(int payScore) {
-        this.payScore = payScore;
-    }
-
-    public int getReturnScore() {
-        return returnScore;
-    }
-
-    public void setReturnScore(int returnScore) {
-        this.returnScore = returnScore;
-    }
-
-    public String getAlipayTransactionNo() {
-        return alipayTransactionNo;
-    }
-
-    public void setAlipayTransactionNo(String alipayTransactionNo) {
-        this.alipayTransactionNo = alipayTransactionNo;
-    }
-
-    public String getOutExpressMethod() {
-        return outExpressMethod;
-    }
-
-    public void setOutExpressMethod(String outExpressMethod) {
-        this.outExpressMethod = outExpressMethod;
-    }
-
-    public String getOutOrderStatus() {
-        return outOrderStatus;
-    }
-
-    public void setOutOrderStatus(String outOrderStatus) {
-        this.outOrderStatus = outOrderStatus;
-    }
-
-    public Date getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public Date getPayDate() {
-        return payDate;
-    }
-
-    public void setPayDate(Date payDate) {
-        this.payDate = payDate;
-    }
-
-    public Date getFinishDate() {
-        return finishDate;
-    }
-
-    public void setFinishDate(Date finishDate) {
-        this.finishDate = finishDate;
-    }
-
-    public String getWuLiu() {
-        return wuLiu;
-    }
-
-    public void setWuLiu(String wuLiu) {
-        this.wuLiu = wuLiu;
-    }
-
-    public String getWuLiuNo() {
-        return wuLiuNo;
-    }
-
-    public void setWuLiuNo(String wuLiuNo) {
-        this.wuLiuNo = wuLiuNo;
-    }
-
-    public String getTerminalType() {
-        return terminalType;
-    }
-
-    public void setTerminalType(String terminalType) {
-        this.terminalType = terminalType;
-    }
-
-    public double getOutPrice() {
-        return outPrice;
-    }
-
-    public void setOutPrice(double outPrice) {
-        this.outPrice = outPrice;
-    }
-
-    public int getGiftNum() {
-        return giftNum;
-    }
-
-    public void setGiftNum(int giftNum) {
-        this.giftNum = giftNum;
-    }
-
-    public String getProductStockout() {
-        return productStockout;
-    }
-
-    public void setProductStockout(String productStockout) {
-        this.productStockout = productStockout;
-    }
-
-    public int getIsBook() {
-        return isBook;
-    }
-
-    public void setIsBook(int isBook) {
-        this.isBook = isBook;
-    }
-
-    public int getIsGift() {
-        return isGift;
-    }
-
-    public void setIsGift(int isGift) {
-        this.isGift = isGift;
-    }
-
-    public double getAvgPrice() {
-        return avgPrice;
-    }
-
-    public void setAvgPrice(double avgPrice) {
-        this.avgPrice = avgPrice;
-    }
-
-    public double getProductFreight() {
-        return productFreight;
-    }
-
-    public void setProductFreight(double productFreight) {
-        this.productFreight = productFreight;
-    }
-
-    public String getOutProductId() {
-        return outProductId;
-    }
-
-    public void setOutProductId(String outProductId) {
-        this.outProductId = outProductId;
-    }
-
-    public String getOutBarCode() {
-        return outBarCode;
-    }
-
-    public void setOutBarCode(String outBarCode) {
-        this.outBarCode = outBarCode;
-    }
-
-    public String getProductIntro() {
-        return productIntro;
-    }
-
-    public void setProductIntro(String productIntro) {
-        this.productIntro = productIntro;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCustomerRemark() {
-        return customerRemark;
-    }
-
-    public void setCustomerRemark(String customerRemark) {
-        this.customerRemark = customerRemark;
     }
 }

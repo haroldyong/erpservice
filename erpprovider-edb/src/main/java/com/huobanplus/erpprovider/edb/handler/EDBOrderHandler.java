@@ -22,10 +22,10 @@ public interface EDBOrderHandler {
      * <p>返回json</p>
      * <p>返回字段：result(结果);status(状态)</p>
      *
-     * @param orderInfo
+     * @param orderInfo 订单信息实体
+     * @param info      ERP信息
      * @return 请求结果
-     * @throws IOException
-     * @throws DocumentException
+     * @throws IOException IO异常
      */
     Monitor<EventResult> createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 
@@ -33,8 +33,9 @@ public interface EDBOrderHandler {
      * 获取订单列表
      * <p>返回json</p>
      *
-     * @return
-     * @throws IOException
+     * @param info ERP信息
+     * @return 请求结果
+     * @throws IOException IO异常
      */
     Monitor<EventResult> obtainOrderList(ERPInfo info) throws IOException;
 
@@ -44,26 +45,30 @@ public interface EDBOrderHandler {
      * <p>tidType    单据类型,例如:Order订单/salesReturn退货单/stock_in_detail入库单/stock_out_detail出库单(请填入英文)</p>
      * <p>importMark 导入标记</p>
      *
-     * @return
-     * @throws IOException
+     * @param orderInfo 订单信息
+     * @param info      ERP信息
+     * @return 请求结果
+     * @throws IOException IO异常
      */
     Monitor<EventResult> orderStatusUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 
     /**
      * 订单业务状态更新
      *
-     * @param orderInfo
-     * @return
-     * @throws IOException
+     * @param orderInfo 订单信息
+     * @param info      ERP信息
+     * @return 请求结果
+     * @throws IOException IO异常
      */
     Monitor<EventResult> orderUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 
     /**
      * 订单发货
      *
-     * @param orderInfo
-     * @return
-     * @throws IOException
+     * @param orderInfo 订单信息
+     * @param info      ERP信息
+     * @return 请求结果
+     * @throws IOException IO异常
      */
     Monitor<EventResult> orderDeliver(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 }

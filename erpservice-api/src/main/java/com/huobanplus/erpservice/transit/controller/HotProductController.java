@@ -26,6 +26,7 @@ public interface HotProductController {
      * </p>
      * <p>参数均为des加密后的字符串</p>
      *
+     * @param sign       远程传过来的鉴权参数
      * @param erpInfo erp关联信息（参数为des加密后的参数）
      * @return 返回库存信息列表
      */
