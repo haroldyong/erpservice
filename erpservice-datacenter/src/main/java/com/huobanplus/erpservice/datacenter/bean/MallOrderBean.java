@@ -1,10 +1,8 @@
 package com.huobanplus.erpservice.datacenter.bean;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 订单实体
@@ -13,6 +11,23 @@ import java.util.Date;
 @Entity
 @Table(name = "Mall_Orders")
 public class MallOrderBean {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    /**
+     * 订单id
+     */
+    @Column(name = "Order_Id")
+    private String orderId;
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 
     /**
      * 库房id、仓库编号
@@ -55,6 +70,20 @@ public class MallOrderBean {
      */
     @Column(name = "Out_Tid")
     private String outTid;
+
+    /**
+     * 订单类型（等货订单囤货订单换货订单其他订单预售订单正常订单中断订单）默认：正常订单
+     */
+    @Column(name = "Order_Type")
+    private String orderType;
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
 
     /**
      * 外部平台付款单号
@@ -135,6 +164,20 @@ public class MallOrderBean {
     private String receiverName;
 
     /**
+     * 支付宝交易号
+     */
+    @Column(name = "Alipay_TransactionNo")
+    private String alipayTransactionNo;
+
+    public String getAlipayTransactionNo() {
+        return alipayTransactionNo;
+    }
+
+    public void setAlipayTransactionNo(String alipayTransactionNo) {
+        this.alipayTransactionNo = alipayTransactionNo;
+    }
+
+    /**
      * 收货手机
      */
     @Column(name = "Receiver_Mobile")
@@ -210,6 +253,12 @@ public class MallOrderBean {
      */
     @Column(name = "Invoice_Content")
     private String invoiceContent;
+
+    /**
+     * 开票金额
+     */
+    @Column(name = "Invoice_Money")
+    private double invoiceMoney;
 
     /**
      * 产品总金额
@@ -292,27 +341,27 @@ public class MallOrderBean {
      * 消耗积分
      */
     @Column(name = "Cost_Point")
-    private double costPoint;
+    private int costPoint;
     /**
      * 获得积分
      */
     @Column(name = "Point")
-    private String point;
+    private int point;
     /**
      * 上级积分
      */
     @Column(name = "Superior_Point")
-    private String superiorPoint;
+    private int superiorPoint;
     /**
      * 提成金额
      */
     @Column(name = "Royalty_Fee")
-    private String royaltyFee;
+    private double royaltyFee;
     /**
      * 外部积分
      */
     @Column(name = "External_Point")
-    private String externalPoint;
+    private int externalPoint;
 
     /**
      * 快递单号
@@ -367,6 +416,20 @@ public class MallOrderBean {
      */
     @Column(name = "Real_Pay_Freight")
     private double realPayFreight;
+    /**
+     * 毛重
+     */
+    @Column(name = "GrossWeight")
+    private String grossWeight;
+
+    public String getGrossWeight() {
+        return grossWeight;
+    }
+
+    public void setGrossWeight(String grossWeight) {
+        this.grossWeight = grossWeight;
+    }
+
     /**
      * 毛重运费
      */
@@ -920,8 +983,28 @@ public class MallOrderBean {
      */
     @Column(name = "Cod_Settlement_Vouchernumber")
     private String codSettlementVouchernumber;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBean", orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<MallOrderItem> orderItems;
+
+    public List<MallOrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<MallOrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
     //END
 
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getStorageId() {
         return storageId;
@@ -1195,6 +1278,14 @@ public class MallOrderBean {
         this.invoiceContent = invoiceContent;
     }
 
+    public double getInvoiceMoney() {
+        return invoiceMoney;
+    }
+
+    public void setInvoiceMoney(double invoiceMoney) {
+        this.invoiceMoney = invoiceMoney;
+    }
+
     public double getProTotalFee() {
         return proTotalFee;
     }
@@ -1315,43 +1406,43 @@ public class MallOrderBean {
         this.pointPay = pointPay;
     }
 
-    public double getCostPoint() {
+    public int getCostPoint() {
         return costPoint;
     }
 
-    public void setCostPoint(double costPoint) {
+    public void setCostPoint(int costPoint) {
         this.costPoint = costPoint;
     }
 
-    public String getPoint() {
+    public int getPoint() {
         return point;
     }
 
-    public void setPoint(String point) {
+    public void setPoint(int point) {
         this.point = point;
     }
 
-    public String getSuperiorPoint() {
+    public int getSuperiorPoint() {
         return superiorPoint;
     }
 
-    public void setSuperiorPoint(String superiorPoint) {
+    public void setSuperiorPoint(int superiorPoint) {
         this.superiorPoint = superiorPoint;
     }
 
-    public String getRoyaltyFee() {
+    public double getRoyaltyFee() {
         return royaltyFee;
     }
 
-    public void setRoyaltyFee(String royaltyFee) {
+    public void setRoyaltyFee(double royaltyFee) {
         this.royaltyFee = royaltyFee;
     }
 
-    public String getExternalPoint() {
+    public int getExternalPoint() {
         return externalPoint;
     }
 
-    public void setExternalPoint(String externalPoint) {
+    public void setExternalPoint(int externalPoint) {
         this.externalPoint = externalPoint;
     }
 

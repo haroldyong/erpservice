@@ -3,6 +3,8 @@ package com.huobanplus.erpprovider.edb.bean;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+import java.util.List;
+
 /**
  * Created by allan on 2015/8/3.
  */
@@ -25,6 +27,9 @@ public class EDBOrderForUpdate {
     private String inspecter;
     @JacksonXmlProperty(localName = "inspect_time")
     private String inspectTime;
+    /**
+     * 是否验货后回传快递信息,验货后回传验货信息必须传,打印后回传快递信息传
+     */
     @JacksonXmlProperty(localName = "is_inspect_delivery")
     private String isInspectDelivery;
     @JacksonXmlProperty(localName = "delivery_operator")
@@ -42,6 +47,8 @@ public class EDBOrderForUpdate {
     private String barCode;
     @JacksonXmlProperty(localName = "inspection_num")
     private String inspectionNum;
+    @JacksonXmlProperty(localName = "product_item")
+    private List<EDBProductForUpdate> productForUpdates;
 
     public String getTid() {
         return tid;
@@ -201,5 +208,13 @@ public class EDBOrderForUpdate {
 
     public void setInspectionNum(String inspectionNum) {
         this.inspectionNum = inspectionNum;
+    }
+
+    public List<EDBProductForUpdate> getProductForUpdates() {
+        return productForUpdates;
+    }
+
+    public void setProductForUpdates(List<EDBProductForUpdate> productForUpdates) {
+        this.productForUpdates = productForUpdates;
     }
 }

@@ -209,7 +209,7 @@ public class MallOrderItem {
      * 关联订单
      */
     @ManyToOne
-    @JoinColumn(name = "Order_Code")
+    @JoinColumn(name = "Order_Id")
     private MallOrderBean orderBean;
 
     public int getId() {

@@ -40,7 +40,11 @@ public interface EDBOrderHandler {
     Monitor<EventResult> obtainOrderList(ERPInfo info) throws IOException;
 
     /**
-     * 更新订单状态
+     * 更新订单导入标记为 已导入，可更新条件为
+     * <p>1、	订单导入标记为未导入</p>
+     * <p>2、	订单非货到付款，其状态为 已确认   已付款（订单）</p>
+     * <p>3、	订单为货到付款，其确认状态为  已确认（订单）</p>
+     * <p>
      * <p> numId      单据号,可以输入一个,可以输入多个,多个单据号以逗号(,)隔开.如果某个单据号不导入,但需要批注,则在该单据号后加冒号(:),加上批注内容</p>
      * <p>tidType    单据类型,例如:Order订单/salesReturn退货单/stock_in_detail入库单/stock_out_detail出库单(请填入英文)</p>
      * <p>importMark 导入标记</p>
