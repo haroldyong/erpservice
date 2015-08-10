@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Created by allan on 2015/8/7.
+ * 库存信息操作接口
  */
 @RequestMapping("/hotClientStorageApi")
 public interface HotStorageController {
@@ -22,6 +22,8 @@ public interface HotStorageController {
      * 6、slencry 返回结果加密方式(0:表示不加密，1:表示加密)
      * 7、ip 本机的外网IP地址
      * 9、secret 秘钥
+     * 10、token 令牌
+     * 11、requestURL
      * </p>
      * <p>参数均为des加密后的字符串</p>
      *
@@ -48,7 +50,7 @@ public interface HotStorageController {
 
     /**
      * <p>方法描述：</p>
-     * 根据出库单号，对出库单进行确认。出库单确认后系统库存会减少
+     * 出库单回写
      * <p>sysDateJson定义参照方法createOrder</p>
      *
      * @param proOutJson json格式，根据MallProductOutBean，所需参数（bar_code，outstorage_no，outstorage_num,edb为例）
@@ -56,5 +58,6 @@ public interface HotStorageController {
      * @param sign       签名
      * @return 返回结果
      */
+    @RequestMapping(value = "/outStoreWriteBack", method = RequestMethod.POST)
     ApiResult outStoreWriteBack(String proOutJson, ERPInfo erpInfo, String sign);
 }

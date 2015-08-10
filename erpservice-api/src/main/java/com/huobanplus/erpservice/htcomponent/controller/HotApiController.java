@@ -22,11 +22,11 @@ public interface HotApiController {
     void createOrder(@PathVariable("erpInfo") String erpInfo, HttpServletRequest request);
 
     /**
-     * 得到商品库存信息
+     * 获取商品库存信息
      * @param erpInfo erp信息
      * @param request 请求实体
      */
-    @RequestMapping("/getProInventory")
+    @RequestMapping("/getProInventory/{erpInfo}")
     void getProInventory(@PathVariable("erpInfo") String erpInfo, HttpServletRequest request);
 
     /**

@@ -20,7 +20,7 @@ public class ERPInfo implements Serializable {
      */
     private String name;
     /**
-     * erp验证信息
+     * erp验证信息，erp
      */
     private String validation;
     /**
@@ -29,10 +29,6 @@ public class ERPInfo implements Serializable {
      * <p><p/>
      */
     private String sysDataJson;
-    /**
-     * 商户id
-     */
-    private int customerId;
 
     public String getType() {
         return type;
