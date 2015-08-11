@@ -41,13 +41,13 @@ public class MallOrderServiceImpl implements MallOrderService {
         Specification<MallOrderBean> specification = (root, query, cb) -> {
             List<Predicate> list = new ArrayList<>();
             if (orderStatus != null) {
-                list.add(cb.equal(root.get("orderStatus").as(Integer.class), orderStatus));
+                list.add(cb.equal(root.get("status").as(Integer.class), orderStatus));
             }
             if (payStatus != null) {
                 list.add(cb.equal(root.get("payStatus").as(Integer.class), payStatus));
             }
             if (!StringUtils.isEmpty(orderId)) {
-                list.add(cb.equal(root.get("orderCode").as(String.class), orderId));
+                list.add(cb.like(root.get("orderId").as(String.class), "%" + orderId + "%"));
             }
             return cb.and(list.toArray(new Predicate[list.size()]));
         };

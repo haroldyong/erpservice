@@ -13,8 +13,8 @@ import java.io.IOException;
 public interface HotApiController {
 
     /**
-     *
      * 写入订单信息
+     *
      * @param erpInfo erp信息
      * @param request 请求实体
      */
@@ -31,6 +31,7 @@ public interface HotApiController {
 
     /**
      * 获取订单信息
+     *
      * @param erpInfo erp信息
      * @param request 请求实体
      */
@@ -39,6 +40,7 @@ public interface HotApiController {
 
     /**
      * 修改订单信息
+     *
      * @param erpInfo erp信息
      * @param request 请求实体
      */
@@ -47,6 +49,7 @@ public interface HotApiController {
 
     /**
      * 获取商品信息
+     *
      * @param erpInfo erp信息
      * @param request 请求实体
      */
@@ -55,6 +58,7 @@ public interface HotApiController {
 
     /**
      * 修改物流信息
+     *
      * @param erpInfo erp信息
      * @param request 请求实体
      */

@@ -5,10 +5,10 @@ import com.huobanplus.erpprovider.edb.EDBConfig;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
-import com.huobanplus.erpservice.event.model.OrderInfo;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -28,7 +29,7 @@ import java.util.Date;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class EDBOrderHandlerTest {
     @Autowired
-    private EDBOrderHandler EDBOrderHandler;
+    private EDBOrderHandler edbOrderHandler;
 
     private ERPInfo mockERP;
 
@@ -55,55 +56,57 @@ public class EDBOrderHandlerTest {
     @Test
     public void testCreateOrder() throws Exception {
         MallOrderBean orderInfo = new MallOrderBean();
-        orderInfo.setTid("s123123213");
-        orderInfo.setOutTid("sdfsdfsdf");
-        orderInfo.setShopId("mockShipId");
-        orderInfo.setStorageId("0");
-        orderInfo.setBuyerId("1");
-        orderInfo.setBuyerMessage("sdfdf");
-        orderInfo.setBuyerEmail("sdfd@133.com");
-        orderInfo.setBuyerAlipay("sdfsdf");
-        orderInfo.setServiceRemarks("sdfsdf");
-        orderInfo.setConsignee("ddd");
-        orderInfo.setAddress("sdfsdf");
-        orderInfo.setPost("12321");
-        orderInfo.setPhone("82125585");
-        orderInfo.setReceiverMobile("15067144855");
-        orderInfo.setProvince("bj");
-        orderInfo.setCity("bj");
-        orderInfo.setArea("bj");
-        orderInfo.setSendingType("sdf");
-        orderInfo.setExpress("jdddd");
-        orderInfo.setInvoiceType("1232");
-        orderInfo.setInvoiceTitle("sdfd");
-        orderInfo.setOrderDate(new Date());
-        orderInfo.setBarCode("123213");
-        orderInfo.setProductTitle("1231232132");
-        orderInfo.setStandard("sjlkdjf");
-        orderInfo.setAdvDistributTime(new Date());
-        orderInfo.setBookDeliveryTime(new Date());
-        orderInfo.setPayDate(new Date());
-        orderInfo.setFinishDate(new Date());
-        orderInfo.setOrderDate(new Date());
-        Monitor<EventResult> monitor = EDBOrderHandler.createOrder(orderInfo, mockERP);
+        orderInfo.setOutTid("1232222132");
+        orderInfo.setShopId("12");
+        orderInfo.setStorageId("1");
+        orderInfo.setExpress("dddd");
+        orderInfo.setTidTime(new Date());
+        orderInfo.setOrderId("1232222132");
+
+        MallOrderItem productBean = new MallOrderItem();
+        productBean.setBarcode("22222");
+        productBean.setProName("方便面");
+        productBean.setSpecification("大碗");
+        productBean.setOutTid("1232222132");
+        productBean.setProNum(1);
+        productBean.setOrderBean(orderInfo);
+        orderInfo.setOrderItems(Arrays.asList(productBean));
+
+        Monitor<EventResult> monitor = edbOrderHandler.createOrder(orderInfo, mockERP);
         System.out.println(monitor.get().getSystemResult());
     }
 
     @Test
-    public void testGetOrderInfo() throws Exception {
-        Monitor<EventResult> monitor = EDBOrderHandler.getOrderInfo(mockERP);
+    public void testObtainOrderList() throws Exception {
+        Monitor<EventResult> monitor = edbOrderHandler.obtainOrderList(mockERP);
+        System.out.println(monitor.get().getSystemResult());
     }
 
     @Test
-    @Ignore
     public void testOrderStatusUpdate() throws Exception {
-
+        MallOrderBean orderBean = new MallOrderBean();
+        orderBean.setOrderId("1231232");
+        orderBean.setOrderType("Order");
+        Monitor<EventResult> monitor = edbOrderHandler.orderStatusUpdate(orderBean, mockERP);
+        System.out.println(monitor.get().getSystemResult());
     }
 
     @Test
-    @Ignore
     public void testOrderUpdate() throws Exception {
-
+        MallOrderBean orderBean = new MallOrderBean();
+        orderBean.setTid("S1412110000004");
+        orderBean.setDeliveryTime(new Date());
+        orderBean.setDistributTime(new Date());
+        orderBean.setPrintTime(new Date());
+        orderBean.setInspectTime(new Date());
+        MallOrderItem orderItem = new MallOrderItem();
+        orderItem.setTid(orderBean.getTid());
+        orderItem.setBarcode("1123123213");
+        orderItem.setInspectionNum(1);
+        orderItem.setOrderBean(orderBean);
+        orderBean.setOrderItems(Arrays.asList(orderItem));
+        Monitor<EventResult> monitor = edbOrderHandler.orderUpdate(orderBean, mockERP);
+        System.out.println(monitor.get().getSystemResult());
     }
 
     @Test

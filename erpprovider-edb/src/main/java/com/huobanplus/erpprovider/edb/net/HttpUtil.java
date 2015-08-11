@@ -138,6 +138,7 @@ public class HttpUtil {
                 return new String(postMethod.getResponseBody(), "UTF-8");
             } else {
                 //请求失败
+                String msg = new String(postMethod.getResponseBody(), "UTF-8");
                 return null;
             }
         } catch (IOException e) {

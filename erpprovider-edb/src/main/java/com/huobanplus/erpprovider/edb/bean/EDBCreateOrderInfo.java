@@ -1,10 +1,14 @@
 package com.huobanplus.erpprovider.edb.bean;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+
+import java.util.List;
 
 /**
  * <p>edb创建订单实体</p>
  */
+@JacksonXmlRootElement(localName = "orderInfo")
 public class EDBCreateOrderInfo {
     /**
      * 订单编号
@@ -291,89 +295,8 @@ public class EDBCreateOrderInfo {
      */
     @JacksonXmlProperty(localName = "is_needInvoice")
     private int isNeedInvoice;
-    /**
-     * 条形码
-     */
-    private String barCode;
-    /**
-     * 网店品名
-     */
-    @JacksonXmlProperty(localName = "product_title")
-    private String productTitle;
-    /**
-     * 网店规格
-     */
-    private String standard;
-    /**
-     * 外部单价
-     */
-    @JacksonXmlProperty(localName = "out_price")
-    private double outPrice;
-    /**
-     * 优惠金额:单品的优惠金额
-     */
-    @JacksonXmlProperty(localName = "favorite_money")
-    private double favoriteMoney;
-    /**
-     * 订货数量
-     */
-    @JacksonXmlProperty(localName = "orderGoods_Num")
-    private double orderGoodsNum;
-    /**
-     * 赠品数量
-     */
-    @JacksonXmlProperty(localName = "gift_Num")
-    private int giftNum;
-    /**
-     * 成交单价
-     */
-    @JacksonXmlProperty(localName = "cost_Price")
-    private double costPrice;
-    /**
-     * 产品缺货情况
-     */
-    @JacksonXmlProperty(localName = "product_stockout")
-    private String productStockOut;
-    /**
-     * 是否预订（0：否1：是）默认：0
-     */
-    @JacksonXmlProperty(localName = "is_Book")
-    private int isBook;
-    /**
-     * 是否预售
-     */
-    @JacksonXmlProperty(localName = "is_presell")
-    private int isPreSell;
-    /**
-     * 是否赠品（0：否1：是）默认：0
-     */
-    @JacksonXmlProperty(localName = "is_Gift")
-    private int isGift;
-    /**
-     * 加权平均单价
-     */
-    @JacksonXmlProperty(localName = "avg_price")
-    private double avgPrice;
-    /**
-     * 产品运费
-     */
-    @JacksonXmlProperty(localName = "product_freight")
-    private double productFreight;
-    /**
-     * 外部平台产品Id
-     */
-    @JacksonXmlProperty(localName = "out_productId")
-    private String outProductId;
-    /**
-     * 外部平台条形码
-     */
-    @JacksonXmlProperty(localName = "out_barCode")
-    private String outBarCode;
-    /**
-     * 产品简介
-     */
-    @JacksonXmlProperty(localName = "product_intro")
-    private String productIntro;
+    @JacksonXmlProperty(localName = "product_item")
+    List<EDBOrderItem> productInfos;
 
     public String getTid() {
         return tid;
@@ -839,139 +762,11 @@ public class EDBCreateOrderInfo {
         this.isNeedInvoice = isNeedInvoice;
     }
 
-    public String getBarCode() {
-        return barCode;
+    public List<EDBOrderItem> getProductInfos() {
+        return productInfos;
     }
 
-    public void setBarCode(String barCode) {
-        this.barCode = barCode;
-    }
-
-    public String getProductTitle() {
-        return productTitle;
-    }
-
-    public void setProductTitle(String productTitle) {
-        this.productTitle = productTitle;
-    }
-
-    public String getStandard() {
-        return standard;
-    }
-
-    public void setStandard(String standard) {
-        this.standard = standard;
-    }
-
-    public double getOutPrice() {
-        return outPrice;
-    }
-
-    public void setOutPrice(double outPrice) {
-        this.outPrice = outPrice;
-    }
-
-    public double getFavoriteMoney() {
-        return favoriteMoney;
-    }
-
-    public void setFavoriteMoney(double favoriteMoney) {
-        this.favoriteMoney = favoriteMoney;
-    }
-
-    public double getOrderGoodsNum() {
-        return orderGoodsNum;
-    }
-
-    public void setOrderGoodsNum(double orderGoodsNum) {
-        this.orderGoodsNum = orderGoodsNum;
-    }
-
-    public int getGiftNum() {
-        return giftNum;
-    }
-
-    public void setGiftNum(int giftNum) {
-        this.giftNum = giftNum;
-    }
-
-    public double getCostPrice() {
-        return costPrice;
-    }
-
-    public void setCostPrice(double costPrice) {
-        this.costPrice = costPrice;
-    }
-
-    public String getProductStockOut() {
-        return productStockOut;
-    }
-
-    public void setProductStockOut(String productStockOut) {
-        this.productStockOut = productStockOut;
-    }
-
-    public int getIsBook() {
-        return isBook;
-    }
-
-    public void setIsBook(int isBook) {
-        this.isBook = isBook;
-    }
-
-    public int getIsPreSell() {
-        return isPreSell;
-    }
-
-    public void setIsPreSell(int isPreSell) {
-        this.isPreSell = isPreSell;
-    }
-
-    public int getIsGift() {
-        return isGift;
-    }
-
-    public void setIsGift(int isGift) {
-        this.isGift = isGift;
-    }
-
-    public double getAvgPrice() {
-        return avgPrice;
-    }
-
-    public void setAvgPrice(double avgPrice) {
-        this.avgPrice = avgPrice;
-    }
-
-    public double getProductFreight() {
-        return productFreight;
-    }
-
-    public void setProductFreight(double productFreight) {
-        this.productFreight = productFreight;
-    }
-
-    public String getOutProductId() {
-        return outProductId;
-    }
-
-    public void setOutProductId(String outProductId) {
-        this.outProductId = outProductId;
-    }
-
-    public String getOutBarCode() {
-        return outBarCode;
-    }
-
-    public void setOutBarCode(String outBarCode) {
-        this.outBarCode = outBarCode;
-    }
-
-    public String getProductIntro() {
-        return productIntro;
-    }
-
-    public void setProductIntro(String productIntro) {
-        this.productIntro = productIntro;
+    public void setProductInfos(List<EDBOrderItem> productInfos) {
+        this.productInfos = productInfos;
     }
 }
