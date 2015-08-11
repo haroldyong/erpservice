@@ -47,7 +47,6 @@ public class HotApiControllerImpl implements HotApiController {
                 failedBean.setCurrentEvent(CreateOrderEvent.class.getName());
                 failedBean.setFailedMsg("IO处理发生异常");
                 erpHandler.handleException(CreateOrderEvent.class, failedBean);
-
             } catch (IllegalAccessException e) {
                 FailedBean failedBean = new FailedBean();
                 failedBean.setResultMsg("创建订单失败");

@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * <b>类描述：<b/>具体处理事件
+ * <b>类描述：具体处理事件<b/>
  */
 @Component
 public class NetShopHandlerBuilder implements ERPHandlerBuilder {

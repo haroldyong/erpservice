@@ -43,7 +43,6 @@ public class NSDeliverHandlerImpl implements NSDeliverHandler {
 
         ObjectMapper objectMapper = new ObjectMapper();
         String resultJson = objectMapper.writeValueAsString(responseMap);
-        //todo 将获取的信息推送给伙伴商城
 
         String result = HttpUtil.getInstance().doPost(null, null);
 
