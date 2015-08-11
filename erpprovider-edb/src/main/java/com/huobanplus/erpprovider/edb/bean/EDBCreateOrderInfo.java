@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.util.List;
 
 /**
- * <p>edb创建订单实体</p>
+ * edb创建订单实体
  */
 @JacksonXmlRootElement(localName = "orderInfo")
 public class EDBCreateOrderInfo {

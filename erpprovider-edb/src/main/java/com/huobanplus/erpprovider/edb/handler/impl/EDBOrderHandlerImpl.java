@@ -15,6 +15,7 @@ import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -234,18 +235,20 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
     public Monitor<EventResult> orderDeliver(MallOrderBean orderInfo, ERPInfo info) throws IOException {
         EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
+        EDBOrderDeliver orderDeliver = new EDBOrderDeliver();
+        orderDeliver.setOrderId(orderInfo.getOrderId());
+        orderDeliver.setDeliveryTime(StringUtil.DateFormat(orderInfo.getDeliveryTime(), StringUtil.TIME_PATTERN));
+        orderDeliver.setExpress(URLEncoder.encode(orderInfo.getExpress(), "utf-8"));
+        orderDeliver.setExpressNo(orderInfo.getExpressNo());
+        if (!StringUtils.isEmpty(orderInfo.getTidNetWeight()))
+            orderDeliver.setExpressNo(URLEncoder.encode(orderInfo.getTidNetWeight(), "utf-8"));
+
+        String xmlValues = "<order>" + new XmlMapper().writeValueAsString(orderDeliver) + "</order>";
+
         Map<String, String> requestData = getSysRequestData(Constant.ORDER_DELIVER, sysData);
         Map<String, String> signMap = new TreeMap<>(requestData);
-        requestData.put("OrderCode", URLEncoder.encode(orderInfo.getOrderId(), "utf-8"));
-        requestData.put("delivery_time", URLEncoder.encode(StringUtil.DateFormat(orderInfo.getDeliveryTime(), StringUtil.TIME_PATTERN), "utf-8"));
-        requestData.put("express_no", URLEncoder.encode(orderInfo.getExpressNo(), "utf-8"));
-        requestData.put("express", URLEncoder.encode(orderInfo.getExpress(), "utf-8"));
-        requestData.put("weight", URLEncoder.encode(orderInfo.getGrossWeight(), "utf-8"));
-        signMap.put("OrderCode", orderInfo.getOrderId());
-        signMap.put("delivery_time", StringUtil.DateFormat(orderInfo.getDeliveryTime(), StringUtil.TIME_PATTERN));
-        signMap.put("express_no", orderInfo.getExpressNo());
-        signMap.put("express", orderInfo.getExpress());
-        signMap.put("weight", orderInfo.getGrossWeight());
+        requestData.put("xmlValues", URLEncoder.encode(xmlValues, "utf-8"));
+        signMap.put("xmlValues", xmlValues);
 
         requestData.put("sign", getSign(signMap, sysData));
 

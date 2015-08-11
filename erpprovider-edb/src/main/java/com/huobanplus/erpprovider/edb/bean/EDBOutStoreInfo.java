@@ -6,6 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.util.List;
 
 /**
+ * edb出库单实体
  * Created by allan on 2015/8/7.
  */
 @JacksonXmlRootElement(localName = "orderInfo")

@@ -3,6 +3,7 @@ package com.huobanplus.erpprovider.edb.bean;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
+ * edb订单中的货品更新实体
  * Created by allan on 2015/8/10.
  */
 public class EDBProductForUpdate {

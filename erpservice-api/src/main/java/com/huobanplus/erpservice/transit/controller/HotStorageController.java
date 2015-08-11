@@ -36,6 +36,8 @@ public interface HotStorageController {
     /**
      * <p>方法描述：</p>
      * 根据出库单号，对出库单进行确认。出库单确认后系统库存会减少
+     * <p>包含参数：</p>
+     * <p>outStorageNo,freight,freightAvgWay</p>
      * <p>sysDateJson定义参照方法createOrder</p>
      *
      * @param outStoreJson json格式，根据不同erp传递不同的必须参数(e.g. edb:outStorage_no,freight,freight_avgway)
@@ -56,5 +58,6 @@ public interface HotStorageController {
      * @param sign       签名
      * @return 返回结果
      */
+    @RequestMapping(value = "/outStoreWriteBack", method = RequestMethod.POST)
     ApiResult outStoreWriteBack(String proOutJson, ERPInfo erpInfo, String sign);
 }

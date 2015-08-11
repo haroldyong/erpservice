@@ -2,6 +2,7 @@ package com.huobanplus.erpservice.transit.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.net.URLDecoder;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -41,7 +43,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     public ApiResult createOrder(String orderInfoJson, ERPInfo erpInfo, String sign) {
         try {
             ERPInfo info = encryptInfo(erpInfo);
-
+            orderInfoJson = URLDecoder.decode(orderInfoJson, "utf-8");
             //签名验证
             if (StringUtils.isEmpty(sign)) {
                 return new ApiResult(ResultCode.EMPTY_SIGN_CODE.getKey(), null, ResultCode.EMPTY_SIGN_CODE.getValue());
@@ -66,10 +68,10 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
                 CreateOrderEvent createOrderEvent = new CreateOrderEvent();
                 createOrderEvent.setErpInfo(info);
                 MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
-                orderService.save(orderInfo);
+
                 Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(createOrderEvent, orderInfo);
                 if (eventResultMonitor.get().getSystemStatus() == 1) {
-
+                    orderService.save(orderInfo);
                     return new ApiResult(ResultCode.SUCCESS.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.SUCCESS.getValue());
                 } else {
                     return new ApiResult(ResultCode.ERP_BAD_REQUEST.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.ERP_BAD_REQUEST.getValue());
@@ -83,7 +85,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     }
 
     @Override
-    @RequestMapping(value = "/obtainOrder", method = RequestMethod.GET)
+    @RequestMapping(value = "/obtainOrder", method = RequestMethod.POST)
     @ResponseBody
     public ApiResult obtainOrder(ERPInfo erpInfo, String sign) {
         try {
@@ -131,7 +133,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     public ApiResult orderDeliver(String orderInfoJson, ERPInfo erpInfo, String sign) {
         try {
             ERPInfo info = encryptInfo(erpInfo);
-
+            orderInfoJson = URLDecoder.decode(orderInfoJson, "utf-8");
             //签名验证
             if (StringUtils.isEmpty(sign)) {
                 return new ApiResult(ResultCode.EMPTY_SIGN_CODE.getKey(), null, ResultCode.EMPTY_SIGN_CODE.getValue());
@@ -156,8 +158,17 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
                 OrderDeliverEvent orderDeliverEvent = new OrderDeliverEvent();
                 orderDeliverEvent.setErpInfo(info);
                 MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
+
                 Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(orderDeliverEvent, orderInfo);
                 if (eventResultMonitor.get().getSystemStatus() == 1) {
+                    //本地数据更新
+                    MallOrderBean preBean = orderService.findByOrderId(orderInfo.getOrderId());
+                    preBean.setDeliveryTime(orderInfo.getDeliveryTime());
+                    preBean.setExpress(orderInfo.getExpress());
+                    preBean.setExpressNo(orderInfo.getExpressNo());
+                    preBean.setTidNetWeight(orderInfo.getTidNetWeight());
+                    orderService.save(preBean);
+
                     return new ApiResult(ResultCode.SUCCESS.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.SUCCESS.getValue());
                 } else {
                     return new ApiResult(ResultCode.ERP_BAD_REQUEST.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.ERP_BAD_REQUEST.getValue());
@@ -176,7 +187,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     public ApiResult orderUpdate(String orderInfoJson, ERPInfo erpInfo, String sign) {
         try {
             ERPInfo info = encryptInfo(erpInfo);
-
+            orderInfoJson = URLDecoder.decode(orderInfoJson, "utf-8");
             //签名验证
             if (StringUtils.isEmpty(sign)) {
                 return new ApiResult(ResultCode.EMPTY_SIGN_CODE.getKey(), null, ResultCode.EMPTY_SIGN_CODE.getValue());
@@ -199,10 +210,34 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
             }
             if (erpHandler.eventSupported(OrderUpdateEvent.class)) {
                 OrderUpdateEvent orderUpdateEvent = new OrderUpdateEvent();
-                orderUpdateEvent.setErpInfo(erpInfo);
+                orderUpdateEvent.setErpInfo(info);
                 MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
+
                 Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(orderUpdateEvent, orderInfo);
                 if (eventResultMonitor.get().getSystemStatus() == 1) {
+
+                    //本地数据更新
+                    MallOrderBean preOrder = orderService.findByOrderId(orderInfo.getOrderId());
+                    preOrder.setExpress(orderInfo.getExpress());
+                    preOrder.setExpressNo(orderInfo.getExpressNo());
+                    preOrder.setExpressCoding(orderInfo.getExpressCoding());
+                    preOrder.setPrinter(orderInfo.getPrinter());
+                    preOrder.setDistributer(orderInfo.getDistributer());
+                    preOrder.setDistributTime(orderInfo.getDistributTime());
+                    preOrder.setPrintTime(orderInfo.getPrintTime());
+                    preOrder.setInspecter(orderInfo.getInspecter());
+                    preOrder.setInspectTime(orderInfo.getInspectTime());
+                    preOrder.setDeliveryOperator(orderInfo.getDeliveryOperator());
+                    preOrder.setDeliveryTime(orderInfo.getDeliveryTime());
+                    preOrder.setGrossWeight(orderInfo.getGrossWeight());
+                    preOrder.setInnerLable(orderInfo.getInnerLable());
+                    for (MallOrderItem orderItem : orderInfo.getOrderItems()) {
+                        preOrder.getOrderItems().stream().filter(preOrderItem -> orderItem.getId() == preOrderItem.getId()).forEach(preOrderItem -> {
+                            preOrderItem.setInspectionNum(orderItem.getInspectionNum());
+                        });
+                    }
+                    orderService.save(preOrder);
+
                     return new ApiResult(ResultCode.SUCCESS.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.SUCCESS.getValue());
                 } else {
                     return new ApiResult(ResultCode.ERP_BAD_REQUEST.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.ERP_BAD_REQUEST.getValue());
@@ -221,6 +256,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     public ApiResult orderStatusUpdate(String orderInfoJson, ERPInfo erpInfo, String sign) {
         try {
             ERPInfo info = encryptInfo(erpInfo);
+            orderInfoJson = URLDecoder.decode(orderInfoJson, "utf-8");
 
             //签名验证
             if (StringUtils.isEmpty(sign)) {

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import java.util.List;
 
 /**
+ * 订单更新实体
  * Created by allan on 2015/8/3.
  */
 public class EDBOrderForUpdate {

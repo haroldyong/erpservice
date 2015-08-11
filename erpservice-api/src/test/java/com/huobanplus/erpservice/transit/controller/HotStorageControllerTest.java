@@ -8,11 +8,13 @@ import com.huobanplus.erpservice.commons.config.ApplicationConfig;
 import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
+import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
+import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
+import com.huobanplus.erpservice.datacenter.service.MallOutStoreService;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.transit.utils.DxDESCipher;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,20 +36,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Created by allan on 2015/8/4.
+ * Created by allan on 2015/8/11.
  */
 @ActiveProfiles("test")
 @ContextConfiguration(classes = {ApplicationConfig.class, WebConfig.class})
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
-public class HotOrderControllerTest extends SpringWebTest {
+public class HotStorageControllerTest extends SpringWebTest {
 
     private ERPInfo mockERP;
 
     private MallOrderBean mockOrder;
+
+    private MallOutStoreBean mockOutStore;
     @Autowired
     private MallOrderService orderService;
+    @Autowired
+    private MallOutStoreService outStoreService;
 
     @Before
     public void setUp() throws Exception {
@@ -70,153 +76,135 @@ public class HotOrderControllerTest extends SpringWebTest {
         mockERP.setSysDataJson(objectMapper.writeValueAsString(sysData));
 
         mockOrder = new MallOrderBean();
-        mockOrder.setOutTid("123212322");
+        mockOrder.setOutTid("123212322334");
         mockOrder.setShopId("12");
         mockOrder.setStorageId("1");
         mockOrder.setExpress("dddd");
         mockOrder.setTidTime(new Date());
-        mockOrder.setOrderId("123212322");
-        mockOrder.setTid("123212322");
+        mockOrder.setOrderId("123212322334");
+        mockOrder.setTid("123212322334");
 
         MallOrderItem orderItem = new MallOrderItem();
-        orderItem.setBarcode("123123");
+        orderItem.setBarcode("12312344");
         orderItem.setProName("方便面");
         orderItem.setSpecification("大碗");
-        orderItem.setOutTid("123212322");
+        orderItem.setOutTid("123212322334");
         orderItem.setProNum(1);
         mockOrder.setOrderItems(Arrays.asList(orderItem));
 
         mockOrder = orderService.save(mockOrder);
+
+        mockOutStore = new MallOutStoreBean();
+        mockOutStore.setOutStorageNo("12312321123");
+        mockOutStore.setOutStorageType(120);
+        mockOutStore.setStorageNo("1");
+        mockOutStore.setSupplierNo("10");
+        mockOutStore.setFreight("10");
+        mockOutStore.setRelateOrderNo(mockOrder.getOrderId());
+
+        MallProductOutBean productOutBean = new MallProductOutBean();
+        productOutBean.setProductItemNo("5540");
+        productOutBean.setLocationNo("1");
+        productOutBean.setStorageNo("1");
+        productOutBean.setOutStorageNum(1);
+        productOutBean.setOutStoragePrice(1);
+        productOutBean.setBatch("1");
+        productOutBean.setBarCode("123123222");
+        mockOutStore.setMallProductOutBeans(Arrays.asList(productOutBean));
+        mockOutStore = outStoreService.save(mockOutStore);
     }
 
     @Test
-    public void testCreateOrder() throws Exception {
-        MallOrderBean orderInfo = new MallOrderBean();
-        orderInfo.setOutTid("1232222132");
-        orderInfo.setShopId("12");
-        orderInfo.setStorageId("1");
-        orderInfo.setExpress("dddd");
-        orderInfo.setTidTime(new Date());
-        orderInfo.setOrderId("1232222132");
+    public void testOutStoreAdd() throws Exception {
+        MallOutStoreBean outStoreBean = new MallOutStoreBean();
+        outStoreBean.setOutStorageNo("1231232111");
+        outStoreBean.setOutStorageType(120);
+        outStoreBean.setStorageNo("1");
+        outStoreBean.setSupplierNo("10");
+        outStoreBean.setFreight("10");
+        outStoreBean.setRelateOrderNo(mockOrder.getOrderId());
 
-        MallOrderItem orderItem = new MallOrderItem();
-        orderItem.setBarcode("22222");
-        orderItem.setProName("方便面");
-        orderItem.setSpecification("大碗");
-        orderItem.setOutTid("1232222132");
-        orderItem.setProNum(1);
-        orderInfo.setOrderItems(Arrays.asList(orderItem));
+        MallProductOutBean productOutBean = new MallProductOutBean();
+        productOutBean.setProductItemNo("5540");
+        productOutBean.setLocationNo("1");
+        productOutBean.setStorageNo("1");
+        productOutBean.setOutStorageNum(1);
+        productOutBean.setOutStoragePrice(1);
+        productOutBean.setBatch("1");
+        productOutBean.setBarCode("123123222");
+        outStoreBean.setMallProductOutBeans(Arrays.asList(productOutBean));
 
-        String orderInfoJson = new ObjectMapper().writeValueAsString(orderInfo);
+        String outStoreJson = new ObjectMapper().writeValueAsString(outStoreBean);
 
         Map<String, String> signMap = new TreeMap<>();
-        signMap.put("orderInfoJson", orderInfoJson);
+        signMap.put("outStoreJson", outStoreJson);
         signMap.put("name", mockERP.getName());
-        signMap.put("sysDataJson", mockERP.getSysDataJson());
         signMap.put("type", mockERP.getType());
         signMap.put("validation", mockERP.getValidation());
-
+        signMap.put("sysDataJson", mockERP.getSysDataJson());
         String sign = buildSign(signMap, null, null);
-        mockMvc.perform(post("/hotClientOrderApi/createOrder")
-                .param("orderInfoJson", URLEncoder.encode(orderInfoJson, "utf-8"))
+
+        mockMvc.perform(post("/hotClientStorageApi/outStoreAdd")
+                .param("outStoreJson", URLEncoder.encode(outStoreJson, "utf-8"))
                 .param("name", DxDESCipher.encrypt(mockERP.getName()))
                 .param("type", DxDESCipher.encrypt(mockERP.getType()))
                 .param("validation", DxDESCipher.encrypt(mockERP.getValidation()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("1"));
-    }
-
-    @Test
-    public void testObtainOrder() throws Exception {
-        Map<String, String> signMap = new TreeMap<>();
-        signMap.put("name", mockERP.getName());
-        signMap.put("sysDataJson", mockERP.getSysDataJson());
-        signMap.put("type", mockERP.getType());
-        signMap.put("validation", mockERP.getValidation());
-        String sign = buildSign(signMap, null, null);
-
-        mockMvc.perform(post("/hotClientOrderApi/obtainOrder")
-                .param("name", DxDESCipher.encrypt(mockERP.getName()))
-                .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
-                .param("sign", sign)
-                .param("type", DxDESCipher.encrypt(mockERP.getType()))
-                .param("validation", DxDESCipher.encrypt(mockERP.getValidation())))
-                .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void testOrderDeliver() throws Exception {
-        MallOrderBean orderInfo = new MallOrderBean();
-        orderInfo.setOrderId(mockOrder.getOrderId());
-        orderInfo.setDeliveryTime(new Date());
-        orderInfo.setExpressNo("12323");
-        orderInfo.setExpress("mockExpress");
-        orderInfo.setGrossWeight("dd");
-        String orderInfoJson = new ObjectMapper().writeValueAsString(orderInfo);
-
+    public void testOutStoreConfirm() throws Exception {
+        MallOutStoreBean outStoreBean = new MallOutStoreBean();
+        outStoreBean.setOutStorageNo(mockOutStore.getOutStorageNo());
+        outStoreBean.setFreight("111");
+        outStoreBean.setFreightAvgWay("123");
+        String outStoreJson = new ObjectMapper().writeValueAsString(outStoreBean);
         Map<String, String> signMap = new TreeMap<>();
-        signMap.put("orderInfoJson", orderInfoJson);
+        signMap.put("outStoreJson", outStoreJson);
         signMap.put("name", mockERP.getName());
-        signMap.put("sysDataJson", mockERP.getSysDataJson());
         signMap.put("type", mockERP.getType());
         signMap.put("validation", mockERP.getValidation());
-
-        String sign = buildSign(signMap, null, null);
-
-        mockMvc.perform(post("/hotClientOrderApi/orderDeliver")
-                .param("orderInfoJson", URLEncoder.encode(orderInfoJson, "utf-8"))
-                .param("name", DxDESCipher.encrypt(mockERP.getName()))
-                .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
-                .param("sign", sign)
-                .param("type", DxDESCipher.encrypt(mockERP.getType()))
-                .param("validation", DxDESCipher.encrypt(mockERP.getValidation())))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void testOrderUpdate() throws Exception {
-        MallOrderBean orderInfo = new MallOrderBean();
-        orderInfo.setOrderId(mockOrder.getOrderId());
-        orderInfo.setTid(mockOrder.getOrderId());
-        orderInfo.setDeliveryTime(new Date());
-        orderInfo.setDistributTime(new Date());
-        orderInfo.setPrintTime(new Date());
-        orderInfo.setInspectTime(new Date());
-        MallOrderItem orderItem = new MallOrderItem();
-        orderItem.setId(mockOrder.getOrderItems().get(0).getId());
-        orderItem.setTid(orderInfo.getOrderId());
-        orderItem.setBarcode("1123123213");
-        orderItem.setInspectionNum(1);
-        orderInfo.setOrderItems(Arrays.asList(orderItem));
-
-        String orderInfoJson = new ObjectMapper().writeValueAsString(orderInfo);
-        Map<String, String> signMap = new TreeMap<>();
-        signMap.put("orderInfoJson", orderInfoJson);
-        signMap.put("type", mockERP.getType());
-        signMap.put("name", mockERP.getName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
-        signMap.put("validation", mockERP.getValidation());
         String sign = buildSign(signMap, null, null);
 
-        mockMvc.perform(post("/hotClientOrderApi/orderUpdate")
-                .param("orderInfoJson", URLEncoder.encode(orderInfoJson, "utf-8"))
-                .param("type", DxDESCipher.encrypt(mockERP.getType()))
+        mockMvc.perform(post("/hotClientStorageApi/outStoreConfirm")
+                .param("outStoreJson", URLEncoder.encode(outStoreJson, "utf-8"))
                 .param("name", DxDESCipher.encrypt(mockERP.getName()))
-                .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
+                .param("type", DxDESCipher.encrypt(mockERP.getType()))
                 .param("validation", DxDESCipher.encrypt(mockERP.getValidation()))
+                .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
-    @Ignore
-    public void testOrderStatusUpdate() throws Exception {
+    public void testOutStoreWriteBack() throws Exception {
+        MallProductOutBean productOutBean = new MallProductOutBean();
+        productOutBean.setOutStoreBean(mockOutStore);
+        productOutBean.setOutStorageNum(1);
+        productOutBean.setBarCode(mockOutStore.getMallProductOutBeans().get(0).getBarCode());
+        productOutBean.setProductOutId(mockOutStore.getMallProductOutBeans().get(0).getProductOutId());
+        String proOutJson = new ObjectMapper().writeValueAsString(productOutBean);
+        Map<String, String> signMap = new TreeMap<>();
+        signMap.put("proOutJson", proOutJson);
+        signMap.put("name", mockERP.getName());
+        signMap.put("type", mockERP.getType());
+        signMap.put("validation", mockERP.getValidation());
+        signMap.put("sysDataJson", mockERP.getSysDataJson());
+        String sign = buildSign(signMap, null, null);
 
+        mockMvc.perform(post("/hotClientStorageApi/outStoreWriteBack")
+                .param("proOutJson", URLEncoder.encode(proOutJson, "utf-8"))
+                .param("name", DxDESCipher.encrypt(mockERP.getName()))
+                .param("type", DxDESCipher.encrypt(mockERP.getType()))
+                .param("validation", DxDESCipher.encrypt(mockERP.getValidation()))
+                .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
+                .param("sign", sign))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }
