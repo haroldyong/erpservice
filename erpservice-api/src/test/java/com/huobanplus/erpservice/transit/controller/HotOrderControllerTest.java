@@ -3,6 +3,7 @@ package com.huobanplus.erpservice.transit.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.util.Constant;
+import com.huobanplus.erpprovider.edb.util.SignBuilder;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
 import com.huobanplus.erpservice.commons.config.WebConfig;
@@ -10,6 +11,7 @@ import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.transit.utils.DesUtil;
+import com.huobanplus.erpservice.transit.utils.DxDESCipher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +25,8 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -76,20 +80,35 @@ public class HotOrderControllerTest extends SpringWebTest {
         orderItem.setOutTid("1232222132");
         orderItem.setProNum(1);
         orderInfo.setOrderItems(Arrays.asList(orderItem));
+
+        String orderInfoJson = new ObjectMapper().writeValueAsString(orderInfo);
+
+        Map<String, String> signMap = new TreeMap<>();
+        signMap.put("orderInfoJson", orderInfoJson);
+        signMap.put("name", mockERP.getName());
+        signMap.put("sysDataJson", mockERP.getSysDataJson());
+        signMap.put("type", mockERP.getType());
+        signMap.put("validation", mockERP.getValidation());
+        String sign = SignBuilder.buildSign(signMap, null, null);
+
         mockMvc.perform(post("/hotClientOrderApi/createOrder")
-                .param("orderInfoJson", new ObjectMapper().writeValueAsString(orderInfo))
-                .param("name", DesUtil.encrypt(mockERP.getName()))
-                .param("sysDataJson", DesUtil.encrypt(mockERP.getSysDataJson())))
+                .param("orderInfoJson", orderInfoJson)
+                .param("name", DxDESCipher.encrypt(mockERP.getName()))
+                .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
+                .param("type", DxDESCipher.encrypt(mockERP.getType()))
+                .param("validation", DxDESCipher.encrypt(mockERP.getValidation()))
+                .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value(1));
+                .andExpect(jsonPath("$.status").value("1"));
     }
 
     @Test
     public void testObtainOrder() throws Exception {
+
         mockMvc.perform(get("/hotClientOrderApi/obtainOrder")
-                .param("name", DesUtil.encrypt(mockERP.getName()))
-                .param("sysDataJson", DesUtil.encrypt(mockERP.getSysDataJson())))
+                .param("name", DxDESCipher.encrypt(mockERP.getName()))
+                .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson())))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

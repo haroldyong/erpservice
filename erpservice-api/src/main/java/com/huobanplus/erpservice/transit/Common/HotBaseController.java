@@ -3,6 +3,7 @@ package com.huobanplus.erpservice.transit.Common;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.transit.bean.ApiResult;
 import com.huobanplus.erpservice.transit.utils.DesUtil;
+import com.huobanplus.erpservice.transit.utils.DxDESCipher;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.util.StringUtils;
 
@@ -22,10 +23,10 @@ public class HotBaseController {
      */
     protected ERPInfo encryptInfo(ERPInfo preInfo) throws Exception {
         ERPInfo erpInfo = new ERPInfo();
-        erpInfo.setName(DesUtil.decrypt(preInfo.getName()));
-        erpInfo.setType(DesUtil.decrypt(preInfo.getType()));
-        erpInfo.setSysDataJson(DesUtil.decrypt(preInfo.getSysDataJson()));
-        erpInfo.setValidation(DesUtil.decrypt(preInfo.getValidation()));
+        erpInfo.setName(DxDESCipher.decrypt(preInfo.getName()));
+        erpInfo.setType(DxDESCipher.decrypt(preInfo.getType()));
+        erpInfo.setSysDataJson(DxDESCipher.decrypt(preInfo.getSysDataJson()));
+        erpInfo.setValidation(DxDESCipher.decrypt(preInfo.getValidation()));
 
         return erpInfo;
     }
