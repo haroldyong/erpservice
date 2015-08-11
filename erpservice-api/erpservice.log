@@ -3027,3 +3027,1450 @@ Caused by: org.hibernate.QueryException: could not resolve property: orderStatus
 2015-08-10 19:25:38,626 - Closing JPA EntityManagerFactory for persistence unit 'basePu'
 2015-08-10 19:25:38,628 - Shutting down ExecutorService 'scheduler'
 2015-08-10 19:25:38,629 - Shutting down ExecutorService
+2015-08-10 19:44:10,904 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-08-10 19:44:10,934 - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@cb644e, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@13805618, org.springframework.test.context.support.DirtiesContextTestExecutionListener@56ef9176, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4566e5bd, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@1ed4004b]
+2015-08-10 19:44:11,219 - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:44:11 CST 2015]; root of context hierarchy
+2015-08-10 19:44:12,287 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/applicationContext-datacenter.xml]
+2015-08-10 19:44:12,526 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/config_test.xml]
+2015-08-10 19:44:12,962 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-api/target/classes/applicationContext-providers.xml]
+2015-08-10 19:44:13,178 - Skipping bean definition for [BeanMethod:name=netShopHandlerBuilder,declaringClass=com.huobanplus.erpprovider.netshop.config.NetShopConfig]: a definition for bean 'netShopHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:44:13,180 - Skipping bean definition for [BeanMethod:name=huobanMallHandlerBuilder,declaringClass=com.huobanplus.erpprovider.huobanmall.config.HuobanMallConfig]: a definition for bean 'huobanMallHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:44:13,511 - Initializing ExecutorService 
+2015-08-10 19:44:13,514 - Bean 'executor' of type [class org.springframework.scheduling.config.TaskExecutorFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:44:13,515 - Bean 'executor' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:44:13,550 - Initializing ExecutorService  'scheduler'
+2015-08-10 19:44:13,551 - Bean 'scheduler' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:44:13,650 - MLog clients using log4j logging.
+2015-08-10 19:44:13,863 - Initializing c3p0-0.9.2.1 [built 20-March-2013 10:47:27 +0000; debug? true; trace: 10]
+2015-08-10 19:44:14,026 - Building JPA container EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:44:14,059 - HHH000204: Processing PersistenceUnitInfo [
+	name: basePu
+	...]
+2015-08-10 19:44:14,186 - HHH000412: Hibernate Core {4.3.9.Final}
+2015-08-10 19:44:14,189 - HHH000206: hibernate.properties not found
+2015-08-10 19:44:14,191 - HHH000021: Bytecode provider name : javassist
+2015-08-10 19:44:14,541 - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-08-10 19:44:14,612 - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2015-08-10 19:44:14,628 - HHH000422: Disabling contextual LOB creation as connection was null
+2015-08-10 19:44:14,907 - HHH000397: Using ASTQueryTranslatorFactory
+2015-08-10 19:44:15,874 - HHH000227: Running hbm2ddl schema export
+2015-08-10 19:44:15,920 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge16o9b6hzk3q9rcoil|2d6c53fc, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.microsoft.sqlserver.jdbc.SQLServerDriver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge16o9b6hzk3q9rcoil|2d6c53fc, idleConnectionTestPeriod -> 0, initialPoolSize -> 1, jdbcUrl -> jdbc:sqlserver://115.28.160.96:1433;DatabaseName=HotERPService_Test, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 20, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 40, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2015-08-10 19:44:17,023 - HHH000230: Schema export complete
+2015-08-10 19:44:17,519 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:44:17,546 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:44:17,615 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:44:17,619 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:44:17,643 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:44:17,646 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:44:18,114 - Mapped "{[/hotErpApi/createOrder/{erpInfo}/{erpCode}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.createOrder(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:44:18,115 - Mapped "{[/hotErpApi/getProInventory/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getProInventory(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:44:18,116 - Mapped "{[/hotErpApi/getOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:44:18,117 - Mapped "{[/hotErpApi/modifyOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:44:18,118 - Mapped "{[/hotErpApi/obtainProductInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.obtainProductInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:44:18,120 - Mapped "{[/hotErpApi/modifyDeliveryInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyDeliveryInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:44:18,121 - Mapped "{[/obtainOrderDetail],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.event.model.Monitor<com.huobanplus.erpservice.event.model.EventResult> com.huobanplus.erpservice.htcomponent.controller.NetShopController.obtainOrderDetail(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+2015-08-10 19:44:18,124 - Mapped "{[/hotClientOrderApi/createOrder],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.createOrder(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:44:18,125 - Mapped "{[/hotClientOrderApi/orderUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:44:18,127 - Mapped "{[/hotClientOrderApi/obtainOrder],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.obtainOrder(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:44:18,133 - Mapped "{[/hotClientOrderApi/orderDeliver],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderDeliver(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:44:18,137 - Mapped "{[/hotClientOrderApi/orderStatusUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderStatusUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:44:18,139 - Mapped "{[/obtainInventory],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotProductControllerImpl.obtainInventory(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:44:18,140 - Mapped "{[/hotClientStorageApi/outStoreAdd],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreAdd(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:44:18,141 - Mapped "{[/hotClientStorageApi/outStoreConfirm],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreConfirm(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:44:18,167 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
+2015-08-10 19:44:18,489 - Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:44:11 CST 2015]; root of context hierarchy
+2015-08-10 19:44:18,664 - Initializing Spring FrameworkServlet ''
+2015-08-10 19:44:18,665 - FrameworkServlet '': initialization started
+2015-08-10 19:44:18,685 - FrameworkServlet '': initialization completed in 20 ms
+2015-08-10 19:44:18,799 - Closing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:44:11 CST 2015]; root of context hierarchy
+2015-08-10 19:44:18,807 - Closing JPA EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:44:18,809 - Shutting down ExecutorService 'scheduler'
+2015-08-10 19:44:18,810 - Shutting down ExecutorService
+2015-08-10 19:45:19,561 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-08-10 19:45:19,584 - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@cb644e, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@13805618, org.springframework.test.context.support.DirtiesContextTestExecutionListener@56ef9176, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4566e5bd, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@1ed4004b]
+2015-08-10 19:45:19,804 - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:45:19 CST 2015]; root of context hierarchy
+2015-08-10 19:45:20,383 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/applicationContext-datacenter.xml]
+2015-08-10 19:45:20,748 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/config_test.xml]
+2015-08-10 19:45:21,335 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-api/target/classes/applicationContext-providers.xml]
+2015-08-10 19:45:21,673 - Skipping bean definition for [BeanMethod:name=netShopHandlerBuilder,declaringClass=com.huobanplus.erpprovider.netshop.config.NetShopConfig]: a definition for bean 'netShopHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:45:21,678 - Skipping bean definition for [BeanMethod:name=huobanMallHandlerBuilder,declaringClass=com.huobanplus.erpprovider.huobanmall.config.HuobanMallConfig]: a definition for bean 'huobanMallHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:45:22,149 - Initializing ExecutorService 
+2015-08-10 19:45:22,152 - Bean 'executor' of type [class org.springframework.scheduling.config.TaskExecutorFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:45:22,153 - Bean 'executor' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:45:22,190 - Initializing ExecutorService  'scheduler'
+2015-08-10 19:45:22,191 - Bean 'scheduler' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:45:22,308 - MLog clients using log4j logging.
+2015-08-10 19:45:22,545 - Initializing c3p0-0.9.2.1 [built 20-March-2013 10:47:27 +0000; debug? true; trace: 10]
+2015-08-10 19:45:22,727 - Building JPA container EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:45:22,767 - HHH000204: Processing PersistenceUnitInfo [
+	name: basePu
+	...]
+2015-08-10 19:45:22,903 - HHH000412: Hibernate Core {4.3.9.Final}
+2015-08-10 19:45:22,907 - HHH000206: hibernate.properties not found
+2015-08-10 19:45:22,910 - HHH000021: Bytecode provider name : javassist
+2015-08-10 19:45:23,309 - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-08-10 19:45:23,387 - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2015-08-10 19:45:23,408 - HHH000422: Disabling contextual LOB creation as connection was null
+2015-08-10 19:45:23,674 - HHH000397: Using ASTQueryTranslatorFactory
+2015-08-10 19:45:24,990 - HHH000227: Running hbm2ddl schema export
+2015-08-10 19:45:25,057 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge16o9b6i113a7s46k4|2d6c53fc, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.microsoft.sqlserver.jdbc.SQLServerDriver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge16o9b6i113a7s46k4|2d6c53fc, idleConnectionTestPeriod -> 0, initialPoolSize -> 1, jdbcUrl -> jdbc:sqlserver://115.28.160.96:1433;DatabaseName=HotERPService_Test, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 20, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 40, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2015-08-10 19:45:28,191 - HHH000230: Schema export complete
+2015-08-10 19:45:28,661 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:45:28,689 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:45:28,757 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:45:28,762 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:45:28,787 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:45:28,791 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:45:29,285 - Mapped "{[/hotErpApi/createOrder/{erpInfo}/{erpCode}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.createOrder(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:45:29,287 - Mapped "{[/hotErpApi/getProInventory/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getProInventory(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:45:29,289 - Mapped "{[/hotErpApi/getOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:45:29,290 - Mapped "{[/hotErpApi/modifyOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:45:29,291 - Mapped "{[/hotErpApi/obtainProductInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.obtainProductInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:45:29,292 - Mapped "{[/hotErpApi/modifyDeliveryInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyDeliveryInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:45:29,294 - Mapped "{[/obtainOrderDetail],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.event.model.Monitor<com.huobanplus.erpservice.event.model.EventResult> com.huobanplus.erpservice.htcomponent.controller.NetShopController.obtainOrderDetail(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+2015-08-10 19:45:29,297 - Mapped "{[/hotClientOrderApi/createOrder],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.createOrder(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:45:29,298 - Mapped "{[/hotClientOrderApi/orderUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:45:29,301 - Mapped "{[/hotClientOrderApi/obtainOrder],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.obtainOrder(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:45:29,303 - Mapped "{[/hotClientOrderApi/orderDeliver],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderDeliver(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:45:29,304 - Mapped "{[/hotClientOrderApi/orderStatusUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderStatusUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:45:29,306 - Mapped "{[/obtainInventory],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotProductControllerImpl.obtainInventory(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:45:29,310 - Mapped "{[/hotClientStorageApi/outStoreAdd],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreAdd(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:45:29,311 - Mapped "{[/hotClientStorageApi/outStoreConfirm],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreConfirm(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:45:29,336 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
+2015-08-10 19:45:29,715 - Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:45:19 CST 2015]; root of context hierarchy
+2015-08-10 19:45:29,869 - Initializing Spring FrameworkServlet ''
+2015-08-10 19:45:29,870 - FrameworkServlet '': initialization started
+2015-08-10 19:45:29,895 - FrameworkServlet '': initialization completed in 24 ms
+2015-08-10 19:45:30,007 - Closing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:45:19 CST 2015]; root of context hierarchy
+2015-08-10 19:45:30,020 - Closing JPA EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:45:30,023 - Shutting down ExecutorService 'scheduler'
+2015-08-10 19:45:30,024 - Shutting down ExecutorService
+2015-08-10 19:46:37,005 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-08-10 19:46:37,032 - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@cb644e, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@13805618, org.springframework.test.context.support.DirtiesContextTestExecutionListener@56ef9176, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4566e5bd, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@1ed4004b]
+2015-08-10 19:46:37,265 - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:46:37 CST 2015]; root of context hierarchy
+2015-08-10 19:46:37,687 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/applicationContext-datacenter.xml]
+2015-08-10 19:46:38,001 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/config_test.xml]
+2015-08-10 19:46:38,673 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-api/target/classes/applicationContext-providers.xml]
+2015-08-10 19:46:38,983 - Skipping bean definition for [BeanMethod:name=netShopHandlerBuilder,declaringClass=com.huobanplus.erpprovider.netshop.config.NetShopConfig]: a definition for bean 'netShopHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:46:38,985 - Skipping bean definition for [BeanMethod:name=huobanMallHandlerBuilder,declaringClass=com.huobanplus.erpprovider.huobanmall.config.HuobanMallConfig]: a definition for bean 'huobanMallHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:46:39,590 - Initializing ExecutorService 
+2015-08-10 19:46:39,593 - Bean 'executor' of type [class org.springframework.scheduling.config.TaskExecutorFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:46:39,594 - Bean 'executor' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:46:39,628 - Initializing ExecutorService  'scheduler'
+2015-08-10 19:46:39,629 - Bean 'scheduler' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:46:39,781 - MLog clients using log4j logging.
+2015-08-10 19:46:40,000 - Initializing c3p0-0.9.2.1 [built 20-March-2013 10:47:27 +0000; debug? true; trace: 10]
+2015-08-10 19:46:40,149 - Building JPA container EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:46:40,187 - HHH000204: Processing PersistenceUnitInfo [
+	name: basePu
+	...]
+2015-08-10 19:46:40,319 - HHH000412: Hibernate Core {4.3.9.Final}
+2015-08-10 19:46:40,322 - HHH000206: hibernate.properties not found
+2015-08-10 19:46:40,324 - HHH000021: Bytecode provider name : javassist
+2015-08-10 19:46:40,689 - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-08-10 19:46:40,770 - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2015-08-10 19:46:40,786 - HHH000422: Disabling contextual LOB creation as connection was null
+2015-08-10 19:46:41,051 - HHH000397: Using ASTQueryTranslatorFactory
+2015-08-10 19:46:41,960 - HHH000227: Running hbm2ddl schema export
+2015-08-10 19:46:42,001 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge16o9b6i2oux9itmmh|2d6c53fc, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.microsoft.sqlserver.jdbc.SQLServerDriver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge16o9b6i2oux9itmmh|2d6c53fc, idleConnectionTestPeriod -> 0, initialPoolSize -> 1, jdbcUrl -> jdbc:sqlserver://115.28.160.96:1433;DatabaseName=HotERPService_Test, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 20, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 40, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2015-08-10 19:46:44,708 - HHH000230: Schema export complete
+2015-08-10 19:46:45,141 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:46:45,166 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:46:45,238 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:46:45,242 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:46:45,267 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:46:45,273 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:46:45,720 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
+2015-08-10 19:46:46,039 - Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:46:37 CST 2015]; root of context hierarchy
+2015-08-10 19:46:46,137 - Mapped "{[/hotErpApi/createOrder/{erpInfo}/{erpCode}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.createOrder(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:46:46,139 - Mapped "{[/hotErpApi/getProInventory/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getProInventory(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:46:46,139 - Mapped "{[/hotErpApi/getOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:46:46,142 - Mapped "{[/hotErpApi/modifyOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:46:46,143 - Mapped "{[/hotErpApi/obtainProductInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.obtainProductInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:46:46,144 - Mapped "{[/hotErpApi/modifyDeliveryInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyDeliveryInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:46:46,145 - Mapped "{[/obtainOrderDetail],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.event.model.Monitor<com.huobanplus.erpservice.event.model.EventResult> com.huobanplus.erpservice.htcomponent.controller.NetShopController.obtainOrderDetail(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+2015-08-10 19:46:46,152 - Mapped "{[/hotClientOrderApi/obtainOrder],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.obtainOrder(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:46:46,153 - Mapped "{[/hotClientOrderApi/orderDeliver],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderDeliver(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:46:46,154 - Mapped "{[/hotClientOrderApi/orderUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:46:46,156 - Mapped "{[/hotClientOrderApi/createOrder],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.createOrder(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:46:46,159 - Mapped "{[/hotClientOrderApi/orderStatusUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderStatusUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:46:46,162 - Mapped "{[/obtainInventory],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotProductControllerImpl.obtainInventory(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:46:46,164 - Mapped "{[/hotClientStorageApi/outStoreAdd],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreAdd(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:46:46,167 - Mapped "{[/hotClientStorageApi/outStoreConfirm],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreConfirm(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:46:46,259 - Initializing Spring FrameworkServlet ''
+2015-08-10 19:46:46,259 - FrameworkServlet '': initialization started
+2015-08-10 19:46:46,281 - FrameworkServlet '': initialization completed in 22 ms
+2015-08-10 19:46:46,394 - Closing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:46:37 CST 2015]; root of context hierarchy
+2015-08-10 19:46:46,403 - Closing JPA EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:46:46,404 - Shutting down ExecutorService 'scheduler'
+2015-08-10 19:46:46,405 - Shutting down ExecutorService
+2015-08-10 19:48:13,668 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-08-10 19:48:13,693 - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@cb644e, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@13805618, org.springframework.test.context.support.DirtiesContextTestExecutionListener@56ef9176, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4566e5bd, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@1ed4004b]
+2015-08-10 19:48:13,925 - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:48:13 CST 2015]; root of context hierarchy
+2015-08-10 19:48:14,408 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/applicationContext-datacenter.xml]
+2015-08-10 19:48:14,700 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/config_test.xml]
+2015-08-10 19:48:15,212 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-api/target/classes/applicationContext-providers.xml]
+2015-08-10 19:48:15,505 - Skipping bean definition for [BeanMethod:name=netShopHandlerBuilder,declaringClass=com.huobanplus.erpprovider.netshop.config.NetShopConfig]: a definition for bean 'netShopHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:48:15,507 - Skipping bean definition for [BeanMethod:name=huobanMallHandlerBuilder,declaringClass=com.huobanplus.erpprovider.huobanmall.config.HuobanMallConfig]: a definition for bean 'huobanMallHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:48:15,998 - Initializing ExecutorService 
+2015-08-10 19:48:16,000 - Bean 'executor' of type [class org.springframework.scheduling.config.TaskExecutorFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:48:16,001 - Bean 'executor' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:48:16,035 - Initializing ExecutorService  'scheduler'
+2015-08-10 19:48:16,036 - Bean 'scheduler' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:48:16,154 - MLog clients using log4j logging.
+2015-08-10 19:48:16,390 - Initializing c3p0-0.9.2.1 [built 20-March-2013 10:47:27 +0000; debug? true; trace: 10]
+2015-08-10 19:48:16,542 - Building JPA container EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:48:16,579 - HHH000204: Processing PersistenceUnitInfo [
+	name: basePu
+	...]
+2015-08-10 19:48:16,717 - HHH000412: Hibernate Core {4.3.9.Final}
+2015-08-10 19:48:16,720 - HHH000206: hibernate.properties not found
+2015-08-10 19:48:16,722 - HHH000021: Bytecode provider name : javassist
+2015-08-10 19:48:17,087 - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-08-10 19:48:17,162 - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2015-08-10 19:48:17,179 - HHH000422: Disabling contextual LOB creation as connection was null
+2015-08-10 19:48:17,493 - HHH000397: Using ASTQueryTranslatorFactory
+2015-08-10 19:48:18,406 - HHH000227: Running hbm2ddl schema export
+2015-08-10 19:48:18,469 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge16o9b6i4r8enav1z7|2d6c53fc, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.microsoft.sqlserver.jdbc.SQLServerDriver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge16o9b6i4r8enav1z7|2d6c53fc, idleConnectionTestPeriod -> 0, initialPoolSize -> 1, jdbcUrl -> jdbc:sqlserver://115.28.160.96:1433;DatabaseName=HotERPService_Test, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 20, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 40, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2015-08-10 19:48:20,063 - HHH000230: Schema export complete
+2015-08-10 19:48:20,496 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:48:20,515 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:48:20,581 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:48:20,585 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:48:20,609 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:48:20,616 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:48:21,093 - Mapped "{[/hotErpApi/createOrder/{erpInfo}/{erpCode}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.createOrder(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:48:21,094 - Mapped "{[/hotErpApi/getProInventory/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getProInventory(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:48:21,095 - Mapped "{[/hotErpApi/getOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:48:21,096 - Mapped "{[/hotErpApi/modifyOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:48:21,098 - Mapped "{[/hotErpApi/obtainProductInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.obtainProductInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:48:21,099 - Mapped "{[/hotErpApi/modifyDeliveryInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyDeliveryInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:48:21,102 - Mapped "{[/obtainOrderDetail],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.event.model.Monitor<com.huobanplus.erpservice.event.model.EventResult> com.huobanplus.erpservice.htcomponent.controller.NetShopController.obtainOrderDetail(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+2015-08-10 19:48:21,105 - Mapped "{[/hotClientOrderApi/createOrder],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.createOrder(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:48:21,106 - Mapped "{[/hotClientOrderApi/orderUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:48:21,108 - Mapped "{[/hotClientOrderApi/obtainOrder],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.obtainOrder(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:48:21,111 - Mapped "{[/hotClientOrderApi/orderDeliver],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderDeliver(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:48:21,112 - Mapped "{[/hotClientOrderApi/orderStatusUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderStatusUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:48:21,114 - Mapped "{[/obtainInventory],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotProductControllerImpl.obtainInventory(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:48:21,117 - Mapped "{[/hotClientStorageApi/outStoreAdd],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreAdd(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:48:21,119 - Mapped "{[/hotClientStorageApi/outStoreConfirm],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreConfirm(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:48:21,148 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
+2015-08-10 19:48:21,521 - Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:48:13 CST 2015]; root of context hierarchy
+2015-08-10 19:48:21,692 - Initializing Spring FrameworkServlet ''
+2015-08-10 19:48:21,693 - FrameworkServlet '': initialization started
+2015-08-10 19:48:21,714 - FrameworkServlet '': initialization completed in 21 ms
+2015-08-10 19:48:21,956 - Closing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:48:13 CST 2015]; root of context hierarchy
+2015-08-10 19:48:21,963 - Closing JPA EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:48:21,965 - Shutting down ExecutorService 'scheduler'
+2015-08-10 19:48:21,966 - Shutting down ExecutorService
+2015-08-10 19:49:37,565 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-08-10 19:49:37,604 - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@1ea9f6af, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@6a192cfe, org.springframework.test.context.support.DirtiesContextTestExecutionListener@5119fb47, org.springframework.test.context.transaction.TransactionalTestExecutionListener@7193666c, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@20deea7f]
+2015-08-10 19:49:37,880 - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@145f66e3: startup date [Mon Aug 10 19:49:37 CST 2015]; root of context hierarchy
+2015-08-10 19:49:38,514 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/applicationContext-datacenter.xml]
+2015-08-10 19:49:38,681 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/config_test.xml]
+2015-08-10 19:49:39,380 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-api/target/classes/applicationContext-providers.xml]
+2015-08-10 19:49:39,728 - Skipping bean definition for [BeanMethod:name=netShopHandlerBuilder,declaringClass=com.huobanplus.erpprovider.netshop.config.NetShopConfig]: a definition for bean 'netShopHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:49:39,730 - Skipping bean definition for [BeanMethod:name=huobanMallHandlerBuilder,declaringClass=com.huobanplus.erpprovider.huobanmall.config.HuobanMallConfig]: a definition for bean 'huobanMallHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:49:40,297 - Initializing ExecutorService 
+2015-08-10 19:49:40,299 - Bean 'executor' of type [class org.springframework.scheduling.config.TaskExecutorFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:49:40,300 - Bean 'executor' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:49:40,336 - Initializing ExecutorService  'scheduler'
+2015-08-10 19:49:40,337 - Bean 'scheduler' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:49:40,489 - MLog clients using log4j logging.
+2015-08-10 19:49:40,750 - Initializing c3p0-0.9.2.1 [built 20-March-2013 10:47:27 +0000; debug? true; trace: 10]
+2015-08-10 19:49:40,943 - Building JPA container EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:49:40,990 - HHH000204: Processing PersistenceUnitInfo [
+	name: basePu
+	...]
+2015-08-10 19:49:41,139 - HHH000412: Hibernate Core {4.3.9.Final}
+2015-08-10 19:49:41,143 - HHH000206: hibernate.properties not found
+2015-08-10 19:49:41,147 - HHH000021: Bytecode provider name : javassist
+2015-08-10 19:49:41,595 - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-08-10 19:49:41,693 - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2015-08-10 19:49:41,716 - HHH000422: Disabling contextual LOB creation as connection was null
+2015-08-10 19:49:42,013 - HHH000397: Using ASTQueryTranslatorFactory
+2015-08-10 19:49:43,012 - HHH000227: Running hbm2ddl schema export
+2015-08-10 19:49:43,077 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge16o9b6i6kb860ykvo|3c1e3314, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.microsoft.sqlserver.jdbc.SQLServerDriver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge16o9b6i6kb860ykvo|3c1e3314, idleConnectionTestPeriod -> 0, initialPoolSize -> 1, jdbcUrl -> jdbc:sqlserver://115.28.160.96:1433;DatabaseName=HotERPService_Test, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 20, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 40, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2015-08-10 19:49:44,225 - HHH000230: Schema export complete
+2015-08-10 19:49:44,740 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:49:44,775 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:49:44,874 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:49:44,878 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:49:44,909 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:49:44,913 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:49:45,566 - Mapped "{[/hotErpApi/obtainProductInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.obtainProductInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:49:45,567 - Mapped "{[/hotErpApi/modifyDeliveryInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyDeliveryInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:49:45,569 - Mapped "{[/hotErpApi/createOrder/{erpInfo}/{erpCode}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.createOrder(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:49:45,572 - Mapped "{[/hotErpApi/getProInventory/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getProInventory(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:49:45,573 - Mapped "{[/hotErpApi/getOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:49:45,574 - Mapped "{[/hotErpApi/modifyOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:49:45,576 - Mapped "{[/obtainOrderDetail],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.event.model.Monitor<com.huobanplus.erpservice.event.model.EventResult> com.huobanplus.erpservice.htcomponent.controller.NetShopController.obtainOrderDetail(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+2015-08-10 19:49:45,579 - Mapped "{[/hotClientOrderApi/orderStatusUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderStatusUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:49:45,580 - Mapped "{[/hotClientOrderApi/createOrder],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.createOrder(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:49:45,582 - Mapped "{[/hotClientOrderApi/orderUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:49:45,583 - Mapped "{[/hotClientOrderApi/obtainOrder],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.obtainOrder(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:49:45,585 - Mapped "{[/hotClientOrderApi/orderDeliver],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderDeliver(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:49:45,591 - Mapped "{[/obtainInventory],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotProductControllerImpl.obtainInventory(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:49:45,594 - Mapped "{[/hotClientStorageApi/outStoreConfirm],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreConfirm(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:49:45,595 - Mapped "{[/hotClientStorageApi/outStoreAdd],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreAdd(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:49:45,635 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
+2015-08-10 19:49:46,308 - Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@145f66e3: startup date [Mon Aug 10 19:49:37 CST 2015]; root of context hierarchy
+2015-08-10 19:49:46,548 - Initializing Spring FrameworkServlet ''
+2015-08-10 19:49:46,549 - FrameworkServlet '': initialization started
+2015-08-10 19:49:46,576 - FrameworkServlet '': initialization completed in 27 ms
+2015-08-10 19:50:53,499 - Closing org.springframework.web.context.support.GenericWebApplicationContext@145f66e3: startup date [Mon Aug 10 19:49:37 CST 2015]; root of context hierarchy
+2015-08-10 19:50:53,509 - Closing JPA EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:50:53,511 - Shutting down ExecutorService 'scheduler'
+2015-08-10 19:50:53,512 - Shutting down ExecutorService
+2015-08-10 19:51:29,111 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-08-10 19:51:29,150 - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@1ea9f6af, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@6a192cfe, org.springframework.test.context.support.DirtiesContextTestExecutionListener@5119fb47, org.springframework.test.context.transaction.TransactionalTestExecutionListener@7193666c, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@20deea7f]
+2015-08-10 19:51:29,575 - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@145f66e3: startup date [Mon Aug 10 19:51:29 CST 2015]; root of context hierarchy
+2015-08-10 19:51:30,159 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/applicationContext-datacenter.xml]
+2015-08-10 19:51:30,540 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/config_test.xml]
+2015-08-10 19:51:31,035 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-api/target/classes/applicationContext-providers.xml]
+2015-08-10 19:51:31,240 - Skipping bean definition for [BeanMethod:name=netShopHandlerBuilder,declaringClass=com.huobanplus.erpprovider.netshop.config.NetShopConfig]: a definition for bean 'netShopHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:51:31,243 - Skipping bean definition for [BeanMethod:name=huobanMallHandlerBuilder,declaringClass=com.huobanplus.erpprovider.huobanmall.config.HuobanMallConfig]: a definition for bean 'huobanMallHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:51:31,652 - Initializing ExecutorService 
+2015-08-10 19:51:31,655 - Bean 'executor' of type [class org.springframework.scheduling.config.TaskExecutorFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:51:31,656 - Bean 'executor' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:51:31,695 - Initializing ExecutorService  'scheduler'
+2015-08-10 19:51:31,696 - Bean 'scheduler' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:51:31,827 - MLog clients using log4j logging.
+2015-08-10 19:51:32,147 - Initializing c3p0-0.9.2.1 [built 20-March-2013 10:47:27 +0000; debug? true; trace: 10]
+2015-08-10 19:51:32,357 - Building JPA container EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:51:32,411 - HHH000204: Processing PersistenceUnitInfo [
+	name: basePu
+	...]
+2015-08-10 19:51:32,572 - HHH000412: Hibernate Core {4.3.9.Final}
+2015-08-10 19:51:32,575 - HHH000206: hibernate.properties not found
+2015-08-10 19:51:32,578 - HHH000021: Bytecode provider name : javassist
+2015-08-10 19:51:33,049 - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-08-10 19:51:33,137 - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2015-08-10 19:51:33,162 - HHH000422: Disabling contextual LOB creation as connection was null
+2015-08-10 19:51:33,481 - HHH000397: Using ASTQueryTranslatorFactory
+2015-08-10 19:51:34,516 - HHH000227: Running hbm2ddl schema export
+2015-08-10 19:51:34,560 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge16o9b6i8y90goofzu|3c1e3314, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.microsoft.sqlserver.jdbc.SQLServerDriver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge16o9b6i8y90goofzu|3c1e3314, idleConnectionTestPeriod -> 0, initialPoolSize -> 1, jdbcUrl -> jdbc:sqlserver://115.28.160.96:1433;DatabaseName=HotERPService_Test, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 20, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 40, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2015-08-10 19:51:35,679 - HHH000230: Schema export complete
+2015-08-10 19:51:36,231 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:51:36,264 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:51:36,341 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:51:36,344 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:51:36,367 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:51:36,372 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:51:36,990 - Mapped "{[/hotErpApi/obtainProductInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.obtainProductInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:51:36,991 - Mapped "{[/hotErpApi/modifyDeliveryInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyDeliveryInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:51:36,992 - Mapped "{[/hotErpApi/createOrder/{erpInfo}/{erpCode}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.createOrder(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:51:36,992 - Mapped "{[/hotErpApi/getProInventory/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getProInventory(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:51:36,993 - Mapped "{[/hotErpApi/modifyOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:51:36,994 - Mapped "{[/hotErpApi/getOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:51:36,998 - Mapped "{[/obtainOrderDetail],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.event.model.Monitor<com.huobanplus.erpservice.event.model.EventResult> com.huobanplus.erpservice.htcomponent.controller.NetShopController.obtainOrderDetail(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+2015-08-10 19:51:37,000 - Mapped "{[/hotClientOrderApi/orderStatusUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderStatusUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:51:37,001 - Mapped "{[/hotClientOrderApi/createOrder],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.createOrder(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:51:37,002 - Mapped "{[/hotClientOrderApi/orderUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:51:37,004 - Mapped "{[/hotClientOrderApi/obtainOrder],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.obtainOrder(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:51:37,005 - Mapped "{[/hotClientOrderApi/orderDeliver],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderDeliver(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:51:37,008 - Mapped "{[/obtainInventory],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotProductControllerImpl.obtainInventory(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:51:37,011 - Mapped "{[/hotClientStorageApi/outStoreConfirm],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreConfirm(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:51:37,013 - Mapped "{[/hotClientStorageApi/outStoreAdd],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreAdd(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:51:37,056 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
+2015-08-10 19:51:37,494 - Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@145f66e3: startup date [Mon Aug 10 19:51:29 CST 2015]; root of context hierarchy
+2015-08-10 19:51:37,729 - Initializing Spring FrameworkServlet ''
+2015-08-10 19:51:37,729 - FrameworkServlet '': initialization started
+2015-08-10 19:51:37,756 - FrameworkServlet '': initialization completed in 27 ms
+2015-08-10 19:52:33,200 - Session Metrics {
+    148314909 nanoseconds spent acquiring 1 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    75834228 nanoseconds spent preparing 3 JDBC statements;
+    965770816 nanoseconds spent executing 3 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    73194644 nanoseconds spent executing 1 flushes (flushing a total of 2 entities and 1 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:53:00,804 - Closing org.springframework.web.context.support.GenericWebApplicationContext@145f66e3: startup date [Mon Aug 10 19:51:29 CST 2015]; root of context hierarchy
+2015-08-10 19:53:00,822 - Closing JPA EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:53:00,824 - Shutting down ExecutorService 'scheduler'
+2015-08-10 19:53:00,824 - Shutting down ExecutorService
+2015-08-10 19:55:03,897 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-08-10 19:55:03,919 - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@cb644e, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@13805618, org.springframework.test.context.support.DirtiesContextTestExecutionListener@56ef9176, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4566e5bd, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@1ed4004b]
+2015-08-10 19:55:04,186 - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:55:04 CST 2015]; root of context hierarchy
+2015-08-10 19:55:04,842 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/applicationContext-datacenter.xml]
+2015-08-10 19:55:05,291 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/config_test.xml]
+2015-08-10 19:55:05,784 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-api/target/classes/applicationContext-providers.xml]
+2015-08-10 19:55:06,285 - Skipping bean definition for [BeanMethod:name=netShopHandlerBuilder,declaringClass=com.huobanplus.erpprovider.netshop.config.NetShopConfig]: a definition for bean 'netShopHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:55:06,287 - Skipping bean definition for [BeanMethod:name=huobanMallHandlerBuilder,declaringClass=com.huobanplus.erpprovider.huobanmall.config.HuobanMallConfig]: a definition for bean 'huobanMallHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:55:06,627 - Initializing ExecutorService 
+2015-08-10 19:55:06,629 - Bean 'executor' of type [class org.springframework.scheduling.config.TaskExecutorFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:55:06,631 - Bean 'executor' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:55:06,672 - Initializing ExecutorService  'scheduler'
+2015-08-10 19:55:06,673 - Bean 'scheduler' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:55:06,772 - MLog clients using log4j logging.
+2015-08-10 19:55:06,989 - Initializing c3p0-0.9.2.1 [built 20-March-2013 10:47:27 +0000; debug? true; trace: 10]
+2015-08-10 19:55:07,157 - Building JPA container EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:55:07,192 - HHH000204: Processing PersistenceUnitInfo [
+	name: basePu
+	...]
+2015-08-10 19:55:07,340 - HHH000412: Hibernate Core {4.3.9.Final}
+2015-08-10 19:55:07,343 - HHH000206: hibernate.properties not found
+2015-08-10 19:55:07,346 - HHH000021: Bytecode provider name : javassist
+2015-08-10 19:55:07,716 - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-08-10 19:55:07,794 - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2015-08-10 19:55:07,815 - HHH000422: Disabling contextual LOB creation as connection was null
+2015-08-10 19:55:08,132 - HHH000397: Using ASTQueryTranslatorFactory
+2015-08-10 19:55:09,289 - HHH000227: Running hbm2ddl schema export
+2015-08-10 19:55:09,337 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge16o9b6idk231g4dfke|2d6c53fc, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.microsoft.sqlserver.jdbc.SQLServerDriver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge16o9b6idk231g4dfke|2d6c53fc, idleConnectionTestPeriod -> 0, initialPoolSize -> 1, jdbcUrl -> jdbc:sqlserver://115.28.160.96:1433;DatabaseName=HotERPService_Test, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 20, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 40, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2015-08-10 19:55:10,345 - HHH000230: Schema export complete
+2015-08-10 19:55:10,836 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:55:10,860 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:55:10,937 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:55:10,941 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:55:10,971 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:55:10,975 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:55:11,535 - Mapped "{[/hotErpApi/createOrder/{erpInfo}/{erpCode}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.createOrder(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:55:11,536 - Mapped "{[/hotErpApi/obtainProductInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.obtainProductInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:55:11,538 - Mapped "{[/hotErpApi/modifyDeliveryInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyDeliveryInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:55:11,539 - Mapped "{[/hotErpApi/modifyOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:55:11,541 - Mapped "{[/hotErpApi/getOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:55:11,543 - Mapped "{[/hotErpApi/getProInventory/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getProInventory(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:55:11,545 - Mapped "{[/obtainOrderDetail],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.event.model.Monitor<com.huobanplus.erpservice.event.model.EventResult> com.huobanplus.erpservice.htcomponent.controller.NetShopController.obtainOrderDetail(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+2015-08-10 19:55:11,548 - Mapped "{[/hotClientOrderApi/createOrder],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.createOrder(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:55:11,550 - Mapped "{[/hotClientOrderApi/orderStatusUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderStatusUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:55:11,553 - Mapped "{[/hotClientOrderApi/orderUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:55:11,555 - Mapped "{[/hotClientOrderApi/obtainOrder],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.obtainOrder(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:55:11,556 - Mapped "{[/hotClientOrderApi/orderDeliver],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderDeliver(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:55:11,558 - Mapped "{[/obtainInventory],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotProductControllerImpl.obtainInventory(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:55:11,559 - Mapped "{[/hotClientStorageApi/outStoreAdd],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreAdd(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:55:11,561 - Mapped "{[/hotClientStorageApi/outStoreConfirm],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreConfirm(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:55:11,589 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
+2015-08-10 19:55:11,986 - Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:55:04 CST 2015]; root of context hierarchy
+2015-08-10 19:55:12,155 - Initializing Spring FrameworkServlet ''
+2015-08-10 19:55:12,156 - FrameworkServlet '': initialization started
+2015-08-10 19:55:12,181 - FrameworkServlet '': initialization completed in 25 ms
+2015-08-10 19:55:13,653 - Session Metrics {
+    57949 nanoseconds spent acquiring 1 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    16608025 nanoseconds spent preparing 3 JDBC statements;
+    725702942 nanoseconds spent executing 3 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    14420942 nanoseconds spent executing 1 flushes (flushing a total of 2 entities and 1 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:55:13,685 - Closing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:55:04 CST 2015]; root of context hierarchy
+2015-08-10 19:55:13,698 - Closing JPA EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:55:13,700 - Shutting down ExecutorService 'scheduler'
+2015-08-10 19:55:13,701 - Shutting down ExecutorService
+2015-08-10 19:56:28,196 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-08-10 19:56:28,224 - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@cb644e, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@13805618, org.springframework.test.context.support.DirtiesContextTestExecutionListener@56ef9176, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4566e5bd, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@1ed4004b]
+2015-08-10 19:56:28,437 - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:56:28 CST 2015]; root of context hierarchy
+2015-08-10 19:56:29,180 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/applicationContext-datacenter.xml]
+2015-08-10 19:56:29,523 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/config_test.xml]
+2015-08-10 19:56:30,044 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-api/target/classes/applicationContext-providers.xml]
+2015-08-10 19:56:30,213 - Skipping bean definition for [BeanMethod:name=netShopHandlerBuilder,declaringClass=com.huobanplus.erpprovider.netshop.config.NetShopConfig]: a definition for bean 'netShopHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:56:30,215 - Skipping bean definition for [BeanMethod:name=huobanMallHandlerBuilder,declaringClass=com.huobanplus.erpprovider.huobanmall.config.HuobanMallConfig]: a definition for bean 'huobanMallHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 19:56:30,565 - Initializing ExecutorService 
+2015-08-10 19:56:30,570 - Bean 'executor' of type [class org.springframework.scheduling.config.TaskExecutorFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:56:30,571 - Bean 'executor' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:56:30,611 - Initializing ExecutorService  'scheduler'
+2015-08-10 19:56:30,613 - Bean 'scheduler' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 19:56:30,750 - MLog clients using log4j logging.
+2015-08-10 19:56:30,951 - Initializing c3p0-0.9.2.1 [built 20-March-2013 10:47:27 +0000; debug? true; trace: 10]
+2015-08-10 19:56:31,122 - Building JPA container EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:56:31,152 - HHH000204: Processing PersistenceUnitInfo [
+	name: basePu
+	...]
+2015-08-10 19:56:31,275 - HHH000412: Hibernate Core {4.3.9.Final}
+2015-08-10 19:56:31,278 - HHH000206: hibernate.properties not found
+2015-08-10 19:56:31,280 - HHH000021: Bytecode provider name : javassist
+2015-08-10 19:56:31,619 - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-08-10 19:56:31,687 - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2015-08-10 19:56:31,701 - HHH000422: Disabling contextual LOB creation as connection was null
+2015-08-10 19:56:31,951 - HHH000397: Using ASTQueryTranslatorFactory
+2015-08-10 19:56:32,863 - HHH000227: Running hbm2ddl schema export
+2015-08-10 19:56:32,911 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge16o9b6ifcuo11c41lk|2d6c53fc, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.microsoft.sqlserver.jdbc.SQLServerDriver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge16o9b6ifcuo11c41lk|2d6c53fc, idleConnectionTestPeriod -> 0, initialPoolSize -> 1, jdbcUrl -> jdbc:sqlserver://115.28.160.96:1433;DatabaseName=HotERPService_Test, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 20, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 40, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2015-08-10 19:56:34,513 - HHH000230: Schema export complete
+2015-08-10 19:56:34,941 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:56:34,958 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:56:35,020 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:56:35,026 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:56:35,056 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:56:35,064 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:56:35,563 - Mapped "{[/hotErpApi/obtainProductInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.obtainProductInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:56:35,564 - Mapped "{[/hotErpApi/modifyDeliveryInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyDeliveryInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:56:35,565 - Mapped "{[/hotErpApi/createOrder/{erpInfo}/{erpCode}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.createOrder(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:56:35,566 - Mapped "{[/hotErpApi/getProInventory/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getProInventory(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:56:35,566 - Mapped "{[/hotErpApi/getOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:56:35,567 - Mapped "{[/hotErpApi/modifyOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 19:56:35,569 - Mapped "{[/obtainOrderDetail],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.event.model.Monitor<com.huobanplus.erpservice.event.model.EventResult> com.huobanplus.erpservice.htcomponent.controller.NetShopController.obtainOrderDetail(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+2015-08-10 19:56:35,571 - Mapped "{[/hotClientOrderApi/createOrder],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.createOrder(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:56:35,572 - Mapped "{[/hotClientOrderApi/orderUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:56:35,574 - Mapped "{[/hotClientOrderApi/obtainOrder],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.obtainOrder(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:56:35,579 - Mapped "{[/hotClientOrderApi/orderDeliver],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderDeliver(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:56:35,579 - Mapped "{[/hotClientOrderApi/orderStatusUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderStatusUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:56:35,581 - Mapped "{[/obtainInventory],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotProductControllerImpl.obtainInventory(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:56:35,584 - Mapped "{[/hotClientStorageApi/outStoreAdd],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreAdd(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:56:35,585 - Mapped "{[/hotClientStorageApi/outStoreConfirm],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreConfirm(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 19:56:35,627 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
+2015-08-10 19:56:35,965 - Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:56:28 CST 2015]; root of context hierarchy
+2015-08-10 19:56:36,128 - Initializing Spring FrameworkServlet ''
+2015-08-10 19:56:36,129 - FrameworkServlet '': initialization started
+2015-08-10 19:56:36,151 - FrameworkServlet '': initialization completed in 22 ms
+2015-08-10 19:56:37,338 - Session Metrics {
+    57117 nanoseconds spent acquiring 1 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    21615192 nanoseconds spent preparing 3 JDBC statements;
+    400623574 nanoseconds spent executing 3 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    15026770 nanoseconds spent executing 1 flushes (flushing a total of 2 entities and 1 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 19:56:37,387 - Closing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 19:56:28 CST 2015]; root of context hierarchy
+2015-08-10 19:56:37,394 - Closing JPA EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 19:56:37,395 - Shutting down ExecutorService 'scheduler'
+2015-08-10 19:56:37,396 - Shutting down ExecutorService
+2015-08-10 20:01:27,677 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-08-10 20:01:27,696 - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@cb644e, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@13805618, org.springframework.test.context.support.DirtiesContextTestExecutionListener@56ef9176, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4566e5bd, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@1ed4004b]
+2015-08-10 20:01:27,926 - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 20:01:27 CST 2015]; root of context hierarchy
+2015-08-10 20:01:28,481 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/applicationContext-datacenter.xml]
+2015-08-10 20:01:28,731 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/config_test.xml]
+2015-08-10 20:01:29,319 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-api/target/classes/applicationContext-providers.xml]
+2015-08-10 20:01:29,490 - Skipping bean definition for [BeanMethod:name=netShopHandlerBuilder,declaringClass=com.huobanplus.erpprovider.netshop.config.NetShopConfig]: a definition for bean 'netShopHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 20:01:29,492 - Skipping bean definition for [BeanMethod:name=huobanMallHandlerBuilder,declaringClass=com.huobanplus.erpprovider.huobanmall.config.HuobanMallConfig]: a definition for bean 'huobanMallHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 20:01:29,842 - Initializing ExecutorService 
+2015-08-10 20:01:29,845 - Bean 'executor' of type [class org.springframework.scheduling.config.TaskExecutorFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 20:01:29,846 - Bean 'executor' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 20:01:29,884 - Initializing ExecutorService  'scheduler'
+2015-08-10 20:01:29,886 - Bean 'scheduler' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 20:01:29,998 - MLog clients using log4j logging.
+2015-08-10 20:01:30,207 - Initializing c3p0-0.9.2.1 [built 20-March-2013 10:47:27 +0000; debug? true; trace: 10]
+2015-08-10 20:01:30,359 - Building JPA container EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 20:01:30,391 - HHH000204: Processing PersistenceUnitInfo [
+	name: basePu
+	...]
+2015-08-10 20:01:30,515 - HHH000412: Hibernate Core {4.3.9.Final}
+2015-08-10 20:01:30,518 - HHH000206: hibernate.properties not found
+2015-08-10 20:01:30,520 - HHH000021: Bytecode provider name : javassist
+2015-08-10 20:01:30,875 - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-08-10 20:01:30,949 - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2015-08-10 20:01:30,965 - HHH000422: Disabling contextual LOB creation as connection was null
+2015-08-10 20:01:31,212 - HHH000397: Using ASTQueryTranslatorFactory
+2015-08-10 20:01:32,049 - HHH000227: Running hbm2ddl schema export
+2015-08-10 20:01:32,095 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge16o9b6ilrr11d3o7xh|2d6c53fc, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.microsoft.sqlserver.jdbc.SQLServerDriver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge16o9b6ilrr11d3o7xh|2d6c53fc, idleConnectionTestPeriod -> 0, initialPoolSize -> 1, jdbcUrl -> jdbc:sqlserver://115.28.160.96:1433;DatabaseName=HotERPService_Test, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 20, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 40, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2015-08-10 20:01:33,702 - HHH000230: Schema export complete
+2015-08-10 20:01:34,124 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:01:34,153 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:01:34,224 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:01:34,229 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:01:34,258 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:01:34,262 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:01:34,833 - Mapped "{[/hotErpApi/obtainProductInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.obtainProductInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:01:34,835 - Mapped "{[/hotErpApi/modifyDeliveryInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyDeliveryInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:01:34,836 - Mapped "{[/hotErpApi/createOrder/{erpInfo}/{erpCode}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.createOrder(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:01:34,838 - Mapped "{[/hotErpApi/getProInventory/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getProInventory(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:01:34,838 - Mapped "{[/hotErpApi/getOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:01:34,840 - Mapped "{[/hotErpApi/modifyOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:01:34,841 - Mapped "{[/obtainOrderDetail],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.event.model.Monitor<com.huobanplus.erpservice.event.model.EventResult> com.huobanplus.erpservice.htcomponent.controller.NetShopController.obtainOrderDetail(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+2015-08-10 20:01:34,844 - Mapped "{[/hotClientOrderApi/createOrder],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.createOrder(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:01:34,845 - Mapped "{[/hotClientOrderApi/orderUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:01:34,846 - Mapped "{[/hotClientOrderApi/obtainOrder],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.obtainOrder(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:01:34,847 - Mapped "{[/hotClientOrderApi/orderDeliver],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderDeliver(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:01:34,849 - Mapped "{[/hotClientOrderApi/orderStatusUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderStatusUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:01:34,851 - Mapped "{[/obtainInventory],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotProductControllerImpl.obtainInventory(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:01:34,853 - Mapped "{[/hotClientStorageApi/outStoreAdd],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreAdd(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:01:34,855 - Mapped "{[/hotClientStorageApi/outStoreConfirm],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreConfirm(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:01:34,884 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
+2015-08-10 20:01:35,215 - Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 20:01:27 CST 2015]; root of context hierarchy
+2015-08-10 20:01:35,369 - Initializing Spring FrameworkServlet ''
+2015-08-10 20:01:35,369 - FrameworkServlet '': initialization started
+2015-08-10 20:01:35,396 - FrameworkServlet '': initialization completed in 26 ms
+2015-08-10 20:01:37,231 - Session Metrics {
+    49076 nanoseconds spent acquiring 1 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    33527697 nanoseconds spent preparing 3 JDBC statements;
+    866438198 nanoseconds spent executing 3 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    16672073 nanoseconds spent executing 1 flushes (flushing a total of 2 entities and 1 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:01:40,287 - Closing org.springframework.web.context.support.GenericWebApplicationContext@32709393: startup date [Mon Aug 10 20:01:27 CST 2015]; root of context hierarchy
+2015-08-10 20:01:40,299 - Closing JPA EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 20:01:40,300 - Shutting down ExecutorService 'scheduler'
+2015-08-10 20:01:40,300 - Shutting down ExecutorService
+2015-08-10 20:08:17,964 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-08-10 20:08:17,989 - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@69ea3742, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@4b952a2d, org.springframework.test.context.support.DirtiesContextTestExecutionListener@3159c4b8, org.springframework.test.context.transaction.TransactionalTestExecutionListener@73846619, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@4bec1f0c]
+2015-08-10 20:08:18,249 - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@22a67b4: startup date [Mon Aug 10 20:08:18 CST 2015]; root of context hierarchy
+2015-08-10 20:08:18,654 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/applicationContext-datacenter.xml]
+2015-08-10 20:08:18,852 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/config_test.xml]
+2015-08-10 20:08:19,500 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-api/target/classes/applicationContext-providers.xml]
+2015-08-10 20:08:19,879 - Skipping bean definition for [BeanMethod:name=netShopHandlerBuilder,declaringClass=com.huobanplus.erpprovider.netshop.config.NetShopConfig]: a definition for bean 'netShopHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 20:08:19,881 - Skipping bean definition for [BeanMethod:name=huobanMallHandlerBuilder,declaringClass=com.huobanplus.erpprovider.huobanmall.config.HuobanMallConfig]: a definition for bean 'huobanMallHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 20:08:20,348 - Initializing ExecutorService 
+2015-08-10 20:08:20,350 - Bean 'executor' of type [class org.springframework.scheduling.config.TaskExecutorFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 20:08:20,351 - Bean 'executor' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 20:08:20,381 - Initializing ExecutorService  'scheduler'
+2015-08-10 20:08:20,381 - Bean 'scheduler' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 20:08:20,499 - MLog clients using log4j logging.
+2015-08-10 20:08:20,725 - Initializing c3p0-0.9.2.1 [built 20-March-2013 10:47:27 +0000; debug? true; trace: 10]
+2015-08-10 20:08:20,883 - Building JPA container EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 20:08:20,919 - HHH000204: Processing PersistenceUnitInfo [
+	name: basePu
+	...]
+2015-08-10 20:08:21,043 - HHH000412: Hibernate Core {4.3.9.Final}
+2015-08-10 20:08:21,046 - HHH000206: hibernate.properties not found
+2015-08-10 20:08:21,048 - HHH000021: Bytecode provider name : javassist
+2015-08-10 20:08:21,427 - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-08-10 20:08:21,506 - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2015-08-10 20:08:21,524 - HHH000422: Disabling contextual LOB creation as connection was null
+2015-08-10 20:08:21,768 - HHH000397: Using ASTQueryTranslatorFactory
+2015-08-10 20:08:22,627 - HHH000227: Running hbm2ddl schema export
+2015-08-10 20:08:22,663 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge16o9b6iuki01hyae1g|436c81a3, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.microsoft.sqlserver.jdbc.SQLServerDriver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge16o9b6iuki01hyae1g|436c81a3, idleConnectionTestPeriod -> 0, initialPoolSize -> 1, jdbcUrl -> jdbc:sqlserver://115.28.160.96:1433;DatabaseName=HotERPService_Test, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 20, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 40, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2015-08-10 20:08:24,405 - HHH000230: Schema export complete
+2015-08-10 20:08:24,828 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:08:24,853 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:08:24,931 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:08:24,936 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:08:24,960 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:08:24,964 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:08:25,403 - Mapped "{[/hotErpApi/getProInventory/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getProInventory(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:08:25,404 - Mapped "{[/hotErpApi/createOrder/{erpInfo}/{erpCode}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.createOrder(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:08:25,405 - Mapped "{[/hotErpApi/getOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:08:25,405 - Mapped "{[/hotErpApi/modifyOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:08:25,406 - Mapped "{[/hotErpApi/obtainProductInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.obtainProductInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:08:25,407 - Mapped "{[/hotErpApi/modifyDeliveryInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyDeliveryInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:08:25,408 - Mapped "{[/obtainOrderDetail],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.event.model.Monitor<com.huobanplus.erpservice.event.model.EventResult> com.huobanplus.erpservice.htcomponent.controller.NetShopController.obtainOrderDetail(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+2015-08-10 20:08:25,411 - Mapped "{[/hotClientOrderApi/createOrder],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.createOrder(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:08:25,412 - Mapped "{[/hotClientOrderApi/orderUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:08:25,413 - Mapped "{[/hotClientOrderApi/obtainOrder],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.obtainOrder(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:08:25,418 - Mapped "{[/hotClientOrderApi/orderDeliver],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderDeliver(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:08:25,419 - Mapped "{[/hotClientOrderApi/orderStatusUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderStatusUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:08:25,420 - Mapped "{[/obtainInventory],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotProductControllerImpl.obtainInventory(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:08:25,422 - Mapped "{[/hotClientStorageApi/outStoreAdd],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreAdd(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:08:25,423 - Mapped "{[/hotClientStorageApi/outStoreConfirm],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreConfirm(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:08:25,454 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
+2015-08-10 20:08:25,769 - Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@22a67b4: startup date [Mon Aug 10 20:08:18 CST 2015]; root of context hierarchy
+2015-08-10 20:08:25,947 - Initializing Spring FrameworkServlet ''
+2015-08-10 20:08:25,947 - FrameworkServlet '': initialization started
+2015-08-10 20:08:25,970 - FrameworkServlet '': initialization completed in 23 ms
+2015-08-10 20:08:27,516 - Session Metrics {
+    61553 nanoseconds spent acquiring 1 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    13846167 nanoseconds spent preparing 3 JDBC statements;
+    459254206 nanoseconds spent executing 3 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    14104025 nanoseconds spent executing 1 flushes (flushing a total of 2 entities and 1 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:08:29,543 - Closing org.springframework.web.context.support.GenericWebApplicationContext@22a67b4: startup date [Mon Aug 10 20:08:18 CST 2015]; root of context hierarchy
+2015-08-10 20:08:29,554 - Closing JPA EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 20:08:29,555 - Shutting down ExecutorService 'scheduler'
+2015-08-10 20:08:29,555 - Shutting down ExecutorService
+2015-08-10 20:08:53,161 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-08-10 20:08:53,185 - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@69ea3742, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@4b952a2d, org.springframework.test.context.support.DirtiesContextTestExecutionListener@3159c4b8, org.springframework.test.context.transaction.TransactionalTestExecutionListener@73846619, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@4bec1f0c]
+2015-08-10 20:08:53,427 - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@22a67b4: startup date [Mon Aug 10 20:08:53 CST 2015]; root of context hierarchy
+2015-08-10 20:08:53,824 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/applicationContext-datacenter.xml]
+2015-08-10 20:08:54,109 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-datacenter/target/classes/config_test.xml]
+2015-08-10 20:08:54,575 - Loading XML bean definitions from URL [file:/D:/work/erpservice/project/erpservice/erpservice-api/target/classes/applicationContext-providers.xml]
+2015-08-10 20:08:55,004 - Skipping bean definition for [BeanMethod:name=netShopHandlerBuilder,declaringClass=com.huobanplus.erpprovider.netshop.config.NetShopConfig]: a definition for bean 'netShopHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 20:08:55,006 - Skipping bean definition for [BeanMethod:name=huobanMallHandlerBuilder,declaringClass=com.huobanplus.erpprovider.huobanmall.config.HuobanMallConfig]: a definition for bean 'huobanMallHandlerBuilder' already exists. This top-level bean definition is considered as an override.
+2015-08-10 20:08:55,461 - Initializing ExecutorService 
+2015-08-10 20:08:55,463 - Bean 'executor' of type [class org.springframework.scheduling.config.TaskExecutorFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 20:08:55,464 - Bean 'executor' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 20:08:55,494 - Initializing ExecutorService  'scheduler'
+2015-08-10 20:08:55,495 - Bean 'scheduler' of type [class org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-08-10 20:08:55,609 - MLog clients using log4j logging.
+2015-08-10 20:08:55,830 - Initializing c3p0-0.9.2.1 [built 20-March-2013 10:47:27 +0000; debug? true; trace: 10]
+2015-08-10 20:08:55,982 - Building JPA container EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 20:08:56,020 - HHH000204: Processing PersistenceUnitInfo [
+	name: basePu
+	...]
+2015-08-10 20:08:56,143 - HHH000412: Hibernate Core {4.3.9.Final}
+2015-08-10 20:08:56,146 - HHH000206: hibernate.properties not found
+2015-08-10 20:08:56,148 - HHH000021: Bytecode provider name : javassist
+2015-08-10 20:08:56,531 - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-08-10 20:08:56,591 - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2015-08-10 20:08:56,611 - HHH000422: Disabling contextual LOB creation as connection was null
+2015-08-10 20:08:56,880 - HHH000397: Using ASTQueryTranslatorFactory
+2015-08-10 20:08:57,778 - HHH000227: Running hbm2ddl schema export
+2015-08-10 20:08:57,821 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge16o9b6ivbkz127ycyf|436c81a3, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.microsoft.sqlserver.jdbc.SQLServerDriver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge16o9b6ivbkz127ycyf|436c81a3, idleConnectionTestPeriod -> 0, initialPoolSize -> 1, jdbcUrl -> jdbc:sqlserver://115.28.160.96:1433;DatabaseName=HotERPService_Test, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 20, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 40, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2015-08-10 20:08:59,015 - HHH000230: Schema export complete
+2015-08-10 20:08:59,443 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:08:59,459 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:08:59,526 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:08:59,531 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:08:59,553 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:08:59,557 - Session Metrics {
+    0 nanoseconds spent acquiring 0 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    0 nanoseconds spent preparing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:09:00,046 - Mapped "{[/hotErpApi/obtainProductInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.obtainProductInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:09:00,047 - Mapped "{[/hotErpApi/modifyDeliveryInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyDeliveryInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:09:00,049 - Mapped "{[/hotErpApi/createOrder/{erpInfo}/{erpCode}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.createOrder(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:09:00,050 - Mapped "{[/hotErpApi/getProInventory/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getProInventory(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:09:00,052 - Mapped "{[/hotErpApi/getOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.getOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:09:00,053 - Mapped "{[/hotErpApi/modifyOrderInfo/{erpInfo}],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.huobanplus.erpservice.htcomponent.controller.impl.HotApiControllerImpl.modifyOrderInfo(java.lang.String,javax.servlet.http.HttpServletRequest)
+2015-08-10 20:09:00,054 - Mapped "{[/obtainOrderDetail],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.event.model.Monitor<com.huobanplus.erpservice.event.model.EventResult> com.huobanplus.erpservice.htcomponent.controller.NetShopController.obtainOrderDetail(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+2015-08-10 20:09:00,057 - Mapped "{[/hotClientOrderApi/createOrder],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.createOrder(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:09:00,058 - Mapped "{[/hotClientOrderApi/orderUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:09:00,060 - Mapped "{[/hotClientOrderApi/obtainOrder],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.obtainOrder(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:09:00,061 - Mapped "{[/hotClientOrderApi/orderDeliver],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderDeliver(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:09:00,065 - Mapped "{[/hotClientOrderApi/orderStatusUpdate],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotOrderControllerImpl.orderStatusUpdate(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:09:00,067 - Mapped "{[/obtainInventory],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotProductControllerImpl.obtainInventory(com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:09:00,068 - Mapped "{[/hotClientStorageApi/outStoreAdd],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreAdd(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:09:00,070 - Mapped "{[/hotClientStorageApi/outStoreConfirm],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.huobanplus.erpservice.transit.bean.ApiResult com.huobanplus.erpservice.transit.controller.impl.HotStorageControllerImpl.outStoreConfirm(java.lang.String,com.huobanplus.erpservice.event.model.ERPInfo,java.lang.String)
+2015-08-10 20:09:00,098 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
+2015-08-10 20:09:00,486 - Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@22a67b4: startup date [Mon Aug 10 20:08:53 CST 2015]; root of context hierarchy
+2015-08-10 20:09:00,647 - Initializing Spring FrameworkServlet ''
+2015-08-10 20:09:00,647 - FrameworkServlet '': initialization started
+2015-08-10 20:09:00,674 - FrameworkServlet '': initialization completed in 26 ms
+2015-08-10 20:09:02,176 - Session Metrics {
+    54622 nanoseconds spent acquiring 1 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    15060874 nanoseconds spent preparing 3 JDBC statements;
+    475513708 nanoseconds spent executing 3 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    19674599 nanoseconds spent executing 1 flushes (flushing a total of 2 entities and 1 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+2015-08-10 20:09:04,951 - Closing org.springframework.web.context.support.GenericWebApplicationContext@22a67b4: startup date [Mon Aug 10 20:08:53 CST 2015]; root of context hierarchy
+2015-08-10 20:09:04,960 - Closing JPA EntityManagerFactory for persistence unit 'basePu'
+2015-08-10 20:09:04,961 - Shutting down ExecutorService 'scheduler'
+2015-08-10 20:09:04,962 - Shutting down ExecutorService

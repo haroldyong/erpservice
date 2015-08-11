@@ -19,6 +19,10 @@ public class SignBuilder {
      * @return 返回鉴权信息字符串
      */
     public static String buildSign(Map<String, String> params, String prefix, String suffix) {
+        if (prefix == null)
+            prefix = "";
+        if (suffix == null)
+            suffix = "";
         StringBuilder stringBuilder = new StringBuilder(prefix);
 //        Collections.sort(new ArrayList(params.entrySet()), new Comparator<Map.Entry<String, String>>() {
 //            @Override
