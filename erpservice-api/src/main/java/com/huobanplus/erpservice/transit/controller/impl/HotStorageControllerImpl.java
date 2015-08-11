@@ -60,7 +60,8 @@ public class HotStorageControllerImpl extends HotBaseController implements HotSt
             signMap.put("validation", info.getValidation());
             signMap.put("sysDataJson", info.getSysDataJson());
             signMap.put("outStoreJson", outStoreJson);
-            String checkSign = buildSign(signMap, null, null);
+            signMap.put("timestamp", info.getTimestamp());
+            String checkSign = buildSign(signMap, signKey, null);
 
             if (!sign.equals(checkSign)) {
                 return new ApiResult(ResultCode.WRONG_SIGN_CODE.getKey(), null, ResultCode.WRONG_SIGN_CODE.getValue());
@@ -109,7 +110,8 @@ public class HotStorageControllerImpl extends HotBaseController implements HotSt
             signMap.put("validation", info.getValidation());
             signMap.put("sysDataJson", info.getSysDataJson());
             signMap.put("outStoreJson", outStoreJson);
-            String checkSign = buildSign(signMap, null, null);
+            signMap.put("timestamp", info.getTimestamp());
+            String checkSign = buildSign(signMap, signKey, null);
 
             if (!sign.equals(checkSign)) {
                 return new ApiResult(ResultCode.WRONG_SIGN_CODE.getKey(), null, ResultCode.WRONG_SIGN_CODE.getValue());
@@ -163,7 +165,8 @@ public class HotStorageControllerImpl extends HotBaseController implements HotSt
             signMap.put("validation", info.getValidation());
             signMap.put("sysDataJson", info.getSysDataJson());
             signMap.put("proOutJson", proOutJson);
-            String checkSign = buildSign(signMap, null, null);
+            signMap.put("timestamp", info.getTimestamp());
+            String checkSign = buildSign(signMap, signKey, null);
 
             if (!sign.equals(checkSign)) {
                 return new ApiResult(ResultCode.WRONG_SIGN_CODE.getKey(), null, ResultCode.WRONG_SIGN_CODE.getValue());

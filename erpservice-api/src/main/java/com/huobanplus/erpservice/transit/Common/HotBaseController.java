@@ -11,6 +11,8 @@ import java.util.Map;
  * Created by allan on 2015/8/6.
  */
 public class HotBaseController {
+    protected static String signKey = "847385239789";
+
     /**
      * 转换ERPInfo为明文状态
      *
@@ -19,13 +21,12 @@ public class HotBaseController {
      * @throws Exception
      */
     protected ERPInfo encryptInfo(ERPInfo preInfo) throws Exception {
-        ERPInfo erpInfo = new ERPInfo();
-        erpInfo.setName(DxDESCipher.decrypt(preInfo.getName()));
-        erpInfo.setType(DxDESCipher.decrypt(preInfo.getType()));
-        erpInfo.setSysDataJson(DxDESCipher.decrypt(preInfo.getSysDataJson()));
-        erpInfo.setValidation(DxDESCipher.decrypt(preInfo.getValidation()));
+        preInfo.setName(DxDESCipher.decrypt(preInfo.getName()));
+        preInfo.setType(DxDESCipher.decrypt(preInfo.getType()));
+        preInfo.setSysDataJson(DxDESCipher.decrypt(preInfo.getSysDataJson()));
+        preInfo.setValidation(DxDESCipher.decrypt(preInfo.getValidation()));
 
-        return erpInfo;
+        return preInfo;
     }
 
     /**

@@ -44,6 +44,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
         try {
             ERPInfo info = encryptInfo(erpInfo);
             orderInfoJson = URLDecoder.decode(orderInfoJson, "utf-8");
+
             //签名验证
             if (StringUtils.isEmpty(sign)) {
                 return new ApiResult(ResultCode.EMPTY_SIGN_CODE.getKey(), null, ResultCode.EMPTY_SIGN_CODE.getValue());
@@ -54,7 +55,9 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
             signMap.put("validation", info.getValidation());
             signMap.put("sysDataJson", info.getSysDataJson());
             signMap.put("orderInfoJson", orderInfoJson);
-            String checkSign = buildSign(signMap, null, null);
+            signMap.put("timestamp", info.getTimestamp());
+
+            String checkSign = buildSign(signMap, signKey, null);
 
             if (!sign.equals(checkSign)) {
                 return new ApiResult(ResultCode.WRONG_SIGN_CODE.getKey(), null, ResultCode.WRONG_SIGN_CODE.getValue());
@@ -100,7 +103,8 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
             signMap.put("type", info.getType());
             signMap.put("validation", info.getValidation());
             signMap.put("sysDataJson", info.getSysDataJson());
-            String checkSign = buildSign(signMap, null, null);
+            signMap.put("timestamp", info.getTimestamp());
+            String checkSign = buildSign(signMap, signKey, null);
 
             if (!sign.equals(checkSign)) {
                 return new ApiResult(ResultCode.WRONG_SIGN_CODE.getKey(), null, ResultCode.WRONG_SIGN_CODE.getValue());
@@ -144,7 +148,8 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
             signMap.put("validation", info.getValidation());
             signMap.put("sysDataJson", info.getSysDataJson());
             signMap.put("orderInfoJson", orderInfoJson);
-            String checkSign = buildSign(signMap, null, null);
+            signMap.put("timestamp", info.getTimestamp());
+            String checkSign = buildSign(signMap, signKey, null);
 
             if (!sign.equals(checkSign)) {
                 return new ApiResult(ResultCode.WRONG_SIGN_CODE.getKey(), null, ResultCode.WRONG_SIGN_CODE.getValue());
@@ -198,7 +203,8 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
             signMap.put("validation", info.getValidation());
             signMap.put("sysDataJson", info.getSysDataJson());
             signMap.put("orderInfoJson", orderInfoJson);
-            String checkSign = buildSign(signMap, null, null);
+            signMap.put("timestamp", info.getTimestamp());
+            String checkSign = buildSign(signMap, signKey, null);
 
             if (!sign.equals(checkSign)) {
                 return new ApiResult(ResultCode.WRONG_SIGN_CODE.getKey(), null, ResultCode.WRONG_SIGN_CODE.getValue());
@@ -268,7 +274,8 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
             signMap.put("validation", info.getValidation());
             signMap.put("sysDataJson", info.getSysDataJson());
             signMap.put("orderInfoJson", orderInfoJson);
-            String checkSign = buildSign(signMap, null, null);
+            signMap.put("timestamp", info.getTimestamp());
+            String checkSign = buildSign(signMap, signKey, null);
 
             if (!sign.equals(checkSign)) {
                 return new ApiResult(ResultCode.WRONG_SIGN_CODE.getKey(), null, ResultCode.WRONG_SIGN_CODE.getValue());

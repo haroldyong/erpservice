@@ -142,7 +142,7 @@ public class HotStorageControllerTest extends SpringWebTest {
         signMap.put("type", mockERP.getType());
         signMap.put("validation", mockERP.getValidation());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
-        String sign = buildSign(signMap, null, null);
+        String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientStorageApi/outStoreAdd")
                 .param("outStoreJson", URLEncoder.encode(outStoreJson, "utf-8"))
@@ -168,7 +168,7 @@ public class HotStorageControllerTest extends SpringWebTest {
         signMap.put("type", mockERP.getType());
         signMap.put("validation", mockERP.getValidation());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
-        String sign = buildSign(signMap, null, null);
+        String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientStorageApi/outStoreConfirm")
                 .param("outStoreJson", URLEncoder.encode(outStoreJson, "utf-8"))
@@ -195,7 +195,7 @@ public class HotStorageControllerTest extends SpringWebTest {
         signMap.put("type", mockERP.getType());
         signMap.put("validation", mockERP.getValidation());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
-        String sign = buildSign(signMap, null, null);
+        String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientStorageApi/outStoreWriteBack")
                 .param("proOutJson", URLEncoder.encode(proOutJson, "utf-8"))
