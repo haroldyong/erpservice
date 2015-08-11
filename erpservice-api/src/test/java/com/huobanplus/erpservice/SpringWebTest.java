@@ -55,6 +55,12 @@ public class SpringWebTest {
         if (suffix == null)
             suffix = "";
         StringBuilder stringBuilder = new StringBuilder(prefix);
+//        Collections.sort(new ArrayList(params.entrySet()), new Comparator<Map.Entry<String, String>>() {
+//            @Override
+//            public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
+//                return o1.getKey().compareTo(o2.getKey());
+//            }
+//        });
         Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, String> next = iterator.next();
