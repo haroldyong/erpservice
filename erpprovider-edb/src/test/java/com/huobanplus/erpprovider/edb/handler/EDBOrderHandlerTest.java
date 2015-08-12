@@ -111,6 +111,11 @@ public class EDBOrderHandlerTest {
 
     @Test
     public void testOrderDeliver() throws Exception {
-
+        MallOrderBean orderBean = new MallOrderBean();
+        orderBean.setOrderId("1232123123");
+        orderBean.setExpressNo("123213");
+        orderBean.setExpress("2312");
+        Monitor<EventResult> monitor = edbOrderHandler.orderDeliver(orderBean, mockERP);
+        System.out.println(monitor.get().getSystemResult());
     }
 }

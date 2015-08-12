@@ -36,7 +36,7 @@ public class EDBStorageHandlerImpl extends BaseHandler implements EDBStorageHand
         List<EDBProductOut> edbProductOuts = new ArrayList<>();
         for (MallProductOutBean productOut : outStoreBean.getMallProductOutBeans()) {
             EDBProductOut edbProductOut = new EDBProductOut();
-            edbProductOut.setOutStorageNo(productOut.getOutStoreBean().getOutStorageNo());
+            edbProductOut.setOutStorageNo(outStoreBean.getOutStorageNo());
             edbProductOut.setProductItemNo(productOut.getProductItemNo());
             edbProductOut.setLocationNo(productOut.getLocationNo());
             edbProductOut.setStorageNo(productOut.getStorageNo());
@@ -88,10 +88,12 @@ public class EDBStorageHandlerImpl extends BaseHandler implements EDBStorageHand
         EDBSysData edbSysData = new ObjectMapper().readValue(erpInfo.getSysDataJson(), EDBSysData.class);
         Map<String, String> requestData = getSysRequestData("edbOutStoreConfirm", edbSysData);
         Map<String, String> signMap = new TreeMap<>(requestData);
-        requestData.put("outStorage_no", outStoreBean.getOutStorageNo());
-        requestData.put("freight", outStoreBean.getFreight());
-        requestData.put("freight_avgway", outStoreBean.getFreightAvgWay());
-        signMap.put("outStorage_no", URLEncoder.encode(outStoreBean.getOutStorageNo(), "utf-8"));
+        requestData.put("outStorage_no", URLEncoder.encode(outStoreBean.getOutStorageNo(), "utf-8"));
+        requestData.put("freight", URLEncoder.encode(outStoreBean.getFreight(), "utf-8"));
+        requestData.put("freight_avgway", URLEncoder.encode(outStoreBean.getFreightAvgWay(), "utf-8"));
+        signMap.put("outStorage_no", outStoreBean.getOutStorageNo());
+        signMap.put("freight", outStoreBean.getFreight());
+        signMap.put("freight_avgway", outStoreBean.getFreightAvgWay());
         requestData.put("sign", getSign(signMap, edbSysData));
         String responseData = HttpUtil.getInstance().doPost(edbSysData.getRequestUrl(), requestData);
         if (responseData == null) {

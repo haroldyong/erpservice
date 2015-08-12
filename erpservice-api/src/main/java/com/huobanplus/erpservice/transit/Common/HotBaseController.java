@@ -1,10 +1,8 @@
 package com.huobanplus.erpservice.transit.Common;
 
 import com.huobanplus.erpservice.event.model.ERPInfo;
-import com.huobanplus.erpservice.transit.bean.ApiResult;
-import com.huobanplus.erpservice.transit.utils.DesUtil;
+import com.huobanplus.erpservice.transit.utils.DxDESCipher;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -13,6 +11,8 @@ import java.util.Map;
  * Created by allan on 2015/8/6.
  */
 public class HotBaseController {
+    protected static String signKey = "847385239789";
+
     /**
      * 转换ERPInfo为明文状态
      *
@@ -21,13 +21,12 @@ public class HotBaseController {
      * @throws Exception
      */
     protected ERPInfo encryptInfo(ERPInfo preInfo) throws Exception {
-        ERPInfo erpInfo = new ERPInfo();
-        erpInfo.setName(DesUtil.decrypt(preInfo.getName()));
-        erpInfo.setType(DesUtil.decrypt(preInfo.getType()));
-        erpInfo.setSysDataJson(DesUtil.decrypt(preInfo.getSysDataJson()));
-        erpInfo.setValidation(DesUtil.decrypt(preInfo.getValidation()));
+        preInfo.setName(DxDESCipher.decrypt(preInfo.getName()));
+        preInfo.setType(DxDESCipher.decrypt(preInfo.getType()));
+        preInfo.setSysDataJson(DxDESCipher.decrypt(preInfo.getSysDataJson()));
+        preInfo.setValidation(DxDESCipher.decrypt(preInfo.getValidation()));
 
-        return erpInfo;
+        return preInfo;
     }
 
     /**

@@ -1,41 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans profile="!contain" xmlns="http://www.springframework.org/schema/beans"
+<beans profile="contain" xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-    <bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-        <!-- 指定连接数据库的驱动 -->
-        <property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-        <!-- 指定连接数据库的URL -->
-        <property name="jdbcUrl" value="jdbc:sqlserver://115.28.160.96:1433;DatabaseName=HotERPService_Test"/>
-        <!-- 指定连接数据库的用户名 -->
-        <property name="user" value="mall"/>
-        <!-- 指定连接数据库的密码 -->
-        <!--property name="password" value="!"/-->
-        <property name="password" value="root"/>
-        <!-- 指定连接数据库连接池的最大连接数 -->
-        <property name="maxPoolSize" value="40"/>
-        <!-- 指定连接数据库连接池的最小连接数 -->
-        <property name="minPoolSize" value="1"/>
-        <!-- 指定连接数据库连接池的初始化连接数 -->
-        <property name="initialPoolSize" value="1"/>
-        <!-- 指定连接数据库连接池的连接的最大空闲时间 -->
-        <property name="maxIdleTime" value="20"/>
-    </bean>
-
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="com.huobanplus.erpservice.datacenter.bean"/>
-        <property name="persistenceUnitName" value="basePu"/>
+        <property name="persistenceUnitName" value="basePu"></property>
         <property name="persistenceProvider">
             <bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>
         </property>
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <!--<property name="generateDdl" value="true" />-->
-                <property name="database" value="SQL_SERVER"/>
-                <property name="databasePlatform" value="org.hibernate.dialect.SQLServer2008Dialect"/>
+                <property name="database" value="MYSQL"/>
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQL5Dialect"/>
+                <!--<property name="databasePlatform" value="org.hibernate.dialect.SQLServer2008Dialect"/>-->
                 <property name="showSql" value="false"/>
             </bean>
         </property>
@@ -56,6 +37,15 @@
                 <entry key="hibernate.hbm2ddl.auto" value="create"/>
                 <entry key="hibernate.show_sql" value="false"/>
             </map>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName">
+            <value>jdbc/ERPPlatform</value>
+        </property>
+        <property name="resourceRef">
+            <value>true</value>
         </property>
     </bean>
 </beans>

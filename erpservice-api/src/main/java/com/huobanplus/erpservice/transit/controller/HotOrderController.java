@@ -27,7 +27,7 @@ public interface HotOrderController {
      *
      * @param orderInfoJson 订单信息,有MallOrderBean对象序列化成的json格式字符串
      * @param erpInfo       erp关联信息（参数为des加密后的参数）
-     * @param sign       远程传过来的鉴权参数
+     * @param sign          远程传过来的鉴权参数
      * @return 返回创建订单结果
      */
     @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
@@ -40,7 +40,7 @@ public interface HotOrderController {
      * <p>sysDateJson定义参照方法createOrder</p>
      * <p>参数均为des加密后的字符串</p>
      *
-     * @param sign       远程传过来的鉴权参数
+     * @param sign    远程传过来的鉴权参数
      * @param erpInfo erp关联信息（参数为des加密后的参数）
      * @return 返回订单信息列表
      */
@@ -52,7 +52,7 @@ public interface HotOrderController {
      * 订单发货
      * <p>sysDateJson定义参照方法createOrder</p>
      *
-     * @param sign       远程传过来的鉴权参数
+     * @param sign          远程传过来的鉴权参数
      * @param orderInfoJson 根据不同erp传递不同的必须参数
      * @param erpInfo       erp关联信息（参数为des加密后的参数）
      * @return 返回发货结果信息
@@ -65,7 +65,7 @@ public interface HotOrderController {
      * 订单业务信息更新
      * <p>sysDateJson定义参照方法createOrder</p>
      *
-     * @param sign       远程传过来的鉴权参数
+     * @param sign          远程传过来的鉴权参数
      * @param orderInfoJson 根据不同erp传递不同的必须参数
      * @param erpInfo       erp关联信息（参数为des加密后的参数）
      * @return 返回订单更新结果信息
@@ -75,9 +75,16 @@ public interface HotOrderController {
 
     /**
      * <p>方法描述：订单状态更新</p>
+     * <p>更新订单导入标记为 已导入，可更新条件为</p>
+     * <p>1、	订单导入标记为未导入</p>
+     * <p>2、	订单非货到付款，其状态为 已确认   已付款（订单）</p>
+     * <p>3、	订单为货到付款，其确认状态为  已确认（订单）</p>
+     * <p>参数：</p>
+     * <p>单据号,可以输入一个,可以输入多个,多个单据号以逗号(,)隔开.如果某个单据号不导入,但需要批注,则在该单据号后加冒号(:),加上批注内容</p>
+     * <p></p>
      * <p>sysDateJson定义参照方法createOrder</p>
      *
-     * @param sign       远程传过来的鉴权参数
+     * @param sign          远程传过来的鉴权参数
      * @param orderInfoJson 根据不同erp传递不同的必须参数
      * @param erpInfo       erp关联信息（参数为des加密后的参数）
      * @return 返回订单更新结果信息

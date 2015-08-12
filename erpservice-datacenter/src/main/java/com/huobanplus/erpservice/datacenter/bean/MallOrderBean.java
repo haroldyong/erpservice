@@ -446,13 +446,13 @@ public class MallOrderBean {
      * 总重量
      */
     @Column(name = "Total_Weight")
-    private double totalWeight;
+    private String totalWeight;
 
     /**
      * 订单净重
      */
     @Column(name = "Tid_Net_Weight")
-    private double tidNetWeight;
+    private String tidNetWeight;
 
     /**
      * 订货时间
@@ -1514,19 +1514,19 @@ public class MallOrderBean {
         this.freightExplain = freightExplain;
     }
 
-    public double getTotalWeight() {
+    public String getTotalWeight() {
         return totalWeight;
     }
 
-    public void setTotalWeight(double totalWeight) {
+    public void setTotalWeight(String totalWeight) {
         this.totalWeight = totalWeight;
     }
 
-    public double getTidNetWeight() {
+    public String getTidNetWeight() {
         return tidNetWeight;
     }
 
-    public void setTidNetWeight(double tidNetWeight) {
+    public void setTidNetWeight(String tidNetWeight) {
         this.tidNetWeight = tidNetWeight;
     }
 

@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class MallProductOutBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int productOutId;
+    private long productOutId;
     @ManyToOne
     @JoinColumn(name = "OutStorage_No")
     private MallOutStoreBean outStoreBean;
@@ -33,11 +33,11 @@ public class MallProductOutBean {
     @Column(name = "BarCode")
     private String barCode;
 
-    public int getProductOutId() {
+    public long getProductOutId() {
         return productOutId;
     }
 
-    public void setProductOutId(int productOutId) {
+    public void setProductOutId(long productOutId) {
         this.productOutId = productOutId;
     }
 

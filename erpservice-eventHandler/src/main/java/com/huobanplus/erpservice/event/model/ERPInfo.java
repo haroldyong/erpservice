@@ -23,6 +23,11 @@ public class ERPInfo implements Serializable {
      * erp验证信息，erp
      */
     private String validation;
+
+    /**
+     * 时间戳（当前时间的毫秒数，long）
+     */
+    private String timestamp;
     /**
      * erp系统级参数
      * <p>json格式</p>
@@ -60,6 +65,14 @@ public class ERPInfo implements Serializable {
 
     public void setSysDataJson(String sysDataJson) {
         this.sysDataJson = sysDataJson;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public ERPInfo(String type, String name, String validation) {

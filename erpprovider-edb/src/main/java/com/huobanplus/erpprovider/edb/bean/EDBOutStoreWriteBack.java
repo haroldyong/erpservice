@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
+ * edb出库单会写实体
  * Created by allan on 2015/8/7.
  */
 @JacksonXmlRootElement(localName = "orderInfo")
