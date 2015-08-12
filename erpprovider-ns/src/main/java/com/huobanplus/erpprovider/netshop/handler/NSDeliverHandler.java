@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * Created by allan on 2015/7/31.
+ * 发货通知信息
  */
 public interface NSDeliverHandler {
     Monitor<EventResult> deliverInform(HttpServletRequest request) throws IOException;

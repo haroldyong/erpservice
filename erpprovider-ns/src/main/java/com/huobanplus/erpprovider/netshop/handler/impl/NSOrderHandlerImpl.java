@@ -1,5 +1,7 @@
 package com.huobanplus.erpprovider.netshop.handler.impl;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.netshop.handler.NSOrderHandler;
@@ -39,183 +41,8 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
         signMap.put("uCode", request.getParameter(Constant.SIGN_U_CODE));
         signMap.put("mType", request.getParameter(Constant.SIGN_M_TYPE));
         signMap.put("TimeStamp", request.getParameter(Constant.SIGN_TIME_STAMP));
+        signMap.put("datas", request.getParameter("datas"));
 
-        //订单参数
-        Map<String, String> orderMap = new TreeMap<>();
-        orderMap.put("orderId", request.getParameter("orderId"));
-        orderMap.put("storageId", request.getParameter("storageId"));
-        orderMap.put("tid", request.getParameter("tid"));
-        orderMap.put("transactionId", request.getParameter("transactionId"));
-        orderMap.put("customerId", request.getParameter("customerId"));
-        orderMap.put("distributorId", request.getParameter("distributorId"));
-        orderMap.put("shopName", request.getParameter("shopName"));
-        orderMap.put("outTid", request.getParameter("outTid"));
-        orderMap.put("orderType", request.getParameter("orderType"));
-        orderMap.put("outPayTid", request.getParameter("outPayTid"));
-        orderMap.put("voucherId", request.getParameter("voucherId"));
-        orderMap.put("shopId", request.getParameter("shopId"));
-        orderMap.put("serialNum", request.getParameter("serialNum"));
-        orderMap.put("orderChannel", request.getParameter("orderChannel"));
-        orderMap.put("orderFrom", request.getParameter("orderFrom"));
-        orderMap.put("buyerId", request.getParameter("buyerId"));
-        orderMap.put("buyerName", request.getParameter("buyerName"));
-        orderMap.put("type", request.getParameter("type"));
-        orderMap.put("status", request.getParameter("status"));
-        orderMap.put("abnormalStatus", request.getParameter("abnormalStatus"));
-        orderMap.put("mergeStatus", request.getParameter("mergeStatus"));
-        orderMap.put("receiverName", request.getParameter("receiverName"));
-        orderMap.put("receiverMobile", request.getParameter("receiverMobile"));
-        orderMap.put("phone", request.getParameter("phone"));
-        orderMap.put("province", request.getParameter("province"));
-        orderMap.put("city", request.getParameter("city"));
-        orderMap.put("district", request.getParameter("district"));
-        orderMap.put("address", request.getParameter("address"));
-        orderMap.put("post", request.getParameter("post"));
-        orderMap.put("email", request.getParameter("email"));
-        orderMap.put("isBill", request.getParameter("isBill"));
-        orderMap.put("invoiceName", request.getParameter("invoiceName"));
-        orderMap.put("invoiceSituation", request.getParameter("invoiceSituation"));
-        orderMap.put("invoiceTitle", request.getParameter("invoiceTitle"));
-        orderMap.put("invoiceType", request.getParameter("invoiceType"));
-        orderMap.put("invoiceContent", request.getParameter("invoiceContent"));
-        orderMap.put("invoiceMoney", request.getParameter("invoiceMoney"));
-        orderMap.put("proTotalFee", request.getParameter("proTotalFee"));
-        orderMap.put("orderTotalFee", request.getParameter("orderTotalFee"));
-        orderMap.put("referencePricePaid", request.getParameter("referencePricePaid"));
-        orderMap.put("invoiceFee", request.getParameter("invoiceFee"));
-        orderMap.put("codFee", request.getParameter("codFee"));
-        orderMap.put("otherFee", request.getParameter("otherFee"));
-        orderMap.put("refundTotalFee", request.getParameter("refundTotalFee"));
-        orderMap.put("discountFee", request.getParameter("discountFee"));
-        orderMap.put("discount", request.getParameter("discount"));
-        orderMap.put("channelDisfee", request.getParameter("channelDisfee"));
-        orderMap.put("merchantDisFee", request.getParameter("merchantDisFee"));
-        orderMap.put("orderDisfee", request.getParameter("orderDisfee"));
-        orderMap.put("commissionFee", request.getParameter("commissionFee"));
-        orderMap.put("isCod", request.getParameter("isCod"));
-        orderMap.put("pointPay", request.getParameter("pointPay"));
-        orderMap.put("costPoint", request.getParameter("costPoint"));
-        orderMap.put("point", request.getParameter("point"));
-        orderMap.put("superiorPoint", request.getParameter("superiorPoint"));
-        orderMap.put("royaltyFee", request.getParameter("royaltyFee"));
-        orderMap.put("externalPoint", request.getParameter("externalPoint"));
-        orderMap.put("expressNo", request.getParameter("expressNo"));
-        orderMap.put("tradeGifadd", request.getParameter("tradeGifadd"));
-        orderMap.put("express", request.getParameter("express"));
-        orderMap.put("expressCoding", request.getParameter("expressCoding"));
-        orderMap.put("onlineExpress", request.getParameter("onlineExpress"));
-        orderMap.put("sendingType", request.getParameter("sendingType"));
-        orderMap.put("realIncomefreight", request.getParameter("realIncomefreight"));
-        orderMap.put("realPayFreight", request.getParameter("realPayFreight"));
-        orderMap.put("grossWeight", request.getParameter("grossWeight"));
-        orderMap.put("grossWeightFreight", request.getParameter("grossWeightFreight"));
-        orderMap.put("netWeightWreight", request.getParameter("netWeightWreight"));
-        orderMap.put("freightExplain", request.getParameter("freightExplain"));
-        orderMap.put("totalWeight", request.getParameter("totalWeight"));
-        orderMap.put("tidNetWeight", request.getParameter("tidNetWeight"));
-        orderMap.put("tidTime", request.getParameter("tidTime"));
-        orderMap.put("payTime", request.getParameter("payTime"));
-        orderMap.put("getTime", request.getParameter("getTime"));
-        orderMap.put("orderCreater", request.getParameter("orderCreater"));
-        orderMap.put("businessMan", request.getParameter("businessMan"));
-        orderMap.put("paymentReceivedOperator", request.getParameter("paymentReceivedOperator"));
-        orderMap.put("paymentReceivedTime", request.getParameter("paymentReceivedTime"));
-        orderMap.put("reviewOrdersOperator", request.getParameter("reviewOrdersOperator"));
-        orderMap.put("reviewOrdersTime", request.getParameter("reviewOrdersTime"));
-        orderMap.put("financeReviewOperator", request.getParameter("financeReviewOperator"));
-        orderMap.put("financeReviewTime", request.getParameter("financeReviewTime"));
-        orderMap.put("advancePrinter", request.getParameter("advancePrinter"));
-        orderMap.put("printer", request.getParameter("printer"));
-        orderMap.put("printTime", request.getParameter("printTime"));
-        orderMap.put("isPrint", request.getParameter("isPrint"));
-        orderMap.put("advDistributer", request.getParameter("advDistributer"));
-        orderMap.put("advDistributTime", request.getParameter("advDistributTime"));
-        orderMap.put("distributer", request.getParameter("distributer"));
-        orderMap.put("distributTime", request.getParameter("distributTime"));
-        orderMap.put("inspecter", request.getParameter("inspecter"));
-        orderMap.put("inspectTime", request.getParameter("inspectTime"));
-        orderMap.put("cancelOperator", request.getParameter("cancelOperator"));
-        orderMap.put("cancelTime", request.getParameter("cancelTime"));
-        orderMap.put("revokeCanceler", request.getParameter("revokeCanceler"));
-        orderMap.put("revokeCancelTime", request.getParameter("revokeCancelTime"));
-        orderMap.put("packager", request.getParameter("packager"));
-        orderMap.put("packTime", request.getParameter("packTime"));
-        orderMap.put("weighOperator", request.getParameter("weighOperator"));
-        orderMap.put("weighTime", request.getParameter("weighTime"));
-        orderMap.put("bookDeliveryTime", request.getParameter("bookDeliveryTime"));
-        orderMap.put("deliveryOperator", request.getParameter("deliveryOperator"));
-        orderMap.put("deliveryTime", request.getParameter("deliveryTime"));
-        orderMap.put("locker", request.getParameter("locker"));
-        orderMap.put("lockTime", request.getParameter("lockTime"));
-        orderMap.put("bookFileTime", request.getParameter("bookFileTime"));
-        orderMap.put("fileOperator", request.getParameter("fileOperator"));
-        orderMap.put("fileTime", request.getParameter("fileTime"));
-        orderMap.put("finishTime", request.getParameter("finishTime"));
-        orderMap.put("modityTime", request.getParameter("modityTime"));
-        orderMap.put("isPromotion", request.getParameter("isPromotion"));
-        orderMap.put("promotionPlan", request.getParameter("promotionPlan"));
-        orderMap.put("outPromotionDetail", request.getParameter("outPromotionDetail"));
-        orderMap.put("goodReceiveTime", request.getParameter("goodReceiveTime"));
-        orderMap.put("receiveTime", request.getParameter("receiveTime"));
-        orderMap.put("verificatyTime", request.getParameter("verificatyTime"));
-        orderMap.put("enableInteStoTime", request.getParameter("enableInteStoTime"));
-        orderMap.put("enableInteDeliveryTime", request.getParameter("enableInteDeliveryTime"));
-        orderMap.put("alipayId", request.getParameter("alipayId"));
-        orderMap.put("alipayStatus", request.getParameter("alipayStatus"));
-        orderMap.put("payStatus", request.getParameter("payStatus"));
-        orderMap.put("payMothed", request.getParameter("payMothed"));
-        orderMap.put("platformStatus", request.getParameter("platformStatus"));
-        orderMap.put("rate", request.getParameter("rate"));
-        orderMap.put("currency", request.getParameter("currency"));
-        orderMap.put("deliveryStatus", request.getParameter("deliveryStatus"));
-        orderMap.put("buyerMessage", request.getParameter("buyerMessage"));
-        orderMap.put("serviceRemarks", request.getParameter("serviceRemarks"));
-        orderMap.put("innerLable", request.getParameter("innerLable"));
-        orderMap.put("distributorMark", request.getParameter("distributorMark"));
-        orderMap.put("systemRemarks", request.getParameter("systemRemarks"));
-        orderMap.put("otherRemarks", request.getParameter("otherRemarks"));
-        orderMap.put("message", request.getParameter("message"));
-        orderMap.put("messageTime", request.getParameter("messageTime"));
-        orderMap.put("isStock", request.getParameter("isStock"));
-        orderMap.put("relatedOrders", request.getParameter("relatedOrders"));
-        orderMap.put("relatedOrdersType", request.getParameter("relatedOrdersType"));
-        orderMap.put("importMark", request.getParameter("importMark"));
-        orderMap.put("deliveryName", request.getParameter("deliveryName"));
-        orderMap.put("isNewCustomer", request.getParameter("isNewCustomer"));
-        orderMap.put("distributorLevel", request.getParameter("distributorLevel"));
-        orderMap.put("codServiceFee", request.getParameter("codServiceFee"));
-        orderMap.put("expressColFee", request.getParameter("expressColFee"));
-        orderMap.put("productNum", request.getParameter("productNum"));
-        orderMap.put("sku", request.getParameter("sku"));
-        orderMap.put("itemNum", request.getParameter("itemNum"));
-        orderMap.put("singleNum", request.getParameter("singleNum"));
-        orderMap.put("flagColor", request.getParameter("flagColor"));
-        orderMap.put("isFlag", request.getParameter("isFlag"));
-        orderMap.put("taobaoDeliveryOrderStatus", request.getParameter("taobaoDeliveryOrderStatus"));
-        orderMap.put("taobaoDeliveryStatus", request.getParameter("taobaoDeliveryStatus"));
-        orderMap.put("taobaoDeliveryMethod", request.getParameter("taobaoDeliveryMethod"));
-        orderMap.put("orderProcessTime", request.getParameter("orderProcessTime"));
-        orderMap.put("isBreak", request.getParameter("isBreak"));
-        orderMap.put("breaker", request.getParameter("breaker"));
-        orderMap.put("breakTime", request.getParameter("breakTime"));
-        orderMap.put("breakExplain", request.getParameter("breakExplain"));
-        orderMap.put("platSendStatus", request.getParameter("platSendStatus"));
-        orderMap.put("platType", request.getParameter("platType"));
-        orderMap.put("isAdvSale", request.getParameter("isAdvSale"));
-        orderMap.put("provincCode", request.getParameter("provincCode"));
-        orderMap.put("cityCode", request.getParameter("cityCode"));
-        orderMap.put("areaCode", request.getParameter("areaCode"));
-        orderMap.put("lastReturnedTime", request.getParameter("lastReturnedTime"));
-        orderMap.put("lastRefundTime", request.getParameter("lastRefundTime"));
-        orderMap.put("deliverCentre", request.getParameter("deliverCentre"));
-        orderMap.put("deliverStation", request.getParameter("deliverStation"));
-        orderMap.put("isPreDeliveryNotice", request.getParameter("isPreDeliveryNotice"));
-        orderMap.put("jdDeliveryTime", request.getParameter("jdDeliveryTime"));
-        orderMap.put("sortingCode", request.getParameter("sortingCode"));
-        orderMap.put("codSettlementVouchernumber", request.getParameter("codSettlementVouchernumber"));
-
-
-        signMap.putAll(orderMap);
         String signStr = SignBuilder.buildSign(signMap, secret, secret);
 
         if (null != signStr && signStr.equals(sign)) {
@@ -226,189 +53,32 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             //String resultJson = objectMapper.writeValueAsString(orderMap);
             //String result = HttpUtil.getInstance().doPost(null, null);
             //将订单信息保存到数据库
-            MallOrderBean orderBean = new MallOrderBean();
-
-            orderBean.setOrderId(orderMap.get("orderId"));
-            orderBean.setStorageId(orderMap.get("storageId"));
-            orderBean.setTid(orderMap.get("tid"));
-            orderBean.setTransactionId(orderMap.get("transactionId"));
-            orderBean.setCustomerId(orderMap.get("customerId"));
-            orderBean.setDistributorId(orderMap.get("distributorId"));
-            orderBean.setShopName(orderMap.get("shopName"));
-            orderBean.setOutTid(orderMap.get("outTid"));
-            orderBean.setOrderType(orderMap.get("orderType"));
-            orderBean.setOutPayTid(orderMap.get("outPayTid"));
-            orderBean.setVoucherId(orderMap.get("voucherId"));
-            orderBean.setShopId(orderMap.get("shopId"));
-            orderBean.setSerialNum(orderMap.get("serialNum"));
-            orderBean.setOrderChannel(orderMap.get("orderChannel"));
-            orderBean.setOrderFrom(orderMap.get("orderFrom"));
-            orderBean.setBuyerId(orderMap.get("buyerId"));
-            orderBean.setBuyerName(orderMap.get("buyerName"));
-            orderBean.setType(orderMap.get("type"));
-            orderBean.setStatus(orderMap.get("status"));
-            orderBean.setAbnormalStatus(orderMap.get("abnormalStatus"));
-            orderBean.setMergeStatus(orderMap.get("mergeStatus"));
-            orderBean.setReceiverName(orderMap.get("receiverName"));
-            orderBean.setReceiverMobile(orderMap.get("receiverMobile"));
-            orderBean.setPhone(orderMap.get("phone"));
-            orderBean.setProvince(orderMap.get("province"));
-            orderBean.setCity(orderMap.get("city"));
-            orderBean.setDistrict(orderMap.get("district"));
-            orderBean.setAddress(orderMap.get("address"));
-            orderBean.setPost(orderMap.get("post"));
-            orderBean.setEmail(orderMap.get("email"));
-            orderBean.setIsBill(Integer.parseInt(orderMap.get("isBill")));
-            orderBean.setInvoiceName(orderMap.get("invoiceName"));
-            orderBean.setInvoiceSituation(Integer.parseInt(orderMap.get("invoiceSituation")));
-            orderBean.setInvoiceTitle(orderMap.get("invoiceTitle"));
-            orderBean.setInvoiceType(orderMap.get("invoiceType"));
-            orderBean.setInvoiceContent(orderMap.get("invoiceContent"));
-            orderBean.setInvoiceMoney(Double.parseDouble(orderMap.get("invoiceMoney")));
-            orderBean.setProTotalFee(Double.parseDouble(orderMap.get("proTotalFee")));
-            orderBean.setOtherFee(orderMap.get("orderTotalFee"));
-            orderBean.setReferencePricePaid(Double.parseDouble(orderMap.get("referencePricePaid")));
-            orderBean.setInvoiceFee(Double.parseDouble(orderMap.get("invoiceFee")));
-            orderBean.setCodFee(orderMap.get("codFee"));
-            orderBean.setOtherFee(orderMap.get("otherFee"));
-            orderBean.setRefundTotalFee(orderMap.get("refundTotalFee"));
-            orderBean.setDiscountFee(Double.parseDouble(orderMap.get("discountFee")));
-            orderBean.setDiscount(Double.parseDouble(orderMap.get("discount")));
-            orderBean.setChannelDisfee(orderMap.get("channelDisfee"));
-            orderBean.setMerchantDisFee(orderMap.get("merchantDisFee"));
-            orderBean.setOrderDisfee(Double.parseDouble(orderMap.get("orderDisfee")));
-            orderBean.setCommissionFee(Double.parseDouble(orderMap.get("commissionFee")));
-            orderBean.setIsCod(Integer.parseInt(orderMap.get("isCod")));
-            orderBean.setPointPay(Integer.parseInt(orderMap.get("pointPay")));
-            orderBean.setCostPoint(Integer.parseInt(orderMap.get("costPoint")));
-            orderBean.setPoint(Integer.parseInt(orderMap.get("point")));
-            orderBean.setSuperiorPoint(Integer.parseInt(orderMap.get("superiorPoint")));
-            orderBean.setRoyaltyFee(Double.parseDouble(orderMap.get("royaltyFee")));
-            orderBean.setExternalPoint(Integer.parseInt(orderMap.get("externalPoint")));
-            orderBean.setExpressNo(orderMap.get("expressNo"));
-            orderBean.setTradeGifadd(orderMap.get("tradeGifadd"));
-            orderBean.setExpress(orderMap.get("express"));
-            orderBean.setExpressCoding(orderMap.get("expressCoding"));
-            orderBean.setOnlineExpress(orderMap.get("onlineExpress"));
-            orderBean.setSendingType(orderMap.get("sendingType"));
-            orderBean.setRealIncomefreight(Double.parseDouble(orderMap.get("realIncomefreight")));
-            orderBean.setRealPayFreight(Double.parseDouble(orderMap.get("realPayFreight")));
-            orderBean.setGrossWeight(orderMap.get("grossWeight"));
-            orderBean.setGrossWeightFreight(Double.parseDouble(orderMap.get("grossWeightFreight")));
-            orderBean.setNetWeightWreight(orderMap.get("netWeightWreight"));
-            orderBean.setFreightExplain(orderMap.get("freightExplain"));
-            orderBean.setTotalWeight(Double.parseDouble(orderMap.get("totalWeight")));
-            orderBean.setTidNetWeight(Double.parseDouble(orderMap.get("tidNetWeight")));
-            orderBean.setTidTime(new Date(Long.parseLong(orderMap.get("tidTime"))));
-            orderBean.setPayTime(new Date(Long.parseLong(orderMap.get("payTime"))));
-            orderBean.setGetTime(new Date(Long.parseLong(orderMap.get("getTime"))));
-            orderBean.setOrderCreater(orderMap.get("orderCreater"));
-            orderBean.setBusinessMan(orderMap.get("businessMan"));
-            orderBean.setPaymentReceivedOperator(orderMap.get("paymentReceivedOperator"));
-            orderBean.setPaymentReceivedTime(new Date(Long.parseLong(orderMap.get("paymentReceivedTime"))));
-            orderBean.setReviewOrdersOperator(orderMap.get("reviewOrdersOperator"));
-            orderBean.setReviewOrdersTime(new Date(Long.parseLong(orderMap.get("reviewOrdersTime"))));
-            orderBean.setFinanceReviewOperator(orderMap.get("financeReviewOperator"));
-            orderBean.setFinanceReviewTime(new Date(Long.parseLong(orderMap.get("financeReviewTime"))));
-            orderBean.setAdvancePrinter(orderMap.get("advancePrinter"));
-            orderBean.setPrinter(orderMap.get("printer"));
-            orderBean.setPrintTime(new Date(Long.parseLong(orderMap.get("printTime"))));
-            orderBean.setIsPrint(orderMap.get("isPrint"));
-            orderBean.setAdvDistributer(orderMap.get("advDistributer"));
-            orderBean.setAdvDistributTime(new Date(Long.parseLong(orderMap.get("advDistributTime"))));
-            orderBean.setDistributer(orderMap.get("distributer"));
-            orderBean.setDistributTime(new Date(Long.parseLong(orderMap.get("distributTime"))));
-            orderBean.setInspecter(orderMap.get("inspecter"));
-            orderBean.setInspectTime(new Date(Long.parseLong(orderMap.get("inspectTime"))));
-            orderBean.setCancelOperator(orderMap.get("cancelOperator"));
-            orderBean.setCancelTime(new Date(Long.parseLong(orderMap.get("cancelTime"))));
-            orderBean.setRevokeCanceler(orderMap.get("revokeCanceler"));
-            orderBean.setRevokeCancelTime(new Date(Long.parseLong(orderMap.get("revokeCancelTime"))));
-            orderBean.setPackager(orderMap.get("packager"));
-            orderBean.setPayTime(new Date(Long.parseLong(orderMap.get("packTime"))));
-            orderBean.setWeighOperator(orderMap.get("weighOperator"));
-            orderBean.setWeighTime(new Date(Long.parseLong(orderMap.get("weighTime"))));
-            orderBean.setBookDeliveryTime(new Date(Long.parseLong(orderMap.get("bookDeliveryTime"))));
-            orderBean.setDeliveryOperator(orderMap.get("deliveryOperator"));
-            orderBean.setDeliveryTime(new Date(Long.parseLong(orderMap.get("deliveryTime"))));
-            orderBean.setLocker(orderMap.get("locker"));
-            orderBean.setLockTime(new Date(Long.parseLong(orderMap.get("lockTime"))));
-            orderBean.setBookFileTime(new Date(Long.parseLong(orderMap.get("bookFileTime"))));
-            orderBean.setFileOperator(orderMap.get("fileOperator"));
-            orderBean.setFileTime(new Date(Long.parseLong(orderMap.get("fileTime"))));
-            orderBean.setFinishTime(new Date(Long.parseLong(orderMap.get("finishTime"))));
-            orderBean.setModityTime(new Date(Long.parseLong(orderMap.get("modityTime"))));
-            orderBean.setIsPromotion(orderMap.get("isPromotion"));
-            orderBean.setPromotionPlan(orderMap.get("promotionPlan"));
-            orderBean.setOutPromotionDetail(orderMap.get("outPromotionDetail"));
-            orderBean.setGoodReceiveTime(new Date(Long.parseLong(orderMap.get("goodReceiveTime"))));
-            orderBean.setReceiveTime(new Date(Long.parseLong(orderMap.get("receiveTime"))));
-            orderBean.setVerificatyTime(new Date(Long.parseLong(orderMap.get("verificatyTime"))));
-            orderBean.setEnableInteStoTime(new Date(Long.parseLong(orderMap.get("enableInteStoTime"))));
-            orderBean.setEnableInteDeliveryTime(new Date(Long.parseLong(orderMap.get("enableInteDeliveryTime"))));
-            orderBean.setAlipayId(orderMap.get("alipayId"));
-            orderBean.setAlipayStatus(orderMap.get("alipayStatus"));
-            orderBean.setPayStatus(orderMap.get("payStatus"));
-            orderBean.setPayMothed(orderMap.get("payMothed"));
-            orderBean.setPlatformStatus(orderMap.get("platformStatus"));
-            orderBean.setRate(orderMap.get("rate"));
-            orderBean.setCurrency(orderMap.get("currency"));
-            orderBean.setDeliveryStatus(orderMap.get("deliveryStatus"));
-            orderBean.setBuyerMessage(orderMap.get("buyerMessage"));
-            orderBean.setServiceRemarks(orderMap.get("serviceRemarks"));
-            orderBean.setInnerLable(orderMap.get("innerLable"));
-            orderBean.setDistributorMark(orderMap.get("distributorMark"));
-            orderBean.setSystemRemarks(orderMap.get("systemRemarks"));
-            orderBean.setOtherRemarks(orderMap.get("otherRemarks"));
-            orderBean.setMessage(orderMap.get("message"));
-            orderBean.setMessageTime(new Date(Long.parseLong(orderMap.get("messageTime"))));
-            orderBean.setIsStock(orderMap.get("isStock"));
-            orderBean.setRelatedOrders(orderMap.get("relatedOrders"));
-            orderBean.setRelatedOrdersType(orderMap.get("relatedOrdersType"));
-            orderBean.setImportMark(orderMap.get("importMark"));
-            orderBean.setDeliveryName(orderMap.get("deliveryName"));
-            orderBean.setIsNewCustomer(orderMap.get("isNewCustomer"));
-            orderBean.setDistributorLevel(orderMap.get("distributorLevel"));
-            orderBean.setCodServiceFee(Double.parseDouble(orderMap.get("codServiceFee")));
-            orderBean.setExpressColFee(orderMap.get("expressColFee"));
-            orderBean.setProductNum(orderMap.get("productNum"));
-            orderBean.setSku(orderMap.get("sku"));
-            orderBean.setItemNum(Integer.parseInt(orderMap.get("itemNum")));
-            orderBean.setSingleNum(orderMap.get("singleNum"));
-            orderBean.setFlagColor(orderMap.get("flagColor"));
-            orderBean.setIsFlag(orderMap.get("isFlag"));
-            orderBean.setTaobaoDeliveryOrderStatus(orderMap.get("taobaoDeliveryOrderStatus"));
-            orderBean.setTaobaoDeliveryStatus(orderMap.get("taobaoDeliveryStatus"));
-            orderBean.setTaobaoDeliveryMethod(orderMap.get("taobaoDeliveryMethod"));
-            orderBean.setOrderProcessTime(Long.parseLong(orderMap.get("orderProcessTime")));
-            orderBean.setIsBreak(orderMap.get("isBreak"));
-            orderBean.setBreaker(orderMap.get("breaker"));
-            orderBean.setBreakTime(new Date(Long.parseLong(orderMap.get("breakTime"))));
-            orderBean.setBreakExplain(orderMap.get("breakExplain"));
-            orderBean.setPlatSendStatus(orderMap.get("platSendStatus"));
-            orderBean.setPlatType(orderMap.get("platType"));
-            orderBean.setIsAdvSale(Integer.parseInt(orderMap.get("isAdvSale")));
-            orderBean.setProvincCode(orderMap.get("provincCode"));
-            orderBean.setCityCode(orderMap.get("cityCode"));
-            orderBean.setAreaCode(orderMap.get("areaCode"));
-            orderBean.setLastReturnedTime(new Date(Long.parseLong(orderMap.get("lastReturnedTime"))));
-            orderBean.setLastRefundTime(new Date(Long.parseLong(orderMap.get("lastRefundTime"))));
-            orderBean.setDeliverCentre(orderMap.get("deliverCentre"));
-            orderBean.setDeliverStation(orderMap.get("deliverStation"));
-            orderBean.setIsPreDeliveryNotice(orderMap.get("isPreDeliveryNotice"));
-            orderBean.setJdDeliveryTime(new Date(Long.parseLong(orderMap.get("jdDeliveryTime"))));
-            orderBean.setSortingCode(orderMap.get("sortingCode"));
-            orderBean.setCodSettlementVouchernumber(orderMap.get("codSettlementVouchernumber"));
-            MallOrderBean result = mallOrderService.save(orderBean);
-            if (result == null) {
+            //json转成orderBean
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                MallOrderBean orderBean = mapper.readValue(signMap.get("datas"), MallOrderBean.class);
+                MallOrderBean result = mallOrderService.save(orderBean);
+                return new BaseMonitor<>(new EventResult(1, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</Result></Rsp>"));
+            } catch (JsonParseException e)
+            {
+                return new BaseMonitor<>(new EventResult(0,
+                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>数据解析失败</Cause></Rsp>"));
+            }
+            catch (JsonMappingException e)
+            {
+                return new BaseMonitor<>(new EventResult(0,
+                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>数据解析失败</Cause></Rsp>"));
+            }
+            catch (IOException e)
+            {
                 return new BaseMonitor<>(new EventResult(0,
                         "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
             }
-            else
+            catch (Exception e)
             {
-                return new BaseMonitor<>(new EventResult(1, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</Result></Rsp>"));
+                return new BaseMonitor<>(new EventResult(0,
+                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
             }
-
 
         }
     }
@@ -422,375 +92,41 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
         signMap.put("uCode", request.getParameter(Constant.SIGN_U_CODE));
         signMap.put("mType", request.getParameter(Constant.SIGN_M_TYPE));
         signMap.put("TimeStamp", request.getParameter(Constant.SIGN_TIME_STAMP));
+        signMap.put("datas", request.getParameter("datas"));
 
-        //订单参数
-        Map<String, String> orderMap = new TreeMap<>();
-        orderMap.put("orderId", request.getParameter("orderId"));
-        orderMap.put("storageId", request.getParameter("storageId"));
-        orderMap.put("tid", request.getParameter("tid"));
-        orderMap.put("transactionId", request.getParameter("transactionId"));
-        orderMap.put("customerId", request.getParameter("customerId"));
-        orderMap.put("distributorId", request.getParameter("distributorId"));
-        orderMap.put("shopName", request.getParameter("shopName"));
-        orderMap.put("outTid", request.getParameter("outTid"));
-        orderMap.put("orderType", request.getParameter("orderType"));
-        orderMap.put("outPayTid", request.getParameter("outPayTid"));
-        orderMap.put("voucherId", request.getParameter("voucherId"));
-        orderMap.put("shopId", request.getParameter("shopId"));
-        orderMap.put("serialNum", request.getParameter("serialNum"));
-        orderMap.put("orderChannel", request.getParameter("orderChannel"));
-        orderMap.put("orderFrom", request.getParameter("orderFrom"));
-        orderMap.put("buyerId", request.getParameter("buyerId"));
-        orderMap.put("buyerName", request.getParameter("buyerName"));
-        orderMap.put("type", request.getParameter("type"));
-        orderMap.put("status", request.getParameter("status"));
-        orderMap.put("abnormalStatus", request.getParameter("abnormalStatus"));
-        orderMap.put("mergeStatus", request.getParameter("mergeStatus"));
-        orderMap.put("receiverName", request.getParameter("receiverName"));
-        orderMap.put("receiverMobile", request.getParameter("receiverMobile"));
-        orderMap.put("phone", request.getParameter("phone"));
-        orderMap.put("province", request.getParameter("province"));
-        orderMap.put("city", request.getParameter("city"));
-        orderMap.put("district", request.getParameter("district"));
-        orderMap.put("address", request.getParameter("address"));
-        orderMap.put("post", request.getParameter("post"));
-        orderMap.put("email", request.getParameter("email"));
-        orderMap.put("isBill", request.getParameter("isBill"));
-        orderMap.put("invoiceName", request.getParameter("invoiceName"));
-        orderMap.put("invoiceSituation", request.getParameter("invoiceSituation"));
-        orderMap.put("invoiceTitle", request.getParameter("invoiceTitle"));
-        orderMap.put("invoiceType", request.getParameter("invoiceType"));
-        orderMap.put("invoiceContent", request.getParameter("invoiceContent"));
-        orderMap.put("invoiceMoney", request.getParameter("invoiceMoney"));
-        orderMap.put("proTotalFee", request.getParameter("proTotalFee"));
-        orderMap.put("orderTotalFee", request.getParameter("orderTotalFee"));
-        orderMap.put("referencePricePaid", request.getParameter("referencePricePaid"));
-        orderMap.put("invoiceFee", request.getParameter("invoiceFee"));
-        orderMap.put("codFee", request.getParameter("codFee"));
-        orderMap.put("otherFee", request.getParameter("otherFee"));
-        orderMap.put("refundTotalFee", request.getParameter("refundTotalFee"));
-        orderMap.put("discountFee", request.getParameter("discountFee"));
-        orderMap.put("discount", request.getParameter("discount"));
-        orderMap.put("channelDisfee", request.getParameter("channelDisfee"));
-        orderMap.put("merchantDisFee", request.getParameter("merchantDisFee"));
-        orderMap.put("orderDisfee", request.getParameter("orderDisfee"));
-        orderMap.put("commissionFee", request.getParameter("commissionFee"));
-        orderMap.put("isCod", request.getParameter("isCod"));
-        orderMap.put("pointPay", request.getParameter("pointPay"));
-        orderMap.put("costPoint", request.getParameter("costPoint"));
-        orderMap.put("point", request.getParameter("point"));
-        orderMap.put("superiorPoint", request.getParameter("superiorPoint"));
-        orderMap.put("royaltyFee", request.getParameter("royaltyFee"));
-        orderMap.put("externalPoint", request.getParameter("externalPoint"));
-        orderMap.put("expressNo", request.getParameter("expressNo"));
-        orderMap.put("tradeGifadd", request.getParameter("tradeGifadd"));
-        orderMap.put("express", request.getParameter("express"));
-        orderMap.put("expressCoding", request.getParameter("expressCoding"));
-        orderMap.put("onlineExpress", request.getParameter("onlineExpress"));
-        orderMap.put("sendingType", request.getParameter("sendingType"));
-        orderMap.put("realIncomefreight", request.getParameter("realIncomefreight"));
-        orderMap.put("realPayFreight", request.getParameter("realPayFreight"));
-        orderMap.put("grossWeight", request.getParameter("grossWeight"));
-        orderMap.put("grossWeightFreight", request.getParameter("grossWeightFreight"));
-        orderMap.put("netWeightWreight", request.getParameter("netWeightWreight"));
-        orderMap.put("freightExplain", request.getParameter("freightExplain"));
-        orderMap.put("totalWeight", request.getParameter("totalWeight"));
-        orderMap.put("tidNetWeight", request.getParameter("tidNetWeight"));
-        orderMap.put("tidTime", request.getParameter("tidTime"));
-        orderMap.put("payTime", request.getParameter("payTime"));
-        orderMap.put("getTime", request.getParameter("getTime"));
-        orderMap.put("orderCreater", request.getParameter("orderCreater"));
-        orderMap.put("businessMan", request.getParameter("businessMan"));
-        orderMap.put("paymentReceivedOperator", request.getParameter("paymentReceivedOperator"));
-        orderMap.put("paymentReceivedTime", request.getParameter("paymentReceivedTime"));
-        orderMap.put("reviewOrdersOperator", request.getParameter("reviewOrdersOperator"));
-        orderMap.put("reviewOrdersTime", request.getParameter("reviewOrdersTime"));
-        orderMap.put("financeReviewOperator", request.getParameter("financeReviewOperator"));
-        orderMap.put("financeReviewTime", request.getParameter("financeReviewTime"));
-        orderMap.put("advancePrinter", request.getParameter("advancePrinter"));
-        orderMap.put("printer", request.getParameter("printer"));
-        orderMap.put("printTime", request.getParameter("printTime"));
-        orderMap.put("isPrint", request.getParameter("isPrint"));
-        orderMap.put("advDistributer", request.getParameter("advDistributer"));
-        orderMap.put("advDistributTime", request.getParameter("advDistributTime"));
-        orderMap.put("distributer", request.getParameter("distributer"));
-        orderMap.put("distributTime", request.getParameter("distributTime"));
-        orderMap.put("inspecter", request.getParameter("inspecter"));
-        orderMap.put("inspectTime", request.getParameter("inspectTime"));
-        orderMap.put("cancelOperator", request.getParameter("cancelOperator"));
-        orderMap.put("cancelTime", request.getParameter("cancelTime"));
-        orderMap.put("revokeCanceler", request.getParameter("revokeCanceler"));
-        orderMap.put("revokeCancelTime", request.getParameter("revokeCancelTime"));
-        orderMap.put("packager", request.getParameter("packager"));
-        orderMap.put("packTime", request.getParameter("packTime"));
-        orderMap.put("weighOperator", request.getParameter("weighOperator"));
-        orderMap.put("weighTime", request.getParameter("weighTime"));
-        orderMap.put("bookDeliveryTime", request.getParameter("bookDeliveryTime"));
-        orderMap.put("deliveryOperator", request.getParameter("deliveryOperator"));
-        orderMap.put("deliveryTime", request.getParameter("deliveryTime"));
-        orderMap.put("locker", request.getParameter("locker"));
-        orderMap.put("lockTime", request.getParameter("lockTime"));
-        orderMap.put("bookFileTime", request.getParameter("bookFileTime"));
-        orderMap.put("fileOperator", request.getParameter("fileOperator"));
-        orderMap.put("fileTime", request.getParameter("fileTime"));
-        orderMap.put("finishTime", request.getParameter("finishTime"));
-        orderMap.put("modityTime", request.getParameter("modityTime"));
-        orderMap.put("isPromotion", request.getParameter("isPromotion"));
-        orderMap.put("promotionPlan", request.getParameter("promotionPlan"));
-        orderMap.put("outPromotionDetail", request.getParameter("outPromotionDetail"));
-        orderMap.put("goodReceiveTime", request.getParameter("goodReceiveTime"));
-        orderMap.put("receiveTime", request.getParameter("receiveTime"));
-        orderMap.put("verificatyTime", request.getParameter("verificatyTime"));
-        orderMap.put("enableInteStoTime", request.getParameter("enableInteStoTime"));
-        orderMap.put("enableInteDeliveryTime", request.getParameter("enableInteDeliveryTime"));
-        orderMap.put("alipayId", request.getParameter("alipayId"));
-        orderMap.put("alipayStatus", request.getParameter("alipayStatus"));
-        orderMap.put("payStatus", request.getParameter("payStatus"));
-        orderMap.put("payMothed", request.getParameter("payMothed"));
-        orderMap.put("platformStatus", request.getParameter("platformStatus"));
-        orderMap.put("rate", request.getParameter("rate"));
-        orderMap.put("currency", request.getParameter("currency"));
-        orderMap.put("deliveryStatus", request.getParameter("deliveryStatus"));
-        orderMap.put("buyerMessage", request.getParameter("buyerMessage"));
-        orderMap.put("serviceRemarks", request.getParameter("serviceRemarks"));
-        orderMap.put("innerLable", request.getParameter("innerLable"));
-        orderMap.put("distributorMark", request.getParameter("distributorMark"));
-        orderMap.put("systemRemarks", request.getParameter("systemRemarks"));
-        orderMap.put("otherRemarks", request.getParameter("otherRemarks"));
-        orderMap.put("message", request.getParameter("message"));
-        orderMap.put("messageTime", request.getParameter("messageTime"));
-        orderMap.put("isStock", request.getParameter("isStock"));
-        orderMap.put("relatedOrders", request.getParameter("relatedOrders"));
-        orderMap.put("relatedOrdersType", request.getParameter("relatedOrdersType"));
-        orderMap.put("importMark", request.getParameter("importMark"));
-        orderMap.put("deliveryName", request.getParameter("deliveryName"));
-        orderMap.put("isNewCustomer", request.getParameter("isNewCustomer"));
-        orderMap.put("distributorLevel", request.getParameter("distributorLevel"));
-        orderMap.put("codServiceFee", request.getParameter("codServiceFee"));
-        orderMap.put("expressColFee", request.getParameter("expressColFee"));
-        orderMap.put("productNum", request.getParameter("productNum"));
-        orderMap.put("sku", request.getParameter("sku"));
-        orderMap.put("itemNum", request.getParameter("itemNum"));
-        orderMap.put("singleNum", request.getParameter("singleNum"));
-        orderMap.put("flagColor", request.getParameter("flagColor"));
-        orderMap.put("isFlag", request.getParameter("isFlag"));
-        orderMap.put("taobaoDeliveryOrderStatus", request.getParameter("taobaoDeliveryOrderStatus"));
-        orderMap.put("taobaoDeliveryStatus", request.getParameter("taobaoDeliveryStatus"));
-        orderMap.put("taobaoDeliveryMethod", request.getParameter("taobaoDeliveryMethod"));
-        orderMap.put("orderProcessTime", request.getParameter("orderProcessTime"));
-        orderMap.put("isBreak", request.getParameter("isBreak"));
-        orderMap.put("breaker", request.getParameter("breaker"));
-        orderMap.put("breakTime", request.getParameter("breakTime"));
-        orderMap.put("breakExplain", request.getParameter("breakExplain"));
-        orderMap.put("platSendStatus", request.getParameter("platSendStatus"));
-        orderMap.put("platType", request.getParameter("platType"));
-        orderMap.put("isAdvSale", request.getParameter("isAdvSale"));
-        orderMap.put("provincCode", request.getParameter("provincCode"));
-        orderMap.put("cityCode", request.getParameter("cityCode"));
-        orderMap.put("areaCode", request.getParameter("areaCode"));
-        orderMap.put("lastReturnedTime", request.getParameter("lastReturnedTime"));
-        orderMap.put("lastRefundTime", request.getParameter("lastRefundTime"));
-        orderMap.put("deliverCentre", request.getParameter("deliverCentre"));
-        orderMap.put("deliverStation", request.getParameter("deliverStation"));
-        orderMap.put("isPreDeliveryNotice", request.getParameter("isPreDeliveryNotice"));
-        orderMap.put("jdDeliveryTime", request.getParameter("jdDeliveryTime"));
-        orderMap.put("sortingCode", request.getParameter("sortingCode"));
-        orderMap.put("codSettlementVouchernumber", request.getParameter("codSettlementVouchernumber"));
-
-        signMap.putAll(orderMap);
         String signStr = SignBuilder.buildSign(signMap, secret, secret);
 
         if (null != signStr && signStr.equals(sign)) {
             return new BaseMonitor<>(new EventResult(0,
                     "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>签名不正确</Cause></Rsp>"));
         } else {
-            //ObjectMapper objectMapper = new ObjectMapper();
-            //String resultJson = objectMapper.writeValueAsString(orderMap);
-            MallOrderBean orderBean = new MallOrderBean();
-            orderBean.setOrderId(orderMap.get("orderId"));
-            orderBean.setStorageId(orderMap.get("storageId"));
-            orderBean.setTid(orderMap.get("tid"));
-            orderBean.setTransactionId(orderMap.get("transactionId"));
-            orderBean.setCustomerId(orderMap.get("customerId"));
-            orderBean.setDistributorId(orderMap.get("distributorId"));
-            orderBean.setShopName(orderMap.get("shopName"));
-            orderBean.setOutTid(orderMap.get("outTid"));
-            orderBean.setOrderType(orderMap.get("orderType"));
-            orderBean.setOutPayTid(orderMap.get("outPayTid"));
-            orderBean.setVoucherId(orderMap.get("voucherId"));
-            orderBean.setShopId(orderMap.get("shopId"));
-            orderBean.setSerialNum(orderMap.get("serialNum"));
-            orderBean.setOrderChannel(orderMap.get("orderChannel"));
-            orderBean.setOrderFrom(orderMap.get("orderFrom"));
-            orderBean.setBuyerId(orderMap.get("buyerId"));
-            orderBean.setBuyerName(orderMap.get("buyerName"));
-            orderBean.setType(orderMap.get("type"));
-            orderBean.setStatus(orderMap.get("status"));
-            orderBean.setAbnormalStatus(orderMap.get("abnormalStatus"));
-            orderBean.setMergeStatus(orderMap.get("mergeStatus"));
-            orderBean.setReceiverName(orderMap.get("receiverName"));
-            orderBean.setReceiverMobile(orderMap.get("receiverMobile"));
-            orderBean.setPhone(orderMap.get("phone"));
-            orderBean.setProvince(orderMap.get("province"));
-            orderBean.setCity(orderMap.get("city"));
-            orderBean.setDistrict(orderMap.get("district"));
-            orderBean.setAddress(orderMap.get("address"));
-            orderBean.setPost(orderMap.get("post"));
-            orderBean.setEmail(orderMap.get("email"));
-            orderBean.setIsBill(Integer.parseInt(orderMap.get("isBill")));
-            orderBean.setInvoiceName(orderMap.get("invoiceName"));
-            orderBean.setInvoiceSituation(Integer.parseInt(orderMap.get("invoiceSituation")));
-            orderBean.setInvoiceTitle(orderMap.get("invoiceTitle"));
-            orderBean.setInvoiceType(orderMap.get("invoiceType"));
-            orderBean.setInvoiceContent(orderMap.get("invoiceContent"));
-            orderBean.setInvoiceMoney(Double.parseDouble(orderMap.get("invoiceMoney")));
-            orderBean.setProTotalFee(Double.parseDouble(orderMap.get("proTotalFee")));
-            orderBean.setOtherFee(orderMap.get("orderTotalFee"));
-            orderBean.setReferencePricePaid(Double.parseDouble(orderMap.get("referencePricePaid")));
-            orderBean.setInvoiceFee(Double.parseDouble(orderMap.get("invoiceFee")));
-            orderBean.setCodFee(orderMap.get("codFee"));
-            orderBean.setOtherFee(orderMap.get("otherFee"));
-            orderBean.setRefundTotalFee(orderMap.get("refundTotalFee"));
-            orderBean.setDiscountFee(Double.parseDouble(orderMap.get("discountFee")));
-            orderBean.setDiscount(Double.parseDouble(orderMap.get("discount")));
-            orderBean.setChannelDisfee(orderMap.get("channelDisfee"));
-            orderBean.setMerchantDisFee(orderMap.get("merchantDisFee"));
-            orderBean.setOrderDisfee(Double.parseDouble(orderMap.get("orderDisfee")));
-            orderBean.setCommissionFee(Double.parseDouble(orderMap.get("commissionFee")));
-            orderBean.setIsCod(Integer.parseInt(orderMap.get("isCod")));
-            orderBean.setPointPay(Integer.parseInt(orderMap.get("pointPay")));
-            orderBean.setCostPoint(Integer.parseInt(orderMap.get("costPoint")));
-            orderBean.setPoint(Integer.parseInt(orderMap.get("point")));
-            orderBean.setSuperiorPoint(Integer.parseInt(orderMap.get("superiorPoint")));
-            orderBean.setRoyaltyFee(Double.parseDouble(orderMap.get("royaltyFee")));
-            orderBean.setExternalPoint(Integer.parseInt(orderMap.get("externalPoint")));
-            orderBean.setExpressNo(orderMap.get("expressNo"));
-            orderBean.setTradeGifadd(orderMap.get("tradeGifadd"));
-            orderBean.setExpress(orderMap.get("express"));
-            orderBean.setExpressCoding(orderMap.get("expressCoding"));
-            orderBean.setOnlineExpress(orderMap.get("onlineExpress"));
-            orderBean.setSendingType(orderMap.get("sendingType"));
-            orderBean.setRealIncomefreight(Double.parseDouble(orderMap.get("realIncomefreight")));
-            orderBean.setRealPayFreight(Double.parseDouble(orderMap.get("realPayFreight")));
-            orderBean.setGrossWeight(orderMap.get("grossWeight"));
-            orderBean.setGrossWeightFreight(Double.parseDouble(orderMap.get("grossWeightFreight")));
-            orderBean.setNetWeightWreight(orderMap.get("netWeightWreight"));
-            orderBean.setFreightExplain(orderMap.get("freightExplain"));
-            orderBean.setTotalWeight(Double.parseDouble(orderMap.get("totalWeight")));
-            orderBean.setTidNetWeight(Double.parseDouble(orderMap.get("tidNetWeight")));
-            orderBean.setTidTime(new Date(Long.parseLong(orderMap.get("tidTime"))));
-            orderBean.setPayTime(new Date(Long.parseLong(orderMap.get("payTime"))));
-            orderBean.setGetTime(new Date(Long.parseLong(orderMap.get("getTime"))));
-            orderBean.setOrderCreater(orderMap.get("orderCreater"));
-            orderBean.setBusinessMan(orderMap.get("businessMan"));
-            orderBean.setPaymentReceivedOperator(orderMap.get("paymentReceivedOperator"));
-            orderBean.setPaymentReceivedTime(new Date(Long.parseLong(orderMap.get("paymentReceivedTime"))));
-            orderBean.setReviewOrdersOperator(orderMap.get("reviewOrdersOperator"));
-            orderBean.setReviewOrdersTime(new Date(Long.parseLong(orderMap.get("reviewOrdersTime"))));
-            orderBean.setFinanceReviewOperator(orderMap.get("financeReviewOperator"));
-            orderBean.setFinanceReviewTime(new Date(Long.parseLong(orderMap.get("financeReviewTime"))));
-            orderBean.setAdvancePrinter(orderMap.get("advancePrinter"));
-            orderBean.setPrinter(orderMap.get("printer"));
-            orderBean.setPrintTime(new Date(Long.parseLong(orderMap.get("printTime"))));
-            orderBean.setIsPrint(orderMap.get("isPrint"));
-            orderBean.setAdvDistributer(orderMap.get("advDistributer"));
-            orderBean.setAdvDistributTime(new Date(Long.parseLong(orderMap.get("advDistributTime"))));
-            orderBean.setDistributer(orderMap.get("distributer"));
-            orderBean.setDistributTime(new Date(Long.parseLong(orderMap.get("distributTime"))));
-            orderBean.setInspecter(orderMap.get("inspecter"));
-            orderBean.setInspectTime(new Date(Long.parseLong(orderMap.get("inspectTime"))));
-            orderBean.setCancelOperator(orderMap.get("cancelOperator"));
-            orderBean.setCancelTime(new Date(Long.parseLong(orderMap.get("cancelTime"))));
-            orderBean.setRevokeCanceler(orderMap.get("revokeCanceler"));
-            orderBean.setRevokeCancelTime(new Date(Long.parseLong(orderMap.get("revokeCancelTime"))));
-            orderBean.setPackager(orderMap.get("packager"));
-            orderBean.setPayTime(new Date(Long.parseLong(orderMap.get("packTime"))));
-            orderBean.setWeighOperator(orderMap.get("weighOperator"));
-            orderBean.setWeighTime(new Date(Long.parseLong(orderMap.get("weighTime"))));
-            orderBean.setBookDeliveryTime(new Date(Long.parseLong(orderMap.get("bookDeliveryTime"))));
-            orderBean.setDeliveryOperator(orderMap.get("deliveryOperator"));
-            orderBean.setDeliveryTime(new Date(Long.parseLong(orderMap.get("deliveryTime"))));
-            orderBean.setLocker(orderMap.get("locker"));
-            orderBean.setLockTime(new Date(Long.parseLong(orderMap.get("lockTime"))));
-            orderBean.setBookFileTime(new Date(Long.parseLong(orderMap.get("bookFileTime"))));
-            orderBean.setFileOperator(orderMap.get("fileOperator"));
-            orderBean.setFileTime(new Date(Long.parseLong(orderMap.get("fileTime"))));
-            orderBean.setFinishTime(new Date(Long.parseLong(orderMap.get("finishTime"))));
-            orderBean.setModityTime(new Date(Long.parseLong(orderMap.get("modityTime"))));
-            orderBean.setIsPromotion(orderMap.get("isPromotion"));
-            orderBean.setPromotionPlan(orderMap.get("promotionPlan"));
-            orderBean.setOutPromotionDetail(orderMap.get("outPromotionDetail"));
-            orderBean.setGoodReceiveTime(new Date(Long.parseLong(orderMap.get("goodReceiveTime"))));
-            orderBean.setReceiveTime(new Date(Long.parseLong(orderMap.get("receiveTime"))));
-            orderBean.setVerificatyTime(new Date(Long.parseLong(orderMap.get("verificatyTime"))));
-            orderBean.setEnableInteStoTime(new Date(Long.parseLong(orderMap.get("enableInteStoTime"))));
-            orderBean.setEnableInteDeliveryTime(new Date(Long.parseLong(orderMap.get("enableInteDeliveryTime"))));
-            orderBean.setAlipayId(orderMap.get("alipayId"));
-            orderBean.setAlipayStatus(orderMap.get("alipayStatus"));
-            orderBean.setPayStatus(orderMap.get("payStatus"));
-            orderBean.setPayMothed(orderMap.get("payMothed"));
-            orderBean.setPlatformStatus(orderMap.get("platformStatus"));
-            orderBean.setRate(orderMap.get("rate"));
-            orderBean.setCurrency(orderMap.get("currency"));
-            orderBean.setDeliveryStatus(orderMap.get("deliveryStatus"));
-            orderBean.setBuyerMessage(orderMap.get("buyerMessage"));
-            orderBean.setServiceRemarks(orderMap.get("serviceRemarks"));
-            orderBean.setInnerLable(orderMap.get("innerLable"));
-            orderBean.setDistributorMark(orderMap.get("distributorMark"));
-            orderBean.setSystemRemarks(orderMap.get("systemRemarks"));
-            orderBean.setOtherRemarks(orderMap.get("otherRemarks"));
-            orderBean.setMessage(orderMap.get("message"));
-            orderBean.setMessageTime(new Date(Long.parseLong(orderMap.get("messageTime"))));
-            orderBean.setIsStock(orderMap.get("isStock"));
-            orderBean.setRelatedOrders(orderMap.get("relatedOrders"));
-            orderBean.setRelatedOrdersType(orderMap.get("relatedOrdersType"));
-            orderBean.setImportMark(orderMap.get("importMark"));
-            orderBean.setDeliveryName(orderMap.get("deliveryName"));
-            orderBean.setIsNewCustomer(orderMap.get("isNewCustomer"));
-            orderBean.setDistributorLevel(orderMap.get("distributorLevel"));
-            orderBean.setCodServiceFee(Double.parseDouble(orderMap.get("codServiceFee")));
-            orderBean.setExpressColFee(orderMap.get("expressColFee"));
-            orderBean.setProductNum(orderMap.get("productNum"));
-            orderBean.setSku(orderMap.get("sku"));
-            orderBean.setItemNum(Integer.parseInt(orderMap.get("itemNum")));
-            orderBean.setSingleNum(orderMap.get("singleNum"));
-            orderBean.setFlagColor(orderMap.get("flagColor"));
-            orderBean.setIsFlag(orderMap.get("isFlag"));
-            orderBean.setTaobaoDeliveryOrderStatus(orderMap.get("taobaoDeliveryOrderStatus"));
-            orderBean.setTaobaoDeliveryStatus(orderMap.get("taobaoDeliveryStatus"));
-            orderBean.setTaobaoDeliveryMethod(orderMap.get("taobaoDeliveryMethod"));
-            orderBean.setOrderProcessTime(Long.parseLong(orderMap.get("orderProcessTime")));
-            orderBean.setIsBreak(orderMap.get("isBreak"));
-            orderBean.setBreaker(orderMap.get("breaker"));
-            orderBean.setBreakTime(new Date(Long.parseLong(orderMap.get("breakTime"))));
-            orderBean.setBreakExplain(orderMap.get("breakExplain"));
-            orderBean.setPlatSendStatus(orderMap.get("platSendStatus"));
-            orderBean.setPlatType(orderMap.get("platType"));
-            orderBean.setIsAdvSale(Integer.parseInt(orderMap.get("isAdvSale")));
-            orderBean.setProvincCode(orderMap.get("provincCode"));
-            orderBean.setCityCode(orderMap.get("cityCode"));
-            orderBean.setAreaCode(orderMap.get("areaCode"));
-            orderBean.setLastReturnedTime(new Date(Long.parseLong(orderMap.get("lastReturnedTime"))));
-            orderBean.setLastRefundTime(new Date(Long.parseLong(orderMap.get("lastRefundTime"))));
-            orderBean.setDeliverCentre(orderMap.get("deliverCentre"));
-            orderBean.setDeliverStation(orderMap.get("deliverStation"));
-            orderBean.setIsPreDeliveryNotice(orderMap.get("isPreDeliveryNotice"));
-            orderBean.setJdDeliveryTime(new Date(Long.parseLong(orderMap.get("jdDeliveryTime"))));
-            orderBean.setSortingCode(orderMap.get("sortingCode"));
-            orderBean.setCodSettlementVouchernumber(orderMap.get("codSettlementVouchernumber"));
-            MallOrderBean result = mallOrderService.save(orderBean);
 
-            if (result == null) {
+            //json转成orderBean
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                MallOrderBean orderBean = mapper.readValue(signMap.get("datas"), MallOrderBean.class);
+                MallOrderBean result = mallOrderService.save(orderBean);
+                return new BaseMonitor<>(new EventResult(1, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</Result></Rsp>"));
+            } catch (JsonParseException e)
+            {
+                return new BaseMonitor<>(new EventResult(0,
+                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>数据解析失败</Cause></Rsp>"));
+            }
+            catch (JsonMappingException e)
+            {
+                return new BaseMonitor<>(new EventResult(0,
+                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>数据解析失败</Cause></Rsp>"));
+            }
+            catch (IOException e)
+            {
                 return new BaseMonitor<>(new EventResult(0,
                         "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
             }
-
-            if (result == null) {
-               return new BaseMonitor<>(new EventResult(0,
-                       "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
-          }
-
-          return new BaseMonitor<>(new EventResult(1, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</Result></Rsp>"));
+            catch (Exception e)
+            {
+                return new BaseMonitor<>(new EventResult(0,
+                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
+            }
         }
     }
 
@@ -802,32 +138,44 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
         signMap.put("uCode", request.getParameter(Constant.SIGN_U_CODE));
         signMap.put("mType", request.getParameter(Constant.SIGN_M_TYPE));
         signMap.put("TimeStamp", request.getParameter(Constant.SIGN_TIME_STAMP));
-
+        signMap.put("datas", request.getParameter("datas"));
         //订单参数
-        Map<String, String> orderMap = new TreeMap<>();
-        orderMap.put("orderId", request.getParameter("orderId"));
-        signMap.putAll(orderMap);
         String signStr = SignBuilder.buildSign(signMap, secret, secret);
 
         if (null != signStr && signStr.equals(sign)) {
             return new BaseMonitor<>(new EventResult(0,
                     "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>签名不正确</Cause></Rsp>"));
         } else {
-            //ObjectMapper objectMapper = new ObjectMapper();
-            //String resultJson = objectMapper.writeValueAsString(orderMap);
 
-            // String result = HttpUtil.getInstance().doPost(null, null);
-            //根据条件查询订单信息
-
-            MallOrderBean result = mallOrderService.findByOrderId(orderMap.get("orderId"));
-            if (result == null) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                MallOrderBean orderBean = mapper.readValue(signMap.get("datas"), MallOrderBean.class);
+                MallOrderBean result = mallOrderService.findByOrderId(orderBean.getOrderId());
+                XmlMapper xmlMapper = new XmlMapper();
+                String xmlResult = xmlMapper.writeValueAsString(result);
+                //获取伙伴商城的订单信息
+                return new BaseMonitor<>(new EventResult(1, xmlResult));
+            } catch (JsonParseException e)
+            {
+                return new BaseMonitor<>(new EventResult(0,
+                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>数据解析失败</Cause></Rsp>"));
+            }
+            catch (JsonMappingException e)
+            {
+                return new BaseMonitor<>(new EventResult(0,
+                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>数据解析失败</Cause></Rsp>"));
+            }
+            catch (IOException e)
+            {
                 return new BaseMonitor<>(new EventResult(0,
                         "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
             }
-            XmlMapper xmlMapper = new XmlMapper();
-            String xmlResult = xmlMapper.writeValueAsString(result);
-            //获取伙伴商城的订单信息
-            return new BaseMonitor<>(new EventResult(1, xmlResult));
+            catch (Exception e)
+            {
+                return new BaseMonitor<>(new EventResult(0,
+                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
+            }
+
         }
     }
 }
