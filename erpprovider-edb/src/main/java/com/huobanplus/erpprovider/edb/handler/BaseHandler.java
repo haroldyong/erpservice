@@ -32,7 +32,7 @@ public class BaseHandler {
 //        requestData.put("ip", Constant.IP);
         requestData.put("dbhost", sysData.getDbHost());
         requestData.put("appkey", sysData.getAppKey());
-        requestData.put("format", sysData.getFormat());
+        requestData.put("format", Constant.FORMAT);
         requestData.put("timestamp", timestamp);
         requestData.put("v", Constant.V);
         requestData.put("slencry", Constant.SLENCRY);
