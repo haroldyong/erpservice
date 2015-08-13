@@ -117,9 +117,8 @@ public class HotOrderControllerTest extends SpringWebTest {
         signMap.put("validation", mockERP.getValidation());
 
         String sign = buildSign(signMap, signKey, null);
-
         mockMvc.perform(post("/hotClientOrderApi/createOrder")
-                .param("orderInfoJson", "&&&")
+                .param("orderInfoJson", URLEncoder.encode(orderInfoJson, "utf-8"))
                 .param("name", DxDESCipher.encrypt(mockERP.getName()))
                 .param("type", DxDESCipher.encrypt(mockERP.getType()))
                 .param("validation", DxDESCipher.encrypt(mockERP.getValidation()))
