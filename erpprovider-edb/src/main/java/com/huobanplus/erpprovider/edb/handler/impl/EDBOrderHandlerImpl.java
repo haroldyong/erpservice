@@ -11,6 +11,7 @@ import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpprovider.edb.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
+import com.huobanplus.erpservice.datacenter.searchbean.MallOrderSearchBean;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
@@ -140,12 +141,18 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
     }
 
     @Override
-    public Monitor<EventResult> obtainOrderList(ERPInfo info) throws IOException {
+    public Monitor<EventResult> obtainOrderList(MallOrderSearchBean orderSearchBean, ERPInfo info) throws IOException {
         EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
         Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, sysData);
         requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
         requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
+        //添加搜索条件
+        if (orderSearchBean != null) {
+            if (!StringUtils.isEmpty(orderSearchBean.getOrderId())) {
+                requestData.put("out_tid", orderSearchBean.getOrderId());
+            }
+        }
         Map<String, String> signMap = new TreeMap<>(requestData);
         requestData.put("sign", getSign(signMap, sysData));
 

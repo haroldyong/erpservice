@@ -3,6 +3,7 @@ package com.huobanplus.erpservice.transit.controller.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
+import com.huobanplus.erpservice.datacenter.searchbean.MallOrderSearchBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
@@ -90,7 +91,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     @Override
     @RequestMapping(value = "/obtainOrder", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResult obtainOrder(ERPInfo erpInfo, String sign) {
+    public ApiResult obtainOrder(String orderSearchJson, ERPInfo erpInfo, String sign) {
         try {
             ERPInfo info = encryptInfo(erpInfo);
 
@@ -117,7 +118,8 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
             if (erpHandler.eventSupported(ObtainOrderEvent.class)) {
                 ObtainOrderEvent obtainOrderEvent = new ObtainOrderEvent();
                 obtainOrderEvent.setErpInfo(info);
-                Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(obtainOrderEvent, null);
+                MallOrderSearchBean orderSearchBean = new ObjectMapper().readValue(orderSearchJson, MallOrderSearchBean.class);
+                Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(obtainOrderEvent, orderSearchBean);
                 if (eventResultMonitor.get().getSystemStatus() == 1) {
                     return new ApiResult(ResultCode.SUCCESS.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.SUCCESS.getValue());
                 } else {

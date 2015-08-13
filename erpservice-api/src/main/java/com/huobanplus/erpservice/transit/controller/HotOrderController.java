@@ -40,12 +40,13 @@ public interface HotOrderController {
      * <p>sysDateJson定义参照方法createOrder</p>
      * <p>参数均为des加密后的字符串</p>
      *
-     * @param sign    远程传过来的鉴权参数
-     * @param erpInfo erp关联信息（参数为des加密后的参数）
+     * @param orderSearchJson 订单搜索条件json
+     * @param sign            远程传过来的鉴权参数
+     * @param erpInfo         erp关联信息（参数为des加密后的参数）
      * @return 返回订单信息列表
      */
     @RequestMapping(value = "/obtainOrder", method = RequestMethod.POST)
-    ApiResult obtainOrder(ERPInfo erpInfo, String sign);
+    ApiResult obtainOrder(String orderSearchJson, ERPInfo erpInfo, String sign);
 
     /**
      * <p>方法描述：</p>
