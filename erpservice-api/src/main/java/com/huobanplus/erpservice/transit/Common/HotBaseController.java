@@ -4,6 +4,7 @@ import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.transit.utils.DxDESCipher;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class HotBaseController {
      * @param suffix
      * @return
      */
-    protected String buildSign(Map<String, String> params, String prefix, String suffix) {
+    protected String buildSign(Map<String, String> params, String prefix, String suffix) throws UnsupportedEncodingException {
         if (prefix == null)
             prefix = "";
         if (suffix == null)
@@ -55,6 +56,6 @@ public class HotBaseController {
             stringBuilder.append(next.getKey()).append(next.getValue());
         }
         stringBuilder.append(suffix);
-        return DigestUtils.md5Hex(stringBuilder.toString()).toUpperCase();
+        return DigestUtils.md5Hex(stringBuilder.toString().getBytes("utf-8")).toUpperCase();
     }
 }
