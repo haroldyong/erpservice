@@ -19,5 +19,4 @@
 
     <task:executor id="executor" pool-size="5"></task:executor>
     <task:scheduler id="scheduler" pool-size="10"></task:scheduler>
-    <!--<task:annotation-driven executor="executor" scheduler="scheduler" mode="proxy"></task:annotation-driven>-->
 </beans>

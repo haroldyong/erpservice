@@ -93,7 +93,7 @@ public class MallInventoryHandlerImpl implements MallInventoryHandler {
         {
             ObjectMapper objectMapper = new ObjectMapper();
             String resultJson = objectMapper.writeValueAsString(inventoryMap);
-            //todo 将获取的信息推送给ERP
+
             String result = HttpUtil.getInstance().doPost(null, null);
 
             if (result == null) {
