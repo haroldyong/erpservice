@@ -15,6 +15,10 @@ import com.huobanplus.erpservice.datacenter.searchbean.MallOrderSearchBean;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -28,7 +32,6 @@ import java.util.*;
  */
 @Component
 public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler {
-
     @Override
     public Monitor<EventResult> createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException {
         HttpUtil htNetService = HttpUtil.getInstance();
@@ -142,11 +145,14 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
     @Override
     public Monitor<EventResult> obtainOrderList(MallOrderSearchBean orderSearchBean, ERPInfo info) throws IOException {
-        EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        EDBSysData sysData = objectMapper.readValue(info.getSysDataJson(), EDBSysData.class);
 
         Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, sysData);
-        requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
-        requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
+//        requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
+//        requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
+        requestData.put("page_no", "1");
+        requestData.put("page_size", "2");
         //添加搜索条件
         if (orderSearchBean != null) {
             if (!StringUtils.isEmpty(orderSearchBean.getOrderId())) {
@@ -157,7 +163,16 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         requestData.put("sign", getSign(signMap, sysData));
 
         String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
+
+        Map formatM = objectMapper.readValue(responseData, Map.class);
+
         if (responseData == null) {
+            return new SimpleMonitor<>(new EventResult(0, responseData));
+        }
+        if (formatM.keySet().iterator().next().equals("Success")) {
+            //数据处理
+            List<Map> list = (List<Map>) ((Map) ((Map) formatM.get("Success")).get("items")).get("item");
+        } else {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
         return new SimpleMonitor<>(new EventResult(1, responseData));

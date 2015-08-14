@@ -2,7 +2,6 @@ package com.huobanplus.erpservice.transit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
-import com.huobanplus.erpprovider.edb.net.HttpUtil;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
@@ -12,8 +11,6 @@ import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.transit.utils.DxDESCipher;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.httpclient.HttpClient;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
