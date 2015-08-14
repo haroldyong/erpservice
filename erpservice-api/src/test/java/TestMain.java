@@ -1,10 +1,7 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.netshop.net.HttpUtil;
 import com.huobanplus.erpservice.transit.utils.DesUtil;
-import com.huobanplus.erpservice.transit.utils.DxDESCipher;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -26,11 +23,11 @@ public class TestMain {
         System.out.println(errorMap.keySet().iterator().next());
         List<Map> list = (List<Map>) ((Map) ((Map) successMap.get("Success")).get("items")).get("item");
 
-        JSONObject jsonObject = new JSONObject(successStr);
-        JSONArray jsonArray = jsonObject.getJSONObject("Success").getJSONObject("items").getJSONArray("item");
-        JSONObject jsonObject1 = new JSONObject(errorStr);
-
-        System.out.println(jsonObject1.keys().next());
+//        JSONObject jsonObject = new JSONObject(successStr);
+//        JSONArray jsonArray = jsonObject.getJSONObject("Success").getJSONObject("items").getJSONArray("item");
+//        JSONObject jsonObject1 = new JSONObject(errorStr);
+//
+//        System.out.println(jsonObject1.keys().next());
 
     }
 }

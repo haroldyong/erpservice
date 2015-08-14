@@ -4,6 +4,8 @@ package com.huobanplus.erpprovider.edb.util;
  * 常量工具类
  */
 public class Constant {
+    public final static String TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
 
     /**
      * 请求地址

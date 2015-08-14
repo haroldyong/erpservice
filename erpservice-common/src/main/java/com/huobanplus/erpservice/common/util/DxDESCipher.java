@@ -1,11 +1,10 @@
-package com.huobanplus.erpservice.transit.utils; /**
+package com.huobanplus.erpservice.common.util; /**
  * Created by Administrator on 2015/6/24.
  */
 
-import java.security.Key;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
 
 public class DxDESCipher {
     public static final String DEFAULT_KEY = "69a23e06215920c5fa8108cf218f3d6a";
