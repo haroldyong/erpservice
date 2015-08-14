@@ -1,13 +1,9 @@
-package com.huobanplus.erpprovider.edb.util;
+package com.huobanplus.erpservice.common.util;
 
 import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * 字符串工具类

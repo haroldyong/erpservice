@@ -3,7 +3,7 @@ package com.huobanplus.erpprovider.edb.handler;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpprovider.edb.util.SignBuilder;
-import com.huobanplus.erpprovider.edb.util.StringUtil;
+import com.huobanplus.erpservice.common.util.StringUtil;
 
 import java.io.IOException;
 import java.util.Date;

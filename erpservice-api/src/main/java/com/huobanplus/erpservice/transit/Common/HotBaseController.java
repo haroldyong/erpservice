@@ -1,7 +1,7 @@
 package com.huobanplus.erpservice.transit.Common;
 
+import com.huobanplus.erpservice.common.util.DxDESCipher;
 import com.huobanplus.erpservice.event.model.ERPInfo;
-import com.huobanplus.erpservice.transit.utils.DxDESCipher;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.UnsupportedEncodingException;

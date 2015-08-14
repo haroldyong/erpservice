@@ -1,4 +1,4 @@
-package com.huobanplus.erpprovider.edb.net;
+package com.huobanplus.erpservice.common.util;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -7,10 +7,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Map;
 
