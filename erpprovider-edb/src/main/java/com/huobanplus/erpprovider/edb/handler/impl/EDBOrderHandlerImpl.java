@@ -170,8 +170,10 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
         if (formatM.keySet().iterator().next().equals("Success")) {
+            MallOrderBean orderBean = new MallOrderBean();
             //数据处理
             List<Map> list = (List<Map>) ((Map) ((Map) formatM.get("Success")).get("items")).get("item");
+
         } else {
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
