@@ -15,8 +15,9 @@ public class ApiPolling {
     /**
      * Spring Task 轮询测试
      * 每天每隔2小时轮询一次 cron 可配置
+     * @Scheduled(cron = "0 0 0/2 * * ?")
      */
-    @Scheduled(cron = "0 0 0/2 * * ?")
+    @Scheduled(fixedRate = 60000,initialDelay = 60000)//cron = "0 0/1 * * * ?",
     private void polling()
     {
         //
