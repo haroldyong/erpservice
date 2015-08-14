@@ -6,6 +6,7 @@ import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
+import com.huobanplus.erpservice.datacenter.searchbean.MallOrderSearchBean;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
@@ -78,7 +79,7 @@ public class EDBOrderHandlerTest {
 
     @Test
     public void testObtainOrderList() throws Exception {
-        Monitor<EventResult> monitor = edbOrderHandler.obtainOrderList(mockERP);
+        Monitor<EventResult> monitor = edbOrderHandler.obtainOrderList(null, mockERP);
         System.out.println(monitor.get().getSystemResult());
     }
 
