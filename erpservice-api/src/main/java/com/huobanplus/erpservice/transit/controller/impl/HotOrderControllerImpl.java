@@ -116,15 +116,22 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
                 return new ApiResult(ResultCode.NO_SUCH_ERPHANDLER.getKey(), null, ResultCode.NO_SUCH_ERPHANDLER.getValue());
             }
             if (erpHandler.eventSupported(ObtainOrderEvent.class)) {
-                ObtainOrderEvent obtainOrderEvent = new ObtainOrderEvent();
-                obtainOrderEvent.setErpInfo(info);
                 MallOrderSearchBean orderSearchBean = new ObjectMapper().readValue(orderSearchJson, MallOrderSearchBean.class);
-                Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(obtainOrderEvent, orderSearchBean);
-                if (eventResultMonitor.get().getSystemStatus() == 1) {
-                    return new ApiResult(ResultCode.SUCCESS.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.SUCCESS.getValue());
-                } else {
-                    return new ApiResult(ResultCode.ERP_BAD_REQUEST.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.ERP_BAD_REQUEST.getValue());
-                }
+                //带轮询->需要轮询
+                MallOrderBean orderBean = orderService.findByOrderId(orderSearchBean.getOrderId());
+                orderBean.setRotaryStatus(1);
+                orderService.save(orderBean);
+//
+//                ObtainOrderEvent obtainOrderEvent = new ObtainOrderEvent();
+//                obtainOrderEvent.setErpInfo(info);
+//
+//                Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(obtainOrderEvent, orderSearchBean);
+//                if (eventResultMonitor.get().getSystemStatus() == 1) {
+//                    return new ApiResult(ResultCode.SUCCESS.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.SUCCESS.getValue());
+//                } else {
+//                    return new ApiResult(ResultCode.ERP_BAD_REQUEST.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.ERP_BAD_REQUEST.getValue());
+//                }
+                return new ApiResult(ResultCode.ADD_TO_ROTARY_QUEUE.getKey(), null, ResultCode.ADD_TO_ROTARY_QUEUE.getValue());
             } else {
                 return new ApiResult(ResultCode.EVENT_NOT_SUPPORT.getKey(), null, ResultCode.EVENT_NOT_SUPPORT.getValue());
             }

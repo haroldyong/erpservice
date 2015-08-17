@@ -5,6 +5,7 @@ package com.huobanplus.erpservice.transit.Common;
  */
 public enum ResultCode {
     SUCCESS("1", "返回成功"),
+    ADD_TO_ROTARY_QUEUE("2", "已加入轮询队列"),
     NO_SUCH_ERPHANDLER("60001", "没有找到支持的erp"),
     EVENT_NOT_SUPPORT("60002", "该erp不支持此事件"),
     SYSTEM_BAD_REQUEST("50000", "系统请求失败"),
