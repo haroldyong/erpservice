@@ -17,6 +17,7 @@ import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -144,6 +145,16 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         return new SimpleMonitor<>(new EventResult(1, responseData));
     }
 
+    /**
+     * 订单搜索轮询
+     * fixedRate 轮询间隔 单位毫秒   60 000 = 60秒 也就是1分钟
+     * initialDelay web容器启动后延迟多久才调用该轮询方法。单位毫秒   60 000 = 60秒 也就是1分钟。建议fixedRate 和 initialDelay 两个值设置成一样
+     * @param orderSearchBean 订单搜索条件
+     * @param info            ERP信息
+     * @return
+     * @throws IOException
+     */
+    @Scheduled(fixedRate = 60000,initialDelay = 60000)
     @Override
     public Monitor<EventResult> obtainOrderList(MallOrderSearchBean orderSearchBean, ERPInfo info) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
