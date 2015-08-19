@@ -53,4 +53,9 @@ public class MallOrderServiceImpl implements MallOrderService {
         };
         return orderRepository.findAll(specification, new PageRequest(pageIndex - 1, pageSize));
     }
+
+    @Override
+    public List<MallOrderBean> findByRotaryStatus(int rotaryStatus) {
+        return orderRepository.findByRotaryStatus(rotaryStatus);
+    }
 }

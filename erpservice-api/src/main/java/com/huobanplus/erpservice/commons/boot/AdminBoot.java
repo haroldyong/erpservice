@@ -12,7 +12,7 @@ public class AdminBoot extends AbstractAnnotationConfigDispatcherServletInitiali
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class<?>[]{
-                ApplicationConfig.class, WebConfig.class
+                WebConfig.class
         };
     }
 

@@ -12,9 +12,11 @@ import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
 import com.huobanplus.erpservice.datacenter.searchbean.MallOrderSearchBean;
+import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -28,6 +30,9 @@ import java.util.*;
  */
 @Component
 public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler {
+    @Autowired
+    private MallOrderService orderService;
+
     @Override
     public Monitor<EventResult> createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException {
         HttpUtil htNetService = HttpUtil.getInstance();
@@ -121,7 +126,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         int lastIndex = xmlResult.lastIndexOf("</product_item>");
         String firstPanel = xmlResult.substring(0, firstIndex);
         String productPanel = xmlResult.substring(firstIndex + 14, lastIndex);
-        String xmlValues = "<info>" + firstPanel + "<product_info>" + productPanel + "</product_info></orderInfo></info>";
+        String xmlValues = "<order>" + firstPanel + "<product_info>" + productPanel + "</product_info></orderInfo></order>";
 
         EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
@@ -144,122 +149,47 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         ObjectMapper objectMapper = new ObjectMapper();
         EDBSysData sysData = objectMapper.readValue(info.getSysDataJson(), EDBSysData.class);
 
-        Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, sysData);
-//        requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
-//        requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
-        requestData.put("page_no", "1");
-        requestData.put("page_size", "2");
-        //添加搜索条件
-        if (orderSearchBean != null) {
-            if (!StringUtils.isEmpty(orderSearchBean.getOrderId())) {
-                requestData.put("out_tid", orderSearchBean.getOrderId());
+        //取出需要轮询的数据
+        List<MallOrderBean> orderList = orderService.findByRotaryStatus(1);
+        for (MallOrderBean order : orderList) {
+            Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, sysData);
+            requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
+            requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
+            requestData.put("out_tid", order.getOrderId());
+            Map<String, String> signMap = new TreeMap<>(requestData);
+            requestData.put("sign", getSign(signMap, sysData));
+
+            String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
+
+            Map formatM = objectMapper.readValue(responseData, Map.class);
+
+            if (responseData == null) {
+                return new SimpleMonitor<>(new EventResult(0, responseData));
             }
-        }
-        Map<String, String> signMap = new TreeMap<>(requestData);
-        requestData.put("sign", getSign(signMap, sysData));
+            if (formatM.keySet().iterator().next().equals("Success")) {
+                //数据处理
+                List<Map> list = (List<Map>) ((Map) ((Map) formatM.get("Success")).get("items")).get("item");
+                MallOrderBean responseOrder = wrapMapToBean(list.get(0));
+                if (!responseOrder.getDeliveryStatus().equals(order.getDeliveryStatus())) {
+                    //todo 讲物流信息等必要数据推送给伙伴商城
 
-        String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
-
-        Map formatM = objectMapper.readValue(responseData, Map.class);
-
-        if (responseData == null) {
-            return new SimpleMonitor<>(new EventResult(0, responseData));
-        }
-        if (formatM.keySet().iterator().next().equals("Success")) {
-            //数据处理
-            List<Map> list = (List<Map>) ((Map) ((Map) formatM.get("Success")).get("items")).get("item");
-            List<MallOrderBean> orderBeans = new ArrayList<>();
-            for (Map map : list) {
-                MallOrderBean orderBean = new MallOrderBean();
-                orderBean.setStorageId((String) map.get("storage_id"));
-                orderBean.setTid((String) map.get("tid"));
-                orderBean.setTransactionId((String) map.get("transaction_id"));
-                orderBean.setOutTid((String) map.get("out_tid"));
-                orderBean.setOutPayTid((String) map.get("out_pay_tid"));
-                orderBean.setShopId((String) map.get("shopid"));
-                orderBean.setBuyerId((String) map.get("buyer_id"));
-                orderBean.setBuyerName((String) map.get("buyer_name"));
-                orderBean.setType((String) map.get("type"));
-                orderBean.setStatus((String) map.get("status"));
-                orderBean.setAbnormalStatus((String) map.get("abnormal_status"));
-                orderBean.setReceiverName((String) map.get("receiver_name"));
-                orderBean.setReceiverMobile((String) map.get("receiver_mobile"));
-                orderBean.setPhone((String) map.get("phone"));
-                orderBean.setProvince((String) map.get("province"));
-                orderBean.setCity((String) map.get("city"));
-                orderBean.setDistrict((String) map.get("district"));
-                orderBean.setAddress((String) map.get("address"));
-                orderBean.setPost((String) map.get("post"));
-                orderBean.setEmail((String) map.get("email"));
-                orderBean.setIsBill((Integer) map.get("is_bill"));
-                orderBean.setInvoiceName((String) map.get("invoice_name"));
-                orderBean.setInvoiceSituation(((Number) map.get("invoice_situation")).intValue());
-                orderBean.setInvoiceTitle((String) map.get("invoice_title"));
-                orderBean.setInvoiceType((String) map.get("invoice_type"));
-                orderBean.setInvoiceContent((String) map.get("invoice_content"));
-                orderBean.setProTotalFee(((Number) map.get("pro_totalfee")).doubleValue());
-                orderBean.setOrderTotalFee(((Number) map.get("order_totalfee")).doubleValue());
-                orderBean.setRefundTotalFee(String.valueOf(map.get("refund_totalfee")));
-                orderBean.setExpressNo((String) map.get("express_no"));
-                orderBean.setExpress((String) map.get("express"));
-                orderBean.setExpressCoding((String) map.get("express_coding"));
-                orderBean.setOnlineExpress((String) map.get("online_express"));
-                orderBean.setSendingType((String) map.get("sending_type"));
-                orderBean.setRealIncomefreight(((Number) map.get("real_income_freight")).doubleValue());
-                orderBean.setRealPayFreight(((Number) map.get("real_pay_freight")).doubleValue());
-                orderBean.setGrossWeight((String) map.get("gross_weight"));
-                orderBean.setGrossWeightFreight(((Number) map.get("gross_weight_freight")).doubleValue());
-                orderBean.setNetWeightWreight((String) map.get("net_weight_freight"));
-                orderBean.setOrderCreater((String) map.get("order_creater"));
-                orderBean.setBusinessMan((String) map.get("business_man"));
-                orderBean.setReviewOrdersOperator((String) map.get("review_orders_operator"));
-//                orderBean.setReviewOrdersTime(map.get("review_orders_time"));
-                orderBean.setAdvDistributer((String) map.get("adv_distributer"));
-                orderBean.setAdvDistributTime(StringUtil.DateFormat((String) map.get("adv_distribut_time"), Constant.TIME_PATTERN));
-                orderBean.setInspecter((String) map.get("inspecter"));
-                orderBean.setInspectTime(StringUtil.DateFormat((String) map.get("inspect_time"), Constant.TIME_PATTERN));
-                orderBean.setCancelOperator((String) map.get("cancel_operator"));
-                orderBean.setCancelTime(StringUtil.DateFormat((String) map.get("cancel_time"), Constant.TIME_PATTERN));
-                orderBean.setBookDeliveryTime(StringUtil.DateFormat((String) map.get("book_delivery_time"), Constant.TIME_PATTERN));
-                orderBean.setDeliveryOperator((String) map.get("delivery_time"));
-                orderBean.setLocker((String) map.get("locker"));
-                orderBean.setLockTime(StringUtil.DateFormat((String) map.get("lock_time"), Constant.TIME_PATTERN));
-                orderBean.setBookFileTime(StringUtil.DateFormat((String) map.get("book_file_time"), Constant.TIME_PATTERN));
-                orderBean.setFileOperator((String) map.get("file_operator"));
-                orderBean.setFileTime(StringUtil.DateFormat((String) map.get("file_time"), Constant.TIME_PATTERN));
-                orderBean.setFinishTime(StringUtil.DateFormat((String) map.get("finish_time"), Constant.TIME_PATTERN));
-                orderBean.setModityTime(StringUtil.DateFormat((String) map.get("modity_time"), Constant.TIME_PATTERN));
-                orderBean.setDeliveryStatus((String) map.get("delivery_status"));
-                List<Map> proList = (List<Map>) map.get("tid_item");
-                List<MallOrderItem> orderItems = new ArrayList<>();
-                for (Map proMap : proList) {
-                    MallOrderItem orderItem = new MallOrderItem();
-                    orderItem.setStorageId((String) proMap.get("storage_id"));
-                    orderItem.setProDetailCode((String) proMap.get("pro_detail_code"));
-                    orderItem.setProName((String) proMap.get("pro_name"));
-                    orderItem.setBarcode((String) proMap.get("barcode"));
-                    orderItem.setIsCancel((String) proMap.get("iscancel"));
-                    orderItem.setStockSituation((String) proMap.get("stock_situation"));
-                    orderItem.setBookStorage(((Number) proMap.get("book_storage")).intValue());
-                    orderItem.setProNum(((Number) proMap.get("pro_num")).intValue());
-                    orderItem.setSendNum(((Number) proMap.get("send_num")).intValue());
-                    orderItem.setRefundNum(((Number) proMap.get("refund_num")).intValue());
-                    orderItem.setRefundReNum(((Number) proMap.get("refund_renum")).intValue());
-                    orderItem.setInspectionNum(((Number) proMap.get("inspection_num")).intValue());
-                    orderItem.setTimeInventory(((Number) proMap.get("timeinventory")).intValue());
-                    orderItem.setOutTid((String) proMap.get("out_tid"));
-                    orderItem.setOutProId((String) proMap.get("out_proid"));
-                    orderItem.setDistributer((String) proMap.get("distributer"));
-                    orderItem.setDistributTime(StringUtil.DateFormat((String) map.get("distribut_time"), Constant.TIME_PATTERN));
-                    orderItem.setBookInventory(((Number) proMap.get("book_inventory")).intValue());
-                    orderItems.add(orderItem);
+                    //todo 推送成功后，轮询状态设置为完成
+                    order.setRotaryStatus(2);
+                    orderService.save(order);
                 }
-                orderBeans.add(orderBean);
+            } else {
+                return new SimpleMonitor<>(new EventResult(0, responseData));
             }
-        } else {
-            return new SimpleMonitor<>(new EventResult(0, responseData));
         }
-        return new SimpleMonitor<>(new EventResult(1, responseData));
+//        requestData.put("page_no", "1");
+//        requestData.put("page_size", "2");
+        //添加搜索条件
+//        if (orderSearchBean != null) {
+//            if (!StringUtils.isEmpty(orderSearchBean.getOrderId())) {
+//                requestData.put("out_tid", orderSearchBean.getOrderId());
+//            }
+//        }
+        return new SimpleMonitor<>(new EventResult(1, "nothing to rotary data"));
     }
 
     @Override
@@ -363,5 +293,94 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             return new SimpleMonitor<>(new EventResult(0, responseData));
         }
         return new SimpleMonitor<>(new EventResult(1, responseData));
+    }
+
+    private MallOrderBean wrapMapToBean(Map map) {
+        MallOrderBean orderBean = new MallOrderBean();
+        orderBean.setStorageId((String) map.get("storage_id"));
+        orderBean.setTid((String) map.get("tid"));
+        orderBean.setTransactionId((String) map.get("transaction_id"));
+        orderBean.setOutTid((String) map.get("out_tid"));
+        orderBean.setOutPayTid((String) map.get("out_pay_tid"));
+        orderBean.setShopId((String) map.get("shopid"));
+        orderBean.setBuyerId((String) map.get("buyer_id"));
+        orderBean.setBuyerName((String) map.get("buyer_name"));
+        orderBean.setType((String) map.get("type"));
+        orderBean.setStatus((String) map.get("status"));
+        orderBean.setAbnormalStatus((String) map.get("abnormal_status"));
+        orderBean.setReceiverName((String) map.get("receiver_name"));
+        orderBean.setReceiverMobile((String) map.get("receiver_mobile"));
+        orderBean.setPhone((String) map.get("phone"));
+        orderBean.setProvince((String) map.get("province"));
+        orderBean.setCity((String) map.get("city"));
+        orderBean.setDistrict((String) map.get("district"));
+        orderBean.setAddress((String) map.get("address"));
+        orderBean.setPost((String) map.get("post"));
+        orderBean.setEmail((String) map.get("email"));
+        orderBean.setIsBill((Integer) map.get("is_bill"));
+        orderBean.setInvoiceName((String) map.get("invoice_name"));
+        orderBean.setInvoiceSituation(((Number) map.get("invoice_situation")).intValue());
+        orderBean.setInvoiceTitle((String) map.get("invoice_title"));
+        orderBean.setInvoiceType((String) map.get("invoice_type"));
+        orderBean.setInvoiceContent((String) map.get("invoice_content"));
+        orderBean.setProTotalFee(((Number) map.get("pro_totalfee")).doubleValue());
+        orderBean.setOrderTotalFee(((Number) map.get("order_totalfee")).doubleValue());
+        orderBean.setRefundTotalFee(String.valueOf(map.get("refund_totalfee")));
+        orderBean.setExpressNo((String) map.get("express_no"));
+        orderBean.setExpress((String) map.get("express"));
+        orderBean.setExpressCoding((String) map.get("express_coding"));
+        orderBean.setOnlineExpress((String) map.get("online_express"));
+        orderBean.setSendingType((String) map.get("sending_type"));
+        orderBean.setRealIncomefreight(((Number) map.get("real_income_freight")).doubleValue());
+        orderBean.setRealPayFreight(((Number) map.get("real_pay_freight")).doubleValue());
+        orderBean.setGrossWeight((String) map.get("gross_weight"));
+        orderBean.setGrossWeightFreight(((Number) map.get("gross_weight_freight")).doubleValue());
+        orderBean.setNetWeightWreight((String) map.get("net_weight_freight"));
+        orderBean.setOrderCreater((String) map.get("order_creater"));
+        orderBean.setBusinessMan((String) map.get("business_man"));
+        orderBean.setReviewOrdersOperator((String) map.get("review_orders_operator"));
+//                orderBean.setReviewOrdersTime(map.get("review_orders_time"));
+        orderBean.setAdvDistributer((String) map.get("adv_distributer"));
+        orderBean.setAdvDistributTime(StringUtil.DateFormat((String) map.get("adv_distribut_time"), Constant.TIME_PATTERN));
+        orderBean.setInspecter((String) map.get("inspecter"));
+        orderBean.setInspectTime(StringUtil.DateFormat((String) map.get("inspect_time"), Constant.TIME_PATTERN));
+        orderBean.setCancelOperator((String) map.get("cancel_operator"));
+        orderBean.setCancelTime(StringUtil.DateFormat((String) map.get("cancel_time"), Constant.TIME_PATTERN));
+        orderBean.setBookDeliveryTime(StringUtil.DateFormat((String) map.get("book_delivery_time"), Constant.TIME_PATTERN));
+        orderBean.setDeliveryOperator((String) map.get("delivery_time"));
+        orderBean.setLocker((String) map.get("locker"));
+        orderBean.setLockTime(StringUtil.DateFormat((String) map.get("lock_time"), Constant.TIME_PATTERN));
+        orderBean.setBookFileTime(StringUtil.DateFormat((String) map.get("book_file_time"), Constant.TIME_PATTERN));
+        orderBean.setFileOperator((String) map.get("file_operator"));
+        orderBean.setFileTime(StringUtil.DateFormat((String) map.get("file_time"), Constant.TIME_PATTERN));
+        orderBean.setFinishTime(StringUtil.DateFormat((String) map.get("finish_time"), Constant.TIME_PATTERN));
+        orderBean.setModityTime(StringUtil.DateFormat((String) map.get("modity_time"), Constant.TIME_PATTERN));
+        orderBean.setDeliveryStatus((String) map.get("delivery_status"));
+        List<Map> proList = (List<Map>) map.get("tid_item");
+        List<MallOrderItem> orderItems = new ArrayList<>();
+        for (Map proMap : proList) {
+            MallOrderItem orderItem = new MallOrderItem();
+            orderItem.setStorageId((String) proMap.get("storage_id"));
+            orderItem.setProDetailCode((String) proMap.get("pro_detail_code"));
+            orderItem.setProName((String) proMap.get("pro_name"));
+            orderItem.setBarcode((String) proMap.get("barcode"));
+            orderItem.setIsCancel((String) proMap.get("iscancel"));
+            orderItem.setStockSituation((String) proMap.get("stock_situation"));
+            orderItem.setBookStorage(((Number) proMap.get("book_storage")).intValue());
+            orderItem.setProNum(((Number) proMap.get("pro_num")).intValue());
+            orderItem.setSendNum(((Number) proMap.get("send_num")).intValue());
+            orderItem.setRefundNum(((Number) proMap.get("refund_num")).intValue());
+            orderItem.setRefundReNum(((Number) proMap.get("refund_renum")).intValue());
+            orderItem.setInspectionNum(((Number) proMap.get("inspection_num")).intValue());
+            orderItem.setTimeInventory(((Number) proMap.get("timeinventory")).intValue());
+            orderItem.setOutTid((String) proMap.get("out_tid"));
+            orderItem.setOutProId((String) proMap.get("out_proid"));
+            orderItem.setDistributer((String) proMap.get("distributer"));
+            orderItem.setDistributTime(StringUtil.DateFormat((String) map.get("distribut_time"), Constant.TIME_PATTERN));
+            orderItem.setBookInventory(((Number) proMap.get("book_inventory")).intValue());
+            orderItems.add(orderItem);
+        }
+
+        return orderBean;
     }
 }

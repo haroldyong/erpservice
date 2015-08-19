@@ -19,7 +19,7 @@ public class EDBConfig {
 
     @Bean
     public EDBHandlerBuilder edbHandlerBuilder() {
-        return new EDBHandlerBuilder();
+        return edbHandlerBuilder;
     }
 
     @Autowired

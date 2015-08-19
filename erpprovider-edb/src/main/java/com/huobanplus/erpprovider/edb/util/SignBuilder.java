@@ -3,6 +3,7 @@ package com.huobanplus.erpprovider.edb.util;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -18,7 +19,7 @@ public class SignBuilder {
      * @param suffix 签名后缀
      * @return 返回鉴权信息字符串
      */
-    public static String buildSign(Map<String, String> params, String prefix, String suffix) {
+    public static String buildSign(Map<String, String> params, String prefix, String suffix) throws UnsupportedEncodingException {
         if (prefix == null)
             prefix = "";
         if (suffix == null)
@@ -36,6 +37,6 @@ public class SignBuilder {
             stringBuilder.append(next.getKey()).append(next.getValue());
         }
         stringBuilder.append(suffix);
-        return DigestUtils.md5Hex(stringBuilder.toString()).toUpperCase();
+        return DigestUtils.md5Hex(stringBuilder.toString().getBytes("utf-8")).toUpperCase();
     }
 }
