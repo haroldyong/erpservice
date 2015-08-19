@@ -1,7 +1,5 @@
 package com.huobanplus.erpservice.transit.controller.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
 import com.huobanplus.erpservice.event.erpevent.InventoryEvent;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPRegister;

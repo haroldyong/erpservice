@@ -975,6 +975,14 @@ public class MallOrderBean {
      */
     @Column(name = "Sorting_Code")
     private String sortingCode;
+
+    /**
+     * 轮询状态，是否需要抓取进行轮询检查，0表示待轮询，1表示需要轮询，2表示处理完成，无需轮询
+     * 默认0
+     */
+    @Column(name = "RotaryStatus")
+    private int rotaryStatus;
+
     /**
      * 货到付款结算凭证号
      */
@@ -2320,6 +2328,14 @@ public class MallOrderBean {
 
     public void setSortingCode(String sortingCode) {
         this.sortingCode = sortingCode;
+    }
+
+    public int getRotaryStatus() {
+        return rotaryStatus;
+    }
+
+    public void setRotaryStatus(int rotaryStatus) {
+        this.rotaryStatus = rotaryStatus;
     }
 
     public String getCodSettlementVouchernumber() {

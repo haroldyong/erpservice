@@ -3,6 +3,9 @@ package com.huobanplus.erpservice.datacenter.service;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 订单业务
  * Created by allan on 2015/7/10.
@@ -35,4 +38,12 @@ public interface MallOrderService {
      * @return
      */
     Page<MallOrderBean> findAll(Integer orderStatus, Integer payStatus, String orderId, int pageIndex, int pageSize);
+
+    /**
+     * 得到需要轮询的数据
+     *
+     * @param rotaryStatus
+     * @return
+     */
+    List<MallOrderBean> findByRotaryStatus(int rotaryStatus);
 }

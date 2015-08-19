@@ -6,6 +6,7 @@ import com.huobanplus.erpprovider.edb.util.SignBuilder;
 import com.huobanplus.erpservice.common.util.StringUtil;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,13 +24,6 @@ public class BaseHandler {
     protected Map<String, String> getSysRequestData(String method, EDBSysData sysData) throws IOException {
         Map<String, String> requestData = new HashMap<>();
         String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
-//        requestData.put("dbhost", Constant.DB_HOST);
-//        requestData.put("appkey", Constant.APP_KEY);
-//        requestData.put("format", Constant.FORMAT);
-//        requestData.put("timestamp", timestamp);
-//        requestData.put("v", Constant.V);
-//        requestData.put("slencry", Constant.SLENCRY);
-//        requestData.put("ip", Constant.IP);
         requestData.put("dbhost", sysData.getDbHost());
         requestData.put("appkey", sysData.getAppKey());
         requestData.put("format", Constant.FORMAT);
@@ -47,7 +41,7 @@ public class BaseHandler {
      * @param signMap
      * @return
      */
-    protected String getSign(Map signMap, EDBSysData sysData) {
+    protected String getSign(Map signMap, EDBSysData sysData) throws UnsupportedEncodingException {
 //        signMap.put("appscret", Constant.APP_SECRET);
 //        signMap.put("token", Constant.TOKEN);
         signMap.put("appscret", sysData.getAppSecret());
