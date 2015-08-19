@@ -23,6 +23,7 @@ public class TestMain {
         System.out.println(errorMap.keySet().iterator().next());
         List<Map> list = (List<Map>) ((Map) ((Map) successMap.get("Success")).get("items")).get("item");
 
+
 //        JSONObject jsonObject = new JSONObject(successStr);
 //        JSONArray jsonArray = jsonObject.getJSONObject("Success").getJSONObject("items").getJSONArray("item");
 //        JSONObject jsonObject1 = new JSONObject(errorStr);
