@@ -7,6 +7,7 @@ import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.Monitor;
 import com.huobanplus.erpservice.event.model.OrderInfo;
 import org.dom4j.DocumentException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
@@ -34,12 +35,11 @@ public interface EDBOrderHandler {
      * 获取订单列表
      * <p>返回json</p>
      *
-     * @param orderSearchBean 订单搜索条件
-     * @param info            ERP信息
      * @return 请求结果
      * @throws IOException IO异常
      */
-    Monitor<EventResult> obtainOrderList(MallOrderSearchBean orderSearchBean, ERPInfo info) throws IOException;
+    @Scheduled(fixedRate = 60000, initialDelay = 60000)
+    void obtainOrderList() throws IOException;
 
     /**
      * 更新订单导入标记为 已导入，可更新条件为

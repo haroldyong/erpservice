@@ -11,7 +11,6 @@ import com.huobanplus.erpservice.common.util.HttpUtil;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
-import com.huobanplus.erpservice.datacenter.searchbean.MallOrderSearchBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.event.model.ERPInfo;
 import com.huobanplus.erpservice.event.model.EventResult;
@@ -133,8 +132,8 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
         Map<String, String> requestData = getSysRequestData(Constant.CREATE_ORDER, sysData);
         Map<String, String> signMap = new TreeMap<>(requestData);
-        requestData.put("xmlValues", URLEncoder.encode(xmlValues, "utf-8"));
-        signMap.put("xmlValues", xmlValues);
+        requestData.put("xmlvalues", URLEncoder.encode(xmlValues, "utf-8"));
+        signMap.put("xmlvalues", xmlValues);
 
         requestData.put("sign", getSign(signMap, sysData));
 
@@ -149,17 +148,16 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
      * 订单搜索轮询
      * fixedRate 轮询间隔 单位毫秒   60 000 = 60秒 也就是1分钟
      * initialDelay web容器启动后延迟多久才调用该轮询方法。单位毫秒   60 000 = 60秒 也就是1分钟。建议fixedRate 和 initialDelay 两个值设置成一样
-     * @param orderSearchBean 订单搜索条件
-     * @param info            ERP信息
+     *
      * @return
      * @throws IOException
      */
-    @Scheduled(fixedRate = 60000,initialDelay = 60000)
+    @Scheduled(fixedRate = 60000, initialDelay = 60000)
     @Override
-    public Monitor<EventResult> obtainOrderList(MallOrderSearchBean orderSearchBean, ERPInfo info) throws IOException {
+    public void obtainOrderList() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        EDBSysData sysData = objectMapper.readValue(info.getSysDataJson(), EDBSysData.class);
-
+        EDBSysData sysData = null;//objectMapper.readValue(info.getSysDataJson(), EDBSysData.class);
+        System.out.println("正在轮询...");
         //取出需要轮询的数据
         List<MallOrderBean> orderList = orderService.findByRotaryStatus(1);
         for (MallOrderBean order : orderList) {
@@ -174,9 +172,9 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
             Map formatM = objectMapper.readValue(responseData, Map.class);
 
-            if (responseData == null) {
-                return new SimpleMonitor<>(new EventResult(0, responseData));
-            }
+//            if (responseData == null) {
+//                return new SimpleMonitor<>(new EventResult(0, responseData));
+//            }
             if (formatM.keySet().iterator().next().equals("Success")) {
                 //数据处理
                 List<Map> list = (List<Map>) ((Map) ((Map) formatM.get("Success")).get("items")).get("item");
@@ -188,19 +186,8 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
                     order.setRotaryStatus(2);
                     orderService.save(order);
                 }
-            } else {
-                return new SimpleMonitor<>(new EventResult(0, responseData));
             }
         }
-//        requestData.put("page_no", "1");
-//        requestData.put("page_size", "2");
-        //添加搜索条件
-//        if (orderSearchBean != null) {
-//            if (!StringUtils.isEmpty(orderSearchBean.getOrderId())) {
-//                requestData.put("out_tid", orderSearchBean.getOrderId());
-//            }
-//        }
-        return new SimpleMonitor<>(new EventResult(1, "nothing to rotary data"));
     }
 
     @Override

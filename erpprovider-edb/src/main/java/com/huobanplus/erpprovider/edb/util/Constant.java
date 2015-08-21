@@ -18,8 +18,8 @@ public class Constant {
     public static final String DB_HOST = "edb_a74188";
     public static final String APP_KEY = "0a35f9c2";
     public static final String APP_SECRET = "500b77ff0cc44829a458998729ff36af";
-    public static final String TOKEN = "801b75b095f44178be6f37cf769acf37";
-    public static final String FORMAT = "json";
+    public static final String TOKEN = "f8624c70178e40ef9aa6cf0a34043622";
+    public static final String FORMAT = "JSON";
     public static final String V = "2.0";
     public static final String SLENCRY = "0";
     public static final String IP = "112.16.89.50";

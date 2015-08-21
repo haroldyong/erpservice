@@ -79,8 +79,8 @@ public class EDBOrderHandlerTest {
 
     @Test
     public void testObtainOrderList() throws Exception {
-        Monitor<EventResult> monitor = edbOrderHandler.obtainOrderList(null, mockERP);
-        System.out.println(monitor.get().getSystemResult());
+//       edbOrderHandler.obtainOrderList(null, mockERP);
+//        System.out.println(monitor.get().getSystemResult());
     }
 
     @Test

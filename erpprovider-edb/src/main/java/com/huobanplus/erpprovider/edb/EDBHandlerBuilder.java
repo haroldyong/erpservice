@@ -76,7 +76,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                 } else if (erpBaseEvent instanceof InventoryEvent) {
                     return EDBProductHandler.getProInventoryInfo(erpBaseEvent.getErpInfo());
                 } else if (erpBaseEvent instanceof ObtainOrderEvent) {
-                    return EDBOrderHandler.obtainOrderList((MallOrderSearchBean) data, erpBaseEvent.getErpInfo());
+                    //EDBOrderHandler.obtainOrderList((MallOrderSearchBean) data, erpBaseEvent.getErpInfo());
                 } else if (erpBaseEvent instanceof OrderDeliverEvent) {
                     return EDBOrderHandler.orderDeliver((MallOrderBean) data, erpBaseEvent.getErpInfo());
                 } else if (erpBaseEvent instanceof OrderStatusUpdateEvent) {
