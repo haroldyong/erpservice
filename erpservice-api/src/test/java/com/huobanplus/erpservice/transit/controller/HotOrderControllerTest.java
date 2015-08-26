@@ -91,6 +91,7 @@ public class HotOrderControllerTest extends SpringWebTest {
         orderItem.setSpecification("大碗");
         orderItem.setOutTid("123212322");
         orderItem.setProNum(1);
+        orderItem.setFreight("10");
         mockOrder.setOrderItems(Arrays.asList(orderItem));
 
         mockOrder = orderService.save(mockOrder);
@@ -100,6 +101,8 @@ public class HotOrderControllerTest extends SpringWebTest {
     public void testCreateOrder() throws Exception {
         MallOrderBean orderInfo = new MallOrderBean();
         orderInfo.setOutTid("1232222132");
+        orderInfo.setTid("1232222132");
+
         orderInfo.setShopId("12");
         orderInfo.setStorageId("1");
         orderInfo.setExpress("dddd");
@@ -112,6 +115,8 @@ public class HotOrderControllerTest extends SpringWebTest {
         orderItem.setSpecification("大碗");
         orderItem.setOutTid("1232222132");
         orderItem.setProNum(1);
+        orderItem.setFreight("10");
+        orderItem.setCostPrice(1153);
         orderInfo.setOrderItems(Arrays.asList(orderItem));
 
         String orderInfoJson = new ObjectMapper().writeValueAsString(orderInfo);

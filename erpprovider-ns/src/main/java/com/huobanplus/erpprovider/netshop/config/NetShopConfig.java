@@ -15,8 +15,7 @@ import javax.annotation.Resource;
 @Configuration
 @ComponentScan({"com.huobanplus.erpprovider.netshop", "com.huobanplus.erpservice.event"})
 public class NetShopConfig {
-    //
-    @Resource
+    @Autowired
     private ERPRegister register;
 
     @Bean

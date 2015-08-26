@@ -7,7 +7,6 @@ import com.huobanplus.erpprovider.edb.handler.EDBStorageHandler;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
 import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
-import com.huobanplus.erpservice.datacenter.searchbean.MallOrderSearchBean;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
@@ -51,7 +50,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     return true;
                 } else if (baseEventClass == OrderStatusInfoEvent.class) {
                     return true;
-                } else if (baseEventClass == ObtainOrderEvent.class) {
+                } else if (baseEventClass == ObtainOrderListEvent.class) {
                     return true;
                 } else if (baseEventClass == OrderDeliverEvent.class) {
                     return true;
@@ -75,7 +74,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     return EDBOrderHandler.createOrder(orderInfo, erpBaseEvent.getErpInfo());
                 } else if (erpBaseEvent instanceof InventoryEvent) {
                     return EDBProductHandler.getProInventoryInfo(erpBaseEvent.getErpInfo());
-                } else if (erpBaseEvent instanceof ObtainOrderEvent) {
+                } else if (erpBaseEvent instanceof ObtainOrderListEvent) {
                     //EDBOrderHandler.obtainOrderList((MallOrderSearchBean) data, erpBaseEvent.getErpInfo());
                 } else if (erpBaseEvent instanceof OrderDeliverEvent) {
                     return EDBOrderHandler.orderDeliver((MallOrderBean) data, erpBaseEvent.getErpInfo());
@@ -103,7 +102,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
 
                 } else if (baseEventClass == OrderStatusInfoEvent.class) {
 
-                } else if (baseEventClass == ObtainOrderEvent.class) {
+                } else if (baseEventClass == ObtainOrderListEvent.class) {
 
                 } else {
 

@@ -12,7 +12,7 @@ import java.util.Date;
 public class MallOrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     /**
      * 仓库编号
      */
@@ -212,11 +212,11 @@ public class MallOrderItem {
     @JoinColumn(name = "Order_Id")
     private MallOrderBean orderBean;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

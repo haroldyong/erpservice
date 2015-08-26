@@ -29,7 +29,12 @@ public class Constant {
     /**
      * 请求时时间戳
      */
-    public static final String SIGN_TIME_STAMP = "timeStamp";
+    public static final String SIGN_TIME_STAMP = "TimeStamp";
+
+    /**
+     * sign签名
+     */
+    public static final String SIGN_PARAM = "Sign";
 
     /**
      * 请求成功

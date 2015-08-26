@@ -4,12 +4,15 @@ import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPRegister;
 import com.huobanplus.erpservice.event.model.ERPInfo;
+import com.huobanplus.erpservice.event.model.EventResult;
 import com.huobanplus.erpservice.event.model.FailedBean;
+import com.huobanplus.erpservice.event.model.Monitor;
 import com.huobanplus.erpservice.htcomponent.controller.HotApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -111,38 +114,40 @@ public class HotApiControllerImpl implements HotApiController {
      * @param request 请求实体
      */
     @Override
-    public void getOrderInfo(@PathVariable("erpInfo") String info, HttpServletRequest request) {
-
+    @RequestMapping(value = "/getOrderInfo/{erpInfo}", method = RequestMethod.POST)
+    public String getOrderInfo(@PathVariable("erpInfo") String info, HttpServletRequest request) {
         ERPInfo erpInfo = new ERPInfo();
         erpInfo.setName(info);
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
-        if (erpHandler.eventSupported(ObtainOrderEvent.class)) {
+        if (erpHandler.eventSupported(ObtainOrderListEvent.class)) {
             try {
-                ObtainOrderEvent obtainOrderEvent = new ObtainOrderEvent();
-                obtainOrderEvent.setErpInfo(erpInfo);
+                ObtainOrderListEvent obtainOrderListEvent = new ObtainOrderListEvent();
+                obtainOrderListEvent.setErpInfo(erpInfo);
                 //处理生成订单信息接口
-                erpHandler.handleEvent(obtainOrderEvent, request);
+                Monitor<EventResult> monitor = erpHandler.handleEvent(obtainOrderListEvent, request);
+                return monitor.get().getSystemResult();
             } catch (IOException e) {
                 FailedBean failedBean = new FailedBean();
                 failedBean.setResultMsg("获取订单信息失败");
-                failedBean.setCurrentEvent(ObtainOrderEvent.class.getName());
+                failedBean.setCurrentEvent(ObtainOrderListEvent.class.getName());
                 failedBean.setFailedMsg("IO处理发生异常");
-                erpHandler.handleException(ObtainOrderEvent.class, failedBean);
+                erpHandler.handleException(ObtainOrderListEvent.class, failedBean);
 
             } catch (IllegalAccessException e) {
                 FailedBean failedBean = new FailedBean();
                 failedBean.setResultMsg("获取订单信息失败");
-                failedBean.setCurrentEvent(ObtainOrderEvent.class.getName());
+                failedBean.setCurrentEvent(ObtainOrderListEvent.class.getName());
                 failedBean.setFailedMsg("网络请求参数错误");
-                erpHandler.handleException(ObtainOrderEvent.class, failedBean);
+                erpHandler.handleException(ObtainOrderListEvent.class, failedBean);
             }
         } else {
             FailedBean failedBean = new FailedBean();
             failedBean.setResultMsg("获取订单信息失败");
-            failedBean.setCurrentEvent(ObtainOrderEvent.class.getName());
+            failedBean.setCurrentEvent(ObtainOrderListEvent.class.getName());
             failedBean.setFailedMsg("erp信息无效");
-            erpHandler.handleException(ObtainOrderEvent.class, failedBean);
+            erpHandler.handleException(ObtainOrderListEvent.class, failedBean);
         }
+        return null;
     }
 
     /**

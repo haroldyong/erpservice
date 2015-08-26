@@ -126,7 +126,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         int lastIndex = xmlResult.lastIndexOf("</product_item>");
         String firstPanel = xmlResult.substring(0, firstIndex);
         String productPanel = xmlResult.substring(firstIndex + 14, lastIndex);
-        String xmlValues = "<order>" + firstPanel + "<product_info>" + productPanel + "</product_info></orderInfo></order>";
+        String xmlValues = ("<order>" + firstPanel + "<product_info>" + productPanel + "</product_info></orderInfo></order>").replaceAll(" xmlns=\"\"", "");
 
         EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
@@ -156,11 +156,12 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
     @Override
     public void obtainOrderList() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        EDBSysData sysData = null;//objectMapper.readValue(info.getSysDataJson(), EDBSysData.class);
+        //objectMapper.readValue(info.getSysDataJson(), EDBSysData.class);
         System.out.println("正在轮询...");
         //取出需要轮询的数据
         List<MallOrderBean> orderList = orderService.findByRotaryStatus(1);
         for (MallOrderBean order : orderList) {
+            EDBSysData sysData = objectMapper.readValue(order.getSysDataJson(), EDBSysData.class);
             Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, sysData);
             requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
             requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));

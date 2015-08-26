@@ -724,6 +724,42 @@ public class MallOrderBean {
     private String payMothed;
 
     /**
+     * 支付编号
+     */
+    @Column(name = "Pay_Id")
+    private String payId;
+
+    /**
+     * 结算方式（网店管家独立字段）
+     * <p>字段包含以下内容</p>
+     * <ul>
+     * <li>担保交易</li>
+     * <li>银行收款</li>
+     * <li>现金收款</li>
+     * <li>货到付款</li>
+     * <li>客户预存款</li>
+     * </ul>
+     */
+    @Column(name = "Charge_Type")
+    private String chargeType;
+
+    public String getChargeType() {
+        return chargeType;
+    }
+
+    public void setChargeType(String chargeType) {
+        this.chargeType = chargeType;
+    }
+
+    public String getPayId() {
+        return payId;
+    }
+
+    public void setPayId(String payId) {
+        this.payId = payId;
+    }
+
+    /**
      * 外部平台状态
      */
     @Column(name = "Platform_Status")
@@ -991,6 +1027,17 @@ public class MallOrderBean {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBean", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<MallOrderItem> orderItems;
+
+    @Column(name = "SysDataJson")
+    private String sysDataJson;
+
+    public String getSysDataJson() {
+        return sysDataJson;
+    }
+
+    public void setSysDataJson(String sysDataJson) {
+        this.sysDataJson = sysDataJson;
+    }
 
     public List<MallOrderItem> getOrderItems() {
         return orderItems;

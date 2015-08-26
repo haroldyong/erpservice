@@ -12,7 +12,6 @@ import com.huobanplus.erpservice.event.model.Monitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
@@ -50,7 +49,7 @@ public class HuobanMallHandlerBuilder implements ERPHandlerBuilder {
                     return true;
                 } else if (baseEventClass == ProductInfoEvent.class) {
                     return true;
-                } else if (baseEventClass == ObtainOrderEvent.class) {
+                } else if (baseEventClass == ObtainOrderListEvent.class) {
                     return true;
                 } else {
                     return false;
@@ -62,7 +61,7 @@ public class HuobanMallHandlerBuilder implements ERPHandlerBuilder {
                 HttpServletRequest request = (HttpServletRequest) data;
                 if (erpBaseEvent instanceof CreateOrderEvent) {
                     mallOrderHandler.commitOrder(request);
-                } else if (erpBaseEvent instanceof ObtainOrderEvent) {
+                } else if (erpBaseEvent instanceof ObtainOrderListEvent) {
                     mallOrderHandler.obtainOrder(request);
                 } else if (erpBaseEvent instanceof DeliveryInfoEvent) {
                 } else if (erpBaseEvent instanceof InventoryEvent) {
@@ -82,7 +81,7 @@ public class HuobanMallHandlerBuilder implements ERPHandlerBuilder {
                 if (baseEventClass == CreateOrderEvent.class) {
 
 
-                } else if (baseEventClass == ObtainOrderEvent.class) {
+                } else if (baseEventClass == ObtainOrderListEvent.class) {
 
                 } else if (baseEventClass == DeliveryInfoEvent.class) {
 

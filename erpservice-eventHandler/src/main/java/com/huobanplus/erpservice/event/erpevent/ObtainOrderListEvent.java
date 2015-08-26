@@ -5,7 +5,7 @@ import com.huobanplus.erpservice.event.model.OrderInfo;
 /**
  * <p>获取订单信息事件<p/>
  */
-public class ObtainOrderEvent extends ERPBaseEvent {
+public class ObtainOrderListEvent extends ERPBaseEvent {
 
     /**
      * 订单信息实体

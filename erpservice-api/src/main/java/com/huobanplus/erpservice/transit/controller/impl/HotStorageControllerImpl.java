@@ -48,7 +48,6 @@ public class HotStorageControllerImpl extends HotBaseController implements HotSt
     public ApiResult outStoreAdd(String outStoreJson, ERPInfo erpInfo, String sign) {
         try {
             ERPInfo info = encryptInfo(erpInfo);
-            outStoreJson = URLDecoder.decode(outStoreJson, "utf-8");
 
             //签名验证
             if (StringUtils.isEmpty(sign)) {
@@ -99,7 +98,6 @@ public class HotStorageControllerImpl extends HotBaseController implements HotSt
     public ApiResult outStoreConfirm(String outStoreJson, ERPInfo erpInfo, String sign) {
         try {
             ERPInfo info = encryptInfo(erpInfo);
-            outStoreJson = URLDecoder.decode(outStoreJson, "utf-8");
             //签名验证
             if (StringUtils.isEmpty(sign)) {
                 return new ApiResult(ResultCode.EMPTY_SIGN_CODE.getKey(), null, ResultCode.EMPTY_SIGN_CODE.getValue());

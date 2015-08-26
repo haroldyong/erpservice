@@ -73,6 +73,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
                 createOrderEvent.setErpInfo(info);
                 MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
                 orderInfo.setRotaryStatus(1);
+                orderInfo.setSysDataJson(info.getSysDataJson());
                 Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(createOrderEvent, orderInfo);
                 if (eventResultMonitor.get().getSystemStatus() == 1) {
                     orderService.save(orderInfo);
@@ -115,22 +116,12 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
             if (erpHandler == null) {
                 return new ApiResult(ResultCode.NO_SUCH_ERPHANDLER.getKey(), null, ResultCode.NO_SUCH_ERPHANDLER.getValue());
             }
-            if (erpHandler.eventSupported(ObtainOrderEvent.class)) {
+            if (erpHandler.eventSupported(ObtainOrderListEvent.class)) {
                 MallOrderSearchBean orderSearchBean = new ObjectMapper().readValue(orderSearchJson, MallOrderSearchBean.class);
                 //带轮询->需要轮询
                 MallOrderBean orderBean = orderService.findByOrderId(orderSearchBean.getOrderId());
                 orderBean.setRotaryStatus(1);
                 orderService.save(orderBean);
-//
-//                ObtainOrderEvent obtainOrderEvent = new ObtainOrderEvent();
-//                obtainOrderEvent.setErpInfo(info);
-//
-//                Monitor<EventResult> eventResultMonitor = erpHandler.handleEvent(obtainOrderEvent, orderSearchBean);
-//                if (eventResultMonitor.get().getSystemStatus() == 1) {
-//                    return new ApiResult(ResultCode.SUCCESS.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.SUCCESS.getValue());
-//                } else {
-//                    return new ApiResult(ResultCode.ERP_BAD_REQUEST.getKey(), eventResultMonitor.get().getSystemResult(), ResultCode.ERP_BAD_REQUEST.getValue());
-//                }
                 return new ApiResult(ResultCode.ADD_TO_ROTARY_QUEUE.getKey(), null, ResultCode.ADD_TO_ROTARY_QUEUE.getValue());
             } else {
                 return new ApiResult(ResultCode.EVENT_NOT_SUPPORT.getKey(), null, ResultCode.EVENT_NOT_SUPPORT.getValue());

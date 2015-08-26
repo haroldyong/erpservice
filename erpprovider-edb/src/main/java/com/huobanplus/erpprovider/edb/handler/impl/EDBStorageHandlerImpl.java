@@ -71,8 +71,8 @@ public class EDBStorageHandlerImpl extends BaseHandler implements EDBStorageHand
         EDBSysData edbSysData = new ObjectMapper().readValue(erpInfo.getSysDataJson(), EDBSysData.class);
         Map<String, String> requestData = getSysRequestData("edbOutStoreAdd", edbSysData);
         Map<String, String> signMap = new TreeMap<>(requestData);
-        requestData.put("xmlValues", URLEncoder.encode(xmlValues, "utf-8"));
-        signMap.put("xmlValues", xmlValues);
+        requestData.put("xmlvalues", URLEncoder.encode(xmlValues, "utf-8"));
+        signMap.put("xmlvalues", xmlValues);
         requestData.put("sign", getSign(signMap, edbSysData));
 
         String responseData = HttpUtil.getInstance().doPost(edbSysData.getRequestUrl(), requestData);

@@ -2,6 +2,7 @@ package com.huobanplus.erpprovider.netshop.util;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -18,7 +19,11 @@ public class SignBuilder {
      * @param suffix 后缀
      * @return 返回加鉴权后生成的Sign
      */
-    public static String buildSign(Map<String, String> params, String prefix, String suffix) {
+    public static String buildSign(Map<String, String> params, String prefix, String suffix) throws UnsupportedEncodingException {
+        if (prefix == null)
+            prefix = "";
+        if (suffix == null)
+            suffix = "";
         StringBuilder stringBuilder = new StringBuilder(prefix);
 //        Collections.sort(new ArrayList(params.entrySet()), new Comparator<Map.Entry<String, String>>() {
 //            @Override
@@ -32,6 +37,6 @@ public class SignBuilder {
             stringBuilder.append(next.getKey()).append(next.getValue());
         }
         stringBuilder.append(suffix);
-        return DigestUtils.md5Hex(stringBuilder.toString()).toUpperCase();
+        return DigestUtils.md5Hex(stringBuilder.toString().getBytes("utf-8")).toUpperCase();
     }
 }

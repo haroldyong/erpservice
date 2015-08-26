@@ -30,11 +30,20 @@ public interface NSOrderHandler {
     Monitor<EventResult> orderStatusInfo(HttpServletRequest request) throws IOException;
 
     /**
-     * 获取订单信息
+     * 获取订单信息（列表）
      *
      * @param request 请求实体
      * @return 返回订单详细信息结果
      * @throws IOException IO 异常
+     */
+    Monitor<EventResult> obtainOrderInfoList(HttpServletRequest request) throws IOException;
+
+    /**
+     * 获取订单信息（详情）
+     *
+     * @param request
+     * @return
+     * @throws IOException
      */
     Monitor<EventResult> obtainOrderInfo(HttpServletRequest request) throws IOException;
 }
