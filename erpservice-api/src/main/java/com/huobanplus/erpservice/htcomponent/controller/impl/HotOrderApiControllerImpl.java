@@ -1,8 +1,6 @@
 package com.huobanplus.erpservice.htcomponent.controller.impl;
 
-import com.huobanplus.erpservice.event.erpevent.CreateOrderEvent;
-import com.huobanplus.erpservice.event.erpevent.ObtainOrderDetailEvent;
-import com.huobanplus.erpservice.event.erpevent.ObtainOrderListEvent;
+import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
 import com.huobanplus.erpservice.event.handler.ERPRegister;
 import com.huobanplus.erpservice.event.model.ERPInfo;
@@ -74,69 +72,68 @@ public class HotOrderApiControllerImpl implements HotOrderApiController {
         erpInfo.setName(erpName);
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
         Monitor<EventResult> monitor;
-        if (erpHandler.eventSupported(ObtainOrderListEvent.class)) {
+        if (erpHandler.eventSupported(ObtainOrderDetailEvent.class)) {
             try {
-                ObtainOrderListEvent obtainOrderListEvent = new ObtainOrderListEvent();
-                obtainOrderListEvent.setErpInfo(erpInfo);
+                ObtainOrderDetailEvent obtainOrderDetailEvent = new ObtainOrderDetailEvent();
+                obtainOrderDetailEvent.setErpInfo(erpInfo);
                 //处理生成订单信息接口
-                monitor = erpHandler.handleEvent(obtainOrderListEvent, request);
+                monitor = erpHandler.handleEvent(obtainOrderDetailEvent, request);
             } catch (IOException e) {
                 FailedBean failedBean = new FailedBean();
                 failedBean.setResultMsg("获取订单信息失败");
-                failedBean.setCurrentEvent(ObtainOrderListEvent.class.getName());
+                failedBean.setCurrentEvent(ObtainOrderDetailEvent.class.getName());
                 failedBean.setFailedMsg("IO处理发生异常");
-                monitor = erpHandler.handleException(ObtainOrderListEvent.class, failedBean);
+                monitor = erpHandler.handleException(ObtainOrderDetailEvent.class, failedBean);
             } catch (IllegalAccessException e) {
                 FailedBean failedBean = new FailedBean();
                 failedBean.setResultMsg("获取订单信息失败");
-                failedBean.setCurrentEvent(ObtainOrderListEvent.class.getName());
+                failedBean.setCurrentEvent(ObtainOrderDetailEvent.class.getName());
                 failedBean.setFailedMsg("网络请求参数错误");
-                monitor = erpHandler.handleException(ObtainOrderListEvent.class, failedBean);
+                monitor = erpHandler.handleException(ObtainOrderDetailEvent.class, failedBean);
             }
         } else {
             FailedBean failedBean = new FailedBean();
             failedBean.setResultMsg("获取订单信息失败");
-            failedBean.setCurrentEvent(ObtainOrderListEvent.class.getName());
+            failedBean.setCurrentEvent(ObtainOrderDetailEvent.class.getName());
             failedBean.setFailedMsg("erp信息无效");
-            monitor = erpHandler.handleException(ObtainOrderListEvent.class, failedBean);
+            monitor = erpHandler.handleException(ObtainOrderDetailEvent.class, failedBean);
         }
         return monitor.get().getSystemResult();
     }
 
     @Override
-    @RequestMapping("/{erpName}/createOrder")
-    @ResponseBody
-    public String createOrder(@PathVariable("erpName") String erpName, HttpServletRequest request) {
+    public String deliverOrder(@PathVariable("erpName") String erpName, HttpServletRequest request) {
         ERPInfo erpInfo = new ERPInfo();
         erpInfo.setName(erpName);
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
-        if (erpHandler.eventSupported(CreateOrderEvent.class)) {
+        Monitor<EventResult> monitor;
+        if (erpHandler.eventSupported(DeliveryInfoEvent.class)) {
             try {
-                CreateOrderEvent createOrderEvent = new CreateOrderEvent();
-                createOrderEvent.setErpInfo(erpInfo);
+                DeliveryInfoEvent deliveryInfoEvent = new DeliveryInfoEvent();
+                deliveryInfoEvent.setErpInfo(erpInfo);
                 //处理生成订单信息接口
-                Monitor<EventResult> monitor = erpHandler.handleEvent(createOrderEvent, request);
-                return monitor.get().getSystemResult();
+                monitor = erpHandler.handleEvent(deliveryInfoEvent, request);
             } catch (IOException e) {
                 FailedBean failedBean = new FailedBean();
-                failedBean.setResultMsg("创建订单失败");
-                failedBean.setCurrentEvent(CreateOrderEvent.class.getName());
+                failedBean.setResultMsg("获取订单信息失败");
+                failedBean.setCurrentEvent(DeliveryInfoEvent.class.getName());
                 failedBean.setFailedMsg("IO处理发生异常");
-                erpHandler.handleException(CreateOrderEvent.class, failedBean);
+                monitor = erpHandler.handleException(DeliveryInfoEvent.class, failedBean);
             } catch (IllegalAccessException e) {
                 FailedBean failedBean = new FailedBean();
-                failedBean.setResultMsg("创建订单失败");
-                failedBean.setCurrentEvent(CreateOrderEvent.class.getName());
+                failedBean.setResultMsg("获取订单信息失败");
+                failedBean.setCurrentEvent(DeliveryInfoEvent.class.getName());
                 failedBean.setFailedMsg("网络请求参数错误");
-                erpHandler.handleException(CreateOrderEvent.class, failedBean);
+                monitor = erpHandler.handleException(DeliveryInfoEvent.class, failedBean);
             }
         } else {
             FailedBean failedBean = new FailedBean();
-            failedBean.setResultMsg("创建订单失败");
-            failedBean.setCurrentEvent(CreateOrderEvent.class.getName());
+            failedBean.setResultMsg("获取订单信息失败");
+            failedBean.setCurrentEvent(DeliveryInfoEvent.class.getName());
             failedBean.setFailedMsg("erp信息无效");
-            erpHandler.handleException(CreateOrderEvent.class, failedBean);
+            monitor = erpHandler.handleException(DeliveryInfoEvent.class, failedBean);
         }
-        return null;
+        return monitor.get().getSystemResult();
     }
+
 }

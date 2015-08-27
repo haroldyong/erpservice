@@ -37,7 +37,7 @@ public interface MallOrderService {
      * @param pageSize    每页数量
      * @return
      */
-    Page<MallOrderBean> findAll(Integer orderStatus, Integer payStatus, String orderId, int pageIndex, int pageSize);
+    Page<MallOrderBean> findAll(Integer orderStatus, Integer payStatus, String orderId, String sysData, int pageIndex, int pageSize);
 
     /**
      * 得到需要轮询的数据

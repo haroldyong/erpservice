@@ -10,10 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +34,7 @@ public class MallOrderServiceImpl implements MallOrderService {
     }
 
     @Override
-    public Page<MallOrderBean> findAll(Integer orderStatus, Integer payStatus, String orderId, int pageIndex, int pageSize) {
+    public Page<MallOrderBean> findAll(Integer orderStatus, Integer payStatus, String orderId, String sysData, int pageIndex, int pageSize) {
         Specification<MallOrderBean> specification = (root, query, cb) -> {
             List<Predicate> list = new ArrayList<>();
             if (orderStatus != null) {
@@ -49,6 +46,7 @@ public class MallOrderServiceImpl implements MallOrderService {
             if (!StringUtils.isEmpty(orderId)) {
                 list.add(cb.like(root.get("orderId").as(String.class), "%" + orderId + "%"));
             }
+            list.add(cb.equal(root.get("sysDataJson").as(String.class), sysData));
             return cb.and(list.toArray(new Predicate[list.size()]));
         };
         return orderRepository.findAll(specification, new PageRequest(pageIndex - 1, pageSize));

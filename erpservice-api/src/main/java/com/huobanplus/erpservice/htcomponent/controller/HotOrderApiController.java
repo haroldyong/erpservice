@@ -35,11 +35,12 @@ public interface HotOrderApiController {
     String obtainOrderDetail(@PathVariable("erpName") String erpName, HttpServletRequest request);
 
     /**
-     * 写入订单信息
+     * 发货通知
      *
-     * @param erpName erp信息
-     * @param request 请求实体
+     * @param erpName
+     * @param request
+     * @return
      */
-    @RequestMapping("/{erpName}/createOrder")
-    String createOrder(@PathVariable("erpName") String erpName, HttpServletRequest request);
+    @RequestMapping(value = "/{erpName}/deliverOrder", method = RequestMethod.POST)
+    String deliverOrder(@PathVariable("erpName") String erpName, HttpServletRequest request);
 }

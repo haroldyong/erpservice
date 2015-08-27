@@ -1,9 +1,8 @@
 package com.huobanplus.erpprovider.netshop.config;
 
-import com.huobanplus.erpprovider.netshop.handler.NSDeliverHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSInventoryHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSOrderHandler;
-import com.huobanplus.erpprovider.netshop.service.NetShopService;
+import com.huobanplus.erpprovider.netshop.handler.NSProductHandler;
 import com.huobanplus.erpprovider.netshop.support.BaseMonitor;
 import com.huobanplus.erpservice.event.erpevent.*;
 import com.huobanplus.erpservice.event.handler.ERPHandler;
@@ -12,7 +11,6 @@ import com.huobanplus.erpservice.event.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
@@ -21,21 +19,10 @@ import java.io.IOException;
  */
 @Component
 public class NetShopHandlerBuilder implements ERPHandlerBuilder {
-    /**
-     * @param info 相关信息
-     * @return 无法处理返回空，可以处理返回该erp事件处理器
-     */
-    @Resource
-    private NetShopService netShopService;
-
     @Autowired
-    private NSDeliverHandler nsDeliverHandler;
-
-    @Resource
     private NSOrderHandler nsOrderHandler;
-
-    @Resource
-    private NSInventoryHandler nsInventoryHandler;
+    @Autowired
+    private NSProductHandler productHandler;
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
@@ -54,9 +41,12 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                     return true;
                 } else if (baseEventClass == ObtainOrderDetailEvent.class) {
                     return true;
-                } else {
-                    return false;
+                } else if (baseEventClass == ObtainGoodListEvent.class) {
+                    return true;
+                } else if (baseEventClass == InventoryEvent.class) {
+                    return true;
                 }
+                return false;
             }
 
             @Override
@@ -64,25 +54,32 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                 HttpServletRequest request = (HttpServletRequest) data;
 
                 if (erpBaseEvent instanceof DeliveryInfoEvent) {
-                    return nsDeliverHandler.deliverInform(request);
+                    return nsOrderHandler.deliverOrder(request);
                 } else if (erpBaseEvent instanceof ObtainOrderDetailEvent) {
                     return nsOrderHandler.obtainOrderInfo(request);
                 } else if (erpBaseEvent instanceof ObtainOrderListEvent) {
                     return nsOrderHandler.obtainOrderInfoList(request);
-                } else {
-                    return null;
+                } else if (erpBaseEvent instanceof ObtainGoodListEvent) {
+                    return productHandler.obtainGoods(request);
+                } else if (erpBaseEvent instanceof InventoryEvent) {
+                    return productHandler.syncInventory(request);
                 }
+                return null;
             }
 
             @Override
             public Monitor handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean) {
 
                 if (baseEventClass == DeliveryInfoEvent.class) {
-                    return new BaseMonitor<>(new EventResult(0, "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>" + failedBean.getFailedMsg() + "</Cause></Order>"));
+                    return new BaseMonitor<>(new EventResult(0, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>" + failedBean.getFailedMsg() + "</Cause></Rsp>"));
                 } else if (baseEventClass == ObtainOrderListEvent.class) {
                     return new BaseMonitor<>(new EventResult(0, "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>" + failedBean.getFailedMsg() + "</Cause></Order>"));
                 } else if (baseEventClass == ObtainOrderDetailEvent.class) {
                     return new BaseMonitor<>(new EventResult(0, "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>" + failedBean.getFailedMsg() + "</Cause></Order>"));
+                } else if (baseEventClass == ObtainGoodListEvent.class) {
+                    return new BaseMonitor<>(new EventResult(0, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>" + failedBean.getFailedMsg() + "</Cause></Rsp>"));
+                } else if (baseEventClass == InventoryEvent.class) {
+                    return new BaseMonitor<>(new EventResult(0, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</result><GoodsType></GoodsType><Cause>" + failedBean.getFailedMsg() + "</Cause></Rsp>"));
                 }
                 return null;
             }

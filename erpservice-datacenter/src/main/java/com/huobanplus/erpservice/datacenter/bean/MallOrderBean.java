@@ -1028,6 +1028,11 @@ public class MallOrderBean {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBean", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<MallOrderItem> orderItems;
 
+    /**
+     * 系统参数
+     * <p>edb：系统级参数为json格式</p>
+     * <p>netshop：系统级参数为ucode</p>
+     */
     @Column(name = "SysDataJson")
     private String sysDataJson;
 

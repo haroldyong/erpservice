@@ -10,25 +10,6 @@ import java.io.IOException;
  * 订单方法处理接口
  */
 public interface NSOrderHandler {
-
-    /**
-     * 新增订单信息
-     *
-     * @param request 请求实体
-     * @return 返回新增订单的结果
-     * @throws IOException IO 异常
-     */
-    Monitor<EventResult> commitOrderInfo(HttpServletRequest request) throws IOException;
-
-    /**
-     * 订单状态改变修改
-     *
-     * @param request 请求实体
-     * @return 返回订单修改结果
-     * @throws IOException IO 异常
-     */
-    Monitor<EventResult> orderStatusInfo(HttpServletRequest request) throws IOException;
-
     /**
      * 获取订单信息（列表）
      *
@@ -46,4 +27,13 @@ public interface NSOrderHandler {
      * @throws IOException
      */
     Monitor<EventResult> obtainOrderInfo(HttpServletRequest request) throws IOException;
+
+    /**
+     * 发货通知
+     *
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    Monitor<EventResult> deliverOrder(HttpServletRequest request) throws IOException;
 }
