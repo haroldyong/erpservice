@@ -3,7 +3,6 @@ package com.huobanplus.erpservice.proxy.controller.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
-import com.huobanplus.erpservice.datacenter.searchbean.MallOrderSearchBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.*;
@@ -11,10 +10,10 @@ import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
-import com.huobanplus.erpservice.proxy.Common.HotBaseController;
+import com.huobanplus.erpservice.proxy.common.CommonUtils;
+import com.huobanplus.erpservice.proxy.common.HotBaseController;
 import com.huobanplus.erpservice.proxy.controller.HotOrderController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,26 +43,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     @ResponseBody
     public ApiResult createOrder(String orderInfoJson, ERPInfo erpInfo, String sign) {
         try {
-            ERPInfo info = encryptInfo(erpInfo);
-            orderInfoJson = URLDecoder.decode(orderInfoJson, "utf-8");
-
-            //签名验证
-            if (StringUtils.isEmpty(sign)) {
-                return ApiResult.resultWith(ResultCode.EMPTY_SIGN_CODE);
-            }
-            Map<String, String> signMap = new TreeMap<>();
-            signMap.put("name", info.getName());
-            signMap.put("type", info.getType());
-            signMap.put("validation", info.getValidation());
-            signMap.put("sysDataJson", info.getSysDataJson());
-            signMap.put("orderInfoJson", orderInfoJson);
-            signMap.put("timestamp", info.getTimestamp());
-
-            String checkSign = buildSign(signMap, signKey, null);
-
-            if (!sign.equals(checkSign)) {
-                return ApiResult.resultWith(ResultCode.WRONG_SIGN_CODE);
-            }
+            ERPInfo info = CommonUtils.encryptInfo(erpInfo);
 
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {
@@ -137,24 +117,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     @ResponseBody
     public ApiResult orderDeliver(String orderInfoJson, ERPInfo erpInfo, String sign) {
         try {
-            ERPInfo info = encryptInfo(erpInfo);
-            orderInfoJson = URLDecoder.decode(orderInfoJson, "utf-8");
-            //签名验证
-            if (StringUtils.isEmpty(sign)) {
-                return ApiResult.resultWith(ResultCode.EMPTY_SIGN_CODE);
-            }
-            Map<String, String> signMap = new TreeMap<>();
-            signMap.put("name", info.getName());
-            signMap.put("type", info.getType());
-            signMap.put("validation", info.getValidation());
-            signMap.put("sysDataJson", info.getSysDataJson());
-            signMap.put("orderInfoJson", orderInfoJson);
-            signMap.put("timestamp", info.getTimestamp());
-            String checkSign = buildSign(signMap, signKey, null);
-
-            if (!sign.equals(checkSign)) {
-                return ApiResult.resultWith(ResultCode.WRONG_SIGN_CODE);
-            }
+            ERPInfo info = CommonUtils.encryptInfo(erpInfo);
 
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {
@@ -192,24 +155,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     @ResponseBody
     public ApiResult orderUpdate(String orderInfoJson, ERPInfo erpInfo, String sign) {
         try {
-            ERPInfo info = encryptInfo(erpInfo);
-            orderInfoJson = URLDecoder.decode(orderInfoJson, "utf-8");
-            //签名验证
-            if (StringUtils.isEmpty(sign)) {
-                return ApiResult.resultWith(ResultCode.EMPTY_SIGN_CODE);
-            }
-            Map<String, String> signMap = new TreeMap<>();
-            signMap.put("name", info.getName());
-            signMap.put("type", info.getType());
-            signMap.put("validation", info.getValidation());
-            signMap.put("sysDataJson", info.getSysDataJson());
-            signMap.put("orderInfoJson", orderInfoJson);
-            signMap.put("timestamp", info.getTimestamp());
-            String checkSign = buildSign(signMap, signKey, null);
-
-            if (!sign.equals(checkSign)) {
-                return ApiResult.resultWith(ResultCode.WRONG_SIGN_CODE);
-            }
+            ERPInfo info = CommonUtils.encryptInfo(erpInfo);
 
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {
@@ -262,25 +208,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     @ResponseBody
     public ApiResult orderStatusUpdate(String orderInfoJson, ERPInfo erpInfo, String sign) {
         try {
-            ERPInfo info = encryptInfo(erpInfo);
-            orderInfoJson = URLDecoder.decode(orderInfoJson, "utf-8");
-
-            //签名验证
-            if (StringUtils.isEmpty(sign)) {
-                return ApiResult.resultWith(ResultCode.EMPTY_SIGN_CODE);
-            }
-            Map<String, String> signMap = new TreeMap<>();
-            signMap.put("name", info.getName());
-            signMap.put("type", info.getType());
-            signMap.put("validation", info.getValidation());
-            signMap.put("sysDataJson", info.getSysDataJson());
-            signMap.put("orderInfoJson", orderInfoJson);
-            signMap.put("timestamp", info.getTimestamp());
-            String checkSign = buildSign(signMap, signKey, null);
-
-            if (!sign.equals(checkSign)) {
-                return ApiResult.resultWith(ResultCode.WRONG_SIGN_CODE);
-            }
+            ERPInfo info = CommonUtils.encryptInfo(erpInfo);
 
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {

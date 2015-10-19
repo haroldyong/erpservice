@@ -47,8 +47,6 @@ public class HotOrderControllerTest extends SpringWebTest {
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
         mockERP.setName("edb");
-        mockERP.setType("mockType");
-        mockERP.setValidation("mockValidation");
         EDBSysData sysData = new EDBSysData();
 //        sysData.setRequestUrl(Constant.REQUEST_URI_TEST);
 //        sysData.setDbHost(Constant.DB_HOST_TEST);
@@ -128,24 +126,16 @@ public class HotOrderControllerTest extends SpringWebTest {
 
         String orderInfoJson = new ObjectMapper().writeValueAsString(orderInfo);
 
-        mockERP.setTimestamp(String.valueOf(new Date().getTime()));
-
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("orderInfoJson", orderInfoJson);
         signMap.put("name", mockERP.getName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
-        signMap.put("type", mockERP.getType());
-        signMap.put("validation", mockERP.getValidation());
-        signMap.put("timestamp", mockERP.getTimestamp());
 
         String sign = buildSign(signMap, signKey, null);
         mockMvc.perform(post("/hotClientOrderApi/createOrder")
                 .param("orderInfoJson", orderInfoJson)
                 .param("name", DxDESCipher.encrypt(mockERP.getName()))
-                .param("type", DxDESCipher.encrypt(mockERP.getType()))
-                .param("validation", DxDESCipher.encrypt(mockERP.getValidation()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
-                .param("timestamp", mockERP.getTimestamp())
                 .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -157,16 +147,12 @@ public class HotOrderControllerTest extends SpringWebTest {
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("name", mockERP.getName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
-        signMap.put("type", mockERP.getType());
-        signMap.put("validation", mockERP.getValidation());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientOrderApi/obtainOrder")
                 .param("name", DxDESCipher.encrypt(mockERP.getName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
-                .param("sign", sign)
-                .param("type", DxDESCipher.encrypt(mockERP.getType()))
-                .param("validation", DxDESCipher.encrypt(mockERP.getValidation())))
+                .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -185,8 +171,6 @@ public class HotOrderControllerTest extends SpringWebTest {
         signMap.put("orderInfoJson", orderInfoJson);
         signMap.put("name", mockERP.getName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
-        signMap.put("type", mockERP.getType());
-        signMap.put("validation", mockERP.getValidation());
 
         String sign = buildSign(signMap, signKey, null);
 
@@ -194,9 +178,7 @@ public class HotOrderControllerTest extends SpringWebTest {
                 .param("orderInfoJson", URLEncoder.encode(orderInfoJson, "utf-8"))
                 .param("name", DxDESCipher.encrypt(mockERP.getName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
-                .param("sign", sign)
-                .param("type", DxDESCipher.encrypt(mockERP.getType()))
-                .param("validation", DxDESCipher.encrypt(mockERP.getValidation())))
+                .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -220,18 +202,14 @@ public class HotOrderControllerTest extends SpringWebTest {
         String orderInfoJson = new ObjectMapper().writeValueAsString(orderInfo);
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("orderInfoJson", orderInfoJson);
-        signMap.put("type", mockERP.getType());
         signMap.put("name", mockERP.getName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
-        signMap.put("validation", mockERP.getValidation());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientOrderApi/orderUpdate")
                 .param("orderInfoJson", URLEncoder.encode(orderInfoJson, "utf-8"))
-                .param("type", DxDESCipher.encrypt(mockERP.getType()))
                 .param("name", DxDESCipher.encrypt(mockERP.getName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
-                .param("validation", DxDESCipher.encrypt(mockERP.getValidation()))
                 .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk());

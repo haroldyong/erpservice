@@ -57,8 +57,6 @@ public class HotStorageControllerTest extends SpringWebTest {
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
         mockERP.setName("edb");
-        mockERP.setType("mockType");
-        mockERP.setValidation("mockValidation");
         EDBSysData sysData = new EDBSysData();
         sysData.setRequestUrl(Constant.REQUEST_URI);
         sysData.setDbHost(Constant.DB_HOST);
@@ -134,24 +132,17 @@ public class HotStorageControllerTest extends SpringWebTest {
 
         String outStoreJson = new ObjectMapper().writeValueAsString(outStoreBean);
 
-        mockERP.setTimestamp(String.valueOf(new Date().getTime()));
 
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("outStoreJson", outStoreJson);
         signMap.put("name", mockERP.getName());
-        signMap.put("type", mockERP.getType());
-        signMap.put("validation", mockERP.getValidation());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
-        signMap.put("timestamp", mockERP.getTimestamp());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientStorageApi/outStoreAdd")
                 .param("outStoreJson", outStoreJson)
                 .param("name", DxDESCipher.encrypt(mockERP.getName()))
-                .param("type", DxDESCipher.encrypt(mockERP.getType()))
-                .param("validation", DxDESCipher.encrypt(mockERP.getValidation()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
-                .param("timestamp", mockERP.getTimestamp())
                 .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -165,24 +156,17 @@ public class HotStorageControllerTest extends SpringWebTest {
         outStoreBean.setFreightAvgWay("123");
         String outStoreJson = new ObjectMapper().writeValueAsString(outStoreBean);
 
-        mockERP.setTimestamp(String.valueOf(new Date().getTime()));
 
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("outStoreJson", outStoreJson);
         signMap.put("name", mockERP.getName());
-        signMap.put("type", mockERP.getType());
-        signMap.put("validation", mockERP.getValidation());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
-        signMap.put("timestamp", mockERP.getTimestamp());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientStorageApi/outStoreConfirm")
                 .param("outStoreJson", outStoreJson)
                 .param("name", DxDESCipher.encrypt(mockERP.getName()))
-                .param("type", DxDESCipher.encrypt(mockERP.getType()))
-                .param("validation", DxDESCipher.encrypt(mockERP.getValidation()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
-                .param("timestamp", mockERP.getTimestamp())
                 .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -197,24 +181,17 @@ public class HotStorageControllerTest extends SpringWebTest {
         productOutBean.setProductOutId(mockOutStore.getMallProductOutBeans().get(0).getProductOutId());
         String proOutJson = new ObjectMapper().writeValueAsString(productOutBean);
 
-        mockERP.setTimestamp(String.valueOf(new Date().getTime()));
 
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("proOutJson", proOutJson);
         signMap.put("name", mockERP.getName());
-        signMap.put("type", mockERP.getType());
-        signMap.put("validation", mockERP.getValidation());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
-        signMap.put("timestamp", mockERP.getTimestamp());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientStorageApi/outStoreWriteBack")
                 .param("proOutJson", proOutJson)
                 .param("name", DxDESCipher.encrypt(mockERP.getName()))
-                .param("type", DxDESCipher.encrypt(mockERP.getType()))
-                .param("validation", DxDESCipher.encrypt(mockERP.getValidation()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
-                .param("timestamp", mockERP.getTimestamp())
                 .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk());

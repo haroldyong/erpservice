@@ -1,6 +1,7 @@
 package com.huobanplus.erpservice.commons.config;
 
-import com.huobanplus.erpservice.erpapi.interceptor.AuthorizeInterceptor;
+import com.huobanplus.erpservice.hotapi.interceptor.AuthorizeInterceptor;
+import com.huobanplus.erpservice.proxy.interceptor.UserAuthorizeInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -36,9 +37,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private AuthorizeInterceptor authorizeInterceptor;
+    @Autowired
+    private UserAuthorizeInterceptor userAuthorizeInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authorizeInterceptor).addPathPatterns("/**/erpapi/*");
+        registry.addInterceptor(authorizeInterceptor).addPathPatterns("/**//hotApi/order/*");
+        registry.addInterceptor(userAuthorizeInterceptor).addPathPatterns("/**hotProxy/*");
     }
 }
