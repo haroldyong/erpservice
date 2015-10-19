@@ -12,17 +12,20 @@ import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
-import com.huobanplus.erpservice.event.model.ERPInfo;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.List;
 
 /**
  * 订单处理事件实现类
@@ -34,7 +37,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
     private MallOrderService orderService;
 
     @Override
-    public Monitor<EventResult> createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException {
+    public EventResult createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException {
         HttpUtil htNetService = HttpUtil.getInstance();
 
         EDBCreateOrderInfo edbCreateOrderInfo = new EDBCreateOrderInfo();
@@ -139,9 +142,9 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
         String responseData = htNetService.doPost(sysData.getRequestUrl(), requestData);
         if (responseData == null) {
-            return new SimpleMonitor<>(new EventResult(0, responseData));
+            return EventResult.resultWith(EventResultEnum.ERROR);
         }
-        return new SimpleMonitor<>(new EventResult(1, responseData));
+        return EventResult.resultWith(EventResultEnum.SUCCESS);
     }
 
     /**
@@ -152,47 +155,46 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
      * @return
      * @throws IOException
      */
-    @Scheduled(fixedRate = 60000, initialDelay = 60000)
-    @Override
-    public void obtainOrderList() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        //objectMapper.readValue(info.getSysDataJson(), EDBSysData.class);
-        System.out.println("正在轮询...");
-        //取出需要轮询的数据
-        List<MallOrderBean> orderList = orderService.findByRotaryStatus(1);
-        for (MallOrderBean order : orderList) {
-            EDBSysData sysData = objectMapper.readValue(order.getSysDataJson(), EDBSysData.class);
-            Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, sysData);
-            requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
-            requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
-            requestData.put("out_tid", order.getOrderId());
-            Map<String, String> signMap = new TreeMap<>(requestData);
-            requestData.put("sign", getSign(signMap, sysData));
-
-            String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
-
-            Map formatM = objectMapper.readValue(responseData, Map.class);
-
-//            if (responseData == null) {
-//                return new SimpleMonitor<>(new EventResult(0, responseData));
+//    @Scheduled(fixedRate = 60000, initialDelay = 60000)
+//    @Override
+//    public void obtainOrderList() throws IOException {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        //objectMapper.readValue(info.getSysDataJson(), EDBSysData.class);
+//        System.out.println("正在轮询...");
+//        //取出需要轮询的数据
+//        List<MallOrderBean> orderList = orderService.findByRotaryStatus(1);
+//        for (MallOrderBean order : orderList) {
+//            EDBSysData sysData = objectMapper.readValue(order.getSysDataJson(), EDBSysData.class);
+//            Map<String, String> requestData = getSysRequestData(Constant.GET_ORDER_INFO, sysData);
+//            requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
+//            requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
+//            requestData.put("out_tid", order.getOrderId());
+//            Map<String, String> signMap = new TreeMap<>(requestData);
+//            requestData.put("sign", getSign(signMap, sysData));
+//
+//            String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
+//
+//            Map formatM = objectMapper.readValue(responseData, Map.class);
+//
+////            if (responseData == null) {
+////                return new SimpleMonitor<>(new EventResult(0, responseData));
+////            }
+//            if (formatM.keySet().iterator().next().equals("Success")) {
+//                //数据处理
+//                List<Map> list = (List<Map>) ((Map) ((Map) formatM.get("Success")).get("items")).get("item");
+//                MallOrderBean responseOrder = wrapMapToBean(list.get(0));
+//                if (!responseOrder.getDeliveryStatus().equals(order.getDeliveryStatus())) {
+//                    //todo 讲物流信息等必要数据推送给伙伴商城
+//
+//                    //todo 推送成功后，轮询状态设置为完成
+//                    order.setRotaryStatus(2);
+//                    orderService.save(order);
+//                }
 //            }
-            if (formatM.keySet().iterator().next().equals("Success")) {
-                //数据处理
-                List<Map> list = (List<Map>) ((Map) ((Map) formatM.get("Success")).get("items")).get("item");
-                MallOrderBean responseOrder = wrapMapToBean(list.get(0));
-                if (!responseOrder.getDeliveryStatus().equals(order.getDeliveryStatus())) {
-                    //todo 讲物流信息等必要数据推送给伙伴商城
-
-                    //todo 推送成功后，轮询状态设置为完成
-                    order.setRotaryStatus(2);
-                    orderService.save(order);
-                }
-            }
-        }
-    }
-
+//        }
+//    }
     @Override
-    public Monitor<EventResult> orderStatusUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException {
+    public EventResult orderStatusUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException {
         EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
         Map<String, String> requestData = getSysRequestData(Constant.ORDER_STATUS_UPDATE, sysData);
@@ -205,13 +207,13 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
         String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
         if (responseData == null) {
-            return new SimpleMonitor<>(new EventResult(0, "系统请求失败"));
+            return EventResult.resultWith(EventResultEnum.ERROR, responseData);
         }
-        return new SimpleMonitor<>(new EventResult(1, responseData));
+        return EventResult.resultWith(EventResultEnum.SUCCESS, responseData);
     }
 
     @Override
-    public Monitor<EventResult> orderUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException {
+    public EventResult orderUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException {
         EDBOrderForUpdate orderForUpdate = new EDBOrderForUpdate();
         orderForUpdate.setTid(orderInfo.getTid());
         orderForUpdate.setOutTid(orderInfo.getOutTid());
@@ -261,13 +263,13 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
 
         if (responseData == null) {
-            return new SimpleMonitor<>(new EventResult(0, responseData));
+            return EventResult.resultWith(EventResultEnum.ERROR, responseData);
         }
-        return new SimpleMonitor<>(new EventResult(1, responseData));
+        return EventResult.resultWith(EventResultEnum.SUCCESS, responseData);
     }
 
     @Override
-    public Monitor<EventResult> orderDeliver(MallOrderBean orderInfo, ERPInfo info) throws IOException {
+    public EventResult orderDeliver(MallOrderBean orderInfo, ERPInfo info) throws IOException {
         EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
         EDBOrderDeliver orderDeliver = new EDBOrderDeliver();
@@ -289,9 +291,9 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
         String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
         if (responseData == null) {
-            return new SimpleMonitor<>(new EventResult(0, responseData));
+            return EventResult.resultWith(EventResultEnum.ERROR, responseData);
         }
-        return new SimpleMonitor<>(new EventResult(1, responseData));
+        return EventResult.resultWith(EventResultEnum.SUCCESS, responseData);
     }
 
     private MallOrderBean wrapMapToBean(Map map) {

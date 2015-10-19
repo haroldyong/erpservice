@@ -1,6 +1,6 @@
 package com.huobanplus.erpprovider.huobanmall.common;
 
-import com.huobanplus.erpservice.event.model.BaseResult;
+import com.huobanplus.erpservice.eventhandler.model.BaseResult;
 
 /**
  * 类描述：授权 签名字段

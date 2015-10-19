@@ -12,10 +12,11 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
     <!--example com.huobanplus.erpprovider.edb-->
+    <!--erp-provider-->
     <context:component-scan base-package="com.huobanplus.erpprovider.edb"/>
     <context:component-scan base-package="com.huobanplus.erpprovider.netshop"/>
-    <context:component-scan base-package="com.huobanplus.erpprovider.huobanmall"/>
-
+    <!--erp-user-->
+    <context:component-scan base-package="com.huobanplus.erpuser.huobanmall"/>
 
     <task:executor id="executor" pool-size="5"></task:executor>
     <task:scheduler id="scheduler" pool-size="10"></task:scheduler>

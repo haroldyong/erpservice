@@ -2,13 +2,13 @@ package com.huobanplus.erpprovider.huobanmall.config;
 
 import com.huobanplus.erpprovider.huobanmall.handler.MallInventoryHandler;
 import com.huobanplus.erpprovider.huobanmall.handler.MallOrderHandler;
-import com.huobanplus.erpservice.event.erpevent.*;
-import com.huobanplus.erpservice.event.handler.ERPHandler;
-import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
-import com.huobanplus.erpservice.event.model.ERPInfo;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.FailedBean;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.erpevent.*;
+import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
+import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.FailedBean;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

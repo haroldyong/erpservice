@@ -1,6 +1,6 @@
 package com.huobanplus.erpprovider.edb;
 
-import com.huobanplus.erpservice.event.handler.ERPRegister;
+import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct;
  * Created by allan on 2015/7/13.
  */
 @Configuration
-@ComponentScan({"com.huobanplus.erpprovider.edb", "com.huobanplus.erpservice.event"})
+@ComponentScan({"com.huobanplus.erpprovider.edb", "com.huobanplus.erpservice.eventhandler"})
 public class EDBConfig {
     @Autowired
     private ERPRegister register;

@@ -14,8 +14,9 @@ import com.huobanplus.erpservice.common.util.HttpUtil;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.bean.MallGoodBean;
 import com.huobanplus.erpservice.datacenter.service.MallGoodService;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -34,32 +35,31 @@ public class NSProductHandlerImpl implements NSProductHandler {
     private MallGoodService goodService;
 
     @Override
-    public Monitor<EventResult> obtainGoods(HttpServletRequest request) throws IOException {
-        String sign = request.getParameter(Constant.SIGN_PARAM);
-        String uCode = request.getParameter(Constant.SIGN_U_CODE);
-        String goodsType = request.getParameter("GoodsType");
-        String goodId = request.getParameter("OuterID");
-        String goodName = request.getParameter("GoodsName");
-        String pageSize = request.getParameter("PageSize");
-        String page = request.getParameter("Page");
+    public EventResult obtainGoods(HttpServletRequest request) {
+        try {
+            String sign = request.getParameter(Constant.SIGN_PARAM);
+            String uCode = request.getParameter(Constant.SIGN_U_CODE);
+            String goodsType = request.getParameter("GoodsType");
+            String goodId = request.getParameter("OuterID");
+            String goodName = request.getParameter("GoodsName");
+            String pageSize = request.getParameter("PageSize");
+            String page = request.getParameter("Page");
 
-        Map<String, String> signMap = new TreeMap<>();
-        signMap.put(Constant.SIGN_U_CODE, uCode);
-        signMap.put(Constant.SIGN_M_TYPE, request.getParameter(Constant.SIGN_M_TYPE));
-        signMap.put(Constant.SIGN_TIMESTAMP, request.getParameter(Constant.SIGN_TIMESTAMP));
-        signMap.put("GoodsType", goodsType);
-        signMap.put("OuterID", goodId);
-        signMap.put("GoodsName", goodName);
-        signMap.put("PageSize", pageSize);
-        signMap.put("Page", page);
+            Map<String, String> signMap = new TreeMap<>();
+            signMap.put(Constant.SIGN_U_CODE, uCode);
+            signMap.put(Constant.SIGN_M_TYPE, request.getParameter(Constant.SIGN_M_TYPE));
+            signMap.put(Constant.SIGN_TIMESTAMP, request.getParameter(Constant.SIGN_TIMESTAMP));
+            signMap.put("GoodsType", goodsType);
+            signMap.put("OuterID", goodId);
+            signMap.put("GoodsName", goodName);
+            signMap.put("PageSize", pageSize);
+            signMap.put("Page", page);
 
-        String signStr = SignBuilder.buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
+            String signStr = SignBuilder.buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
 
-        if (null == signStr && !signStr.equals(sign)) {
-            return new BaseMonitor<>(new EventResult(0,
-                    "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>签名不正确</Cause></Rsp>"));
-        } else {
-            try {
+            if (null == signStr && !signStr.equals(sign)) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>签名不正确</Cause></Rsp>");
+            } else {
                 Page<MallGoodBean> pageInfo = goodService.findAll(goodName, goodId, uCode, Integer.parseInt(page), Integer.parseInt(pageSize));
                 NSGoodResult goodResult = new NSGoodResult();
                 goodResult.setResult(1);
@@ -98,47 +98,35 @@ public class NSProductHandlerImpl implements NSProductHandler {
                 String a1 = xmlResult.substring(0, itemIndex);
                 String b1 = xmlResult.substring(itemIndex, xmlResult.length());
                 xmlResult = a1 + b1.replaceFirst("</Item>", "</Items>");
-                return new BaseMonitor<>(new EventResult(1, xmlResult));
-            } catch (JsonParseException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>数据解析失败</Cause></Rsp>"));
-            } catch (JsonMappingException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>数据解析失败</Cause></Rsp>"));
-            } catch (IOException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
-            } catch (Exception e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
+                return EventResult.resultWith(EventResultEnum.SUCCESS, xmlResult);
             }
-
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>服务器请求失败--" + e.getMessage() + "</Cause></Rsp>");
         }
     }
 
     @Override
-    public Monitor<EventResult> syncInventory(HttpServletRequest request) throws IOException {
-        String sign = request.getParameter(Constant.SIGN_PARAM);
-        String uCode = request.getParameter(Constant.SIGN_U_CODE);
-        String itemId = request.getParameter("ItemID");
-        String skuId = request.getParameter("SkuID");
-        String quantity = request.getParameter("Quantity");
+    public EventResult syncInventory(HttpServletRequest request) {
+        try {
+            String sign = request.getParameter(Constant.SIGN_PARAM);
+            String uCode = request.getParameter(Constant.SIGN_U_CODE);
+            String itemId = request.getParameter("ItemID");
+            String skuId = request.getParameter("SkuID");
+            String quantity = request.getParameter("Quantity");
 
-        Map<String, String> signMap = new TreeMap<>();
-        signMap.put(Constant.SIGN_U_CODE, uCode);
-        signMap.put(Constant.SIGN_M_TYPE, request.getParameter(Constant.SIGN_M_TYPE));
-        signMap.put(Constant.SIGN_TIMESTAMP, request.getParameter(Constant.SIGN_TIMESTAMP));
-        signMap.put("ItemID", itemId);
-        signMap.put("SkuID", skuId);
-        signMap.put("Quantity", quantity);
+            Map<String, String> signMap = new TreeMap<>();
+            signMap.put(Constant.SIGN_U_CODE, uCode);
+            signMap.put(Constant.SIGN_M_TYPE, request.getParameter(Constant.SIGN_M_TYPE));
+            signMap.put(Constant.SIGN_TIMESTAMP, request.getParameter(Constant.SIGN_TIMESTAMP));
+            signMap.put("ItemID", itemId);
+            signMap.put("SkuID", skuId);
+            signMap.put("Quantity", quantity);
 
-        String signStr = SignBuilder.buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
+            String signStr = SignBuilder.buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
 
-        if (null == signStr && !signStr.equals(sign)) {
-            return new BaseMonitor<>(new EventResult(0,
-                    "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><GoodsType></GoodsType><Cause>签名不正确</Cause></Rsp>"));
-        } else {
-            try {
+            if (null == signStr && !signStr.equals(sign)) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><GoodsType></GoodsType><Cause>签名不正确</Cause></Rsp>");
+            } else {
                 //todo 推送给伙伴商城
                 Map<String, String> requestData = new HashMap<>();
                 requestData.put("itemId", itemId);
@@ -146,25 +134,13 @@ public class NSProductHandlerImpl implements NSProductHandler {
                 requestData.put("quantity", quantity);
                 String response = HttpUtil.getInstance().doPost("", requestData);
                 if (response == null) {
-                    return new BaseMonitor<>(new EventResult(0,
-                            "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><GoodsType></GoodsType><Cause>客户端请求失败</Cause></Rsp>"));
+                    return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><GoodsType></GoodsType><Cause>服务器请求失败</Cause></Rsp>");
                 } else {
-                    return new BaseMonitor<>(new EventResult(0,
-                            "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</Result><GoodsType>OnSale</GoodsType><Cause></Cause></Rsp>"));
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</Result><GoodsType>OnSale</GoodsType><Cause></Cause></Rsp>");
                 }
-            } catch (JsonParseException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><GoodsType></GoodsType><Cause>数据解析失败</Cause></Rsp>"));
-            } catch (JsonMappingException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><GoodsType></GoodsType><Cause>数据解析失败</Cause></Rsp>"));
-            } catch (IOException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><GoodsType></GoodsType><Cause>客户端请求失败</Cause></Rsp>"));
-            } catch (Exception e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><GoodsType></GoodsType><Cause>客户端请求失败</Cause></Rsp>"));
             }
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><GoodsType></GoodsType><Cause>服务器请求失败</Cause></Rsp>");
         }
     }
 }

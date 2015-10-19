@@ -1,8 +1,8 @@
 package com.huobanplus.erpprovider.huobanmall.service;
 
 import com.huobanplus.erpprovider.huobanmall.common.FailedBean;
-import com.huobanplus.erpservice.event.model.BaseResult;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.model.BaseResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
 /**
  * 类描述：公共基础事件

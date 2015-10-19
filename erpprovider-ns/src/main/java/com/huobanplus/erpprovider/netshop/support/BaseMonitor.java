@@ -1,6 +1,6 @@
 package com.huobanplus.erpprovider.netshop.support;
 
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
 /**
  * 处理事件

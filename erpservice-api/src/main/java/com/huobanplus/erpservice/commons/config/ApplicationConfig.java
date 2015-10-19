@@ -1,7 +1,9 @@
 package com.huobanplus.erpservice.commons.config;
 
+import com.huobanplus.erpservice.datacenter.config.DataCenterConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -10,7 +12,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @Configuration
 @ComponentScan(basePackages = "com.huobanplus.erpservice")
-@ImportResource({"classpath*:applicationContext-datacenter.xml", "classpath*:applicationContext-providers.xml"})
+@ImportResource({"classpath*:applicationContext-providers.xml"})
 @EnableScheduling
+@Import(DataCenterConfig.class)
 public class ApplicationConfig {
 }

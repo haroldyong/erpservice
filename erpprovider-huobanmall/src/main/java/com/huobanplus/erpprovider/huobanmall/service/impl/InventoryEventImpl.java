@@ -4,9 +4,9 @@ import com.huobanplus.erpprovider.huobanmall.common.AuthBean;
 import com.huobanplus.erpprovider.huobanmall.common.FailedBean;
 import com.huobanplus.erpprovider.huobanmall.service.BaseEvent;
 import com.huobanplus.erpprovider.huobanmall.service.InventoryEvent;
-import com.huobanplus.erpservice.event.model.BaseResult;
-import com.huobanplus.erpservice.event.model.InventoryInfo;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.model.BaseResult;
+import com.huobanplus.erpservice.eventhandler.model.InventoryInfo;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import org.springframework.stereotype.Service;
 
 /**

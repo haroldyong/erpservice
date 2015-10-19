@@ -14,15 +14,18 @@ import com.huobanplus.erpservice.common.util.HttpUtil;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 /**
  * 订单信息处理实现类
@@ -34,28 +37,27 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
     private MallOrderService orderService;
 
     @Override
-    public Monitor<EventResult> obtainOrderInfoList(HttpServletRequest request) throws IOException {
-        String sign = request.getParameter(Constant.SIGN_PARAM);
-        String uCode = request.getParameter(Constant.SIGN_U_CODE);
-        String orderStatus = request.getParameter("OrderStatus");
-        String pageSize = request.getParameter("PageSize");
-        String page = request.getParameter("Page");
-        Map<String, String> signMap = new TreeMap<>();
-        signMap.put(Constant.SIGN_U_CODE, uCode);
-        signMap.put(Constant.SIGN_M_TYPE, request.getParameter(Constant.SIGN_M_TYPE));
-        signMap.put(Constant.SIGN_TIMESTAMP, request.getParameter(Constant.SIGN_TIMESTAMP));
-        signMap.put("OrderStatus", orderStatus);
-        signMap.put("PageSize", pageSize);
-        signMap.put("Page", page);
+    public EventResult obtainOrderInfoList(HttpServletRequest request) {
+        try {
+            String sign = request.getParameter(Constant.SIGN_PARAM);
+            String uCode = request.getParameter(Constant.SIGN_U_CODE);
+            String orderStatus = request.getParameter("OrderStatus");
+            String pageSize = request.getParameter("PageSize");
+            String page = request.getParameter("Page");
+            Map<String, String> signMap = new TreeMap<>();
+            signMap.put(Constant.SIGN_U_CODE, uCode);
+            signMap.put(Constant.SIGN_M_TYPE, request.getParameter(Constant.SIGN_M_TYPE));
+            signMap.put(Constant.SIGN_TIMESTAMP, request.getParameter(Constant.SIGN_TIMESTAMP));
+            signMap.put("OrderStatus", orderStatus);
+            signMap.put("PageSize", pageSize);
+            signMap.put("Page", page);
 
-        //订单参数
-        String signStr = SignBuilder.buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
+            //订单参数
+            String signStr = SignBuilder.buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
 
-        if (null == sign || !signStr.equals(sign)) {
-            return new BaseMonitor<>(new EventResult(0,
-                    "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>签名不正确</Cause></Order>"));
-        } else {
-            try {
+            if (null == sign || !signStr.equals(sign)) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>签名不正确</Cause></Order>");
+            } else {
                 Page<MallOrderBean> orderList = orderService.findAll(Integer.parseInt(orderStatus), null, null, uCode, Integer.parseInt(page), Integer.parseInt(pageSize));
                 NSOrderListResult orderListResult = new NSOrderListResult();
                 orderListResult.setOrderCount(String.valueOf(orderList.getTotalElements()));
@@ -72,40 +74,29 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
                 String lastPanel = orderResultXml.substring(lastIndex + 10);
                 String xmlResult = firstPanel + "<OrderList>" + orderPanel + "</OrderList>" + lastPanel;
                 //获取伙伴商城的订单信息
-                return new BaseMonitor<>(new EventResult(1, xmlResult));
-            } catch (JsonParseException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>数据解析失败</Cause></Order>"));
-            } catch (JsonMappingException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>数据解析失败</Cause></Order>"));
-            } catch (IOException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>客户端请求失败</Cause></Order>"));
-            } catch (Exception e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>客户端请求失败</Cause></Order>"));
+                return EventResult.resultWith(EventResultEnum.SUCCESS, xmlResult);
             }
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>服务器请求失败--" + e.getMessage() + "</Cause></Order>");
         }
     }
 
     @Override
-    public Monitor<EventResult> obtainOrderInfo(HttpServletRequest request) throws IOException {
-        String sign = request.getParameter(Constant.SIGN_PARAM);
-        String uCode = request.getParameter(Constant.SIGN_U_CODE);
-        String orderNo = request.getParameter("OrderNO");
-        Map<String, String> signMap = new TreeMap<>();
-        signMap.put(Constant.SIGN_U_CODE, uCode);
-        signMap.put(Constant.SIGN_M_TYPE, request.getParameter(Constant.SIGN_M_TYPE));
-        signMap.put(Constant.SIGN_TIMESTAMP, request.getParameter(Constant.SIGN_TIMESTAMP));
-        signMap.put("OrderNO", orderNo);
-        String signStr = SignBuilder.buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
+    public EventResult obtainOrderInfo(HttpServletRequest request) {
+        try {
+            String sign = request.getParameter(Constant.SIGN_PARAM);
+            String uCode = request.getParameter(Constant.SIGN_U_CODE);
+            String orderNo = request.getParameter("OrderNO");
+            Map<String, String> signMap = new TreeMap<>();
+            signMap.put(Constant.SIGN_U_CODE, uCode);
+            signMap.put(Constant.SIGN_M_TYPE, request.getParameter(Constant.SIGN_M_TYPE));
+            signMap.put(Constant.SIGN_TIMESTAMP, request.getParameter(Constant.SIGN_TIMESTAMP));
+            signMap.put("OrderNO", orderNo);
+            String signStr = SignBuilder.buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
 
-        if (null == sign || !signStr.equals(sign)) {
-            return new BaseMonitor<>(new EventResult(0,
-                    "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>签名不正确</Cause></Order>"));
-        } else {
-            try {
+            if (null == sign || !signStr.equals(sign)) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>签名不正确</Cause></Order>");
+            } else {
                 MallOrderBean orderBean = orderService.findByOrderId(orderNo);
                 NSOrderDetailResult orderDetailResult = new NSOrderDetailResult();
                 orderDetailResult.setOrderNo(orderBean.getOrderId());
@@ -141,44 +132,33 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
                 });
                 String resultXml = new XmlMapper().writeValueAsString(orderDetailResult);
 
-                return new BaseMonitor<>(new EventResult(1, resultXml));
-            } catch (JsonParseException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>数据解析失败</Cause></Order>"));
-            } catch (JsonMappingException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>数据解析失败</Cause></Order>"));
-            } catch (IOException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>客户端请求失败</Cause></Order>"));
-            } catch (Exception e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>客户端请求失败</Cause></Order>"));
-            }
+                return EventResult.resultWith(EventResultEnum.SUCCESS, resultXml);
 
+            }
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>服务器请求失败--" + e.getMessage() + "</Cause></Order>");
         }
     }
 
     @Override
-    public Monitor<EventResult> deliverOrder(HttpServletRequest request) throws IOException {
-        String orderNo = request.getParameter("OrderNO");
-        String sndStyle = request.getParameter("SndStyle");
-        String billId = request.getParameter("BillID");
-        Map<String, String> signMap = new TreeMap<>();
-        signMap.put(Constant.SIGN_U_CODE, request.getParameter(Constant.SIGN_U_CODE));
-        signMap.put(Constant.SIGN_M_TYPE, request.getParameter(Constant.SIGN_M_TYPE));
-        signMap.put(Constant.SIGN_TIMESTAMP, request.getParameter(Constant.SIGN_TIMESTAMP));
-        signMap.put("OrderNO", orderNo);
-        signMap.put("SndStyle", sndStyle);
-        signMap.put("BillID", billId);
+    public EventResult deliverOrder(HttpServletRequest request) {
+        try {
+            String orderNo = request.getParameter("OrderNO");
+            String sndStyle = request.getParameter("SndStyle");
+            String billId = request.getParameter("BillID");
+            Map<String, String> signMap = new TreeMap<>();
+            signMap.put(Constant.SIGN_U_CODE, request.getParameter(Constant.SIGN_U_CODE));
+            signMap.put(Constant.SIGN_M_TYPE, request.getParameter(Constant.SIGN_M_TYPE));
+            signMap.put(Constant.SIGN_TIMESTAMP, request.getParameter(Constant.SIGN_TIMESTAMP));
+            signMap.put("OrderNO", orderNo);
+            signMap.put("SndStyle", sndStyle);
+            signMap.put("BillID", billId);
 
-        String sign = SignBuilder.buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
+            String sign = SignBuilder.buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
 
-        if (!sign.toUpperCase().equals(request.getParameter("Sign"))) {
-            return new BaseMonitor<>(new EventResult(0,
-                    "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>签名不正确</Cause></Rsp>"));
-        } else {
-            try {
+            if (!sign.toUpperCase().equals(request.getParameter("Sign"))) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>签名不正确</Cause></Rsp>");
+            } else {
                 MallOrderBean preOrder = orderService.findByOrderId(orderNo);
 //                preOrder.setDeliveryStatus(1);
                 preOrder.setExpress(sndStyle);
@@ -192,20 +172,10 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
                 //todo 推送给伙伴商城
                 String result = HttpUtil.getInstance().doPost(null, null);
 
-                return new BaseMonitor<>(new EventResult(1, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</Result></Rsp>"));
-            } catch (JsonParseException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>数据解析失败</Cause></Rsp>"));
-            } catch (JsonMappingException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>数据解析失败</Cause></Rsp>"));
-            } catch (IOException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
-            } catch (Exception e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
+                return EventResult.resultWith(EventResultEnum.SUCCESS, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</Result></Rsp>");
             }
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>服务器请求失败--" + e.getMessage() + "</Cause></Rsp>");
         }
     }
 }

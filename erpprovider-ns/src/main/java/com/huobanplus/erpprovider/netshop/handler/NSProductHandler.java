@@ -1,7 +1,7 @@
 package com.huobanplus.erpprovider.netshop.handler;
 
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public interface NSProductHandler {
      * @return 返回返回结果值统一处理信息
      * @throws IOException IO 异常
      */
-    Monitor<EventResult> obtainGoods(HttpServletRequest request) throws IOException;
+    EventResult obtainGoods(HttpServletRequest request) throws IOException;
 
     /**
      * 数据同步
@@ -27,5 +27,5 @@ public interface NSProductHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> syncInventory(HttpServletRequest request) throws IOException;
+    EventResult syncInventory(HttpServletRequest request) throws IOException;
 }

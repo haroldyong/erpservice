@@ -1,6 +1,6 @@
 package com.huobanplus.erpprovider.edb.support;
 
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
 /**
  * Created by Administrator on 2015/7/23.

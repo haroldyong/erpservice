@@ -13,9 +13,10 @@ import com.huobanplus.erpservice.common.util.HttpUtil;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
 import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
-import com.huobanplus.erpservice.event.model.ERPInfo;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -31,7 +32,7 @@ import java.util.TreeMap;
 @Component
 public class EDBStorageHandlerImpl extends BaseHandler implements EDBStorageHandler {
     @Override
-    public Monitor<EventResult> outStorageAdd(MallOutStoreBean outStoreBean, ERPInfo erpInfo) throws IOException {
+    public EventResult outStorageAdd(MallOutStoreBean outStoreBean, ERPInfo erpInfo) throws IOException {
         EDBOutStoreInfo edbOutStoreInfo = new EDBOutStoreInfo();
         List<EDBProductOut> edbProductOuts = new ArrayList<>();
         for (MallProductOutBean productOut : outStoreBean.getMallProductOutBeans()) {
@@ -78,13 +79,13 @@ public class EDBStorageHandlerImpl extends BaseHandler implements EDBStorageHand
         String responseData = HttpUtil.getInstance().doPost(edbSysData.getRequestUrl(), requestData);
 
         if (responseData == null) {
-            return new SimpleMonitor<>(new EventResult(0, responseData));
+            return EventResult.resultWith(EventResultEnum.ERROR, responseData);
         }
-        return new SimpleMonitor<>(new EventResult(1, responseData));
+        return EventResult.resultWith(EventResultEnum.SUCCESS, responseData);
     }
 
     @Override
-    public Monitor<EventResult> outStoreConfirm(MallOutStoreBean outStoreBean, ERPInfo erpInfo) throws IOException {
+    public EventResult outStoreConfirm(MallOutStoreBean outStoreBean, ERPInfo erpInfo) throws IOException {
         EDBSysData edbSysData = new ObjectMapper().readValue(erpInfo.getSysDataJson(), EDBSysData.class);
         Map<String, String> requestData = getSysRequestData("edbOutStoreConfirm", edbSysData);
         Map<String, String> signMap = new TreeMap<>(requestData);
@@ -97,13 +98,13 @@ public class EDBStorageHandlerImpl extends BaseHandler implements EDBStorageHand
         requestData.put("sign", getSign(signMap, edbSysData));
         String responseData = HttpUtil.getInstance().doPost(edbSysData.getRequestUrl(), requestData);
         if (responseData == null) {
-            return new SimpleMonitor<>(new EventResult(0, responseData));
+            return EventResult.resultWith(EventResultEnum.ERROR, responseData);
         }
-        return new SimpleMonitor<>(new EventResult(1, responseData));
+        return EventResult.resultWith(EventResultEnum.SUCCESS, responseData);
     }
 
     @Override
-    public Monitor<EventResult> outStoreWriteback(MallProductOutBean productOutBean, ERPInfo erpInfo) throws IOException {
+    public EventResult outStoreWriteback(MallProductOutBean productOutBean, ERPInfo erpInfo) throws IOException {
         EDBOutStoreWriteBack writeBack = new EDBOutStoreWriteBack();
         writeBack.setBarCode(productOutBean.getBarCode());
         writeBack.setOutStorageNo(productOutBean.getOutStoreBean().getOutStorageNo());
@@ -120,8 +121,8 @@ public class EDBStorageHandlerImpl extends BaseHandler implements EDBStorageHand
         requestData.put("sign", getSign(signMap, edbSysData));
         String responseData = HttpUtil.getInstance().doPost(edbSysData.getRequestUrl(), requestData);
         if (responseData == null) {
-            return new SimpleMonitor<>(new EventResult(0, responseData));
+            return EventResult.resultWith(EventResultEnum.ERROR);
         }
-        return new SimpleMonitor<>(new EventResult(1, responseData));
+        return EventResult.resultWith(EventResultEnum.SUCCESS, responseData);
     }
 }

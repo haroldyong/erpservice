@@ -7,10 +7,10 @@ import com.huobanplus.erpprovider.edb.handler.EDBStorageHandler;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
 import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
-import com.huobanplus.erpservice.event.erpevent.*;
-import com.huobanplus.erpservice.event.handler.ERPHandler;
-import com.huobanplus.erpservice.event.handler.ERPHandlerBuilder;
-import com.huobanplus.erpservice.event.model.*;
+import com.huobanplus.erpservice.eventhandler.erpevent.*;
+import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
+import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
+import com.huobanplus.erpservice.eventhandler.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -68,7 +68,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                 return false;
             }
 
-            public Monitor<EventResult> handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException, IllegalAccessException {
+            public EventResult handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException, IllegalAccessException {
                 if (erpBaseEvent instanceof CreateOrderEvent) {
                     MallOrderBean orderInfo = (MallOrderBean) data;
                     return EDBOrderHandler.createOrder(orderInfo, erpBaseEvent.getErpInfo());
@@ -93,7 +93,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
             }
 
             @Override
-            public Monitor<EventResult> handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean) {
+            public EventResult handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean) {
                 if (baseEventClass == CreateOrderEvent.class) {
 
                 } else if (baseEventClass == InventoryEvent.class) {

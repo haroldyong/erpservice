@@ -1,18 +1,12 @@
 package com.huobanplus.erpprovider.edb.handler;
 
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.searchbean.MallOrderSearchBean;
-import com.huobanplus.erpservice.event.model.ERPInfo;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
-import com.huobanplus.erpservice.event.model.OrderInfo;
-import org.dom4j.DocumentException;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
-import java.awt.*;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 /**
  * 订单相关
@@ -29,7 +23,7 @@ public interface EDBOrderHandler {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    Monitor<EventResult> createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException;
+    EventResult createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 
     /**
      * 获取订单列表
@@ -38,8 +32,8 @@ public interface EDBOrderHandler {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    @Scheduled(fixedRate = 60000, initialDelay = 60000)
-    void obtainOrderList() throws IOException;
+//    @Scheduled(fixedRate = 60000, initialDelay = 60000)
+//    void obtainOrderList() throws IOException;
 
     /**
      * 更新订单导入标记为 已导入，可更新条件为
@@ -56,7 +50,7 @@ public interface EDBOrderHandler {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    Monitor<EventResult> orderStatusUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException;
+    EventResult orderStatusUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 
     /**
      * 订单业务状态更新
@@ -66,7 +60,7 @@ public interface EDBOrderHandler {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    Monitor<EventResult> orderUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException;
+    EventResult orderUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 
     /**
      * 订单发货
@@ -76,5 +70,5 @@ public interface EDBOrderHandler {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    Monitor<EventResult> orderDeliver(MallOrderBean orderInfo, ERPInfo info) throws IOException;
+    EventResult orderDeliver(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 }

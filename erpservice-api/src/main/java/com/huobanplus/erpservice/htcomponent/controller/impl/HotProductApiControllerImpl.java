@@ -1,14 +1,15 @@
 package com.huobanplus.erpservice.htcomponent.controller.impl;
 
-import com.huobanplus.erpservice.event.erpevent.InventoryEvent;
-import com.huobanplus.erpservice.event.erpevent.ObtainGoodListEvent;
-import com.huobanplus.erpservice.event.erpevent.ObtainOrderListEvent;
-import com.huobanplus.erpservice.event.handler.ERPHandler;
-import com.huobanplus.erpservice.event.handler.ERPRegister;
-import com.huobanplus.erpservice.event.model.ERPInfo;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.FailedBean;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.InventoryEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.ObtainGoodListEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderListEvent;
+import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
+import com.huobanplus.erpservice.eventhandler.ERPRegister;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.FailedBean;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import com.huobanplus.erpservice.htcomponent.controller.HotProductApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,72 +31,86 @@ public class HotProductApiControllerImpl implements HotProductApiController {
     private ERPRegister erpRegister;
 
     @Override
+    @RequestMapping(value = "/{erpName}/obtainGood")
+    @ResponseBody
     public String obtainGood(@PathVariable("erpName") String erpName, HttpServletRequest request) {
+        EventResult eventResult;
         ERPInfo erpInfo = new ERPInfo();
         erpInfo.setName(erpName);
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
-        Monitor<EventResult> monitor;
+        if (erpHandler == null) {
+            FailedBean failedBean = new FailedBean();
+            failedBean.setCurrentEvent(ObtainGoodListEvent.class.getName());
+            failedBean.setFailedMsg("获取商品信息失败--erp信息无效");
+            eventResult = erpHandler.handleException(ObtainOrderListEvent.class, failedBean);
+
+            return eventResult.getData();
+        }
         if (erpHandler.eventSupported(ObtainGoodListEvent.class)) {
             try {
                 ObtainGoodListEvent obtainGoodListEvent = new ObtainGoodListEvent();
                 obtainGoodListEvent.setErpInfo(erpInfo);
                 //处理生成订单信息接口
-                monitor = erpHandler.handleEvent(obtainGoodListEvent, request);
+                eventResult = erpHandler.handleEvent(obtainGoodListEvent, request);
             } catch (IOException e) {
                 FailedBean failedBean = new FailedBean();
-                failedBean.setResultMsg("获取商品信息失败");
                 failedBean.setCurrentEvent(ObtainGoodListEvent.class.getName());
-                failedBean.setFailedMsg("IO处理发生异常");
-                monitor = erpHandler.handleException(ObtainGoodListEvent.class, failedBean);
+                failedBean.setFailedMsg("获取商品信息失败--IO处理发生异常");
+                eventResult = erpHandler.handleException(ObtainGoodListEvent.class, failedBean);
             } catch (IllegalAccessException e) {
                 FailedBean failedBean = new FailedBean();
-                failedBean.setResultMsg("获取商品信息失败");
                 failedBean.setCurrentEvent(ObtainGoodListEvent.class.getName());
-                failedBean.setFailedMsg("网络请求参数错误");
-                monitor = erpHandler.handleException(ObtainGoodListEvent.class, failedBean);
+                failedBean.setFailedMsg("获取商品信息失败--网络请求参数错误");
+                eventResult = erpHandler.handleException(ObtainGoodListEvent.class, failedBean);
             }
         } else {
             FailedBean failedBean = new FailedBean();
-            failedBean.setResultMsg("获取商品信息失败");
             failedBean.setCurrentEvent(ObtainGoodListEvent.class.getName());
-            failedBean.setFailedMsg("erp信息无效");
-            monitor = erpHandler.handleException(ObtainGoodListEvent.class, failedBean);
+            failedBean.setFailedMsg("获取商品信息失败--对应的erp无法处理该事件");
+            eventResult = erpHandler.handleException(ObtainGoodListEvent.class, failedBean);
         }
-        return monitor.get().getSystemResult();
+        return eventResult.getData();
     }
 
     @Override
+    @RequestMapping(value = "/{erpName}/syncInventory")
+    @ResponseBody
     public String syncInventory(@PathVariable("erpName") String erpName, HttpServletRequest request) {
+        EventResult eventResult;
         ERPInfo erpInfo = new ERPInfo();
         erpInfo.setName(erpName);
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
-        Monitor<EventResult> monitor;
-        if (erpHandler.eventSupported(ObtainGoodListEvent.class)) {
+        if (erpHandler == null) {
+            FailedBean failedBean = new FailedBean();
+            failedBean.setCurrentEvent(InventoryEvent.class.getName());
+            failedBean.setFailedMsg("库存同步失败--erp信息无效");
+            eventResult = erpHandler.handleException(ObtainOrderListEvent.class, failedBean);
+
+            return eventResult.getData();
+        }
+        if (erpHandler.eventSupported(InventoryEvent.class)) {
             try {
                 InventoryEvent inventoryEvent = new InventoryEvent();
                 inventoryEvent.setErpInfo(erpInfo);
                 //处理生成订单信息接口
-                monitor = erpHandler.handleEvent(inventoryEvent, request);
+                eventResult = erpHandler.handleEvent(inventoryEvent, request);
             } catch (IOException e) {
                 FailedBean failedBean = new FailedBean();
-                failedBean.setResultMsg("同步失败");
                 failedBean.setCurrentEvent(InventoryEvent.class.getName());
-                failedBean.setFailedMsg("IO处理发生异常");
-                monitor = erpHandler.handleException(InventoryEvent.class, failedBean);
+                failedBean.setFailedMsg("库存同步失败--IO处理发生异常");
+                eventResult = erpHandler.handleException(InventoryEvent.class, failedBean);
             } catch (IllegalAccessException e) {
                 FailedBean failedBean = new FailedBean();
-                failedBean.setResultMsg("同步失败");
                 failedBean.setCurrentEvent(InventoryEvent.class.getName());
-                failedBean.setFailedMsg("网络请求参数错误");
-                monitor = erpHandler.handleException(InventoryEvent.class, failedBean);
+                failedBean.setFailedMsg("库存同步失败--网络请求参数错误");
+                eventResult = erpHandler.handleException(InventoryEvent.class, failedBean);
             }
         } else {
             FailedBean failedBean = new FailedBean();
-            failedBean.setResultMsg("同步失败");
             failedBean.setCurrentEvent(InventoryEvent.class.getName());
-            failedBean.setFailedMsg("erp信息无效");
-            monitor = erpHandler.handleException(InventoryEvent.class, failedBean);
+            failedBean.setFailedMsg("库存同步失败--对应的erp无法处理该事件");
+            eventResult = erpHandler.handleException(InventoryEvent.class, failedBean);
         }
-        return monitor.get().getSystemResult();
+        return eventResult.getData();
     }
 }

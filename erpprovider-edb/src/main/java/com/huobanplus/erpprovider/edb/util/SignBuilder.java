@@ -1,7 +1,6 @@
 package com.huobanplus.erpprovider.edb.util;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;

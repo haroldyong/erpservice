@@ -5,9 +5,9 @@ import com.huobanplus.erpprovider.huobanmall.common.SimpleMonitor;
 import com.huobanplus.erpprovider.huobanmall.service.OrderEventService;
 import com.huobanplus.erpprovider.huobanmall.util.Constant;
 import com.huobanplus.erpprovider.huobanmall.util.SignStrategy;
-import com.huobanplus.erpservice.event.model.BaseResult;
-import com.huobanplus.erpservice.event.model.Monitor;
-import com.huobanplus.erpservice.event.model.OrderInfo;
+import com.huobanplus.erpservice.eventhandler.model.BaseResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.model.OrderInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 

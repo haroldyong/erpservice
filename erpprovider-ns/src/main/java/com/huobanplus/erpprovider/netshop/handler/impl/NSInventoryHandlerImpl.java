@@ -9,8 +9,9 @@ import com.huobanplus.erpprovider.netshop.util.Constant;
 import com.huobanplus.erpprovider.netshop.util.SignBuilder;
 import com.huobanplus.erpservice.datacenter.bean.MallInventoryBean;
 import com.huobanplus.erpservice.datacenter.service.MallInventoryService;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -29,45 +30,30 @@ public class NSInventoryHandlerImpl implements NSInventoryHandler {
     private MallInventoryService mallInventoryService;
 
     @Override
-    public Monitor<EventResult> synsInventory(HttpServletRequest request) throws IOException {
+    public EventResult synsInventory(HttpServletRequest request) {
+        try {
+            String secret = (String) request.getAttribute("secret");
+            String sign = (String) request.getAttribute("sign");
+            Map<String, String> signMap = new TreeMap<>();
+            signMap.put("uCode", request.getParameter(Constant.SIGN_U_CODE));
+            signMap.put("mType", request.getParameter(Constant.SIGN_M_TYPE));
+            signMap.put("TimeStamp", request.getParameter(Constant.SIGN_TIMESTAMP));
+            signMap.put("datas", request.getParameter("datas"));
 
-        String secret = (String) request.getAttribute("secret");
-        String sign = (String) request.getAttribute("sign");
-        Map<String, String> signMap = new TreeMap<>();
-        signMap.put("uCode", request.getParameter(Constant.SIGN_U_CODE));
-        signMap.put("mType", request.getParameter(Constant.SIGN_M_TYPE));
-        signMap.put("TimeStamp", request.getParameter(Constant.SIGN_TIMESTAMP));
-        signMap.put("datas", request.getParameter("datas"));
-
-        String signStr = SignBuilder.buildSign(signMap, secret, secret);
-        if (null != signStr && signStr.equals(sign)) {
-            return new BaseMonitor<>(new EventResult(0,
-                    "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</result><GoodsType></GoodsType><Cause>签名不正确</Cause></Rsp>"));
-        } else {
-            // ObjectMapper objectMapper = new ObjectMapper();
-            //String resultJson = objectMapper.writeValueAsString(responseMap);
-            //记录需要更新的库存信息
-            ObjectMapper mapper = new ObjectMapper();
-            try {
+            String signStr = SignBuilder.buildSign(signMap, secret, secret);
+            if (null != signStr && signStr.equals(sign)) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</result><GoodsType></GoodsType><Cause>签名不正确</Cause></Rsp>");
+            } else {
+                // ObjectMapper objectMapper = new ObjectMapper();
+                //String resultJson = objectMapper.writeValueAsString(responseMap);
+                //记录需要更新的库存信息
+                ObjectMapper mapper = new ObjectMapper();
                 MallInventoryBean inventoryBean = mapper.readValue(signMap.get("datas"), MallInventoryBean.class);
                 MallInventoryBean result = mallInventoryService.save(inventoryBean);
-                return new BaseMonitor<>(new EventResult(1, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</result><GoodsType></GoodsType><Cause>需要更新的数据已经数据已经保存</Cause></Rsp>"));
-
-            } catch (JsonParseException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>数据解析失败</Cause></Rsp>"));
-            } catch (JsonMappingException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>数据解析失败</Cause></Rsp>"));
-            } catch (IOException e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
-            } catch (Exception e) {
-                return new BaseMonitor<>(new EventResult(0,
-                        "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>客户端请求失败</Cause></Rsp>"));
+                return EventResult.resultWith(EventResultEnum.SUCCESS, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</result><GoodsType></GoodsType><Cause>请求成功</Cause></Rsp>");
             }
-
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>服务器请求失败--" + e.getMessage() + "</Cause></Rsp>");
         }
-
     }
 }

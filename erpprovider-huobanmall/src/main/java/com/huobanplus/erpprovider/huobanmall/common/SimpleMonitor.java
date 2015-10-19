@@ -1,6 +1,6 @@
 package com.huobanplus.erpprovider.huobanmall.common;
 
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
 /**
  * 一个简单的监控返回值的类

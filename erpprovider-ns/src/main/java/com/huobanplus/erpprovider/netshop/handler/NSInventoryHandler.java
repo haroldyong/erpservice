@@ -1,7 +1,7 @@
 package com.huobanplus.erpprovider.netshop.handler;
 
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -18,5 +18,5 @@ public interface NSInventoryHandler {
      * @return 返回一个统一结果处理实体
      * @throws IOException IO异常
      */
-    Monitor<EventResult> synsInventory(HttpServletRequest request) throws IOException;
+    EventResult synsInventory(HttpServletRequest request) throws IOException;
 }

@@ -6,12 +6,10 @@ import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
-import com.huobanplus.erpservice.datacenter.searchbean.MallOrderSearchBean;
-import com.huobanplus.erpservice.event.model.ERPInfo;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,8 +71,7 @@ public class EDBOrderHandlerTest {
         productBean.setOrderBean(orderInfo);
         orderInfo.setOrderItems(Arrays.asList(productBean));
 
-        Monitor<EventResult> monitor = edbOrderHandler.createOrder(orderInfo, mockERP);
-        System.out.println(monitor.get().getSystemResult());
+        EventResult eventResult = edbOrderHandler.createOrder(orderInfo, mockERP);
     }
 
     @Test
@@ -88,8 +85,7 @@ public class EDBOrderHandlerTest {
         MallOrderBean orderBean = new MallOrderBean();
         orderBean.setOrderId("1231232");
         orderBean.setOrderType("Order");
-        Monitor<EventResult> monitor = edbOrderHandler.orderStatusUpdate(orderBean, mockERP);
-        System.out.println(monitor.get().getSystemResult());
+        EventResult eventResult = edbOrderHandler.orderStatusUpdate(orderBean, mockERP);
     }
 
     @Test
@@ -106,8 +102,7 @@ public class EDBOrderHandlerTest {
         orderItem.setInspectionNum(1);
         orderItem.setOrderBean(orderBean);
         orderBean.setOrderItems(Arrays.asList(orderItem));
-        Monitor<EventResult> monitor = edbOrderHandler.orderUpdate(orderBean, mockERP);
-        System.out.println(monitor.get().getSystemResult());
+        EventResult eventResult = edbOrderHandler.orderUpdate(orderBean, mockERP);
     }
 
     @Test
@@ -116,7 +111,6 @@ public class EDBOrderHandlerTest {
         orderBean.setOrderId("1232123123");
         orderBean.setExpressNo("123213");
         orderBean.setExpress("2312");
-        Monitor<EventResult> monitor = edbOrderHandler.orderDeliver(orderBean, mockERP);
-        System.out.println(monitor.get().getSystemResult());
+        EventResult eventResult = edbOrderHandler.orderDeliver(orderBean, mockERP);
     }
 }

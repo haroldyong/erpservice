@@ -1,7 +1,7 @@
 package com.huobanplus.erpprovider.netshop.handler;
 
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -17,7 +17,7 @@ public interface NSOrderHandler {
      * @return 返回订单详细信息结果
      * @throws IOException IO 异常
      */
-    Monitor<EventResult> obtainOrderInfoList(HttpServletRequest request) throws IOException;
+    EventResult obtainOrderInfoList(HttpServletRequest request) throws IOException;
 
     /**
      * 获取订单信息（详情）
@@ -26,7 +26,7 @@ public interface NSOrderHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> obtainOrderInfo(HttpServletRequest request) throws IOException;
+    EventResult obtainOrderInfo(HttpServletRequest request) throws IOException;
 
     /**
      * 发货通知
@@ -35,5 +35,5 @@ public interface NSOrderHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> deliverOrder(HttpServletRequest request) throws IOException;
+    EventResult deliverOrder(HttpServletRequest request) throws IOException;
 }

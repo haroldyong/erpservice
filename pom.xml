@@ -14,10 +14,15 @@
         <module>erpservice-api</module>
         <module>erpservice-eventHandler</module>
         <module>erpprovider-edb</module>
-        <module>erpprovider-huobanmall</module>
+        <!--<module>erpprovider-huobanmall</module>-->
         <module>erpprovider-ns</module>
         <module>erpservice-common</module>
+        <module>erpuser-huobanmall</module>
     </modules>
+
+    <properties>
+        <spring.version>4.1.7.RELEASE</spring.version>
+    </properties>
 
     <build>
         <plugins>
@@ -42,23 +47,28 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>4.1.6.RELEASE</version>
+            <version>${spring.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.6</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
             <version>2.6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>4.1.6.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>4.1.6.RELEASE</version>
         </dependency>
     </dependencies>
 </project>

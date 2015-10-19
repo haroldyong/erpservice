@@ -2,11 +2,10 @@ package com.huobanplus.erpprovider.edb.handler;
 
 import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
 import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
-import com.huobanplus.erpservice.event.model.ERPInfo;
-import com.huobanplus.erpservice.event.model.EventResult;
-import com.huobanplus.erpservice.event.model.Monitor;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
-import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -22,7 +21,7 @@ public interface EDBStorageHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> outStorageAdd(MallOutStoreBean outStoreBean, ERPInfo erpInfo) throws IOException;
+    EventResult outStorageAdd(MallOutStoreBean outStoreBean, ERPInfo erpInfo) throws IOException;
 
     /**
      * 根据出库单号，对出库单进行确认。出库单确认后系统库存会减少
@@ -32,7 +31,7 @@ public interface EDBStorageHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> outStoreConfirm(MallOutStoreBean outStoreBean, ERPInfo erpInfo) throws IOException;
+    EventResult outStoreConfirm(MallOutStoreBean outStoreBean, ERPInfo erpInfo) throws IOException;
 
     /**
      * 在出库确认前对出库单修改出库数量
@@ -42,5 +41,5 @@ public interface EDBStorageHandler {
      * @return
      * @throws IOException
      */
-    Monitor<EventResult> outStoreWriteback(MallProductOutBean productOutBean, ERPInfo erpInfo) throws IOException;
+    EventResult outStoreWriteback(MallProductOutBean productOutBean, ERPInfo erpInfo) throws IOException;
 }

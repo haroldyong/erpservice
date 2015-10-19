@@ -1,6 +1,6 @@
 package com.huobanplus.erpservice.commons.bean;
 
-import com.huobanplus.erpservice.event.model.BaseResult;
+import com.huobanplus.erpservice.eventhandler.model.BaseResult;
 
 /**
  * 类描述：请求失败 实体
