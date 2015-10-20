@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2015. All rights reserved.
+ */
+
 package com.huobanplus.erpservice.common.util;
 
 import java.security.MessageDigest;
@@ -5,20 +14,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-/**
- * 字符串工具类
- * <p>
- * Title: 对字符串进行?些处?
- * </p>
- * <p>
- * Description: web应用和数据库访问过程中，存在编码和特殊字符的问题。本类提供了将字符串转换
- * 为JVM和?oracle、javascript能识别的字符串的功能?
- * </p>
- * <p>
- * Copyright: Copyright (c) 2005
- * </p>
- * <p>
- */
 public class StringUtil {
     public static String DATE_PATTERN = "yyyy-MM-dd";
     public static String TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";

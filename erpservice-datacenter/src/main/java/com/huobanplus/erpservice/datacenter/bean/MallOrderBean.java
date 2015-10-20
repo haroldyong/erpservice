@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2015. All rights reserved.
+ */
+
 package com.huobanplus.erpservice.datacenter.bean;
 
 import javax.persistence.*;
@@ -1028,20 +1037,18 @@ public class MallOrderBean {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBean", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<MallOrderItem> orderItems;
 
-    /**
-     * 系统参数
-     * <p>edb：系统级参数为json格式</p>
-     * <p>netshop：系统级参数为ucode</p>
-     */
-    @Column(name = "SysDataJson")
-    private String sysDataJson;
 
-    public String getSysDataJson() {
-        return sysDataJson;
+    /**
+     * erp信息，json格式存储
+     */
+    private String erpInfo;
+
+    public String getErpInfo() {
+        return erpInfo;
     }
 
-    public void setSysDataJson(String sysDataJson) {
-        this.sysDataJson = sysDataJson;
+    public void setErpInfo(String erpInfo) {
+        this.erpInfo = erpInfo;
     }
 
     public List<MallOrderItem> getOrderItems() {

@@ -60,8 +60,7 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
                 return ApiResult.resultWith(ResultCode.SUCCESS);
             } else {
                 //如果未推送成功，则保存数据到erp数据服务平台，交由相关处理器处理
-                //保存数据到erp服务平台
-                orderBean.setSysDataJson(erpInfo.getSysDataJson());
+                orderBean.setErpInfo(new ObjectMapper().writeValueAsString(erpInfo));
                 orderService.save(orderBean);
                 return ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, "推送给erp时失败，将交给相关处理进行第二次尝试", null);
             }
