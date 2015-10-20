@@ -9,7 +9,6 @@
 
 package com.huobanplus.erpservice.proxy.scheduledhandler;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;

@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 /**
+ *
  * com.huobanplus.erpprovider.edb 具体事件处理实现类
  * Created by allan on 2015/7/13.
  */
