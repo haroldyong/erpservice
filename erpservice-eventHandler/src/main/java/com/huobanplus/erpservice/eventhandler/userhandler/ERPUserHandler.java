@@ -25,18 +25,8 @@ public interface ERPUserHandler {
      * 处理事件
      *
      * @param erpBaseEvent
-     * @param data
      * @return
      * @throws IOException
      */
-    EventResult handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException;
-
-    /**
-     * 异常处理
-     *
-     * @param baseEventClass
-     * @param failedBean
-     * @return
-     */
-    EventResult handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean);
+    EventResult handleEvent(ERPBaseEvent erpBaseEvent);
 }

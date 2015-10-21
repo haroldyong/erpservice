@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpprovider.netshop.handler;
 
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
@@ -22,27 +23,31 @@ public interface NSOrderHandler {
     /**
      * 获取订单信息（列表）
      *
-     * @param request 请求实体
+     * @param orderStatus 订单状态，状态有3中。1，表示已付款（含货到付款）；0，表示未付款；-1表示问题单（问题单在管家里面如果没有递交会做关闭订单处理，递交的不做处理）
+     * @param pageSize    返回数量
+     * @param pageIndex   返回页数，为空则返回所有结果集
      * @return 返回订单详细信息结果
      * @throws IOException IO 异常
      */
-    EventResult obtainOrderInfoList(HttpServletRequest request) throws IOException;
+    EventResult obtainOrderInfoList(int orderStatus, int pageSize, Integer pageIndex, ERPUserInfo erpUserInfo, String mType);
 
     /**
      * 获取订单信息（详情）
      *
-     * @param request
+     * @param orderId
      * @return
      * @throws IOException
      */
-    EventResult obtainOrderInfo(HttpServletRequest request) throws IOException;
+    EventResult obtainOrderInfo(String orderId, ERPUserInfo erpUserInfo, String mType);
 
     /**
      * 发货通知
      *
-     * @param request
+     * @param orderId
+     * @param logiName
+     * @param logiNo
      * @return
      * @throws IOException
      */
-    EventResult deliverOrder(HttpServletRequest request) throws IOException;
+    EventResult deliverOrder(String orderId, String logiName, String logiNo, ERPUserInfo erpUserInfo, String mType);
 }

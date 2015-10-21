@@ -20,9 +20,9 @@ import lombok.Data;
 public class EventResult {
     private int resultCode;
     private String resultMsg;
-    private String data;
+    private Object data;
 
-    public static EventResult resultWith(int resultCode, String resultMsg, String data) {
+    public static EventResult resultWith(int resultCode, String resultMsg, Object data) {
         EventResult eventResult = new EventResult();
         eventResult.resultCode = resultCode;
         eventResult.resultMsg = resultMsg;
@@ -37,10 +37,18 @@ public class EventResult {
         return eventResult;
     }
 
-    public static EventResult resultWith(EventResultEnum resultEnum, String data) {
+    public static EventResult resultWith(EventResultEnum resultEnum, Object data) {
         EventResult eventResult = new EventResult();
         eventResult.resultCode = resultEnum.getResultCode();
         eventResult.resultMsg = resultEnum.getResultMsg();
+        eventResult.data = data;
+        return eventResult;
+    }
+
+    public static EventResult resultWith(EventResultEnum resultEnum, String resultMsg, Object data) {
+        EventResult eventResult = new EventResult();
+        eventResult.resultCode = resultEnum.getResultCode();
+        eventResult.resultMsg = resultMsg;
         eventResult.data = data;
         return eventResult;
     }

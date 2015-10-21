@@ -12,6 +12,7 @@ package com.huobanplus.erpservice.providerapi.controller.impl;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.providerapi.controller.ProviderApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,7 @@ public class ProviderApiControllerImpl implements ProviderApiController {
         if (erpHandler == null) {
             return "未找到相关erp处理器";
         }
-        return null;
+        EventResult eventResult = erpHandler.handleRequest(request);
+        return eventResult.getData().toString();
     }
 }

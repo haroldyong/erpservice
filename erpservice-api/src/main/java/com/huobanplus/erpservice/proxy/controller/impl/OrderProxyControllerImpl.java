@@ -57,7 +57,8 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
             MallOrderBean orderBean = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
             CreateOrderEvent createOrderEvent = new CreateOrderEvent();
             createOrderEvent.setErpInfo(erpInfo);
-            EventResult eventResult = erpHandler.handleEvent(createOrderEvent, orderBean);
+            createOrderEvent.setOrderInfo(orderBean);
+            EventResult eventResult = erpHandler.handleEvent(createOrderEvent);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 return ApiResult.resultWith(ResultCode.SUCCESS);
             } else {
@@ -84,7 +85,7 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
             MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
             OrderUpdateEvent orderUpdateEvent = new OrderUpdateEvent();
             orderUpdateEvent.setErpInfo(erpInfo);
-            EventResult eventResult = erpHandler.handleEvent(orderUpdateEvent, orderInfo);
+            EventResult eventResult = erpHandler.handleEvent(orderUpdateEvent);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 return ApiResult.resultWith(ResultCode.SUCCESS);
             } else {

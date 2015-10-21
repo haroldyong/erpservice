@@ -42,16 +42,7 @@ public interface ERPHandler {
      * @throws IOException            网络操作异常
      * @throws IllegalAccessException 接口访问不合法异常
      */
-    EventResult handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException, IllegalAccessException, IllegalArgumentException;
-
-    /**
-     * 处理异常信息
-     *
-     * @param baseEventClass 事件类
-     * @param failedBean     异常信息实体
-     * @return
-     */
-    EventResult handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean);
+    EventResult handleEvent(ERPBaseEvent erpBaseEvent);
 
     /**
      * 主动调用形式的erp提供者提供的处理方法
@@ -59,13 +50,5 @@ public interface ERPHandler {
      * @param request
      * @return
      */
-    EventResult handleRequest(HttpServletRequest request) throws UnsupportedEncodingException, IOException;
-
-    /**
-     * 主动调用形式的erp提供者提供的异常信息处理方法
-     *
-     * @param eventResult
-     * @return
-     */
-    EventResult handleException(EventResult eventResult);
+    EventResult handleRequest(HttpServletRequest request);
 }

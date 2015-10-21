@@ -51,7 +51,7 @@ public class HotProductControllerImpl extends HotBaseController implements HotPr
             if (erpHandler.eventSupported(InventoryEvent.class)) {
                 InventoryEvent inventoryEvent = new InventoryEvent();
                 inventoryEvent.setErpInfo(erpInfo);
-                EventResult eventResult = erpHandler.handleEvent(inventoryEvent, null);
+                EventResult eventResult = erpHandler.handleEvent(inventoryEvent);
                 if (eventResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
                     return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
                 } else {

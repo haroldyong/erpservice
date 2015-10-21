@@ -17,6 +17,7 @@ public enum EventResultEnum {
     ERROR(5000, "处理失败"),
     NO_SIGN(4000, "签名参数未传"),
     WRONG_SIGN(4001, "签名不正确"),
+    BAD_REQUEST_PARAM(5001, "请求参数不正确"),
     NO_DATA(3000, "未找到相关处理信息");
 
     private int resultCode;

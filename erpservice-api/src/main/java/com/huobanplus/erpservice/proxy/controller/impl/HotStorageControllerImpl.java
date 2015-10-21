@@ -66,7 +66,7 @@ public class HotStorageControllerImpl extends HotBaseController implements HotSt
                 AddOutStoreEvent outStoreEvent = new AddOutStoreEvent();
                 outStoreEvent.setErpInfo(info);
                 MallOutStoreBean outStoreBean = new ObjectMapper().readValue(outStoreJson, MallOutStoreBean.class);
-                EventResult eventResult = erpHandler.handleEvent(outStoreEvent, outStoreBean);
+                EventResult eventResult = erpHandler.handleEvent(outStoreEvent);
                 if (eventResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
                     //本地数据更新
                     outStoreService.save(outStoreBean);
@@ -100,7 +100,7 @@ public class HotStorageControllerImpl extends HotBaseController implements HotSt
                 confirmOutStoreEvent.setErpInfo(info);
                 MallOutStoreBean outStoreBean = new ObjectMapper().readValue(outStoreJson, MallOutStoreBean.class);
 
-                EventResult eventResult = erpHandler.handleEvent(confirmOutStoreEvent, outStoreBean);
+                EventResult eventResult = erpHandler.handleEvent(confirmOutStoreEvent);
                 if (eventResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
                     //本地数据更新
                     MallOutStoreBean preBean = outStoreService.findByNo(outStoreBean.getStorageNo());
@@ -137,7 +137,7 @@ public class HotStorageControllerImpl extends HotBaseController implements HotSt
                 OutStoreWriteBackEvent outStoreWriteBackEvent = new OutStoreWriteBackEvent();
                 outStoreWriteBackEvent.setErpInfo(info);
                 MallProductOutBean productOutBean = new ObjectMapper().readValue(proOutJson, MallProductOutBean.class);
-                EventResult eventResult = erpHandler.handleEvent(outStoreWriteBackEvent, productOutBean);
+                EventResult eventResult = erpHandler.handleEvent(outStoreWriteBackEvent);
                 if (eventResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
                     //更新本地数据
                     MallProductOutBean preBean = productOutService.findById(productOutBean.getProductOutId());

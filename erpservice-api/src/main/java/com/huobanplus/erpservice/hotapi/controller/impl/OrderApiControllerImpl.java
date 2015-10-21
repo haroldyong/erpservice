@@ -9,8 +9,10 @@
 
 package com.huobanplus.erpservice.hotapi.controller.impl;
 
+import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.eventhandler.model.*;
 import com.huobanplus.erpservice.hotapi.common.ERPApiBaseController;
 import com.huobanplus.erpservice.hotapi.controller.OrderApiController;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
@@ -18,10 +20,6 @@ import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.InventoryEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.ReturnInfoEvent;
-import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
-import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
-import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.ReturnInfo;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,13 +48,14 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
             @RequestParam(required = false, defaultValue = "0") int freight,
             @RequestParam(required = false) String remark,
             @RequestParam(required = false) String dicDeliverItemsStr,
-            int customerId,
-            String erpUserName
+            @RequestAttribute int customerId,
+            @RequestAttribute String erpUserName
     ) throws IOException {
 
         //得到使用者事件处理器
         ERPUserInfo erpUserInfo = new ERPUserInfo();
         erpUserInfo.setERPUserName(erpUserName);
+        erpUserInfo.setCustomerId(customerId);
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
@@ -70,7 +69,7 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
         deliveryInfo.setRemark(remark);
         deliveryInfo.setDicDeliverItemsStr(dicDeliverItemsStr);
         deliveryInfoEvent.setDeliveryInfo(deliveryInfo);
-        EventResult eventResult = erpUserHandler.handleEvent(deliveryInfoEvent, null);
+        EventResult eventResult = erpUserHandler.handleEvent(deliveryInfoEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
         } else {
@@ -92,11 +91,12 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
             @RequestParam(required = false, defaultValue = "0") int freight,
             @RequestParam(required = false) String remark,
             @RequestParam(required = false) String dicDeliverItemsStr,
-            int customerId,
-            String erpUserName
+            @RequestAttribute int customerId,
+            @RequestAttribute String erpUserName
     ) throws IOException {
         ERPUserInfo erpUserInfo = new ERPUserInfo();
         erpUserInfo.setERPUserName(erpUserName);
+        erpUserInfo.setCustomerId(customerId);
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
@@ -114,37 +114,7 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
         returnInfo.setDicDeliverItemsStr(dicDeliverItemsStr);
         ReturnInfoEvent returnInfoEvent = new ReturnInfoEvent();
         returnInfoEvent.setReturnInfo(returnInfo);
-        EventResult eventResult = erpUserHandler.handleEvent(returnInfoEvent, null);
-        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-            return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
-        } else {
-            return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, eventResult.getResultMsg(), null);
-        }
-    }
-
-    @Override
-    @RequestMapping("/syncInventory")
-    @ResponseBody
-    public ApiResult syncInventory(
-            int goodId,
-            int productId,
-            String bn,
-            int stock,
-            int customerId,
-            String erpUserName
-    ) throws IOException {
-        ERPUserInfo erpUserInfo = new ERPUserInfo();
-        erpUserInfo.setERPUserName(erpUserName);
-        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-        if (erpUserHandler == null) {
-            return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
-        }
-        InventoryEvent inventoryEvent = new InventoryEvent();
-        inventoryEvent.setGoodId(goodId);
-        inventoryEvent.setProductId(productId);
-        inventoryEvent.setBn(bn);
-        inventoryEvent.setStock(stock);
-        EventResult eventResult = erpUserHandler.handleEvent(inventoryEvent, null);
+        EventResult eventResult = erpUserHandler.handleEvent(returnInfoEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
         } else {
