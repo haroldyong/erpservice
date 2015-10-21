@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.RequestContextListener;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -32,7 +33,7 @@ import java.util.Map;
  */
 public class SpringWebTest {
     protected static String signKey = "847385239789";
-    
+
     @Autowired
     protected WebApplicationContext context;
     @Autowired

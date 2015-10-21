@@ -14,7 +14,9 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.model.FailedBean;
 import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * 事件处理器
@@ -50,4 +52,20 @@ public interface ERPHandler {
      * @return
      */
     EventResult handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean);
+
+    /**
+     * 主动调用形式的erp提供者提供的处理方法
+     *
+     * @param request
+     * @return
+     */
+    EventResult handleRequest(HttpServletRequest request) throws UnsupportedEncodingException, IOException;
+
+    /**
+     * 主动调用形式的erp提供者提供的异常信息处理方法
+     *
+     * @param eventResult
+     * @return
+     */
+    EventResult handleException(EventResult eventResult);
 }

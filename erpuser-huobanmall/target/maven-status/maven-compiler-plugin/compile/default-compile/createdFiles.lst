@@ -1,4 +1,6 @@
+com\huobanplus\erpuser\huobanmall\common\Constant.class
 com\huobanplus\erpuser\huobanmall\common\HuobanmallHandlerBuilder$1.class
 com\huobanplus\erpuser\huobanmall\handler\HBOrderHandler.class
 com\huobanplus\erpuser\huobanmall\common\HuobanmallHandlerBuilder.class
 com\huobanplus\erpuser\huobanmall\common\HuobanmallConfig.class
+com\huobanplus\erpuser\huobanmall\handler\impl\HBOrderHandlerImpl.class

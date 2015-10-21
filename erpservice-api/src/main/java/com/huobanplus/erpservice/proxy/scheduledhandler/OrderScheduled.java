@@ -34,7 +34,7 @@ public class OrderScheduled {
     @Autowired
     private ERPRegister erpRegister;
 
-    @Scheduled
+//    @Scheduled
     public void pushFailedOrder() throws IOException, IllegalAccessException {
         List<MallOrderBean> orderList = orderService.findAll();
         for (MallOrderBean order : orderList) {

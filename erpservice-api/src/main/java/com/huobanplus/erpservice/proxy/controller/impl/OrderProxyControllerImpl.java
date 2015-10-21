@@ -28,6 +28,7 @@ import com.huobanplus.erpservice.proxy.controller.OrderProxyController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -42,7 +43,7 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     private MallOrderService orderService;
 
     @Override
-    @RequestMapping("/createOrder")
+    @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
     @ResponseBody
     public ApiResult createOrder(String orderInfoJson, ERPInfo erpInfo) throws Exception {
         erpInfo = CommonUtils.encryptInfo(erpInfo);
@@ -55,6 +56,7 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
         if (erpHandler.eventSupported(CreateOrderEvent.class)) {
             MallOrderBean orderBean = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
             CreateOrderEvent createOrderEvent = new CreateOrderEvent();
+            createOrderEvent.setErpInfo(erpInfo);
             EventResult eventResult = erpHandler.handleEvent(createOrderEvent, orderBean);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 return ApiResult.resultWith(ResultCode.SUCCESS);
@@ -78,9 +80,11 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
         if (erpHandler == null) {
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
         }
-        if (erpHandler.eventSupported(CreateOrderEvent.class)) {
+        if (erpHandler.eventSupported(OrderUpdateEvent.class)) {
             MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
-            EventResult eventResult = erpHandler.handleEvent(new OrderUpdateEvent(), orderInfo);
+            OrderUpdateEvent orderUpdateEvent = new OrderUpdateEvent();
+            orderUpdateEvent.setErpInfo(erpInfo);
+            EventResult eventResult = erpHandler.handleEvent(orderUpdateEvent, orderInfo);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 return ApiResult.resultWith(ResultCode.SUCCESS);
             } else {

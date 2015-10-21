@@ -49,7 +49,10 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
             String logiNo,
             @RequestParam(required = false, defaultValue = "0") int freight,
             @RequestParam(required = false) String remark,
-            @RequestParam(required = false) String dicDeliverItemsStr) throws IOException {
+            @RequestParam(required = false) String dicDeliverItemsStr,
+            int customerId,
+            String erpUserName
+    ) throws IOException {
 
         //得到使用者事件处理器
         ERPUserInfo erpUserInfo = new ERPUserInfo();
@@ -88,7 +91,9 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
             String returnZip,
             @RequestParam(required = false, defaultValue = "0") int freight,
             @RequestParam(required = false) String remark,
-            @RequestParam(required = false) String dicDeliverItemsStr
+            @RequestParam(required = false) String dicDeliverItemsStr,
+            int customerId,
+            String erpUserName
     ) throws IOException {
         ERPUserInfo erpUserInfo = new ERPUserInfo();
         erpUserInfo.setERPUserName(erpUserName);
@@ -120,7 +125,14 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
     @Override
     @RequestMapping("/syncInventory")
     @ResponseBody
-    public ApiResult syncInventory(int goodId, int productId, String bn, int stock) throws IOException {
+    public ApiResult syncInventory(
+            int goodId,
+            int productId,
+            String bn,
+            int stock,
+            int customerId,
+            String erpUserName
+    ) throws IOException {
         ERPUserInfo erpUserInfo = new ERPUserInfo();
         erpUserInfo.setERPUserName(erpUserName);
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);

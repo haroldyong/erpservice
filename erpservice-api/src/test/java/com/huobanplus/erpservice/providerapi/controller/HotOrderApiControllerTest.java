@@ -59,7 +59,6 @@ public class HotOrderApiControllerTest extends SpringWebTest {
         mockOrder.setOrderId("123212322");
         mockOrder.setTid("123212322");
         mockOrder.setStatus("0");
-        mockOrder.setSysDataJson("123456");
 
         MallOrderItem orderItem = new MallOrderItem();
         orderItem.setBarcode("123123");
@@ -70,7 +69,7 @@ public class HotOrderApiControllerTest extends SpringWebTest {
         orderItem.setFreight("10");
         mockOrder.setOrderItems(Arrays.asList(orderItem));
 
-        mockOrder = orderService.save(mockOrder);
+//        mockOrder = orderService.save(mockOrder);
     }
 
     @Test

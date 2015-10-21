@@ -24,18 +24,6 @@ import java.io.IOException;
  */
 @Controller
 public class ERPApiBaseController {
-    @Autowired
-    protected HttpServletRequest request;
-
-    protected int customerId;
-    protected String erpUserName;
-
-    @PostConstruct
-    public void init() {
-        customerId = (int) request.getAttribute("customerId");
-        erpUserName = (String) request.getAttribute("erpUserName");
-    }
-
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ApiResult exceptionResolver(Exception ex) {

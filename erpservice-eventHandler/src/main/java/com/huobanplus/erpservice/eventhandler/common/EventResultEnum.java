@@ -15,6 +15,8 @@ package com.huobanplus.erpservice.eventhandler.common;
 public enum EventResultEnum {
     SUCCESS(2000, "处理成功"),
     ERROR(5000, "处理失败"),
+    NO_SIGN(4000, "签名参数未传"),
+    WRONG_SIGN(4001, "签名不正确"),
     NO_DATA(3000, "未找到相关处理信息");
 
     private int resultCode;

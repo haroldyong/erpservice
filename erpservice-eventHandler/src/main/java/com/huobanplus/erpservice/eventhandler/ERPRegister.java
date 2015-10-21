@@ -60,6 +60,9 @@ public class ERPRegister {
         ERPHandler erpHandler = null;
         for (ERPHandlerBuilder handlerBuilder : handlerBuilders) {
             erpHandler = handlerBuilder.buildHandler(erpInfo);
+            if (erpHandler != null) {
+                return erpHandler;
+            }
         }
         return erpHandler;
     }
@@ -74,6 +77,9 @@ public class ERPRegister {
         ERPUserHandler erpUserHandler = null;
         for (ERPUserHandlerBuilder userHandlerBuilder : userHandlerBuilders) {
             erpUserHandler = userHandlerBuilder.buildHandler(erpUserInfo);
+            if (erpUserHandler != null) {
+                return erpUserHandler;
+            }
         }
         return erpUserHandler;
     }

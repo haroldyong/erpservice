@@ -13,18 +13,6 @@ package com.huobanplus.erpprovider.netshop.util;
  * 常量工具类
  */
 public class Constant {
-
-    //加密参数
-    /**
-     * 签名的方式：默认为MD5
-     */
-    public static final String SIGN_TYPE = "MD5";
-
-    /**
-     * 平台秘钥
-     */
-    public static final String SIGN_SECRET = "secret";
-
     /**
      * 平台接入码
      */
@@ -46,37 +34,33 @@ public class Constant {
     public static final String SIGN_PARAM = "Sign";
 
     /**
-     * 请求成功
-     */
-    public final static String REQUEST_SUCCESS = "30000";
-    /**
-     * SING签名出错
-     */
-    public final static String REQUEST_SING_ERROR = "30001";
-    /**
-     * 数据库处理失败
-     */
-    public final static String REQUEST_DATABASE_ERROR = "30002";
-    /**
-     * ERP信息错误
-     */
-    public final static String REQUEST_ERP_INFO_ERROR = "30003";
-
-    /**
-     * 参数无效
-     */
-    public final static String REQUEST_INAVLID_PARAMETER = "30004";
-
-    /**
      * 时间格式1
      * yyyy-MM-dd HH:mm:dd
      */
     public final static String TIME_FORMAT_ONE = "yyyy-MM-dd HH:mm:dd";
 
     /**
-     * Secret是密钥
-     * 会在esAPI里面填写，商家自己这边需要设置，不会进行参数传值
+     * 获得订单列表
      */
-    public static final String SECRET = "";
+    public final static String OBTAIN_ORDER_LIST = "mOrderSearch";
 
+    /**
+     * 获得订单详情
+     */
+    public final static String OBTAIN_ORDER_DETAIL = "mGetOrder";
+
+    /**
+     * 发货通知
+     */
+    public final static String DELIVER_INFO = "mSndGoods";
+
+    /**
+     * 获得商品列表
+     */
+    public final static String OBTAIN_GOOD_LIST = "mGetGoods";
+
+    /**
+     * 库存同步
+     */
+    public final static String SYNC_INVENTORY = "mSysGoods";
 }

@@ -31,7 +31,9 @@ public interface OrderApiController {
             String logiNo,
             @RequestParam(required = false, defaultValue = "0") int freight,
             @RequestParam(required = false) String remark,
-            @RequestParam(required = false) String dicDeliverItemsStr
+            @RequestParam(required = false) String dicDeliverItemsStr,
+            int customerId,
+            String erpUserName
     ) throws IOException;
 
     @RequestMapping("/returnInfo")
@@ -46,7 +48,9 @@ public interface OrderApiController {
             String returnZip,
             @RequestParam(required = false, defaultValue = "0") int freight,
             @RequestParam(required = false) String remark,
-            @RequestParam(required = false) String dicDeliverItemsStr
+            @RequestParam(required = false) String dicDeliverItemsStr,
+            int customerId,
+            String erpUserName
     ) throws IOException;
 
     @RequestMapping("/syncInventory")
@@ -55,6 +59,8 @@ public interface OrderApiController {
             int goodId,
             int productId,
             String bn,
-            int stock
+            int stock,
+            int customerId,
+            String erpUserName
     ) throws IOException;
 }

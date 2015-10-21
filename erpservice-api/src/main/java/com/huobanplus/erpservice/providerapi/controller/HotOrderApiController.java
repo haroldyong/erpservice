@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  * <p>订单相关</p>
  * Created by liual on 2015-08-25.
  */
-@RequestMapping("/hotErpApi")
+@RequestMapping("/providerApi")
 public interface HotOrderApiController {
     /**
      * 得到订单列表

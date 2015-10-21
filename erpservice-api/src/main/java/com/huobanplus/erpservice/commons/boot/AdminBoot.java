@@ -9,10 +9,9 @@
 
 package com.huobanplus.erpservice.commons.boot;
 
-import com.huobanplus.erpprovider.edb.EDBConfig;
-import com.huobanplus.erpservice.commons.config.ApplicationConfig;
 import com.huobanplus.erpservice.commons.config.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
 
 /**
  * Created by allan on 2015/7/10.
@@ -34,4 +33,5 @@ public class AdminBoot extends AbstractAnnotationConfigDispatcherServletInitiali
     protected String[] getServletMappings() {
         return new String[]{"/"};
     }
+
 }

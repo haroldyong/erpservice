@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by allan on 2015/8/4.
  */
 @ActiveProfiles("test")
-@ContextConfiguration(classes = {ApplicationConfig.class, WebConfig.class})
+@ContextConfiguration(classes = {WebConfig.class})
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 public class HotOrderControllerTest extends SpringWebTest {
@@ -104,11 +104,10 @@ public class HotOrderControllerTest extends SpringWebTest {
         orderItem1.setProNum(1);
         orderItem1.setFreight("10");
 
-        mockOrder.setOrderItems(Arrays.asList(orderItem));
-        mockOrder = orderService.save(mockOrder);
+        mockOrder.setOrderItems(Arrays.asList(orderItem, orderItem1));
+//        mockOrder = orderService.save(mockOrder);
 
-        mockOrder.getOrderItems().add(orderItem1);
-        mockOrder = orderService.save(mockOrder);
+//        mockOrder = orderService.save(mockOrder);
     }
 
     @Test
@@ -141,7 +140,7 @@ public class HotOrderControllerTest extends SpringWebTest {
         signMap.put("sysDataJson", mockERP.getSysDataJson());
 
         String sign = buildSign(signMap, signKey, null);
-        mockMvc.perform(post("/hotClientOrderApi/createOrder")
+        mockMvc.perform(post("/hotProxy/order/createOrder")
                 .param("orderInfoJson", orderInfoJson)
                 .param("name", DxDESCipher.encrypt(mockERP.getName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))

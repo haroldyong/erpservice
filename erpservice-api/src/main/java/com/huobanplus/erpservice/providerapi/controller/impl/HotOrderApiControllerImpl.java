@@ -30,7 +30,7 @@ import java.io.IOException;
  * Created by liual on 2015-08-25.
  */
 @Controller
-@RequestMapping("/hotErpApi")
+@RequestMapping("/providerApi/order")
 public class HotOrderApiControllerImpl implements HotOrderApiController {
     @Autowired
     private ERPRegister erpRegister;
