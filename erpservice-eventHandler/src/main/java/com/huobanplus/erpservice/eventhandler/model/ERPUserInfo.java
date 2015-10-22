@@ -9,7 +9,9 @@
 
 package com.huobanplus.erpservice.eventhandler.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -18,20 +20,22 @@ import java.io.Serializable;
  * Created by liual on 2015-10-15.
  */
 @Data
-public class ERPUserInfo implements Serializable{
+@AllArgsConstructor
+@NoArgsConstructor
+public class ERPUserInfo implements Serializable {
     private static final long serialVersionUID = 52479852258664542L;
 
     /**
      * erp使用者名称
      * <ul>
-     *     <li>huobanmall</li>
-     *     <li>supplier</li>
+     * <li>huobanmall</li>
+     * <li>supplier</li>
      * </ul>
      */
     private String ERPUserName;
 
     /**
-     * 时间戳
+     * 商家id
      */
-    private long timestamp;
+    private int customerId;
 }

@@ -9,8 +9,14 @@
 
 package com.huobanplus.erpservice.eventhandler.erpevent;
 
+import com.huobanplus.erpservice.eventhandler.model.BaseInfo;
+import com.huobanplus.erpservice.eventhandler.model.ObtainGoodListInfo;
+import lombok.Data;
+
 /**
  * Created by liual on 2015-08-26.
  */
+@Data
 public class ObtainGoodListEvent extends ERPBaseEvent {
+    private ObtainGoodListInfo obtainGoodListInfo;
 }

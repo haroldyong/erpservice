@@ -12,18 +12,13 @@ package com.huobanplus.erpservice.eventhandler.model;
 import lombok.Data;
 
 /**
- * Created by liual on 2015-10-19.
+ * Created by liual on 2015-10-21.
  */
 @Data
-public class ReturnInfo extends BaseInfo {
-    private String orderId;
-    private String logiName;
-    private String logiNo;
-    private String returnAddr;
-    private String returnMobile;
-    private String returnName;
-    private String returnZip;
-    private int freight;
-    private String remark;
-    private String dicDeliverItemsStr;
+public class ObtainGoodListInfo {
+    private String goodType;
+    private String goodBn;
+    private String goodName;
+    private int pageSize;
+    private Integer pageIndex;
 }

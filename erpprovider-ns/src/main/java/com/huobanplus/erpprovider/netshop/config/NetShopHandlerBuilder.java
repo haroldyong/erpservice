@@ -9,9 +9,9 @@
 
 package com.huobanplus.erpprovider.netshop.config;
 
+import com.huobanplus.erpprovider.netshop.exceptionhandler.NSExceptionHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSOrderHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSProductHandler;
-import com.huobanplus.erpprovider.netshop.support.BaseMonitor;
 import com.huobanplus.erpprovider.netshop.util.Constant;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -24,7 +24,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.TreeMap;
@@ -65,87 +64,105 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
             }
 
             @Override
-            public EventResult handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException, IllegalAccessException, IllegalArgumentException {
-                HttpServletRequest request = (HttpServletRequest) data;
+            public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
+//                HttpServletRequest request = (HttpServletRequest) data;
 
-                if (erpBaseEvent instanceof DeliveryInfoEvent) {
-                    return nsOrderHandler.deliverOrder(request);
-                } else if (erpBaseEvent instanceof ObtainOrderDetailEvent) {
-                    return nsOrderHandler.obtainOrderInfo(request);
-                } else if (erpBaseEvent instanceof ObtainOrderListEvent) {
-                    return nsOrderHandler.obtainOrderInfoList(request);
-                } else if (erpBaseEvent instanceof ObtainGoodListEvent) {
-                    return productHandler.obtainGoods(request);
-                } else if (erpBaseEvent instanceof InventoryEvent) {
-                    return productHandler.syncInventory(request);
-                }
+//                if (erpBaseEvent instanceof DeliveryInfoEvent) {
+//                    return nsOrderHandler.deliverOrder(request);
+//                } else if (erpBaseEvent instanceof ObtainOrderDetailEvent) {
+//                    return nsOrderHandler.obtainOrderInfo(request);
+//                } else if (erpBaseEvent instanceof ObtainOrderListEvent) {
+//                    return nsOrderHandler.obtainOrderInfoList(request);
+//                } else if (erpBaseEvent instanceof ObtainGoodListEvent) {
+//                    return productHandler.obtainGoods(request);
+//                } else if (erpBaseEvent instanceof InventoryEvent) {
+//                    return productHandler.syncInventory(request);
+//                }
                 return null;
             }
 
             @Override
-            public EventResult handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean) {
-//
-                if (baseEventClass == DeliveryInfoEvent.class) {
-                    return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>" + failedBean.getFailedMsg() + "</Cause></Rsp>");
-                } else if (baseEventClass == ObtainOrderListEvent.class) {
-                    return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>" + failedBean.getFailedMsg() + "</Cause></Order>");
-                } else if (baseEventClass == ObtainOrderDetailEvent.class) {
-                    return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Order><Result>0</Result><Cause>" + failedBean.getFailedMsg() + "</Cause></Order>");
-                } else if (baseEventClass == ObtainGoodListEvent.class) {
-                    return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</Result><Cause>" + failedBean.getFailedMsg() + "</Cause></Rsp>");
-                } else if (baseEventClass == InventoryEvent.class) {
-                    return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>0</result><GoodsType></GoodsType><Cause>" + failedBean.getFailedMsg() + "</Cause></Rsp>");
-                }
-                return null;
-            }
-
-            @Override
-            public EventResult handleRequest(HttpServletRequest request) throws IOException {
-                String requestSign = request.getParameter("sign");
-                if (StringUtils.isEmpty(requestSign)) {
-                    return EventResult.resultWith(EventResultEnum.NO_SIGN);
-                }
-                //签名验证
-                Map<String, String[]> paramMap = request.getParameterMap();
-                Map<String, String> signMap = new TreeMap<>();
-                paramMap.forEach((key, value) -> {
-                    if (!"sign".equals(key.toLowerCase())) {
-                        if (value != null && value.length > 0)
-                            signMap.put(key, value[0]);
+            public EventResult handleRequest(HttpServletRequest request) {
+                String method = request.getParameter("mType");
+                try {
+                    String requestSign = request.getParameter("sign");
+                    if (StringUtils.isEmpty(requestSign)) {
+                        return NSExceptionHandler.handleException(method, EventResultEnum.NO_SIGN, "签名参数未传");
                     }
-                });
-                //调用伙伴商城api得到secretKey
-                String secretKey = "";
-                String sign = SignBuilder.buildSign(signMap, secretKey, secretKey);
-                if (sign.equals(requestSign)) {
-                    //开始处理
-                    String method = request.getParameter("mType");
-                    switch (method) {
-                        case Constant.OBTAIN_ORDER_LIST:
-                            nsOrderHandler.obtainOrderInfoList(request);
-                            break;
-                        case Constant.OBTAIN_ORDER_DETAIL:
-                            nsOrderHandler.obtainOrderInfo(request);
-                            break;
-                        case Constant.DELIVER_INFO:
-                            nsOrderHandler.deliverOrder(request);
-                            break;
-                        case Constant.OBTAIN_GOOD_LIST:
-                            productHandler.obtainGoods(request);
-                            break;
-                        case Constant.SYNC_INVENTORY:
-                            productHandler.syncInventory(request);
-                            break;
+                    //签名验证
+                    Map<String, String[]> paramMap = request.getParameterMap();
+                    Map<String, String> signMap = new TreeMap<>();
+                    paramMap.forEach((key, value) -> {
+                        if (!"sign".equals(key.toLowerCase())) {
+                            if (value != null && value.length > 0)
+                                signMap.put(key, value[0]);
+                        }
+                    });
+                    //调用伙伴商城api得到secretKey,customerId, erpUserName;
+                    String secretKey = "";
+                    int customerId = 5;
+                    String erpUserName = "";
+                    String sign;
+                    try {
+                        sign = SignBuilder.buildSign(signMap, secretKey, secretKey);
+                    } catch (UnsupportedEncodingException e) {
+                        return NSExceptionHandler.handleException(method, EventResultEnum.ERROR, e.getMessage());
                     }
-                    return null;
-                } else {
-                    return EventResult.resultWith(EventResultEnum.WRONG_SIGN);
+                    if (sign.equals(requestSign)) {
+                        //开始处理
+                        //得到erpUserInfo
+                        ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserName, customerId);
+                        switch (method) {
+                            case Constant.OBTAIN_ORDER_LIST:
+                                int orderStatus = Integer.parseInt(request.getParameter("OrderStatus"));
+                                int pageSize = Integer.parseInt(request.getParameter("PageSize"));
+                                Integer pageIndex = null;
+                                String pageIndexStr = request.getParameter("Page");
+                                if (!StringUtils.isEmpty(pageIndexStr)) {
+                                    pageIndex = Integer.valueOf(pageIndexStr);
+                                }
+                                return nsOrderHandler.obtainOrderInfoList(orderStatus, pageSize, pageIndex, erpUserInfo, method);
+                            case Constant.OBTAIN_ORDER_DETAIL:
+                                String orderId = request.getParameter("OrderNO");
+                                if (StringUtils.isEmpty(orderId)) {
+                                    return NSExceptionHandler.handleException(method, EventResultEnum.BAD_REQUEST_PARAM, "OrderNO未传");
+                                }
+                                return nsOrderHandler.obtainOrderInfo(orderId, erpUserInfo, method);
+                            case Constant.DELIVER_INFO:
+                                String deliverOrderId = request.getParameter("OrderNO");
+                                String logiName = request.getParameter("SndStyle");
+                                String logiNo = request.getParameter("BillID");
+                                if (StringUtils.isEmpty(deliverOrderId)) {
+                                    return NSExceptionHandler.handleException(method, EventResultEnum.BAD_REQUEST_PARAM, "OrderNO未传");
+                                }
+                                return nsOrderHandler.deliverOrder(deliverOrderId, logiName, logiNo, erpUserInfo, method);
+                            case Constant.OBTAIN_GOOD_LIST:
+                                String goodsType = request.getParameter("GoodsType");
+                                String goodBn = request.getParameter("OuterID");
+                                if (StringUtils.isEmpty(goodBn)) {
+                                    return NSExceptionHandler.handleException(method, EventResultEnum.BAD_REQUEST_PARAM, "OuterID未传");
+                                }
+                                String goodsName = request.getParameter("GoodsName");
+                                int goodPageSize = Integer.parseInt(request.getParameter("PageSize"));
+                                Integer goodPageIndex = null;
+                                String goodPageIndexStr = request.getParameter("Page");
+                                if (!StringUtils.isEmpty(goodPageIndexStr)) {
+                                    goodPageIndex = Integer.valueOf(goodPageIndex);
+                                }
+                                return productHandler.obtainGoods(goodsType, goodBn, goodsName, goodPageSize, goodPageIndex, erpUserInfo, method);
+                            case Constant.SYNC_INVENTORY:
+                                String syncGoodBn = request.getParameter("ItemID");
+                                String syncProBn = request.getParameter("SkuID");
+                                int stock = Integer.parseInt(request.getParameter("Quantity"));
+                                return productHandler.syncInventory(syncGoodBn, syncProBn, stock, erpUserInfo, method);
+                        }
+                        return NSExceptionHandler.handleException(method, EventResultEnum.NO_DATA, "未找到数据源信息");
+                    } else {
+                        return NSExceptionHandler.handleException(method, EventResultEnum.WRONG_SIGN, "签名错误");
+                    }
+                } catch (Exception ex) {
+                    return NSExceptionHandler.handleException(method, EventResultEnum.ERROR, "服务器错误--" + ex.getMessage());
                 }
-            }
-
-            @Override
-            public EventResult handleException(EventResult eventResult) {
-                return null;
             }
         };
     }

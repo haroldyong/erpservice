@@ -23,10 +23,10 @@ import com.huobanplus.erpservice.eventhandler.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- *
  * com.huobanplus.erpprovider.edb 具体事件处理实现类
  * Created by allan on 2015/7/13.
  */
@@ -34,10 +34,6 @@ import java.io.IOException;
 public class EDBHandlerBuilder implements ERPHandlerBuilder {
     @Autowired
     private EDBOrderHandler EDBOrderHandler;
-    @Autowired
-    private EDBProductHandler EDBProductHandler;
-    @Autowired
-    private EDBStorageHandler edbStorageHandler;
 
     /**
      * 根据erp信息判断是否由该erp-provider处理
@@ -78,45 +74,33 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                 return false;
             }
 
-            public EventResult handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException, IllegalAccessException {
+            public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                 if (erpBaseEvent instanceof CreateOrderEvent) {
-                    MallOrderBean orderInfo = (MallOrderBean) data;
-                    return EDBOrderHandler.createOrder(orderInfo, erpBaseEvent.getErpInfo());
-                } else if (erpBaseEvent instanceof InventoryEvent) {
-                    return EDBProductHandler.getProInventoryInfo(erpBaseEvent.getErpInfo());
-                } else if (erpBaseEvent instanceof ObtainOrderListEvent) {
-                    //EDBOrderHandler.obtainOrderList((MallOrderSearchBean) data, erpBaseEvent.getErpInfo());
-                } else if (erpBaseEvent instanceof OrderDeliverEvent) {
-                    return EDBOrderHandler.orderDeliver((MallOrderBean) data, erpBaseEvent.getErpInfo());
-                } else if (erpBaseEvent instanceof OrderStatusUpdateEvent) {
-                    return EDBOrderHandler.orderStatusUpdate((MallOrderBean) data, erpBaseEvent.getErpInfo());
-                } else if (erpBaseEvent instanceof OrderUpdateEvent) {
-                    return EDBOrderHandler.orderUpdate((MallOrderBean) data, erpBaseEvent.getErpInfo());
-                } else if (erpBaseEvent instanceof AddOutStoreEvent) {
-                    return edbStorageHandler.outStorageAdd((MallOutStoreBean) data, erpBaseEvent.getErpInfo());
-                } else if (erpBaseEvent instanceof ConfirmOutStoreEvent) {
-                    return edbStorageHandler.outStoreConfirm((MallOutStoreBean) data, erpBaseEvent.getErpInfo());
-                } else if (erpBaseEvent instanceof OutStoreWriteBackEvent) {
-                    return edbStorageHandler.outStoreWriteback((MallProductOutBean) data, erpBaseEvent.getErpInfo());
+                    CreateOrderEvent createOrderEvent = (CreateOrderEvent) erpBaseEvent;
+                    return EDBOrderHandler.createOrder(createOrderEvent.getOrderInfo(), erpBaseEvent.getErpInfo());
                 }
+//                else if (erpBaseEvent instanceof InventoryEvent) {
+//                    return EDBProductHandler.getProInventoryInfo(erpBaseEvent.getErpInfo());
+//                } else if (erpBaseEvent instanceof ObtainOrderListEvent) {
+//                    //EDBOrderHandler.obtainOrderList((MallOrderSearchBean) data, erpBaseEvent.getErpInfo());
+//                } else if (erpBaseEvent instanceof OrderDeliverEvent) {
+//                    return EDBOrderHandler.orderDeliver((MallOrderBean) data, erpBaseEvent.getErpInfo());
+//                } else if (erpBaseEvent instanceof OrderStatusUpdateEvent) {
+//                    return EDBOrderHandler.orderStatusUpdate((MallOrderBean) data, erpBaseEvent.getErpInfo());
+//                } else if (erpBaseEvent instanceof OrderUpdateEvent) {
+//                    return EDBOrderHandler.orderUpdate((MallOrderBean) data, erpBaseEvent.getErpInfo());
+//                } else if (erpBaseEvent instanceof AddOutStoreEvent) {
+//                    return edbStorageHandler.outStorageAdd((MallOutStoreBean) data, erpBaseEvent.getErpInfo());
+//                } else if (erpBaseEvent instanceof ConfirmOutStoreEvent) {
+//                    return edbStorageHandler.outStoreConfirm((MallOutStoreBean) data, erpBaseEvent.getErpInfo());
+//                } else if (erpBaseEvent instanceof OutStoreWriteBackEvent) {
+//                    return edbStorageHandler.outStoreWriteback((MallProductOutBean) data, erpBaseEvent.getErpInfo());
+//                }
                 return null;
             }
 
             @Override
-            public EventResult handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean) {
-                if (baseEventClass == CreateOrderEvent.class) {
-
-                } else if (baseEventClass == InventoryEvent.class) {
-
-                } else if (baseEventClass == DeliveryInfoEvent.class) {
-
-                } else if (baseEventClass == OrderStatusInfoEvent.class) {
-
-                } else if (baseEventClass == ObtainOrderListEvent.class) {
-
-                } else {
-
-                }
+            public EventResult handleRequest(HttpServletRequest request) {
                 return null;
             }
         };

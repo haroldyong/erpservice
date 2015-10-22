@@ -64,7 +64,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
                 MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
                 orderInfo.setRotaryStatus(1);
                 orderInfo.setErpInfo(new ObjectMapper().writeValueAsString(info));
-                EventResult eventResult = erpHandler.handleEvent(createOrderEvent, orderInfo);
+                EventResult eventResult = erpHandler.handleEvent(createOrderEvent);
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                     orderService.save(orderInfo);
                     return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
@@ -137,7 +137,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
                 orderDeliverEvent.setErpInfo(info);
                 MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
 
-                EventResult eventResult = erpHandler.handleEvent(orderDeliverEvent, orderInfo);
+                EventResult eventResult = erpHandler.handleEvent(orderDeliverEvent);
                 if (eventResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
                     //本地数据更新
                     MallOrderBean preBean = orderService.findByOrderId(orderInfo.getOrderId());
@@ -175,7 +175,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
                 orderUpdateEvent.setErpInfo(info);
                 MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
 
-                EventResult eventResult = erpHandler.handleEvent(orderUpdateEvent, orderInfo);
+                EventResult eventResult = erpHandler.handleEvent(orderUpdateEvent);
                 if (eventResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
 
                     //本地数据更新
@@ -227,7 +227,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
                 OrderStatusUpdateEvent orderStatusUpdateEvent = new OrderStatusUpdateEvent();
                 orderStatusUpdateEvent.setErpInfo(erpInfo);
                 MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
-                EventResult eventResult = erpHandler.handleEvent(orderStatusUpdateEvent, orderInfo);
+                EventResult eventResult = erpHandler.handleEvent(orderStatusUpdateEvent);
                 if (eventResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
                     return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
                 } else {

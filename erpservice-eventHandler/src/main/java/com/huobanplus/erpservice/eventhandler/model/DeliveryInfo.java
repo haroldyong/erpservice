@@ -15,7 +15,7 @@ import lombok.Data;
  * <b>类描述：</b>发货通知信息
  */
 @Data
-public class DeliveryInfo {
+public class DeliveryInfo extends BaseInfo{
     /**
      * 订单id
      */

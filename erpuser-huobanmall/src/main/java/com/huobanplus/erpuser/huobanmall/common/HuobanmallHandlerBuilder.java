@@ -37,15 +37,10 @@ public class HuobanmallHandlerBuilder implements ERPUserHandlerBuilder {
         if ("huobanmall".equals(info.getERPUserName())) {
             return new ERPUserHandler() {
                 @Override
-                public EventResult handleEvent(ERPBaseEvent erpBaseEvent, Object data) throws IOException {
+                public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                     if (erpBaseEvent instanceof DeliveryInfoEvent) {
                         return orderHandler.deliverInfo(((DeliveryInfoEvent) erpBaseEvent).getDeliveryInfo());
                     }
-                    return null;
-                }
-
-                @Override
-                public EventResult handleException(Class<? extends ERPBaseEvent> baseEventClass, FailedBean failedBean) {
                     return null;
                 }
             };

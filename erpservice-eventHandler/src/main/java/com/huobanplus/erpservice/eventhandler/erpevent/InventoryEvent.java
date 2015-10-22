@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.eventhandler.erpevent;
 
+import com.huobanplus.erpservice.eventhandler.model.InventoryInfo;
 import lombok.Data;
 
 /**
@@ -16,8 +17,5 @@ import lombok.Data;
  */
 @Data
 public class InventoryEvent extends ERPBaseEvent {
-    private int goodId;
-    private int productId;
-    private String bn;
-    private int stock;
+    private InventoryInfo inventoryInfo;
 }

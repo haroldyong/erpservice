@@ -9,14 +9,9 @@
 
 package com.huobanplus.erpservice.eventhandler.model;
 
-import lombok.Data;
-
 /**
  * Created by liual on 2015-10-21.
  */
-@Data
-public class InventoryInfo {
-    private String goodBn;
-    private String proBn;
-    private int stock;
+public class BaseInfo {
+    
 }

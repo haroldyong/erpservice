@@ -15,7 +15,7 @@ package com.huobanplus.erpservice.eventhandler.model;
  * @since 2015年7月27日 上午10:26:48
  * @version V1.0
  */
-public class FailedBean extends BaseResult {
+public class FailedBean{
 
     /**
      * 失败原因说明

@@ -32,7 +32,7 @@ public interface EDBOrderHandler {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    EventResult createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException;
+    EventResult createOrder(MallOrderBean orderInfo, ERPInfo info);
 
     /**
      * 获取订单列表

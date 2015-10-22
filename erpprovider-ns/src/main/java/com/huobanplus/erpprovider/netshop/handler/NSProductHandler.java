@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpprovider.netshop.handler;
 
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
@@ -23,18 +24,16 @@ public interface NSProductHandler {
     /**
      * 获取商品信息
      *
-     * @param request 请求实体
      * @return 返回返回结果值统一处理信息
      * @throws IOException IO 异常
      */
-    EventResult obtainGoods(HttpServletRequest request) throws IOException;
+    EventResult obtainGoods(String goodType, String goodBn, String goodName, int pageSize, Integer pageIndex, ERPUserInfo erpUserInfo, String mType);
 
     /**
      * 数据同步
      *
-     * @param request
      * @return
      * @throws IOException
      */
-    EventResult syncInventory(HttpServletRequest request) throws IOException;
+    EventResult syncInventory(String goodBn, String proBn, int quantity, ERPUserInfo erpUserInfo, String mType);
 }

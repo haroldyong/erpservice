@@ -14,7 +14,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.edb.bean.*;
 import com.huobanplus.erpprovider.edb.handler.BaseHandler;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
-import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.common.util.HttpUtil;
 import com.huobanplus.erpservice.common.util.StringUtil;
@@ -24,13 +23,10 @@ import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -46,7 +42,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
     private MallOrderService orderService;
 
     @Override
-    public EventResult createOrder(MallOrderBean orderInfo, ERPInfo info) throws IOException {
+    public EventResult createOrder(MallOrderBean orderInfo, ERPInfo info) {
         HttpUtil htNetService = HttpUtil.getInstance();
 
         EDBCreateOrderInfo edbCreateOrderInfo = new EDBCreateOrderInfo();
@@ -133,27 +129,31 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         }
         edbCreateOrderInfo.setProductInfos(edbOrderItemList);
 
-        String xmlResult = new XmlMapper().writeValueAsString(edbCreateOrderInfo);
-        int firstIndex = xmlResult.indexOf("<product_item>");
-        int lastIndex = xmlResult.lastIndexOf("</product_item>");
-        String firstPanel = xmlResult.substring(0, firstIndex);
-        String productPanel = xmlResult.substring(firstIndex + 14, lastIndex);
-        String xmlValues = ("<order>" + firstPanel + "<product_info>" + productPanel + "</product_info></orderInfo></order>").replaceAll(" xmlns=\"\"", "");
+        try {
+            String xmlResult = new XmlMapper().writeValueAsString(edbCreateOrderInfo);
+            int firstIndex = xmlResult.indexOf("<product_item>");
+            int lastIndex = xmlResult.lastIndexOf("</product_item>");
+            String firstPanel = xmlResult.substring(0, firstIndex);
+            String productPanel = xmlResult.substring(firstIndex + 14, lastIndex);
+            String xmlValues = ("<order>" + firstPanel + "<product_info>" + productPanel + "</product_info></orderInfo></order>").replaceAll(" xmlns=\"\"", "");
 
-        EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
+            EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
-        Map<String, String> requestData = getSysRequestData(Constant.CREATE_ORDER, sysData);
-        Map<String, String> signMap = new TreeMap<>(requestData);
-        requestData.put("xmlvalues", URLEncoder.encode(xmlValues, "utf-8"));
-        signMap.put("xmlvalues", xmlValues);
+            Map<String, String> requestData = getSysRequestData(Constant.CREATE_ORDER, sysData);
+            Map<String, String> signMap = new TreeMap<>(requestData);
+            requestData.put("xmlvalues", URLEncoder.encode(xmlValues, "utf-8"));
+            signMap.put("xmlvalues", xmlValues);
 
-        requestData.put("sign", getSign(signMap, sysData));
+            requestData.put("sign", getSign(signMap, sysData));
 
-        String responseData = htNetService.doPost(sysData.getRequestUrl(), requestData);
-        if (responseData == null) {
-            return EventResult.resultWith(EventResultEnum.ERROR);
+            String responseData = htNetService.doPost(sysData.getRequestUrl(), requestData);
+            if (responseData == null) {
+                return EventResult.resultWith(EventResultEnum.ERROR);
+            }
+            return EventResult.resultWith(EventResultEnum.SUCCESS);
+        } catch (IOException ex) {
+            return EventResult.resultWith(EventResultEnum.ERROR, ex.getMessage(), null);
         }
-        return EventResult.resultWith(EventResultEnum.SUCCESS);
     }
 
     /**

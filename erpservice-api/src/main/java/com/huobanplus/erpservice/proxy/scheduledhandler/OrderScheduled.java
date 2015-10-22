@@ -16,6 +16,7 @@ import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.erpevent.CreateOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,7 @@ public class OrderScheduled {
     @Autowired
     private ERPRegister erpRegister;
 
-//    @Scheduled
+    //    @Scheduled
     public void pushFailedOrder() throws IOException, IllegalAccessException {
         List<MallOrderBean> orderList = orderService.findAll();
         for (MallOrderBean order : orderList) {
@@ -43,7 +44,10 @@ public class OrderScheduled {
             if (erpHandler != null) {
                 if (erpHandler.eventSupported(CreateOrderEvent.class)) {
                     //推送给erp
-                    erpHandler.handleEvent(new CreateOrderEvent(), order);
+                    CreateOrderEvent createOrderEvent = new CreateOrderEvent();
+                    createOrderEvent.setErpInfo(erpInfo);
+                    createOrderEvent.setOrderInfo(order);
+                    EventResult eventResult = erpHandler.handleEvent(createOrderEvent);
                 }
             }
         }

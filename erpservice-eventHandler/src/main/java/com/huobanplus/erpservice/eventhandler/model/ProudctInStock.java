@@ -12,7 +12,7 @@ package com.huobanplus.erpservice.eventhandler.model;
 /**
  * 产品库存信息
  */
-public class ProudctInStock extends BaseBean {
+public class ProudctInStock {
 
     //产品分类
     private String productNo;
