@@ -20,6 +20,17 @@ import java.io.IOException;
  */
 @RequestMapping("/hotApi/product")
 public interface ProductApiController {
+
+    /**
+     * 同步库存
+     * @param goodBn
+     * @param proBn
+     * @param stock
+     * @param customerId
+     * @param erpUserName
+     * @return
+     * @throws IOException
+     */
     @RequestMapping("/syncInventory")
     @ResponseBody
     ApiResult syncInventory(

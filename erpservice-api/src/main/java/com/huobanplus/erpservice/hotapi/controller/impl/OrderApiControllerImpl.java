@@ -12,22 +12,22 @@ package com.huobanplus.erpservice.hotapi.controller.impl;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.eventhandler.erpevent.*;
 import com.huobanplus.erpservice.eventhandler.model.*;
 import com.huobanplus.erpservice.hotapi.common.ERPApiBaseController;
 import com.huobanplus.erpservice.hotapi.controller.OrderApiController;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.InventoryEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.ReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Created by liual on 2015-10-17.
@@ -115,6 +115,52 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
         ReturnInfoEvent returnInfoEvent = new ReturnInfoEvent();
         returnInfoEvent.setReturnInfo(returnInfo);
         EventResult eventResult = erpUserHandler.handleEvent(returnInfoEvent);
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
+        } else {
+            return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, eventResult.getResultMsg(), null);
+        }
+    }
+
+    @RequestMapping("/obtainOrders")
+    @ResponseBody
+    @Override
+    public ApiResult obtainOrders(Pageable pageable,  int orderStauts, int customerId, String erpUserName) throws IOException {
+        ERPUserInfo erpUserInfo = new ERPUserInfo();
+        erpUserInfo.setERPUserName(erpUserName);
+        erpUserInfo.setCustomerId(customerId);
+        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+        if (erpUserHandler == null) {
+            return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
+        }
+
+        ObtainOrderListEvent orderListEvent = new ObtainOrderListEvent();
+        orderListEvent.setOrderStatus(orderStauts);
+        orderListEvent.setPageIndex(pageable.getOffset());
+        orderListEvent.setPageSize(pageable.getPageSize());
+        EventResult eventResult = erpUserHandler.handleEvent(orderListEvent);
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
+        } else {
+            return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, eventResult.getResultMsg(), null);
+        }
+    }
+
+    @RequestMapping("/obtainOrder")
+    @ResponseBody
+    @Override
+    public ApiResult obtainOrder(String orderId, int customerId, String erpUserName) throws IOException {
+        ERPUserInfo erpUserInfo = new ERPUserInfo();
+        erpUserInfo.setERPUserName(erpUserName);
+        erpUserInfo.setCustomerId(customerId);
+        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+        if (erpUserHandler == null) {
+            return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
+        }
+
+        ObtainOrderDetailEvent orderEvent = new ObtainOrderDetailEvent();
+        orderEvent.setOrderId(orderId);
+        EventResult eventResult = erpUserHandler.handleEvent(orderEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
         } else {

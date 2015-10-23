@@ -10,11 +10,13 @@
 package com.huobanplus.erpservice.hotapi.controller;
 
 import com.huobanplus.erpservice.commons.bean.ApiResult;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
+import java.util.Map;
 
 
 /**
@@ -23,6 +25,19 @@ import java.io.IOException;
  */
 @RequestMapping("/hotApi/order")
 public interface OrderApiController {
+    /**
+     * 发货通知
+     * @param orderId
+     * @param logiName
+     * @param logiNo
+     * @param freight
+     * @param remark
+     * @param dicDeliverItemsStr
+     * @param customerId
+     * @param erpUserName
+     * @return
+     * @throws IOException
+     */
     @RequestMapping("/deliverInfo")
     @ResponseBody
     ApiResult deliverInfo(
@@ -36,6 +51,23 @@ public interface OrderApiController {
             String erpUserName
     ) throws IOException;
 
+    /**
+     * 退货通知
+     * @param orderId
+     * @param logiName
+     * @param logiNo
+     * @param returnAddr
+     * @param returnMobile
+     * @param returnName
+     * @param returnZip
+     * @param freight
+     * @param remark
+     * @param dicDeliverItemsStr
+     * @param customerId
+     * @param erpUserName
+     * @return
+     * @throws IOException
+     */
     @RequestMapping("/returnInfo")
     @ResponseBody
     ApiResult returnInfo(
@@ -52,4 +84,31 @@ public interface OrderApiController {
             int customerId,
             String erpUserName
     ) throws IOException;
+
+    /**
+     * 按条件搜索订单列表
+     * @param pageable
+     * @param orderStauts
+     * @param customerId
+     * @param erpUserName
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/obtainOrders")
+    @ResponseBody
+    ApiResult obtainOrders(Pageable pageable, int orderStauts,int customerId,
+                           String erpUserName) throws IOException;
+
+    /**
+     *  根据订单编号获取订单详情
+     * @param orderId
+     * @param customerId
+     * @param erpUserName
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/obtainOrder")
+    @ResponseBody
+    ApiResult obtainOrder(String orderId, int customerId,
+                          String erpUserName) throws IOException;
 }
