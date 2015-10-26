@@ -13,8 +13,8 @@ import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
 import com.huobanplus.erpservice.commons.config.WebConfig;
-import com.huobanplus.erpservice.datacenter.bean.MallGoodBean;
-import com.huobanplus.erpservice.datacenter.bean.MallProductBean;
+import com.huobanplus.erpservice.datacenter.entity.MallGoodEntity;
+import com.huobanplus.erpservice.datacenter.entity.MallProductBean;
 import com.huobanplus.erpservice.datacenter.service.MallGoodService;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,11 +43,11 @@ public class HotProductApiControllerTest extends SpringWebTest {
     @Autowired
     private MallGoodService goodService;
 
-    private MallGoodBean mockGood;
+    private MallGoodEntity mockGood;
 
     @Before
     public void setUp() throws Exception {
-        mockGood = new MallGoodBean();
+        mockGood = new MallGoodEntity();
         mockGood.setGoodId(1);
         mockGood.setBn("123123");
         mockGood.setGoodName("mockName");

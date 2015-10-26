@@ -13,8 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.edb.EDBConfig;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.util.Constant;
-import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
-import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOutStoreBean;
+import com.huobanplus.erpservice.datacenter.entity.MallProductOutBean;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class EDBStorageHandlerTest {
     @Before
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
-        mockERP.setName("edb");
+        mockERP.setErpName("edb");
         EDBSysData sysData = new EDBSysData();
         sysData.setRequestUrl(Constant.REQUEST_URI);
         sysData.setDbHost(Constant.DB_HOST);

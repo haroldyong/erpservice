@@ -16,7 +16,7 @@ import com.huobanplus.erpprovider.netshop.bean.NSGoodResult;
 import com.huobanplus.erpprovider.netshop.exceptionhandler.NSExceptionHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSProductHandler;
 import com.huobanplus.erpservice.common.util.HttpUtil;
-import com.huobanplus.erpservice.datacenter.bean.MallGoodBean;
+import com.huobanplus.erpservice.datacenter.entity.MallGoodEntity;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.InventoryEvent;
@@ -57,7 +57,7 @@ public class NSProductHandlerImpl implements NSProductHandler {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, eventResult.getResultMsg());
             }
 
-            List<MallGoodBean> goodList = (List<MallGoodBean>) eventResult.getData();
+            List<MallGoodEntity> goodList = (List<MallGoodEntity>) eventResult.getData();
             NSGoodResult goodResult = new NSGoodResult();
             goodResult.setResult(1);
             goodResult.setTotalCount(goodList.size());

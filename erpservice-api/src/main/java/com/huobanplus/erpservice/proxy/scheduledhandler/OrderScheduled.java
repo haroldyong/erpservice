@@ -10,7 +10,7 @@
 package com.huobanplus.erpservice.proxy.scheduledhandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.erpevent.CreateOrderEvent;
@@ -18,7 +18,6 @@ import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

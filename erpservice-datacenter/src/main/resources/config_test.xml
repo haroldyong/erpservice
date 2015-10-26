@@ -13,10 +13,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="packagesToScan" value="com.huobanplus.erpservice.datacenter.bean"/>
+        <property name="packagesToScan" value="com.huobanplus.erpservice.datacenter.entity"/>
         <property name="persistenceUnitName" value="basePu"/>
         <property name="persistenceProvider">
-            <!--<bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>-->
+            <!--<entity class="org.hibernate.jpa.HibernatePersistenceProvider"/>-->
             <bean class="org.eclipse.persistence.jpa.PersistenceProvider"/>
         </property>
         <property name="jpaDialect">
@@ -29,7 +29,7 @@
                 <entry key="javax.persistence.jdbc.user" value="mall"/>
                 <entry key="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
                 <entry key="javax.persistence.jdbc.password" value="root"/>
-                <entry key="javax.persistence.schema-generation.database.action" value="create"/>
+                <entry key="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
                 <entry key="eclipselink.weaving" value="false"/>
                 <entry key="eclipselink.logging.level" value="FINE"/>
             </map>

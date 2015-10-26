@@ -7,13 +7,13 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpservice.datacenter.service;
-
-import com.huobanplus.erpservice.datacenter.entity.MallProductBean;
+package com.huobanplus.erpservice.common.util;
 
 /**
- * Created by liual on 2015-08-27.
+ * Created by liual on 2015-10-23.
  */
-public interface MallProductService {
-    MallProductBean findBySku(String bn, String skuId);
+public interface ICommonEnum {
+    int getCode();
+
+    String getName();
 }

@@ -9,9 +9,12 @@
 
 package com.huobanplus.erpprovider.edb.bean;
 
+import lombok.Data;
+
 /**
  * Created by allan on 2015/8/13.
  */
+@Data
 public class EDBOrderSearchForm {
     /**
      * 日期类型支持下面几种,默认订货日期/订货日期/付款日期/发货日期/归档日期/预计归档日期/到货日期/订单修改日期/验货日期/核销日期/生成应收时间/称重时间/审单时间/取消时间/完成时间
@@ -93,164 +96,4 @@ public class EDBOrderSearchForm {
      * 是否产品套装:3单品与套装:显示单品信息+套装信息;1单品与套装明细:显示单品信息+套装明细信息;2单品与套装以及套装明细:显示单品信息+套装信息+套装明细信息(默认)
      */
     private String productInfoType;
-
-    public String getDataType() {
-        return dataType;
-    }
-
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
-    }
-
-    public String getBeginTime() {
-        return beginTime;
-    }
-
-    public void setBeginTime(String beginTime) {
-        this.beginTime = beginTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getOrderType() {
-        return orderType;
-    }
-
-    public void setOrderType(String orderType) {
-        this.orderType = orderType;
-    }
-
-    public String getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(String paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public String getProceStatus() {
-        return proceStatus;
-    }
-
-    public void setProceStatus(String proceStatus) {
-        this.proceStatus = proceStatus;
-    }
-
-    public String getPlatformStatus() {
-        return platformStatus;
-    }
-
-    public void setPlatformStatus(String platformStatus) {
-        this.platformStatus = platformStatus;
-    }
-
-    public String getStorageId() {
-        return storageId;
-    }
-
-    public void setStorageId(String storageId) {
-        this.storageId = storageId;
-    }
-
-    public String getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
-    }
-
-    public String getExpressNo() {
-        return expressNo;
-    }
-
-    public void setExpressNo(String expressNo) {
-        this.expressNo = expressNo;
-    }
-
-    public String getTradegifadd() {
-        return tradegifadd;
-    }
-
-    public void setTradegifadd(String tradegifadd) {
-        this.tradegifadd = tradegifadd;
-    }
-
-    public String getExpress() {
-        return express;
-    }
-
-    public void setExpress(String express) {
-        this.express = express;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getInvoiceIsPrint() {
-        return invoiceIsPrint;
-    }
-
-    public void setInvoiceIsPrint(String invoiceIsPrint) {
-        this.invoiceIsPrint = invoiceIsPrint;
-    }
-
-    public String getInvoiceIsOpen() {
-        return invoiceIsOpen;
-    }
-
-    public void setInvoiceIsOpen(String invoiceIsOpen) {
-        this.invoiceIsOpen = invoiceIsOpen;
-    }
-
-    public String getPageNo() {
-        return pageNo;
-    }
-
-    public void setPageNo(String pageNo) {
-        this.pageNo = pageNo;
-    }
-
-    public String getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(String pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public String getImportMark() {
-        return importMark;
-    }
-
-    public void setImportMark(String importMark) {
-        this.importMark = importMark;
-    }
-
-    public String getProductInfoType() {
-        return productInfoType;
-    }
-
-    public void setProductInfoType(String productInfoType) {
-        this.productInfoType = productInfoType;
-    }
 }

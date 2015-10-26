@@ -28,7 +28,7 @@ public class ERPInfo implements Serializable {
     /**
      * erp名称
      */
-    private String name;
+    private String erpName;
     /**
      * erp系统级参数
      * <p>json格式</p>

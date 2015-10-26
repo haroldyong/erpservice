@@ -13,8 +13,8 @@ import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
 import com.huobanplus.erpservice.commons.config.WebConfig;
-import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
+import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,23 +50,23 @@ public class HotOrderApiControllerTest extends SpringWebTest {
 
     @Before
     public void setUp() throws Exception {
-        mockOrder = new MallOrderBean();
-        mockOrder.setOutTid("123212322");
-        mockOrder.setShopId("12");
-        mockOrder.setStorageId("1");
-        mockOrder.setExpress("dddd");
-        mockOrder.setTidTime(new Date());
-        mockOrder.setOrderId("123212322");
-        mockOrder.setTid("123212322");
-        mockOrder.setStatus("0");
+//        mockOrder = new MallOrderBean();
+//        mockOrder.setOutTid("123212322");
+//        mockOrder.setShopId("12");
+//        mockOrder.setStorageId("1");
+//        mockOrder.setExpress("dddd");
+//        mockOrder.setTidTime(new Date());
+//        mockOrder.setOrderId("123212322");
+//        mockOrder.setTid("123212322");
+//        mockOrder.setStatus("0");
 
-        MallOrderItem orderItem = new MallOrderItem();
-        orderItem.setBarcode("123123");
-        orderItem.setProName("方便面");
-        orderItem.setSpecification("大碗");
-        orderItem.setOutTid("123212322");
-        orderItem.setProNum(1);
-        orderItem.setFreight("10");
+        MallOrderItemBean orderItem = new MallOrderItemBean();
+//        orderItem.setBarcode("123123");
+//        orderItem.setProName("方便面");
+//        orderItem.setSpecification("大碗");
+//        orderItem.setOutTid("123212322");
+//        orderItem.setProNum(1);
+//        orderItem.setFreight("10");
         mockOrder.setOrderItems(Arrays.asList(orderItem));
 
 //        mockOrder = orderService.save(mockOrder);

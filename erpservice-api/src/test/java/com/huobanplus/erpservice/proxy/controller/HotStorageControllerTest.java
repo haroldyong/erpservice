@@ -16,10 +16,10 @@ import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.DxDESCipher;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
 import com.huobanplus.erpservice.commons.config.WebConfig;
-import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
-import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
-import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOutStoreBean;
+import com.huobanplus.erpservice.datacenter.entity.MallProductOutBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.datacenter.service.MallOutStoreService;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -65,7 +65,7 @@ public class HotStorageControllerTest extends SpringWebTest {
     @Before
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
-        mockERP.setName("edb");
+        mockERP.setErpName("edb");
         EDBSysData sysData = new EDBSysData();
         sysData.setRequestUrl(Constant.REQUEST_URI);
         sysData.setDbHost(Constant.DB_HOST);
@@ -81,20 +81,20 @@ public class HotStorageControllerTest extends SpringWebTest {
         mockERP.setSysDataJson(objectMapper.writeValueAsString(sysData));
 
         mockOrder = new MallOrderBean();
-        mockOrder.setOutTid("123212322334");
-        mockOrder.setShopId("12");
-        mockOrder.setStorageId("1");
-        mockOrder.setExpress("dddd");
-        mockOrder.setTidTime(new Date());
-        mockOrder.setOrderId("123212322334");
-        mockOrder.setTid("123212322334");
+//        mockOrder.setOutTid("123212322334");
+//        mockOrder.setShopId("12");
+//        mockOrder.setStorageId("1");
+//        mockOrder.setExpress("dddd");
+//        mockOrder.setTidTime(new Date());
+//        mockOrder.setOrderId("123212322334");
+//        mockOrder.setTid("123212322334");
 
-        MallOrderItem orderItem = new MallOrderItem();
-        orderItem.setBarcode("12312344");
-        orderItem.setProName("方便面");
-        orderItem.setSpecification("大碗");
-        orderItem.setOutTid("123212322334");
-        orderItem.setProNum(1);
+        MallOrderItemBean orderItem = new MallOrderItemBean();
+//        orderItem.setBarcode("12312344");
+//        orderItem.setProName("方便面");
+//        orderItem.setSpecification("大碗");
+//        orderItem.setOutTid("123212322334");
+//        orderItem.setProNum(1);
         mockOrder.setOrderItems(Arrays.asList(orderItem));
 
         mockOrder = orderService.save(mockOrder);
@@ -144,13 +144,13 @@ public class HotStorageControllerTest extends SpringWebTest {
 
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("outStoreJson", outStoreJson);
-        signMap.put("name", mockERP.getName());
+        signMap.put("name", mockERP.getErpName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientStorageApi/outStoreAdd")
                 .param("outStoreJson", outStoreJson)
-                .param("name", DxDESCipher.encrypt(mockERP.getName()))
+                .param("name", DxDESCipher.encrypt(mockERP.getErpName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))
                 .andDo(print())
@@ -168,13 +168,13 @@ public class HotStorageControllerTest extends SpringWebTest {
 
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("outStoreJson", outStoreJson);
-        signMap.put("name", mockERP.getName());
+        signMap.put("name", mockERP.getErpName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientStorageApi/outStoreConfirm")
                 .param("outStoreJson", outStoreJson)
-                .param("name", DxDESCipher.encrypt(mockERP.getName()))
+                .param("name", DxDESCipher.encrypt(mockERP.getErpName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))
                 .andDo(print())
@@ -193,13 +193,13 @@ public class HotStorageControllerTest extends SpringWebTest {
 
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("proOutJson", proOutJson);
-        signMap.put("name", mockERP.getName());
+        signMap.put("name", mockERP.getErpName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientStorageApi/outStoreWriteBack")
                 .param("proOutJson", proOutJson)
-                .param("name", DxDESCipher.encrypt(mockERP.getName()))
+                .param("name", DxDESCipher.encrypt(mockERP.getErpName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))
                 .andDo(print())

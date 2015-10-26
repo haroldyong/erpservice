@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.service;
 
-import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
+import com.huobanplus.erpservice.datacenter.entity.MallProductOutBean;
 
 /**
  * 出库单中的产品业务

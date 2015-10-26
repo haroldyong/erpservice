@@ -69,4 +69,8 @@ public class Constant {
      * 订单业务状态更新
      */
     public static final String ORDER_UPDATE = "edbTradeUpdate";
+
+    public static final String CANCEL_ORDER = "edbTradeCancel";
+
+    public static final String ENCODING = "utf-8";
 }

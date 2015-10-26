@@ -7,7 +7,7 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpservice.datacenter.bean;
+package com.huobanplus.erpservice.datacenter.entity;
 
 import javax.persistence.*;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "Mall_Good")
-public class MallGoodBean {
+public class MallGoodEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -47,7 +47,7 @@ public class EDBOrderForUpdate {
     @JacksonXmlProperty(localName = "delivery_time")
     private String deliveryTime;
     @JacksonXmlProperty(localName = "GrossWeight")
-    private String grossWeight;
+    private float grossWeight;
     @JacksonXmlProperty(localName = "internal_note")
     private String internalNote;
     @JacksonXmlProperty(localName = "origin_code")
@@ -172,11 +172,11 @@ public class EDBOrderForUpdate {
         this.deliveryTime = deliveryTime;
     }
 
-    public String getGrossWeight() {
+    public float getGrossWeight() {
         return grossWeight;
     }
 
-    public void setGrossWeight(String grossWeight) {
+    public void setGrossWeight(float grossWeight) {
         this.grossWeight = grossWeight;
     }
 

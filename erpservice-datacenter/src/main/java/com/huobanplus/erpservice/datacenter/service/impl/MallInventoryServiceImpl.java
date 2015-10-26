@@ -9,8 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.service.impl;
 
-import com.huobanplus.erpservice.datacenter.bean.MallInventoryBean;
-import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.entity.MallInventoryBean;
 import com.huobanplus.erpservice.datacenter.repository.MallInventoryRepository;
 import com.huobanplus.erpservice.datacenter.service.MallInventoryService;
 import org.springframework.data.domain.Page;

@@ -7,10 +7,9 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpservice.datacenter.bean;
+package com.huobanplus.erpservice.datacenter.entity;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**

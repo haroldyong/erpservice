@@ -35,7 +35,7 @@ public class ProviderApiControllerImpl implements ProviderApiController {
     @RequestMapping(value = "/{erpName}/obtainOrderInfo", method = RequestMethod.POST)
     public String obtainOrderInfo(@PathVariable("erpName") String erpName, HttpServletRequest request) {
         ERPInfo erpInfo = new ERPInfo();
-        erpInfo.setName(erpName);
+        erpInfo.setErpName(erpName);
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
         if (erpHandler == null) {
             return "未找到相关erp处理器";

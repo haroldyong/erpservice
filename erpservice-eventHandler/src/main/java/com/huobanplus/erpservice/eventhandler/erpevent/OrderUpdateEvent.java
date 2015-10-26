@@ -9,9 +9,14 @@
 
 package com.huobanplus.erpservice.eventhandler.erpevent;
 
+import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
+import lombok.Data;
+
 /**
  * 订单业务数据更新事件
  * Created by allan on 2015/8/5.
  */
+@Data
 public class OrderUpdateEvent extends ERPBaseEvent {
+    private MallOrderBean orderInfo;
 }

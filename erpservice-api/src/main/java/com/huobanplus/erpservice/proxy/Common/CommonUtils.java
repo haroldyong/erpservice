@@ -26,7 +26,7 @@ public class CommonUtils {
      * @throws Exception
      */
     public static ERPInfo encryptInfo(ERPInfo preInfo) throws Exception {
-        preInfo.setName(DxDESCipher.decrypt(preInfo.getName()));
+        preInfo.setErpName(DxDESCipher.decrypt(preInfo.getErpName()));
         preInfo.setSysDataJson(DxDESCipher.decrypt(preInfo.getSysDataJson()));
 
         return preInfo;

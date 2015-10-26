@@ -9,13 +9,12 @@
 
 package com.huobanplus.erpprovider.edb.handler;
 
-import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.Monitor;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * 订单相关
@@ -69,15 +68,36 @@ public interface EDBOrderHandler {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    EventResult orderUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException;
+    EventResult orderUpdate(MallOrderBean orderInfo, ERPInfo info);
 
     /**
      * 订单发货
      *
-     * @param orderInfo 订单信息
-     * @param info      ERP信息
+     * @param orderId
+     * @param deliverTime
+     * @param expressNo
+     * @param express
+     * @param weight
+     * @param info
      * @return 请求结果
      * @throws IOException IO异常
      */
-    EventResult orderDeliver(MallOrderBean orderInfo, ERPInfo info) throws IOException;
+    EventResult orderDeliver(String orderId, Date deliverTime, String expressNo, String express, String weight, ERPInfo info);
+
+    /**
+     * 根据外部订单编号获取订单详情
+     *
+     * @param orderId
+     * @return
+     */
+    EventResult getOrderDetail(String orderId, ERPInfo erpInfo);
+
+    /**
+     * 订单作废
+     *
+     * @param orderId
+     * @param erpInfo
+     * @return
+     */
+    EventResult cancelOrder(String orderId, ERPInfo erpInfo);
 }

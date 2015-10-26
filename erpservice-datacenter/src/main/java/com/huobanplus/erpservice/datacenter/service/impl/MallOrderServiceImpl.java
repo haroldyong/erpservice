@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.service.impl;
 
-import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.repository.MallOrderRepository;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,12 +61,12 @@ public class MallOrderServiceImpl implements MallOrderService {
         return orderRepository.findAll(specification, new PageRequest(pageIndex - 1, pageSize));
     }
 
-    public List<MallOrderBean> findAll(){
+    public List<MallOrderBean> findAll() {
         return orderRepository.findAll();
     }
 
     @Override
     public List<MallOrderBean> findByRotaryStatus(int rotaryStatus) {
-        return orderRepository.findByRotaryStatus(rotaryStatus);
+        return null;
     }
 }

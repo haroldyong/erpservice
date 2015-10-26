@@ -7,7 +7,7 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpservice.datacenter.bean;
+package com.huobanplus.erpservice.datacenter.entity;
 
 import javax.persistence.*;
 
@@ -33,7 +33,7 @@ public class MallProductBean {
 
     @ManyToOne
     @JoinColumn(name = "goodId")
-    private MallGoodBean goodBean;
+    private MallGoodEntity goodBean;
 
     public Long getId() {
         return id;
@@ -67,11 +67,11 @@ public class MallProductBean {
         this.num = num;
     }
 
-    public MallGoodBean getGoodBean() {
+    public MallGoodEntity getGoodBean() {
         return goodBean;
     }
 
-    public void setGoodBean(MallGoodBean goodBean) {
+    public void setGoodBean(MallGoodEntity goodBean) {
         this.goodBean = goodBean;
     }
 }

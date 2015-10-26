@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.service.impl;
 
-import com.huobanplus.erpservice.datacenter.bean.MallProductBean;
+import com.huobanplus.erpservice.datacenter.entity.MallProductBean;
 import com.huobanplus.erpservice.datacenter.repository.MallProductRepository;
 import com.huobanplus.erpservice.datacenter.service.MallProductService;
 import org.springframework.beans.factory.annotation.Autowired;

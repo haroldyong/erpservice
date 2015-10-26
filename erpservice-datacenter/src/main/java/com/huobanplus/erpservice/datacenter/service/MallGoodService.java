@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.service;
 
-import com.huobanplus.erpservice.datacenter.bean.MallGoodBean;
+import com.huobanplus.erpservice.datacenter.entity.MallGoodEntity;
 import org.springframework.data.domain.Page;
 
 /**
@@ -23,9 +23,9 @@ public interface MallGoodService {
      * @param goodBean
      * @return
      */
-    MallGoodBean save(MallGoodBean goodBean);
+    MallGoodEntity save(MallGoodEntity goodBean);
 
-    MallGoodBean findByBn(String bn);
+    MallGoodEntity findByBn(String bn);
 
-    Page<MallGoodBean> findAll(String goodName, String bn, String sysData, int pageIndex, int pageSize);
+    Page<MallGoodEntity> findAll(String goodName, String bn, String sysData, int pageIndex, int pageSize);
 }

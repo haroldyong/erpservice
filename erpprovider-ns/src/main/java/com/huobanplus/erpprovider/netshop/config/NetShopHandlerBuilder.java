@@ -40,7 +40,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        if (!"netShop".equals(info.getName())) {
+        if (!"netShop".equals(info.getErpName())) {
             //不是网店管家
             return null;
         }

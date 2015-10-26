@@ -9,11 +9,10 @@
 
 package com.huobanplus.erpprovider.edb.handler;
 
-import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
-import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOutStoreBean;
+import com.huobanplus.erpservice.datacenter.entity.MallProductOutBean;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
 import java.io.IOException;
 

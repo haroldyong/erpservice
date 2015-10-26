@@ -10,8 +10,8 @@
 package com.huobanplus.erpservice.proxy.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.bean.MallOrderItem;
+import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.*;
@@ -26,14 +26,9 @@ import com.huobanplus.erpservice.proxy.common.HotBaseController;
 import com.huobanplus.erpservice.proxy.controller.HotOrderController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.net.URLDecoder;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * <p>类描述：</p>
@@ -62,7 +57,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
                 CreateOrderEvent createOrderEvent = new CreateOrderEvent();
                 createOrderEvent.setErpInfo(info);
                 MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
-                orderInfo.setRotaryStatus(1);
+//                orderInfo.setRotaryStatus(1);
                 orderInfo.setErpInfo(new ObjectMapper().writeValueAsString(info));
                 EventResult eventResult = erpHandler.handleEvent(createOrderEvent);
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -141,10 +136,10 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
                 if (eventResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
                     //本地数据更新
                     MallOrderBean preBean = orderService.findByOrderId(orderInfo.getOrderId());
-                    preBean.setDeliveryTime(orderInfo.getDeliveryTime());
-                    preBean.setExpress(orderInfo.getExpress());
+//                    preBean.setDeliveryTime(orderInfo.getDeliveryTime());
+//                    preBean.setExpress(orderInfo.getExpress());
                     preBean.setExpressNo(orderInfo.getExpressNo());
-                    preBean.setTidNetWeight(orderInfo.getTidNetWeight());
+//                    preBean.setTidNetWeight(orderInfo.getTidNetWeight());
                     orderService.save(preBean);
 
                     return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
@@ -180,24 +175,24 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
 
                     //本地数据更新
                     MallOrderBean preOrder = orderService.findByOrderId(orderInfo.getOrderId());
-                    preOrder.setExpress(orderInfo.getExpress());
-                    preOrder.setExpressNo(orderInfo.getExpressNo());
-                    preOrder.setExpressCoding(orderInfo.getExpressCoding());
-                    preOrder.setPrinter(orderInfo.getPrinter());
-                    preOrder.setDistributer(orderInfo.getDistributer());
-                    preOrder.setDistributTime(orderInfo.getDistributTime());
-                    preOrder.setPrintTime(orderInfo.getPrintTime());
-                    preOrder.setInspecter(orderInfo.getInspecter());
-                    preOrder.setInspectTime(orderInfo.getInspectTime());
-                    preOrder.setDeliveryOperator(orderInfo.getDeliveryOperator());
-                    preOrder.setDeliveryTime(orderInfo.getDeliveryTime());
-                    preOrder.setGrossWeight(orderInfo.getGrossWeight());
-                    preOrder.setInnerLable(orderInfo.getInnerLable());
-                    for (MallOrderItem orderItem : orderInfo.getOrderItems()) {
-                        preOrder.getOrderItems().stream().filter(preOrderItem -> orderItem.getId() == preOrderItem.getId()).forEach(preOrderItem -> {
-                            preOrderItem.setInspectionNum(orderItem.getInspectionNum());
-                        });
-                    }
+//                    preOrder.setExpress(orderInfo.getExpress());
+//                    preOrder.setExpressNo(orderInfo.getExpressNo());
+//                    preOrder.setExpressCoding(orderInfo.getExpressCoding());
+//                    preOrder.setPrinter(orderInfo.getPrinter());
+//                    preOrder.setDistributer(orderInfo.getDistributer());
+//                    preOrder.setDistributTime(orderInfo.getDistributTime());
+//                    preOrder.setPrintTime(orderInfo.getPrintTime());
+//                    preOrder.setInspecter(orderInfo.getInspecter());
+//                    preOrder.setInspectTime(orderInfo.getInspectTime());
+//                    preOrder.setDeliveryOperator(orderInfo.getDeliveryOperator());
+//                    preOrder.setDeliveryTime(orderInfo.getDeliveryTime());
+//                    preOrder.setGrossWeight(orderInfo.getGrossWeight());
+//                    preOrder.setInnerLable(orderInfo.getInnerLable());
+//                    for (MallOrderItemBean orderItem : orderInfo.getOrderItems()) {
+//                        preOrder.getOrderItems().stream().filter(preOrderItem -> orderItem.getId() == preOrderItem.getId()).forEach(preOrderItem -> {
+//                            preOrderItem.setInspectionNum(orderItem.getInspectionNum());
+//                        });
+//                    }
                     orderService.save(preOrder);
 
                     return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());

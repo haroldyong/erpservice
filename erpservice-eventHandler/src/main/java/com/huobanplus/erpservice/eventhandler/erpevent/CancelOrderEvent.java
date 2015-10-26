@@ -9,14 +9,12 @@
 
 package com.huobanplus.erpservice.eventhandler.erpevent;
 
-import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import lombok.Data;
 
 /**
- * <b>类描述：<b/>创建订单事件
- * Created by allan on 2015/7/21.
+ * Created by liual on 2015-10-26.
  */
 @Data
-public class CreateOrderEvent extends ERPBaseEvent {
-    private MallOrderBean orderInfo;
+public class CancelOrderEvent extends ERPBaseEvent {
+    private String orderId;
 }

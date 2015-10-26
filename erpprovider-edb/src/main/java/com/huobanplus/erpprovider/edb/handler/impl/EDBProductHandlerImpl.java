@@ -13,13 +13,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.handler.BaseHandler;
 import com.huobanplus.erpprovider.edb.handler.EDBProductHandler;
-import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.common.util.HttpUtil;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

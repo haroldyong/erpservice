@@ -10,8 +10,8 @@
 package com.huobanplus.erpservice.proxy.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
-import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOutStoreBean;
+import com.huobanplus.erpservice.datacenter.entity.MallProductOutBean;
 import com.huobanplus.erpservice.datacenter.service.MallOutStoreService;
 import com.huobanplus.erpservice.datacenter.service.MallProductOutService;
 import com.huobanplus.erpservice.eventhandler.erpevent.AddOutStoreEvent;
@@ -28,14 +28,9 @@ import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.proxy.controller.HotStorageController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.net.URLDecoder;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by allan on 2015/8/7.

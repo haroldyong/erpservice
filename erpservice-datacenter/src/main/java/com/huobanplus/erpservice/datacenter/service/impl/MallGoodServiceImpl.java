@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.service.impl;
 
-import com.huobanplus.erpservice.datacenter.bean.MallGoodBean;
+import com.huobanplus.erpservice.datacenter.entity.MallGoodEntity;
 import com.huobanplus.erpservice.datacenter.repository.MallGoodRepository;
 import com.huobanplus.erpservice.datacenter.service.MallGoodService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,18 +34,18 @@ public class MallGoodServiceImpl implements MallGoodService {
     private MallGoodRepository goodRepository;
 
     @Override
-    public MallGoodBean save(MallGoodBean goodBean) {
+    public MallGoodEntity save(MallGoodEntity goodBean) {
         return goodRepository.save(goodBean);
     }
 
     @Override
-    public MallGoodBean findByBn(String bn) {
+    public MallGoodEntity findByBn(String bn) {
         return goodRepository.findByBn(bn);
     }
 
     @Override
-    public Page<MallGoodBean> findAll(String goodName, String bn, String sysData, int pageIndex, int pageSize) {
-        Specification<MallGoodBean> specification = (root, query, cb) -> {
+    public Page<MallGoodEntity> findAll(String goodName, String bn, String sysData, int pageIndex, int pageSize) {
+        Specification<MallGoodEntity> specification = (root, query, cb) -> {
             List<Predicate> list = new ArrayList<>();
             if (!StringUtils.isEmpty(goodName)) {
                 list.add(cb.like(root.get("goodName").as(String.class), "%" + goodName + "%"));

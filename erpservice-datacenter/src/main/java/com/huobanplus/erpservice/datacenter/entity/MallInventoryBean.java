@@ -7,7 +7,7 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpservice.datacenter.bean;
+package com.huobanplus.erpservice.datacenter.entity;
 
 
 import javax.persistence.*;

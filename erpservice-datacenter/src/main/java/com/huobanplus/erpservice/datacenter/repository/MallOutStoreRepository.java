@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.repository;
 
-import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOutStoreBean;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

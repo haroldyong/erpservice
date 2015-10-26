@@ -17,15 +17,13 @@ import com.huobanplus.erpprovider.edb.bean.EDBProductOut;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.handler.BaseHandler;
 import com.huobanplus.erpprovider.edb.handler.EDBStorageHandler;
-import com.huobanplus.erpprovider.edb.support.SimpleMonitor;
 import com.huobanplus.erpservice.common.util.HttpUtil;
 import com.huobanplus.erpservice.common.util.StringUtil;
-import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
-import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
+import com.huobanplus.erpservice.datacenter.entity.MallOutStoreBean;
+import com.huobanplus.erpservice.datacenter.entity.MallProductOutBean;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.Monitor;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

@@ -11,11 +11,6 @@ package com.huobanplus.erpprovider.edb;
 
 
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
-import com.huobanplus.erpprovider.edb.handler.EDBProductHandler;
-import com.huobanplus.erpprovider.edb.handler.EDBStorageHandler;
-import com.huobanplus.erpservice.datacenter.bean.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.bean.MallOutStoreBean;
-import com.huobanplus.erpservice.datacenter.bean.MallProductOutBean;
 import com.huobanplus.erpservice.eventhandler.erpevent.*;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
@@ -24,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 /**
  * com.huobanplus.erpprovider.edb 具体事件处理实现类
@@ -33,7 +27,7 @@ import java.io.IOException;
 @Component
 public class EDBHandlerBuilder implements ERPHandlerBuilder {
     @Autowired
-    private EDBOrderHandler EDBOrderHandler;
+    private EDBOrderHandler edbOrderHandler;
 
     /**
      * 根据erp信息判断是否由该erp-provider处理
@@ -42,7 +36,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
      * @return 无法处理返回空，可以处理返回该erp事件处理器
      */
     public ERPHandler buildHandler(ERPInfo erpInfo) {
-        if (!erpInfo.getName().equals("edb")) {
+        if (!erpInfo.getErpName().equals("edb")) {
             return null;
         }
         return new ERPHandler() {
@@ -77,25 +71,25 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
             public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                 if (erpBaseEvent instanceof CreateOrderEvent) {
                     CreateOrderEvent createOrderEvent = (CreateOrderEvent) erpBaseEvent;
-                    return EDBOrderHandler.createOrder(createOrderEvent.getOrderInfo(), erpBaseEvent.getErpInfo());
+                    return edbOrderHandler.createOrder(createOrderEvent.getOrderInfo(), erpBaseEvent.getErpInfo());
                 }
-//                else if (erpBaseEvent instanceof InventoryEvent) {
-//                    return EDBProductHandler.getProInventoryInfo(erpBaseEvent.getErpInfo());
-//                } else if (erpBaseEvent instanceof ObtainOrderListEvent) {
-//                    //EDBOrderHandler.obtainOrderList((MallOrderSearchBean) data, erpBaseEvent.getErpInfo());
-//                } else if (erpBaseEvent instanceof OrderDeliverEvent) {
-//                    return EDBOrderHandler.orderDeliver((MallOrderBean) data, erpBaseEvent.getErpInfo());
-//                } else if (erpBaseEvent instanceof OrderStatusUpdateEvent) {
-//                    return EDBOrderHandler.orderStatusUpdate((MallOrderBean) data, erpBaseEvent.getErpInfo());
-//                } else if (erpBaseEvent instanceof OrderUpdateEvent) {
-//                    return EDBOrderHandler.orderUpdate((MallOrderBean) data, erpBaseEvent.getErpInfo());
-//                } else if (erpBaseEvent instanceof AddOutStoreEvent) {
-//                    return edbStorageHandler.outStorageAdd((MallOutStoreBean) data, erpBaseEvent.getErpInfo());
-//                } else if (erpBaseEvent instanceof ConfirmOutStoreEvent) {
-//                    return edbStorageHandler.outStoreConfirm((MallOutStoreBean) data, erpBaseEvent.getErpInfo());
-//                } else if (erpBaseEvent instanceof OutStoreWriteBackEvent) {
-//                    return edbStorageHandler.outStoreWriteback((MallProductOutBean) data, erpBaseEvent.getErpInfo());
-//                }
+                if (erpBaseEvent instanceof OrderUpdateEvent) {
+                    OrderUpdateEvent orderUpdateEvent = (OrderUpdateEvent) erpBaseEvent;
+                    return edbOrderHandler.orderUpdate(orderUpdateEvent.getOrderInfo(), erpBaseEvent.getErpInfo());
+                }
+                if (erpBaseEvent instanceof OrderDeliverEvent) {
+                    OrderDeliverEvent orderDeliverEvent = (OrderDeliverEvent) erpBaseEvent;
+                    OrderDeliverInfo orderDeliverInfo = orderDeliverEvent.getOrderDeliverInfo();
+                    return edbOrderHandler.orderDeliver(orderDeliverInfo.getOrderId(), orderDeliverInfo.getDeliverTime(), orderDeliverInfo.getLogiNo(), orderDeliverInfo.getLogiName(), orderDeliverInfo.getWeight(), erpBaseEvent.getErpInfo());
+                }
+                if (erpBaseEvent instanceof ObtainOrderDetailEvent) {
+                    ObtainOrderDetailEvent orderDetailEvent = (ObtainOrderDetailEvent) erpBaseEvent;
+                    return edbOrderHandler.getOrderDetail(orderDetailEvent.getOrderId(), erpBaseEvent.getErpInfo());
+                }
+                if (erpBaseEvent instanceof CancelOrderEvent) {
+                    CancelOrderEvent cancelOrderEvent = (CancelOrderEvent) erpBaseEvent;
+                    return edbOrderHandler.cancelOrder(cancelOrderEvent.getOrderId(), erpBaseEvent.getErpInfo());
+                }
                 return null;
             }
 

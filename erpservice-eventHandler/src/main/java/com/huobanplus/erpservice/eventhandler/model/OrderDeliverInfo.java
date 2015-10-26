@@ -7,16 +7,21 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpservice.eventhandler.erpevent;
+package com.huobanplus.erpservice.eventhandler.model;
 
-import com.huobanplus.erpservice.eventhandler.model.OrderDeliverInfo;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
- * 订单发货事件
- * Created by allan on 2015/8/5.
+ * Created by liual on 2015-10-23.
  */
 @Data
-public class OrderDeliverEvent extends ERPBaseEvent {
+public class OrderDeliverInfo {
+    private String orderId;
+    private Date deliverTime;
+    private String logiName;
+    private String logiNo;
+    private String weight;
     private OrderDeliverInfo orderDeliverInfo;
 }

@@ -30,7 +30,7 @@ public class BaseHandler {
      *
      * @return
      */
-    protected Map<String, String> getSysRequestData(String method, EDBSysData sysData) throws IOException {
+    protected Map<String, String> getSysRequestData(String method,   EDBSysData sysData) throws IOException {
         Map<String, String> requestData = new HashMap<>();
         String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
         requestData.put("dbhost", sysData.getDbHost());
