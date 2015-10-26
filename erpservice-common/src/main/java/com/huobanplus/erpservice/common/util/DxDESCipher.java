@@ -7,7 +7,8 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpservice.common.util; /**
+package com.huobanplus.erpservice.common.util;
+/**
  * Created by Administrator on 2015/6/24.
  */
 
