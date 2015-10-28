@@ -17,7 +17,7 @@ import java.util.List;
  * Created by liual on 2015-08-26.
  */
 @Entity
-@Table(name = "Mall_Good")
+@Table(name = "ERP_Good")
 public class MallGoodEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

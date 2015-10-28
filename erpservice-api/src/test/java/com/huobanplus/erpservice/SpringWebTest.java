@@ -32,7 +32,7 @@ import java.util.Map;
  * Created by Administrator on 2015/6/29.
  */
 public class SpringWebTest {
-    protected static String signKey = "847385239789";
+    protected static String signKey = "66668888";
 
     @Autowired
     protected WebApplicationContext context;

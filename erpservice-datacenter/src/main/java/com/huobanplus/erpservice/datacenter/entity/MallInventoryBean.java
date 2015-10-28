@@ -17,7 +17,7 @@ import java.util.Date;
  * <p>类描述：库存信息</p>
  */
 @Entity
-@Table(name = "Mall_Inventorys")
+@Table(name = "ERP_Inventorys")
 public class MallInventoryBean {
 
     /**

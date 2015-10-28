@@ -9,6 +9,9 @@
 
 package com.huobanplus.erpservice.common.util;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,6 +20,7 @@ import java.util.*;
 public class StringUtil {
     public static String DATE_PATTERN = "yyyy-MM-dd";
     public static String TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static String ENCODING = "utf-8";
 
     public static final String NETSHOP_SECRET = "123456";
 
@@ -477,5 +481,37 @@ public class StringUtil {
         }
 
         return date;
+    }
+
+    /**
+     * 得到随机字符串并md5加密
+     *
+     * @return
+     */
+    public static String createRandomStr32() {
+        long timestamp = new Date().getTime();
+        String str = String.valueOf(timestamp + (int) Math.random() * 100);
+        try {
+            return DigestUtils.md5Hex(str.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new InternalError();
+        }
+    }
+
+    /**
+     * 得到随机字符串
+     *
+     * @return
+     */
+    public static String createRandomStr(int digit) {
+        String base = "abcdefghijklmnopqrstuvwxyz0123456789";
+        int baseLength = base.length();
+        Random random = new Random();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < digit; i++) {
+            int number = random.nextInt(baseLength);
+            stringBuilder.append(base.charAt(number));
+        }
+        return stringBuilder.toString();
     }
 }

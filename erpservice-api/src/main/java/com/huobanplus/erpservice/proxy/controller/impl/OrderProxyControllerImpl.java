@@ -18,10 +18,7 @@ import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.CancelOrderEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.CreateOrderEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.OrderDeliverEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.OrderUpdateEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.*;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -167,6 +164,28 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
             EventResult eventResult = erpHandler.handleEvent(cancelOrderEvent);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 return ApiResult.resultWith(ResultCode.SUCCESS);
+            } else {
+                return ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, eventResult.getResultMsg(), null);
+            }
+        } else {
+            return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT);
+        }
+    }
+
+    @Override
+    @RequestMapping("/getOrderDetail")
+    public ApiResult getOrderDetail(String orderId, @RequestAttribute ERPInfo erpInfo) throws Exception {
+        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
+        if (erpHandler == null) {
+            return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
+        }
+        if (erpHandler.eventSupported(ObtainOrderDetailEvent.class)) {
+            ObtainOrderDetailEvent obtainOrderDetailEvent = new ObtainOrderDetailEvent();
+            obtainOrderDetailEvent.setOrderId(orderId);
+            obtainOrderDetailEvent.setErpInfo(erpInfo);
+            EventResult eventResult = erpHandler.handleEvent(obtainOrderDetailEvent);
+            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
             } else {
                 return ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, eventResult.getResultMsg(), null);
             }

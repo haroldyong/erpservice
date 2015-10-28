@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.time.LocalTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
@@ -342,9 +342,9 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             requestData.put("out_tid", orderId);
             Map<String, String> signMap = new TreeMap<>(requestData);
             String beginTime = StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN);
-            String endTime = LocalTime.now().plusHours(24).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            requestData.put("begin_time", URLEncoder.encode(beginTime, StringUtil.DATE_PATTERN));
-            requestData.put("end_time", URLEncoder.encode(endTime, StringUtil.DATE_PATTERN));
+            String endTime = LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            requestData.put("begin_time", URLEncoder.encode(beginTime, StringUtil.ENCODING));
+            requestData.put("end_time", URLEncoder.encode(endTime, StringUtil.ENCODING));
             signMap.put("begin_time", beginTime);
             signMap.put("end_time", endTime);
 

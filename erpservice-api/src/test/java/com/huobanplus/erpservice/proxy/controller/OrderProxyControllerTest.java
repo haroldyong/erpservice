@@ -14,6 +14,7 @@ import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.DxDESCipher;
+import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
@@ -124,7 +125,25 @@ public class OrderProxyControllerTest extends SpringWebTest {
 
     @Test
     public void testOrderDeliver() throws Exception {
-
+        String deliverTime = StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN);
+        Map<String, String> signMap = new TreeMap<>();
+        signMap.put("orderId", mockOrder.getOrderId());
+        signMap.put("deliverTime", deliverTime);
+        signMap.put("logiName", "申通快递");
+        signMap.put("logiNo", "1231232");
+        signMap.put("erpName", mockERP.getErpName());
+        signMap.put("sysDataJson", mockERP.getSysDataJson());
+        String sign = buildSign(signMap, null, signKey);
+        mockMvc.perform(post("/hotProxy/order/orderDeliver")
+                .param("orderId", mockOrder.getOrderId())
+                .param("deliverTime", deliverTime)
+                .param("logiName", "申通快递")
+                .param("logiNo", "1231232")
+                .param("erpName", mockERP.getErpName())
+                .param("sysDataJson", mockERP.getSysDataJson())
+                .param("sign", sign))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
