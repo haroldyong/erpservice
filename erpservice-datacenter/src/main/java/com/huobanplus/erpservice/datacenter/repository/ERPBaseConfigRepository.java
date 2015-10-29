@@ -13,6 +13,7 @@ import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -21,11 +22,11 @@ import org.springframework.stereotype.Repository;
 public interface ERPBaseConfigRepository extends JpaRepository<ERPBaseConfigEntity, Integer> {
     ERPBaseConfigEntity findByAppKeyAndToken(String appKey, String token);
 
-    @Query("update ERPBaseConfigEntity baseConfig set baseConfig.token=:token where baseConfig.customerId=:customerId")
+    @Query("update ERPBaseConfigEntity baseConfig set baseConfig.token=?2 where baseConfig.customerId=?1")
     @Modifying
     void updateToken(int customerId, String token);
 
-    @Query("update ERPBaseConfigEntity baseConfig set baseConfig.isOpen=:isOpen where baseConfig.customerId=:customerId")
+    @Query("update ERPBaseConfigEntity baseConfig set baseConfig.isOpen=?2 where baseConfig.customerId=?1")
     @Modifying
     void updateOpenStatus(int customerId, int isOpen);
 }

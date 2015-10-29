@@ -15,6 +15,7 @@ import com.huobanplus.erpservice.datacenter.repository.ERPBaseConfigRepository;
 import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -26,29 +27,32 @@ public class ERPBaseConfigServiceImpl implements ERPBaseConfigService {
     private ERPBaseConfigRepository erpBaseConfigRepository;
 
     @Override
-    public void save(ERPBaseConfigEntity erpBaseConfig) {
-        erpBaseConfig.setAppKey(StringUtil.createRandomStr(8));
-        erpBaseConfig.setToken(StringUtil.createRandomStr32());
-        erpBaseConfigRepository.save(erpBaseConfig);
+    @Transactional
+    public ERPBaseConfigEntity save(ERPBaseConfigEntity erpBaseConfig) {
+        return erpBaseConfigRepository.save(erpBaseConfig);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ERPBaseConfigEntity findByAppKeyAndToken(String appKey, String token) {
         return erpBaseConfigRepository.findByAppKeyAndToken(appKey, token);
     }
 
     @Override
+    @Transactional
     public void updateToken(int customerId) {
         String token = StringUtil.createRandomStr32();
         erpBaseConfigRepository.updateToken(customerId, token);
     }
 
     @Override
+    @Transactional
     public void updateOpenStatus(int customerId, int isOpen) {
         erpBaseConfigRepository.updateOpenStatus(customerId, isOpen);
     }
 
     @Override
+    @Transactional
     public ERPBaseConfigEntity findByCustomerId(int customerId) {
         return erpBaseConfigRepository.findOne(customerId);
     }

@@ -9,10 +9,11 @@
 
 package com.huobanplus.erpprovider.edb.bean;
 
+
 /**
  * Created by allan on 2015/8/4.
  */
-public class EDBSysData {
+public class EDBSysData{
     private String requestUrl;
     private String dbHost;
     private String appKey;

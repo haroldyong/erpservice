@@ -65,7 +65,6 @@ public class HotStorageControllerTest extends SpringWebTest {
     @Before
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
-        mockERP.setErpName("edb");
         EDBSysData sysData = new EDBSysData();
         sysData.setRequestUrl(Constant.REQUEST_URI);
         sysData.setDbHost(Constant.DB_HOST);
@@ -144,13 +143,11 @@ public class HotStorageControllerTest extends SpringWebTest {
 
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("outStoreJson", outStoreJson);
-        signMap.put("name", mockERP.getErpName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientStorageApi/outStoreAdd")
                 .param("outStoreJson", outStoreJson)
-                .param("name", DxDESCipher.encrypt(mockERP.getErpName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))
                 .andDo(print())
@@ -168,13 +165,11 @@ public class HotStorageControllerTest extends SpringWebTest {
 
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("outStoreJson", outStoreJson);
-        signMap.put("name", mockERP.getErpName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientStorageApi/outStoreConfirm")
                 .param("outStoreJson", outStoreJson)
-                .param("name", DxDESCipher.encrypt(mockERP.getErpName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))
                 .andDo(print())
@@ -193,13 +188,11 @@ public class HotStorageControllerTest extends SpringWebTest {
 
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("proOutJson", proOutJson);
-        signMap.put("name", mockERP.getErpName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientStorageApi/outStoreWriteBack")
                 .param("proOutJson", proOutJson)
-                .param("name", DxDESCipher.encrypt(mockERP.getErpName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))
                 .andDo(print())

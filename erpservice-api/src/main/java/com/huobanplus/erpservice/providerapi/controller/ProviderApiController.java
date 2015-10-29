@@ -20,6 +20,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RequestMapping("/providerApi")
 public interface ProviderApiController {
-    @RequestMapping(value = "/{erpName}/obtainOrderInfo", method = RequestMethod.POST)
-    String obtainOrderInfo(@PathVariable("erpName") String erpName, HttpServletRequest request);
+    @RequestMapping(value = "/rest/obtainOrderInfo/{erpType}", method = RequestMethod.POST)
+    String obtainOrderInfo(@PathVariable("erpType") int erpType, HttpServletRequest request);
 }

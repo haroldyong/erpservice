@@ -20,7 +20,7 @@ public interface ERPBaseConfigService {
      *
      * @param erpBaseConfig
      */
-    void save(ERPBaseConfigEntity erpBaseConfig);
+    ERPBaseConfigEntity save(ERPBaseConfigEntity erpBaseConfig);
 
     /**
      * 根据appKey和token得到商户id

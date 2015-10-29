@@ -23,7 +23,6 @@ import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.model.OrderDeliverInfo;
-import com.huobanplus.erpservice.proxy.common.CommonUtils;
 import com.huobanplus.erpservice.proxy.common.ProxyBaseController;
 import com.huobanplus.erpservice.proxy.controller.OrderProxyController;
 import org.springframework.beans.factory.annotation.Autowired;

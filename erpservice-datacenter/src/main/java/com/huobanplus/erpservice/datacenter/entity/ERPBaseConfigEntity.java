@@ -18,7 +18,8 @@ import javax.persistence.*;
  */
 @Data
 @Entity
-@Table(name = "ERP_BaseConfigEntity")
+@Table(name = "ERP_BaseConfig")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class ERPBaseConfigEntity {
     @Id
     @GeneratedValue

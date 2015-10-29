@@ -7,7 +7,7 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpservice.datacenter.utils;
+package com.huobanplus.erpservice.datacenter.common;
 
 import com.huobanplus.erpservice.common.util.ICommonEnum;
 

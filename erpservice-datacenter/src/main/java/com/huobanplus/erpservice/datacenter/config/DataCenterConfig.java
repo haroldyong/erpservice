@@ -9,9 +9,13 @@
 
 package com.huobanplus.erpservice.datacenter.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.sql.DataSource;
 
 
 /**
@@ -27,4 +31,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement(proxyTargetClass = true)
 @ImportResource({"classpath:config_prod.xml", "classpath:config_test.xml"})
 public class DataCenterConfig {
+    @Autowired
+    private DataSource dataSource;
+
+    @Bean
+    public JdbcTemplate getTemplate() {
+        return new JdbcTemplate(dataSource);
+    }
 }

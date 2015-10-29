@@ -21,7 +21,6 @@ import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.proxy.common.CommonUtils;
 import com.huobanplus.erpservice.proxy.common.HotBaseController;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
@@ -50,8 +49,7 @@ public class HotStorageControllerImpl extends HotBaseController implements HotSt
     @ResponseBody
     public ApiResult outStoreAdd(String outStoreJson, ERPInfo erpInfo, String sign) {
         try {
-            ERPInfo info = CommonUtils.encryptInfo(erpInfo);
-
+            ERPInfo info = erpInfo;
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {
                 return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
@@ -83,8 +81,7 @@ public class HotStorageControllerImpl extends HotBaseController implements HotSt
     @ResponseBody
     public ApiResult outStoreConfirm(String outStoreJson, ERPInfo erpInfo, String sign) {
         try {
-            ERPInfo info = CommonUtils.encryptInfo(erpInfo);
-
+            ERPInfo info = erpInfo;
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {
                 return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
@@ -121,8 +118,7 @@ public class HotStorageControllerImpl extends HotBaseController implements HotSt
     @ResponseBody
     public ApiResult outStoreWriteBack(String proOutJson, ERPInfo erpInfo, String sign) {
         try {
-            ERPInfo info = CommonUtils.encryptInfo(erpInfo);
-
+            ERPInfo info = erpInfo;
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {
                 return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);

@@ -9,6 +9,8 @@
 
 package com.huobanplus.erpservice.providerapi.controller.impl;
 
+import com.huobanplus.erpservice.common.util.EnumHelper;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -32,10 +34,10 @@ public class ProviderApiControllerImpl implements ProviderApiController {
     private ERPRegister erpRegister;
 
     @Override
-    @RequestMapping(value = "/{erpName}/obtainOrderInfo", method = RequestMethod.POST)
-    public String obtainOrderInfo(@PathVariable("erpName") String erpName, HttpServletRequest request) {
+    @RequestMapping(value = "/rest/obtainOrderInfo/{erpType}", method = RequestMethod.POST)
+    public String obtainOrderInfo(@PathVariable("erpType") int erpType, HttpServletRequest request) {
         ERPInfo erpInfo = new ERPInfo();
-        erpInfo.setErpName(erpName);
+        erpInfo.setErpType(EnumHelper.getEnumType(ERPTypeEnum.class, erpType));
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
         if (erpHandler == null) {
             return "未找到相关erp处理器";

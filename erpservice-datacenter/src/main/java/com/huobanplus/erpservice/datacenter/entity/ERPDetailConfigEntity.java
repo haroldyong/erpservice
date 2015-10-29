@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.entity;
 
-import com.huobanplus.erpservice.datacenter.utils.ERPTypeEnum;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -17,19 +17,34 @@ import javax.persistence.*;
 /**
  * Created by liual on 2015-10-28.
  */
-@Data
 @Entity
-@Table(name = "ERP_DetailConfigEntity")
+@Data
+@Table(name = "ERP_DetailConfig")
 public class ERPDetailConfigEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private ERPTypeEnum erpTypeEnum;
-    private String sysDataJson;
-    private int customerId;
+    private ERPTypeEnum erpType;
+    private String erpSysData;
     /**
      * 是否在使用，0表示未使用，1表示正在使用，每个商户只可以使用一个erp
      */
     private int isDefault;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    private ERPBaseConfigEntity erpBaseConfig;
+    private int customerId;
+
+    private String p0;
+    private String p1;
+    private String p2;
+    private String p3;
+    private String p4;
+    private String p5;
+    private String p6;
+    private String p7;
+    private String p8;
+    private String p9;
+    private String p10;
+    private String p11;
 }
 

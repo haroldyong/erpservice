@@ -16,18 +16,13 @@ import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
-import com.huobanplus.erpservice.proxy.common.CommonUtils;
 import com.huobanplus.erpservice.proxy.common.HotBaseController;
 import com.huobanplus.erpservice.proxy.controller.HotProductController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * <p>类描述：API对接伙伴商城商品（库存）操作实现类</p>
@@ -42,8 +37,7 @@ public class HotProductControllerImpl extends HotBaseController implements HotPr
     @ResponseBody
     public ApiResult obtainInventory(ERPInfo erpInfo, String sign) {
         try {
-            ERPInfo info = CommonUtils.encryptInfo(erpInfo);
-
+            ERPInfo info = erpInfo;
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {
                 return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
