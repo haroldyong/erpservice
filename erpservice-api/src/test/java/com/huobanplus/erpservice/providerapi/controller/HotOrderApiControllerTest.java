@@ -57,8 +57,12 @@ public class HotOrderApiControllerTest extends SpringWebTest {
 
     }
 
+    /**
+     * 测试获取订单列表
+     * @throws Exception
+     */
     @Test
-    public void testObtainOrder() throws Exception {
+    public void testObtainOrderList() throws Exception {
         String timestamp = String.valueOf(new Date().getTime());
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("uCode", "123456");
@@ -81,4 +85,8 @@ public class HotOrderApiControllerTest extends SpringWebTest {
                 .andDo(print());
 
     }
+
+    @Test
+    public void test
+
 }
