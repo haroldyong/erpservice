@@ -15,6 +15,8 @@ import com.huobanplus.erpprovider.netshop.handler.NSProductHandler;
 import com.huobanplus.erpprovider.netshop.util.Constant;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.*;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
@@ -34,6 +36,8 @@ import java.util.TreeMap;
  */
 @Component
 public class NetShopHandlerBuilder implements ERPHandlerBuilder {
+    @Autowired
+    private ERPDetailConfigService detailConfigService;
     @Autowired
     private NSOrderHandler nsOrderHandler;
     @Autowired
@@ -63,19 +67,6 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
 
                 @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
-//                HttpServletRequest request = (HttpServletRequest) data;
-
-//                if (erpBaseEvent instanceof DeliveryInfoEvent) {
-//                    return nsOrderHandler.deliverOrder(request);
-//                } else if (erpBaseEvent instanceof ObtainOrderDetailEvent) {
-//                    return nsOrderHandler.obtainOrderInfo(request);
-//                } else if (erpBaseEvent instanceof ObtainOrderListEvent) {
-//                    return nsOrderHandler.obtainOrderInfoList(request);
-//                } else if (erpBaseEvent instanceof ObtainGoodListEvent) {
-//                    return productHandler.obtainGoods(request);
-//                } else if (erpBaseEvent instanceof InventoryEvent) {
-//                    return productHandler.syncInventory(request);
-//                }
                     return null;
                 }
 
@@ -96,7 +87,8 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                                     signMap.put(key, value[0]);
                             }
                         });
-                        //调用伙伴商城api得到secretKey,customerId, erpUserName;
+                        //通过uCode得到指定erp配置信息
+//                        ERPDetailConfigEntity detailConfig = detailConfigService.
                         String secretKey = "";
                         int customerId = 5;
                         String erpUserName = "";

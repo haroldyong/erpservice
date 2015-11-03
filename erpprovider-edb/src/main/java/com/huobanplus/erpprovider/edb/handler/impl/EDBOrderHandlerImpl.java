@@ -45,79 +45,77 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
     @Override
     public EventResult createOrder(MallOrderBean orderInfo, ERPInfo info) {
         HttpUtil htNetService = HttpUtil.getInstance();
+        try {
+            EDBCreateOrderInfo edbCreateOrderInfo = new EDBCreateOrderInfo();
+            edbCreateOrderInfo.setOutTid(orderInfo.getOrderId());
+            EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
+            edbCreateOrderInfo.setShopId(sysData.getShopId());
+            edbCreateOrderInfo.setStorageId(Integer.parseInt(sysData.getStorageId()));
 
-        EDBCreateOrderInfo edbCreateOrderInfo = new EDBCreateOrderInfo();
-        edbCreateOrderInfo.setOutTid(orderInfo.getOrderId());
-        //todo 根据sysdata得到基本设置中shopId和storageId，这两个id在edb中可以查看
-        String shopId = "";
-        int storageId = 1;
-        edbCreateOrderInfo.setShopId(shopId);
-        edbCreateOrderInfo.setStorageId(storageId);
-
-        edbCreateOrderInfo.setBuyerId(String.valueOf(orderInfo.getMemberId()));
+            edbCreateOrderInfo.setBuyerId(String.valueOf(orderInfo.getMemberId()));
 //        edbCreateOrderInfo.setBuyerEmail();
-        edbCreateOrderInfo.setBuyerMsg(orderInfo.getMemo());
+            edbCreateOrderInfo.setBuyerMsg(orderInfo.getMemo());
 //        edbCreateOrderInfo.setBuyerAlipay(orderInfo.getAlipayId());
-        edbCreateOrderInfo.setSellerRemark(orderInfo.getRemark());
-        edbCreateOrderInfo.setConsignee(orderInfo.getShipName());
-        edbCreateOrderInfo.setAddress(orderInfo.getShipAddr());
-        edbCreateOrderInfo.setPostcode(orderInfo.getShipZip());
-        edbCreateOrderInfo.setTelephone(orderInfo.getShipTel());
-        edbCreateOrderInfo.setMobilPhone(orderInfo.getShipMobile());
+            edbCreateOrderInfo.setSellerRemark(orderInfo.getRemark());
+            edbCreateOrderInfo.setConsignee(orderInfo.getShipName());
+            edbCreateOrderInfo.setAddress(orderInfo.getShipAddr());
+            edbCreateOrderInfo.setPostcode(orderInfo.getShipZip());
+            edbCreateOrderInfo.setTelephone(orderInfo.getShipTel());
+            edbCreateOrderInfo.setMobilPhone(orderInfo.getShipMobile());
 //        edbCreateOrderInfo.setProvince(orderInfo);
 //        edbCreateOrderInfo.setCity(orderInfo.getCity());
 //        edbCreateOrderInfo.setArea(orderInfo.getDistrict());
-        edbCreateOrderInfo.setActualFreightGet(orderInfo.getCostFreight());
-        edbCreateOrderInfo.setActual_RP(orderInfo.getFinalAmount());
+            edbCreateOrderInfo.setActualFreightGet(orderInfo.getCostFreight());
+            edbCreateOrderInfo.setActual_RP(orderInfo.getFinalAmount());
 //        edbCreateOrderInfo.setShipMethod(orderInfo.getShipping());
-        edbCreateOrderInfo.setExpress(orderInfo.getExpressNo());
+            edbCreateOrderInfo.setExpress(orderInfo.getExpressNo());
 //        edbCreateOrderInfo.setIsInvoiceOpened(orderInfo.getInvoiceSituation());
 //        edbCreateOrderInfo.setInvoiceType(orderInfo.getInvoiceType());
 //        edbCreateOrderInfo.setInvoiceMoney(orderInfo.getInvoiceMoney());
 //        edbCreateOrderInfo.setInvoiceTitle(orderInfo.getInvoiceTitle());
 //        edbCreateOrderInfo.setInvoiceMsg(orderInfo.getInvoiceContent());
 //        edbCreateOrderInfo.setOrderType(orderInfo.getOrderType());
-        edbCreateOrderInfo.setProcessStatus(EnumHelper.getEnumName(EDBEnum.OrderStatusEnum.class, orderInfo.getStatus()));
-        edbCreateOrderInfo.setPayStatus(EnumHelper.getEnumName(EDBEnum.PayStatusEnum.class, orderInfo.getPayStatus()));
-        edbCreateOrderInfo.setDeliverStatus(EnumHelper.getEnumName(EDBEnum.ShipStatusEnum.class, orderInfo.getShipStatus()));
-        edbCreateOrderInfo.setIsCOD(orderInfo.getCashOnDly());
+            edbCreateOrderInfo.setProcessStatus(EnumHelper.getEnumName(EDBEnum.OrderStatusEnum.class, orderInfo.getStatus()));
+            edbCreateOrderInfo.setPayStatus(EnumHelper.getEnumName(EDBEnum.PayStatusEnum.class, orderInfo.getPayStatus()));
+            edbCreateOrderInfo.setDeliverStatus(EnumHelper.getEnumName(EDBEnum.ShipStatusEnum.class, orderInfo.getShipStatus()));
+            edbCreateOrderInfo.setIsCOD(orderInfo.getCashOnDly());
 //        edbCreateOrderInfo.setServerCostCOD(orderInfo.getCodServiceFee());
-        edbCreateOrderInfo.setOrderTotalMoney(orderInfo.getFinalAmount());
-        edbCreateOrderInfo.setProductTotalMoney(orderInfo.getCostItem());
-        edbCreateOrderInfo.setPayMethod(orderInfo.getPaymentName());
+            edbCreateOrderInfo.setOrderTotalMoney(orderInfo.getFinalAmount());
+            edbCreateOrderInfo.setProductTotalMoney(orderInfo.getCostItem());
+            edbCreateOrderInfo.setPayMethod(orderInfo.getPaymentName());
 //        edbCreateOrderInfo.setPayCommission(orderInfo);
 //        edbCreateOrderInfo.setPayScore(orderInfo.getCostPoint());
 //        edbCreateOrderInfo.setReturnScore(orderInfo.getPoint());
-        edbCreateOrderInfo.setFavorableMoney(orderInfo.getPmtAmount());
+            edbCreateOrderInfo.setFavorableMoney(orderInfo.getPmtAmount());
 //        edbCreateOrderInfo.setAlipayTransactionNo(orderInfo.getAlipayTransactionNo());
 //        edbCreateOrderInfo.setOutPayNo(orderInfo.getOutPayTid());
-        edbCreateOrderInfo.setOutExpressMethod(orderInfo.getLogiName());
-        edbCreateOrderInfo.setOrderDate(StringUtil.DateFormat(orderInfo.getCreateTime(), StringUtil.TIME_PATTERN));
-        edbCreateOrderInfo.setPayDate(StringUtil.DateFormat(orderInfo.getPayTime(), StringUtil.TIME_PATTERN));
+            edbCreateOrderInfo.setOutExpressMethod(orderInfo.getLogiName());
+            edbCreateOrderInfo.setOrderDate(StringUtil.DateFormat(orderInfo.getCreateTime(), StringUtil.TIME_PATTERN));
+            edbCreateOrderInfo.setPayDate(StringUtil.DateFormat(orderInfo.getPayTime(), StringUtil.TIME_PATTERN));
 //        edbCreateOrderInfo.setFinishDate(StringUtil.DateFormat(orderInfo.getFinishTime(), StringUtil.TIME_PATTERN));
 //        edbCreateOrderInfo.setPlatType(orderInfo.getPlatType());
 //        edbCreateOrderInfo.setDistributorNo(orderInfo.getDistributorId());
-        edbCreateOrderInfo.setWuLiu(orderInfo.getLogiName());
-        edbCreateOrderInfo.setWuLiuNo(orderInfo.getLogiNo());
-        //edbCreateOrderInfo.setTerminalType(orderInfo.getTerminalType());
+            edbCreateOrderInfo.setWuLiu(orderInfo.getLogiName());
+            edbCreateOrderInfo.setWuLiuNo(orderInfo.getLogiNo());
+            //edbCreateOrderInfo.setTerminalType(orderInfo.getTerminalType());
 //        edbCreateOrderInfo.setInMemo(orderInfo.getInnerLable());
 //        edbCreateOrderInfo.setOtherRemark(orderInfo.getOtherRemarks());
-        edbCreateOrderInfo.setActualFreightPay(orderInfo.getCostFreight());
+            edbCreateOrderInfo.setActualFreightPay(orderInfo.getCostFreight());
 //        edbCreateOrderInfo.setShipDatePlan(StringUtil.DateFormat(orderInfo.getAdvDistributTime(), StringUtil.TIME_PATTERN));
 //        edbCreateOrderInfo.setDeliverDatePlan(StringUtil.DateFormat(orderInfo.getBookDeliveryTime(), StringUtil.TIME_PATTERN));
 //        edbCreateOrderInfo.setIsScorePay(orderInfo.getPointPay());
 //        edbCreateOrderInfo.setIsNeedInvoice(orderInfo.getIsBill());
-        List<EDBOrderItem> edbOrderItemList = new ArrayList<>();
-        for (MallOrderItemBean orderItem : orderInfo.getOrderItems()) {
-            EDBOrderItem edbOrderItem = new EDBOrderItem();
-            edbOrderItem.setBarCode(orderItem.getBn());
-            edbOrderItem.setProductTitle(orderItem.getName());
-            edbOrderItem.setStandard(orderItem.getStandard());
-            edbOrderItem.setOutPrice(orderItem.getAmount());
+            List<EDBOrderItem> edbOrderItemList = new ArrayList<>();
+            for (MallOrderItemBean orderItem : orderInfo.getOrderItems()) {
+                EDBOrderItem edbOrderItem = new EDBOrderItem();
+                edbOrderItem.setBarCode(orderItem.getBn());
+                edbOrderItem.setProductTitle(orderItem.getName());
+                edbOrderItem.setStandard(orderItem.getStandard());
+                edbOrderItem.setOutPrice(orderItem.getAmount());
 //            edbOrderItem.setFavoriteMoney(orderItem.getItemDiscountFee);
-            edbOrderItem.setOrderGoodsNum(orderItem.getNum());
+                edbOrderItem.setOrderGoodsNum(orderItem.getNum());
 //            edbOrderItem.setGiftNum(orderItem.getGiftNum());
-            edbOrderItem.setCostPrice(orderItem.getAmount());
+                edbOrderItem.setCostPrice(orderItem.getAmount());
 //            edbOrderItem.setTid(orderItem.getTid());
 //            edbOrderItem.setProductStockout(orderItem.getStockSituation());
 //            edbOrderItem.setIsBook(orderItem.getIsScheduled());
@@ -125,16 +123,16 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 //            edbOrderItem.setIsGift(orderItem.getIsGifts());
 //            edbOrderItem.setAvgPrice(orderItem.getAveragePrice());
 //            edbOrderItem.setProductFreight(String.valueOf(orderItem.getFreight()));
-            edbOrderItem.setShopId(shopId);
-            edbOrderItem.setOutTid(orderInfo.getOrderId());
+                edbOrderItem.setShopId(sysData.getShopId());
+                edbOrderItem.setOutTid(orderInfo.getOrderId());
 //            edbOrderItem.setOutProductId(orderItem.getOutProId());
-            edbOrderItem.setOutBarCode(orderItem.getBn());
-            edbOrderItem.setProductIntro(orderItem.getBrief());
-            edbOrderItemList.add(edbOrderItem);
-        }
-        edbCreateOrderInfo.setProductInfos(edbOrderItemList);
+                edbOrderItem.setOutBarCode(orderItem.getBn());
+                edbOrderItem.setProductIntro(orderItem.getBrief());
+                edbOrderItemList.add(edbOrderItem);
+            }
+            edbCreateOrderInfo.setProductInfos(edbOrderItemList);
 
-        try {
+
             String xmlResult = new XmlMapper().writeValueAsString(edbCreateOrderInfo);
             int firstIndex = xmlResult.indexOf("<product_item>");
             int lastIndex = xmlResult.lastIndexOf("</product_item>");
@@ -142,7 +140,6 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             String productPanel = xmlResult.substring(firstIndex + 14, lastIndex);
             String xmlValues = ("<order>" + firstPanel + "<product_info>" + productPanel + "</product_info></orderInfo></order>").replaceAll(" xmlns=\"\"", "");
 
-            EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
 
             Map<String, String> requestData = getSysRequestData(Constant.CREATE_ORDER, sysData);
             Map<String, String> signMap = new TreeMap<>(requestData);

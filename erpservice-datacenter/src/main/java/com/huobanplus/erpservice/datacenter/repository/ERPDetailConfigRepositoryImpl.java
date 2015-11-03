@@ -9,6 +9,8 @@
 
 package com.huobanplus.erpservice.datacenter.repository;
 
+import com.huobanplus.erpservice.common.util.EnumHelper;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +26,29 @@ public class ERPDetailConfigRepositoryImpl implements ERPDetailConfigRepositoryC
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public void test() {
-        String sql = "SELECT ID FROM ERP_SysDataInfo";
-        List<Integer> list = jdbcTemplate.query(sql, ((rs, rowNum) -> rs.getInt("ID")));
-        System.out.println(list);
-    }
-
-    @Override
     public ERPDetailConfigEntity findBySysData(List<ERPSysDataInfo> sysDataInfos) {
         StringBuilder sqlWhere = new StringBuilder();
+        StringBuilder sqlCustomerIn = new StringBuilder();
+        int index = 0;
         for (ERPSysDataInfo sysDataInfo : sysDataInfos) {
-            sqlWhere.append("and").append(sysDataInfo.getColumnName() + "=" + sysDataInfo.getParamName()).append("");
+            sqlWhere.append("and").append(sysDataInfo.getColumnName() + "=" + sysDataInfo.getParamName()).append(" ");
+            if (index == sysDataInfos.size() - 1) {
+                sqlCustomerIn.append(sysDataInfo.getCustomerId());
+            } else {
+                sqlCustomerIn.append(sysDataInfo.getCustomerId()).append(",");
+            }
+            index++;
         }
-        String sql = "SELECT * FROM ERP_DetailConfig WHERE 1=1" + sqlWhere.toString();
-        return null;
+        String sql = "SELECT * FROM ERP_DetailConfig WHERE ISDEFAULT=1 " + sqlWhere.toString() + " AND CUSTOMERID IN (" + sqlCustomerIn.toString() + ")";
+        ERPDetailConfigEntity result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+            ERPDetailConfigEntity detailConfigEntity = new ERPDetailConfigEntity();
+            detailConfigEntity.setId(rs.getInt("ID"));
+            detailConfigEntity.setErpType(EnumHelper.getEnumType(ERPTypeEnum.class, rs.getInt("ERPTYPE")));
+            detailConfigEntity.setErpSysData(rs.getString("ERPSYSDATA"));
+            detailConfigEntity.setCustomerId(rs.getInt("CUSTOMERID"));
+
+            return detailConfigEntity;
+        });
+        return result;
     }
 }

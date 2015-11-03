@@ -82,7 +82,23 @@
                     case "0":
                         $("#erpDetailConfigDiv").show();
                         $("#edbConfig").show();
+                        $("#nsConfig").hide();
                         break;
+                    case "1":
+                        $("#erpDetailConfigDiv").show();
+                        $("#nsConfig").show();
+                        $("#edbConfig").hide();
+                        break;
+                }
+            },
+            getErpConfig: function (erpType) {
+                switch (erpType) {
+                    case "-1":
+                        return "";
+                    case "0":
+                        return edbConfigHandler.getEdbConfig();
+                    case "1":
+                        return nsConfigHandler.getNSConfig();
                 }
             },
             submitForm: function () {
@@ -91,16 +107,9 @@
                     $.jBox.tip("请输入签名密钥");
                     return;
                 }
-                var sysDataJson;
+
                 var erpType = $("#erpType").val();
-                switch (erpType) {
-                    case "-1":
-                        sysDataJson = "";
-                        break;
-                    case "0":
-                        sysDataJson = getEdbConfig();
-                        break;
-                }
+                var sysDataJson = this.getErpConfig(erpType);
                 if (sysDataJson == null) {
                     return;
                 }
@@ -119,10 +128,13 @@
                 $.jBox.tip("保存失败", "error");
             }
             <c:forEach items="${lstDetailConfig}" var="item">
+            var erpSysData = ${item.erpSysData};
             switch (${item.erpType.getCode()}) {
                 case 0:
-                    setEdbValues(${item.erpSysData});
+                    edbConfigHandler.setEdbValues(erpSysData);
                     break;
+                case 1:
+                    nsConfigHandler.setNSValue(erpSysData);
             }
             </c:forEach>
 
@@ -237,45 +249,9 @@
                                     <%@include file="/detailConfig/edb_config.jsp" %>
                                 </div>
 
-
-                                    <%--<table width="100%" border="0" cellpadding="0" cellspacing="0" id="edbConfig">--%>
-                                    <%--<tbody>--%>
-                                    <%--<tr>--%>
-                                    <%--<th style="vertical-align: middle;">请求地址：</th>--%>
-                                    <%--<td>--%>
-                                    <%--http:// <input name="txtMallName" type="text" value="" id="requestUrl" class="input-normal" readonly="readonly">--%>
-                                    <%--</td>--%>
-                                    <%--</tr>--%>
-                                    <%--<tr>--%>
-                                    <%--<th style="vertical-align: middle;">dbhost：</th>--%>
-                                    <%--<td>--%>
-                                    <%--<input name="txtMallName" type="text" value="" id="dbhost" class="input-normal" readonly="readonly">--%>
-                                    <%--（软件注册用户，比如edb_aXXXXX（接口调用的唯一标识），用户的主帐号）--%>
-                                    <%--</td>--%>
-                                    <%--</tr>--%>
-                                    <%--<tr>--%>
-                                    <%--<th style="vertical-align: middle;">appKey：</th>--%>
-                                    <%--<td>--%>
-                                    <%--<input name="txtMallName" type="text" value="" id="edbAppKey" class="input-normal" readonly="readonly">--%>
-                                    <%--（公钥，你申请的appkey， 以标识来源）--%>
-                                    <%--</td>--%>
-                                    <%--</tr>--%>
-                                    <%--<tr>--%>
-                                    <%--<th style="vertical-align: middle;">appSecret：</th>--%>
-                                    <%--<td>--%>
-                                    <%--<input name="txtMallName" type="text" value="" id="appSecret" class="input-normal" readonly="readonly">--%>
-                                    <%--（可在edb开发者后台查看）--%>
-                                    <%--</td>--%>
-                                    <%--</tr>--%>
-                                    <%--<tr>--%>
-                                    <%--<th style="vertical-align: middle;">token：</th>--%>
-                                    <%--<td>--%>
-                                    <%--<input name="txtMallName" type="text" value="" id="edbToken" class="input-normal" readonly="readonly">--%>
-                                    <%--（可在edb开发者后台查看）--%>
-                                    <%--</td>--%>
-                                    <%--</tr>--%>
-                                    <%--</tbody>--%>
-                                    <%--</table>--%>
+                                <div id="nsConfig">
+                                    <%@include file="/detailConfig/ns_config.jsp" %>
+                                </div>
                             </div>
                         </div>
                         <div style="text-align: center;">

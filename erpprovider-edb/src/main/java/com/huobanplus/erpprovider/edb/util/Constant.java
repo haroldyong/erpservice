@@ -33,6 +33,8 @@ public class Constant {
     public static final String SLENCRY = "0";
     public static final String IP = "112.16.89.50";
     public static final String TIMESTAMP_PATTERN = "yyyyMMddHHmm";
+    public static final String SHOP_ID="58";
+    public static final String STORAGE_ID="32";
 
     public static final String DB_HOST_TEST = "edb_a88888";
     public static final String APP_KEY_TEST = "6f55e36b";

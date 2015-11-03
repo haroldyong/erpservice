@@ -10,20 +10,19 @@
 package com.huobanplus.erpservice.datacenter.repository;
 
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by liual on 2015-10-29.
  */
 public interface ERPDetailConfigRepositoryCustom {
-    void test();
-
     /**
      * 根据系统信息得到商户erp配置信息
      *
-     * @param sysData
+     * @param sysDataInfos
      * @return
      */
-    ERPDetailConfigEntity findBySysData(Map<String, String> sysData);
+    ERPDetailConfigEntity findBySysData(List<ERPSysDataInfo> sysDataInfos);
 }

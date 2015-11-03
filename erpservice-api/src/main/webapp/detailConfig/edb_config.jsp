@@ -17,64 +17,80 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script type="text/javascript">
-    function getEdbConfig() {
-        var requestUrl = $.trim($("#requestUrl").val());
-        var dbhost = $.trim($("#dbhost").val());
-        var edbAppKey = $.trim($("#edbAppKey").val());
-        var appSecret = $.trim($("#appSecret").val());
-        var edbToken = $.trim($("#edbToken").val());
-        var ip = $.trim($("#ip").val());
-        if (requestUrl.length == 0) {
-            $.jBox.tip("请输入请求地址");
-            return null;
-        }
-        if (dbhost.length == 0) {
-            $.jBox.tip("请输入dbhost");
-            return null;
-        }
-        if (edbAppKey.length == 0) {
-            $.jBox.tip("请输入edb的appkey");
-            return null;
-        }
-        if (appSecret.length == 0) {
-            $.jBox.tip("请输入edb的appSecret");
-            return null;
-        }
-        if (edbToken.length == 0) {
-            $.jBox.tip("请输入edb的token");
-            return null;
-        }
-        if (ip.length == 0) {
-            $.jBox.tip("请输入允许的ip地址");
-            return null;
-        }
+    var edbConfigHandler = {
+        getEdbConfig: function () {
+            var requestUrl = $.trim($("#requestUrl").val());
+            var dbhost = $.trim($("#dbhost").val());
+            var edbAppKey = $.trim($("#edbAppKey").val());
+            var appSecret = $.trim($("#appSecret").val());
+            var edbToken = $.trim($("#edbToken").val());
+            var ip = $.trim($("#ip").val());
+            var shopId = $.trim($("#shopId").val());
+            var storageId = $.trim($("#storageId").val());
+            if (requestUrl.length == 0) {
+                $.jBox.tip("请输入请求地址");
+                return null;
+            }
+            if (dbhost.length == 0) {
+                $.jBox.tip("请输入dbhost");
+                return null;
+            }
+            if (edbAppKey.length == 0) {
+                $.jBox.tip("请输入edb的appkey");
+                return null;
+            }
+            if (appSecret.length == 0) {
+                $.jBox.tip("请输入edb的appSecret");
+                return null;
+            }
+            if (edbToken.length == 0) {
+                $.jBox.tip("请输入edb的token");
+                return null;
+            }
+            if (ip.length == 0) {
+                $.jBox.tip("请输入允许的ip地址");
+                return null;
+            }
 
-        var edbConfig = {
-            requestUrl: requestUrl,
-            dbHost: dbhost,
-            appKey: edbAppKey,
-            appSecret: appSecret,
-            token: edbToken,
-            ip: ip
-        };
-        return JSON.stringify(edbConfig);
-    }
+            if (shopId.length == 0) {
+                $.jBox.tip("请输入店铺编号");
+                return null;
+            }
+            if (storageId.length == 0) {
+                $.jBox.tip("请输入仓库编号");
+                return null;
+            }
 
-    function setEdbValues(jsonData) {
-        $("#requestUrl").val(jsonData.requestUrl);
-        $("#dbhost").val(jsonData.dbHost);
-        $("#edbAppKey").val(jsonData.appKey);
-        $("#appSecret").val(jsonData.appSecret);
-        $("#edbToken").val(jsonData.token);
-        $("#ip").val(jsonData.ip);
-    }
+            var edbConfig = {
+                requestUrl: requestUrl,
+                dbHost: dbhost,
+                appKey: edbAppKey,
+                appSecret: appSecret,
+                token: edbToken,
+                ip: ip,
+                shopId: shopId,
+                storageId: storageId
+            };
+            return JSON.stringify(edbConfig);
+        },
+        setEdbValues: function (jsonData) {
+            $("#requestUrl").val(jsonData.requestUrl);
+            $("#dbhost").val(jsonData.dbHost);
+            $("#edbAppKey").val(jsonData.appKey);
+            $("#appSecret").val(jsonData.appSecret);
+            $("#edbToken").val(jsonData.token);
+            $("#ip").val(jsonData.ip);
+            $("#shopId").val(jsonData.shopId);
+            $("#storageId").val(jsonData.storageId);
+        }
+    };
 </script>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
     <tbody>
     <tr>
         <th style="vertical-align: middle;">请求地址：</th>
         <td>
-            http:// <input name="requestUrl" type="text" value="" id="requestUrl" class="input-normal"/>
+            <input name="requestUrl" type="text" value="" id="requestUrl" class="input-normal"/>
         </td>
     </tr>
     <tr>
@@ -110,6 +126,20 @@
         <td>
             <input name="ip" type="text" value="" id="ip" class="input-normal"/>
             （可在edb开发者后台查看）
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">店铺编号：</th>
+        <td>
+            <input name="shopId" type="text" value="" id="shopId" class="input-normal"/>
+            （E店宝客户端档案管理→基本档案→店铺设置中查看）
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">仓库编号：</th>
+        <td>
+            <input name="storageId" type="text" value="" id="storageId" class="input-normal"/>
+            （E店宝客户端档案管理→仓库档案→仓库设置中查看）
         </td>
     </tr>
     </tbody>
