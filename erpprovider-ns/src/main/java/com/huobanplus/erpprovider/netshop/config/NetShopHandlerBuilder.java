@@ -99,9 +99,9 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                         }
                     });
                     //调用伙伴商城api得到secretKey,customerId, erpUserName;
-                    String secretKey = "";
+                    String secretKey = "123456";
                     int customerId = 5;
-                    String erpUserName = "";
+                    String erpUserName = "netShop";
                     String sign;
                     try {
                         sign = SignBuilder.buildSign(signMap, secretKey, secretKey);

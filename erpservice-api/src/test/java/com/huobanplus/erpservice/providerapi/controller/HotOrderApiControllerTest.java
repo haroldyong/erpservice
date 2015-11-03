@@ -9,6 +9,8 @@
 
 package com.huobanplus.erpservice.providerapi.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.huobanplus.erpprovider.netshop.bean.NSSysData;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
@@ -16,6 +18,7 @@ import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,29 +50,11 @@ public class HotOrderApiControllerTest extends SpringWebTest {
     private MallOrderService orderService;
 
     private MallOrderBean mockOrder;
+    private ERPInfo mockERP;
 
     @Before
     public void setUp() throws Exception {
-//        mockOrder = new MallOrderBean();
-//        mockOrder.setOutTid("123212322");
-//        mockOrder.setShopId("12");
-//        mockOrder.setStorageId("1");
-//        mockOrder.setExpress("dddd");
-//        mockOrder.setTidTime(new Date());
-//        mockOrder.setOrderId("123212322");
-//        mockOrder.setTid("123212322");
-//        mockOrder.setStatus("0");
 
-        MallOrderItemBean orderItem = new MallOrderItemBean();
-//        orderItem.setBarcode("123123");
-//        orderItem.setProName("方便面");
-//        orderItem.setSpecification("大碗");
-//        orderItem.setOutTid("123212322");
-//        orderItem.setProNum(1);
-//        orderItem.setFreight("10");
-        mockOrder.setOrderItems(Arrays.asList(orderItem));
-
-//        mockOrder = orderService.save(mockOrder);
     }
 
     @Test
@@ -85,14 +70,14 @@ public class HotOrderApiControllerTest extends SpringWebTest {
 
         String sign = buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
 
-        mockMvc.perform(post("/hotErpApi/netShop/obtainOrder")
+        mockMvc.perform(post("/providerApi/netShop/obtainOrderInfo")
                 .param("uCode", "123456")
                 .param("mType", "mOrderSearch")
                 .param("TimeStamp", timestamp)
                 .param("OrderStatus", "0")
                 .param("PageSize", "10")
                 .param("Page", "1")
-                .param("Sign", sign))
+                .param("sign", sign))
                 .andDo(print());
 
     }

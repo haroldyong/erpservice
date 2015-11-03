@@ -21,6 +21,14 @@ public class NSSysData {
      * <p>Secret是密钥，会在esAPI里面填写，商家自己这边需要设置，不会进行参数传值</p>
      */
     private int secret;
+    /**
+     * 时间戳
+     */
+    private long timeStamp;
+    /**
+     * 方法名
+     */
+    private String mType;
 
     public int getuCode() {
         return uCode;
@@ -36,5 +44,21 @@ public class NSSysData {
 
     public void setSecret(int secret) {
         this.secret = secret;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public String getmType() {
+        return mType;
+    }
+
+    public void setmType(String mType) {
+        this.mType = mType;
     }
 }
