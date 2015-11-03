@@ -24,7 +24,7 @@ public class ERPSysDataInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private ERPTypeEnum erpType;
+    private ERPTypeEnum.ProviderType erpType;
     private String columnName;
     private String paramName;
     private int customerId;

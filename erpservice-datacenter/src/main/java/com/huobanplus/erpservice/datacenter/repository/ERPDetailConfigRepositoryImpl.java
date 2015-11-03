@@ -26,7 +26,7 @@ public class ERPDetailConfigRepositoryImpl implements ERPDetailConfigRepositoryC
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public ERPDetailConfigEntity findBySysData(List<ERPSysDataInfo> sysDataInfos) {
+    public List<ERPDetailConfigEntity> findBySysData(List<ERPSysDataInfo> sysDataInfos) {
         StringBuilder sqlWhere = new StringBuilder();
         StringBuilder sqlCustomerIn = new StringBuilder();
         int index = 0;
@@ -40,15 +40,15 @@ public class ERPDetailConfigRepositoryImpl implements ERPDetailConfigRepositoryC
             index++;
         }
         String sql = "SELECT * FROM ERP_DetailConfig WHERE ISDEFAULT=1 " + sqlWhere.toString() + " AND CUSTOMERID IN (" + sqlCustomerIn.toString() + ")";
-        ERPDetailConfigEntity result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+        List<ERPDetailConfigEntity> lstDetailConfig = jdbcTemplate.query(sql, ((rs, rowNum) -> {
             ERPDetailConfigEntity detailConfigEntity = new ERPDetailConfigEntity();
             detailConfigEntity.setId(rs.getInt("ID"));
-            detailConfigEntity.setErpType(EnumHelper.getEnumType(ERPTypeEnum.class, rs.getInt("ERPTYPE")));
+            detailConfigEntity.setErpType(EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, rs.getInt("ERPTYPE")));
             detailConfigEntity.setErpSysData(rs.getString("ERPSYSDATA"));
             detailConfigEntity.setCustomerId(rs.getInt("CUSTOMERID"));
 
             return detailConfigEntity;
-        });
-        return result;
+        }));
+        return lstDetailConfig;
     }
 }

@@ -45,7 +45,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        if (info.getErpType() == ERPTypeEnum.NETSHOP) {
+        if (info.getErpType() == ERPTypeEnum.ProviderType.NETSHOP) {
             return new ERPHandler() {
 
                 @Override
@@ -71,7 +71,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                 }
 
                 @Override
-                public EventResult handleRequest(HttpServletRequest request) {
+                public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.UserType erpUserType) {
                     String method = request.getParameter("mType");
                     try {
                         String requestSign = request.getParameter("sign");
@@ -88,7 +88,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                             }
                         });
                         //通过uCode得到指定erp配置信息
-//                        ERPDetailConfigEntity detailConfig = detailConfigService.
+                        
                         String secretKey = "";
                         int customerId = 5;
                         String erpUserName = "";

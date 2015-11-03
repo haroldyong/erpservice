@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.eventhandler.handler;
 
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.model.FailedBean;
@@ -50,5 +51,5 @@ public interface ERPHandler {
      * @param request
      * @return
      */
-    EventResult handleRequest(HttpServletRequest request);
+    EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.UserType erpUserType);
 }

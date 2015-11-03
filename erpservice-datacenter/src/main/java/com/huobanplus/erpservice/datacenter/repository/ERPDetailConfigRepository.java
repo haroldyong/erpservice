@@ -9,8 +9,8 @@
 
 package com.huobanplus.erpservice.datacenter.repository;
 
-import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +21,7 @@ import java.util.List;
  * Created by liual on 2015-10-28.
  */
 public interface ERPDetailConfigRepository extends JpaRepository<ERPDetailConfigEntity, Integer>, ERPDetailConfigRepositoryCustom {
-    ERPDetailConfigEntity findByCustomerIdAndErpType(int customerId, ERPTypeEnum erpTypeEnum);
+    ERPDetailConfigEntity findByCustomerIdAndErpType(int customerId, ERPTypeEnum.ProviderType providerType);
 
     @Query("select detailConfig from ERPDetailConfigEntity detailConfig where detailConfig.customerId=?1 and detailConfig.isDefault=1")
     ERPDetailConfigEntity findByCustomerIdAndDefault(int customerId);

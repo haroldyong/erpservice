@@ -24,7 +24,8 @@ public class ERPDetailConfigEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private ERPTypeEnum erpType;
+    private ERPTypeEnum.ProviderType erpType;
+    private ERPTypeEnum.UserType erpUserType;
     private String erpSysData;
     /**
      * 是否在使用，0表示未使用，1表示正在使用，每个商户只可以使用一个erp

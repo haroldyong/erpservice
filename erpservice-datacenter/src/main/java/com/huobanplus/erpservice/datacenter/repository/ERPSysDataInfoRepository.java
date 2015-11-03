@@ -21,5 +21,5 @@ import org.springframework.data.jpa.repository.Query;
 public interface ERPSysDataInfoRepository extends JpaRepository<ERPSysDataInfo, Integer> {
     @Query("delete from ERPSysDataInfo sysData where sysData.customerId=?1 and sysData.erpType = ?2")
     @Modifying
-    void batchDelete(int customerId, ERPTypeEnum erpTypeEnum);
+    void batchDelete(int customerId, ERPTypeEnum.ProviderType providerType);
 }

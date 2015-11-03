@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PlatformInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        request.setAttribute("customerId", 5);
+        request.setAttribute("customerId", 3447);
         return true;
     }
 }
