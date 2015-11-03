@@ -9,8 +9,9 @@
 
 package com.huobanplus.erpservice.datacenter.service;
 
-import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 
 import java.util.List;
 
@@ -30,10 +31,10 @@ public interface ERPDetailConfigService {
      * 根据商户id和类型得到对应的erp详细配置信息
      *
      * @param customerId
-     * @param erpTypeEnum
+     * @param providerType
      * @return
      */
-    ERPDetailConfigEntity findByCustomerIdAndType(int customerId, ERPTypeEnum erpTypeEnum);
+    ERPDetailConfigEntity findByCustomerIdAndType(int customerId, ERPTypeEnum.ProviderType providerType);
 
     /**
      * 得到商户使用的erp详细配置信息
@@ -64,4 +65,12 @@ public interface ERPDetailConfigService {
      * @return
      */
     List<ERPDetailConfigEntity> findByCustomerId(int customerId);
+
+    /**
+     * 通过系统参数过的erp详细配置信息
+     *
+     * @param sysDataInfos
+     * @return
+     */
+    List<ERPDetailConfigEntity> findBySysData(List<ERPSysDataInfo> sysDataInfos);
 }

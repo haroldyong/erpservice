@@ -12,35 +12,69 @@ package com.huobanplus.erpservice.datacenter.common;
 import com.huobanplus.erpservice.common.util.ICommonEnum;
 
 /**
- * Created by liual on 2015-10-28.
+ * Created by liual on 2015-11-03.
  */
-public enum ERPTypeEnum implements ICommonEnum {
-    EDB(0, "edb"),
-    NETSHOP(1, "netShop");
+public interface ERPTypeEnum {
+    enum ProviderType implements ICommonEnum {
+        EDB(0, "E店宝"),
+        NETSHOP(1, "网店管家");
 
-    private int code;
-    private String name;
+        private int code;
+        private String name;
 
-    @Override
-    public int getCode() {
-        return code;
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        ProviderType(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
     }
 
-    public void setCode(int code) {
-        this.code = code;
-    }
+    enum UserType implements ICommonEnum {
+        HUOBAN_MALL(0, "伙伴商城"),
+        HUOBAN_SUPPLIER(1, "伙伴商城供应商平台");
 
-    @Override
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+        private int code;
+        private String name;
 
-    ERPTypeEnum(int code, String name) {
-        this.code = code;
-        this.name = name;
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        UserType(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
     }
 }

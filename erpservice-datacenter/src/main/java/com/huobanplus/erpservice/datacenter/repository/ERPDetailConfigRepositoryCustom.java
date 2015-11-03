@@ -24,5 +24,5 @@ public interface ERPDetailConfigRepositoryCustom {
      * @param sysDataInfos
      * @return
      */
-    ERPDetailConfigEntity findBySysData(List<ERPSysDataInfo> sysDataInfos);
+    List<ERPDetailConfigEntity> findBySysData(List<ERPSysDataInfo> sysDataInfos);
 }

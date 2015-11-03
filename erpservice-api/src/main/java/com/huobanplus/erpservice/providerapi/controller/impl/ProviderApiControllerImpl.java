@@ -34,15 +34,19 @@ public class ProviderApiControllerImpl implements ProviderApiController {
     private ERPRegister erpRegister;
 
     @Override
-    @RequestMapping(value = "/rest/obtainOrderInfo/{erpType}", method = RequestMethod.POST)
-    public String obtainOrderInfo(@PathVariable("erpType") int erpType, HttpServletRequest request) {
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}", method = RequestMethod.POST)
+    public String obtainOrderInfo(
+            @PathVariable("erpProviderType") int erpProviderType,
+            @PathVariable("erpUserType") ERPTypeEnum.UserType erpUserType,
+            HttpServletRequest request) {
         ERPInfo erpInfo = new ERPInfo();
-        erpInfo.setErpType(EnumHelper.getEnumType(ERPTypeEnum.class, erpType));
+        erpInfo.setErpType(EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, erpProviderType));
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
         if (erpHandler == null) {
             return "未找到相关erp处理器";
         }
-        EventResult eventResult = erpHandler.handleRequest(request);
+
+        EventResult eventResult = erpHandler.handleRequest(request, erpUserType);
         return eventResult.getData().toString();
     }
 }

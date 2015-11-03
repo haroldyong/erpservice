@@ -37,7 +37,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
      * @return 无法处理返回空，可以处理返回该erp事件处理器
      */
     public ERPHandler buildHandler(ERPInfo erpInfo) {
-        if (erpInfo.getErpType() == ERPTypeEnum.EDB) {
+        if (erpInfo.getErpType() == ERPTypeEnum.ProviderType.EDB) {
             return new ERPHandler() {
                 public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
                     //todo 判断事件是否可以处理

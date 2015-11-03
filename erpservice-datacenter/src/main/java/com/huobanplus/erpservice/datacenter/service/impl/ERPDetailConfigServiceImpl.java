@@ -9,10 +9,11 @@
 
 package com.huobanplus.erpservice.datacenter.service.impl;
 
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 import com.huobanplus.erpservice.datacenter.repository.ERPDetailConfigRepository;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
-import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,8 +36,8 @@ public class ERPDetailConfigServiceImpl implements ERPDetailConfigService {
 
     @Override
     @Transactional(readOnly = true)
-    public ERPDetailConfigEntity findByCustomerIdAndType(int customerId, ERPTypeEnum erpTypeEnum) {
-        return detailConfigRepository.findByCustomerIdAndErpType(customerId, erpTypeEnum);
+    public ERPDetailConfigEntity findByCustomerIdAndType(int customerId, ERPTypeEnum.ProviderType providerType) {
+        return detailConfigRepository.findByCustomerIdAndErpType(customerId, providerType);
     }
 
     @Override
@@ -65,4 +66,11 @@ public class ERPDetailConfigServiceImpl implements ERPDetailConfigService {
     public List<ERPDetailConfigEntity> findByCustomerId(int customerId) {
         return detailConfigRepository.findByCustomerId(customerId);
     }
+
+    @Override
+    public List<ERPDetailConfigEntity> findBySysData(List<ERPSysDataInfo> sysDataInfos) {
+        return detailConfigRepository.findBySysData(sysDataInfos);
+    }
+
+
 }

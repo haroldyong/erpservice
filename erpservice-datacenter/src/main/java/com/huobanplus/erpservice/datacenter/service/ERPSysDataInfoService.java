@@ -28,7 +28,7 @@ public interface ERPSysDataInfoService {
      * 删除某个商户下的某个erp的所有系统参数信息，新增钱操作
      *
      * @param customerId
-     * @param erpTypeEnum
+     * @param providerType
      */
-    void batchDelete(int customerId, ERPTypeEnum erpTypeEnum);
+    void batchDelete(int customerId, ERPTypeEnum.ProviderType providerType);
 }

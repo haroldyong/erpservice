@@ -29,7 +29,7 @@ public class ERPInfo implements Serializable {
     /**
      * erp名称
      */
-    private ERPTypeEnum erpType;
+    private ERPTypeEnum.ProviderType erpType;
     /**
      * erp系统级参数
      * <p>json格式</p>

@@ -33,7 +33,7 @@ public class ERPSysDataInfoServiceImpl implements ERPSysDataInfoService {
 
     @Override
     @Transactional
-    public void batchDelete(int customerId, ERPTypeEnum erpTypeEnum) {
-        sysDataInfoRepository.batchDelete(customerId, erpTypeEnum);
+    public void batchDelete(int customerId, ERPTypeEnum.ProviderType providerType) {
+        sysDataInfoRepository.batchDelete(customerId, providerType);
     }
 }

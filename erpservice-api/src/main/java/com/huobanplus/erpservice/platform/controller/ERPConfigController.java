@@ -16,16 +16,15 @@ import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
-import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.service.ERPSysDataInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,10 +46,11 @@ public class ERPConfigController {
     @Autowired
     private ERPSysDataInfoService sysDataInfoService;
 
-    @RequestMapping("/erpConfig")
+    @RequestMapping("/erpConfig/{erpUserType}")
     public String erpConfig(
             @RequestAttribute int customerId,
             HttpServletRequest request,
+            @PathVariable("erpUserType") int erpUserType,
             Model model
     ) {
         ERPBaseConfigEntity baseConfig = null;
@@ -71,6 +71,7 @@ public class ERPConfigController {
         model.addAttribute("baseConfig", baseConfig);
         model.addAttribute("lstDetailConfig", lstDetailConfig);
         model.addAttribute("erpType", erpType);
+        model.addAttribute("erpUserType", erpUserType);
         model.addAttribute("result", request.getSession().getAttribute("resultCode"));
         request.getSession().removeAttribute("resultCode");
         return "erp_config";
@@ -112,6 +113,7 @@ public class ERPConfigController {
             String token,
             String secretKey,
             int erpType,
+            int erpUserType,
             String sysDataJson,
             HttpServletRequest request,
             Model model
@@ -122,22 +124,22 @@ public class ERPConfigController {
             baseConfig.setToken(token.trim());
             baseConfig.setSecretKey(secretKey.trim());
             if (erpType != -1) {
-                ERPTypeEnum erpTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.class, erpType);
-                ERPDetailConfigEntity detailConfig = detailConfigService.findByCustomerIdAndType(customerId, erpTypeEnum);
+                ERPTypeEnum.ProviderType providerType = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, erpType);
+                ERPDetailConfigEntity detailConfig = detailConfigService.findByCustomerIdAndType(customerId, providerType);
                 JSONObject jsonObject = JSON.parseObject(sysDataJson);
                 if (detailConfig == null) {
                     detailConfig = new ERPDetailConfigEntity();
-                    detailConfig.setErpType(erpTypeEnum);
+                    detailConfig.setErpType(providerType);
                     detailConfig.setIsDefault(0);
                     detailConfig.setCustomerId(customerId);
                 }
                 int index = 0;
                 Class configClass = detailConfig.getClass();
-                sysDataInfoService.batchDelete(customerId, erpTypeEnum);
+                sysDataInfoService.batchDelete(customerId, providerType);
                 for (Map.Entry<String, Object> item : jsonObject.entrySet()) {
                     configClass.getDeclaredMethod("setP" + index, String.class).invoke(detailConfig, item.getValue());
                     ERPSysDataInfo erpSysDataInfo = new ERPSysDataInfo();
-                    erpSysDataInfo.setErpType(erpTypeEnum);
+                    erpSysDataInfo.setErpType(providerType);
                     erpSysDataInfo.setParamName(item.getKey());
                     erpSysDataInfo.setCustomerId(customerId);
                     erpSysDataInfo.setColumnName("P" + index);

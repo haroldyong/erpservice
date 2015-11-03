@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.providerapi.controller;
 
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +21,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RequestMapping("/providerApi")
 public interface ProviderApiController {
-    @RequestMapping(value = "/rest/obtainOrderInfo/{erpType}", method = RequestMethod.POST)
-    String obtainOrderInfo(@PathVariable("erpType") int erpType, HttpServletRequest request);
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}", method = RequestMethod.POST)
+    String obtainOrderInfo(
+            @PathVariable("erpProviderType") int erpProviderType,
+            @PathVariable("erpUserType") ERPTypeEnum.UserType erpUserType,
+            HttpServletRequest request);
 }
