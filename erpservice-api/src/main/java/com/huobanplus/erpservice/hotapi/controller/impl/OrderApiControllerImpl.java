@@ -167,4 +167,9 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
             return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, eventResult.getResultMsg(), null);
         }
     }
+
+    @Override
+    public ApiResult syncInventory(String orderId, int customerId, String erpUserName) throws IOException {
+        return null;
+    }
 }

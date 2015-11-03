@@ -19,7 +19,7 @@ import java.util.List;
  * Created by allan on 2015/7/10.
  */
 @Entity
-@Table(name = "Mall_Orders")
+@Table(name = "ERP_Orders")
 public class MallOrderBean {
     @Id
     @GeneratedValue

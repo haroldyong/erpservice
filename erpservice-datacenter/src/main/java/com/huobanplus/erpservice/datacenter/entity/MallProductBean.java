@@ -16,7 +16,7 @@ import javax.persistence.*;
  * Created by liual on 2015-08-26.
  */
 @Entity
-@Table(name = "Mall_Product")
+@Table(name = "ERP_Product")
 public class MallProductBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

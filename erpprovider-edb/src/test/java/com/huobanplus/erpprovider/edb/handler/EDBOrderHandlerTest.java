@@ -43,7 +43,6 @@ public class EDBOrderHandlerTest {
     @Before
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
-        mockERP.setErpName("edb");
         EDBSysData sysData = new EDBSysData();
         sysData.setRequestUrl(Constant.REQUEST_URI);
         sysData.setDbHost(Constant.DB_HOST);

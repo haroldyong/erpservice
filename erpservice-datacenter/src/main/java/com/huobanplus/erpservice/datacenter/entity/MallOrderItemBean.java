@@ -15,7 +15,7 @@ import javax.persistence.*;
  * 商品实体
  */
 @Entity
-@Table(name = "Mall_OrderItem")
+@Table(name = "ERP_OrderItem")
 public class MallOrderItemBean {
     @Id
     @GeneratedValue

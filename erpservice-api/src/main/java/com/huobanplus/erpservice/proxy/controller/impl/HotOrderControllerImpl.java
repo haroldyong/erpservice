@@ -11,7 +11,6 @@ package com.huobanplus.erpservice.proxy.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.*;
@@ -21,7 +20,6 @@ import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
-import com.huobanplus.erpservice.proxy.common.CommonUtils;
 import com.huobanplus.erpservice.proxy.common.HotBaseController;
 import com.huobanplus.erpservice.proxy.controller.HotOrderController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +45,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     @ResponseBody
     public ApiResult createOrder(String orderInfoJson, ERPInfo erpInfo, String sign) {
         try {
-            ERPInfo info = CommonUtils.encryptInfo(erpInfo);
+            ERPInfo info = erpInfo;
 
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {
@@ -121,8 +119,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     @ResponseBody
     public ApiResult orderDeliver(String orderInfoJson, ERPInfo erpInfo, String sign) {
         try {
-            ERPInfo info = CommonUtils.encryptInfo(erpInfo);
-
+            ERPInfo info = erpInfo;
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {
                 return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
@@ -159,8 +156,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     @ResponseBody
     public ApiResult orderUpdate(String orderInfoJson, ERPInfo erpInfo, String sign) {
         try {
-            ERPInfo info = CommonUtils.encryptInfo(erpInfo);
-
+            ERPInfo info = erpInfo;
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {
                 return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
@@ -212,8 +208,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
     @ResponseBody
     public ApiResult orderStatusUpdate(String orderInfoJson, ERPInfo erpInfo, String sign) {
         try {
-            ERPInfo info = CommonUtils.encryptInfo(erpInfo);
-
+            ERPInfo info = erpInfo;
             ERPHandler erpHandler = erpRegister.getERPHandler(info);
             if (erpHandler == null) {
                 return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);

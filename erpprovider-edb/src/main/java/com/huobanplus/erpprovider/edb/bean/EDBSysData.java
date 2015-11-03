@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpprovider.edb.bean;
 
+
 /**
  * Created by allan on 2015/8/4.
  */
@@ -22,6 +23,8 @@ public class EDBSysData {
     private String v;
     private String slencry;
     private String ip;
+    private String shopId;
+    private String storageId;
 
     public String getRequestUrl() {
         return requestUrl;
@@ -93,5 +96,21 @@ public class EDBSysData {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getStorageId() {
+        return storageId;
+    }
+
+    public void setStorageId(String storageId) {
+        this.storageId = storageId;
     }
 }

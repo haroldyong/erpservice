@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.eventhandler.model;
 
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,7 @@ public class ERPInfo implements Serializable {
     /**
      * erp名称
      */
-    private String erpName;
+    private ERPTypeEnum erpType;
     /**
      * erp系统级参数
      * <p>json格式</p>

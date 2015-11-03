@@ -10,15 +10,17 @@
 package com.huobanplus.erpservice.proxy.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.DxDESCipher;
+import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.config.WebConfig;
+import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
-import org.eclipse.persistence.internal.sessions.DirectCollectionChangeRecord;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +29,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import javax.persistence.Entity;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -49,10 +53,11 @@ public class OrderProxyControllerTest extends SpringWebTest {
 
     private MallOrderBean mockOrder;
 
+    private String mockCustomer = "5";
+
     @Before
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
-        mockERP.setErpName("edb");
         EDBSysData sysData = new EDBSysData();
 
         sysData.setRequestUrl(Constant.REQUEST_URI);
@@ -88,14 +93,12 @@ public class OrderProxyControllerTest extends SpringWebTest {
         String orderInfoJson = JSON.toJSONString(mockOrder);
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("orderInfoJson", orderInfoJson);
-        signMap.put("erpName", mockERP.getErpName());
-        signMap.put("sysDataJson", mockERP.getSysDataJson());
+        signMap.put("customerId", mockCustomer);
 
         String sign = buildSign(signMap, null, "66668888");
         mockMvc.perform(post("/hotProxy/order/createOrder")
                 .param("orderInfoJson", orderInfoJson)
-                .param("erpName", mockERP.getErpName())
-                .param("sysDataJson", mockERP.getSysDataJson())
+                .param("customerId", mockCustomer)
                 .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -109,14 +112,12 @@ public class OrderProxyControllerTest extends SpringWebTest {
 
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("orderInfoJson", orderInfoJson);
-        signMap.put("erpName", mockERP.getErpName());
-        signMap.put("sysDataJson", mockERP.getSysDataJson());
+        signMap.put("customerId", mockCustomer);
 
         String sign = buildSign(signMap, null, "66668888");
         mockMvc.perform(post("/hotProxy/order/updateOrder")
                 .param("orderInfoJson", orderInfoJson)
-                .param("erpName", mockERP.getErpName())
-                .param("sysDataJson", mockERP.getSysDataJson())
+                .param("customerId", mockCustomer)
                 .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -124,11 +125,34 @@ public class OrderProxyControllerTest extends SpringWebTest {
 
     @Test
     public void testOrderDeliver() throws Exception {
-
+        String deliverTime = StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN);
+        Map<String, String> signMap = new TreeMap<>();
+        signMap.put("orderId", mockOrder.getOrderId());
+        signMap.put("deliverTime", deliverTime);
+        signMap.put("logiName", "申通快递");
+        signMap.put("logiNo", "1231232");
+        signMap.put("customerId", mockCustomer);
+        String sign = buildSign(signMap, null, signKey);
+        mockMvc.perform(post("/hotProxy/order/orderDeliver")
+                .param("orderId", mockOrder.getOrderId())
+                .param("deliverTime", deliverTime)
+                .param("logiName", "申通快递")
+                .param("logiNo", "1231232")
+                .param("customerId", mockCustomer)
+                .param("sign", sign))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
     public void testCancelOrder() throws Exception {
-
+        String jsonData = "{\"requestUrl\":\"12312312\",\"dbHost\":\"12312312\",\"appKey\":\"312312\",\"appSecret\":\"3123\",\"token\":\"12312\",\"ip\":\"3123\"}";
+        JSONObject jsonObject = JSON.parseObject(jsonData);
+        ERPDetailConfigEntity detailConfigEntity = new ERPDetailConfigEntity();
+        int index = 0;
+        for (Map.Entry<String, Object> item : jsonObject.entrySet()) {
+            detailConfigEntity.getClass().getDeclaredMethod("setP" + index, String.class).invoke(detailConfigEntity, item.getValue());
+            index++;
+        }
     }
 }

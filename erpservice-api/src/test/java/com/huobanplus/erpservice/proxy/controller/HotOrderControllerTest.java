@@ -54,7 +54,6 @@ public class HotOrderControllerTest extends SpringWebTest {
     @Before
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
-        mockERP.setErpName("edb");
         EDBSysData sysData = new EDBSysData();
 //        sysData.setRequestUrl(Constant.REQUEST_URI_TEST);
 //        sysData.setDbHost(Constant.DB_HOST_TEST);
@@ -97,13 +96,11 @@ public class HotOrderControllerTest extends SpringWebTest {
 
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("orderInfoJson", orderInfoJson);
-        signMap.put("name", mockERP.getErpName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
 
         String sign = buildSign(signMap, signKey, null);
         mockMvc.perform(post("/hotProxy/order/createOrder")
                 .param("orderInfoJson", orderInfoJson)
-                .param("name", DxDESCipher.encrypt(mockERP.getErpName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))
                 .andDo(print())
@@ -114,12 +111,10 @@ public class HotOrderControllerTest extends SpringWebTest {
     @Test
     public void testObtainOrder() throws Exception {
         Map<String, String> signMap = new TreeMap<>();
-        signMap.put("name", mockERP.getErpName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientOrderApi/obtainOrder")
-                .param("name", DxDESCipher.encrypt(mockERP.getErpName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))
                 .andDo(print())
@@ -138,14 +133,12 @@ public class HotOrderControllerTest extends SpringWebTest {
 
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("orderInfoJson", orderInfoJson);
-        signMap.put("name", mockERP.getErpName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
 
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientOrderApi/orderDeliver")
                 .param("orderInfoJson", URLEncoder.encode(orderInfoJson, "utf-8"))
-                .param("name", DxDESCipher.encrypt(mockERP.getErpName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))
                 .andDo(print())
@@ -171,13 +164,11 @@ public class HotOrderControllerTest extends SpringWebTest {
         String orderInfoJson = new ObjectMapper().writeValueAsString(orderInfo);
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("orderInfoJson", orderInfoJson);
-        signMap.put("name", mockERP.getErpName());
         signMap.put("sysDataJson", mockERP.getSysDataJson());
         String sign = buildSign(signMap, signKey, null);
 
         mockMvc.perform(post("/hotClientOrderApi/orderUpdate")
                 .param("orderInfoJson", URLEncoder.encode(orderInfoJson, "utf-8"))
-                .param("name", DxDESCipher.encrypt(mockERP.getErpName()))
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))
                 .andDo(print())

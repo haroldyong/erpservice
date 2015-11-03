@@ -18,7 +18,7 @@ import java.util.List;
  * Created by allan on 2015/8/7.
  */
 @Entity
-@Table(name = "Mall_OutStore")
+@Table(name = "ERP_OutStore")
 public class MallOutStoreBean {
     /**
      * 出库单号

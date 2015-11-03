@@ -27,6 +27,7 @@ import java.util.Map;
 public interface OrderApiController {
     /**
      * 发货通知
+     *
      * @param orderId
      * @param logiName
      * @param logiNo
@@ -53,6 +54,7 @@ public interface OrderApiController {
 
     /**
      * 退货通知
+     *
      * @param orderId
      * @param logiName
      * @param logiNo
@@ -87,6 +89,7 @@ public interface OrderApiController {
 
     /**
      * 按条件搜索订单列表
+     *
      * @param pageable
      * @param orderStauts
      * @param customerId
@@ -96,11 +99,12 @@ public interface OrderApiController {
      */
     @RequestMapping("/obtainOrders")
     @ResponseBody
-    ApiResult obtainOrders(Pageable pageable, int orderStauts,int customerId,
+    ApiResult obtainOrders(Pageable pageable, int orderStauts, int customerId,
                            String erpUserName) throws IOException;
 
     /**
-     *  根据订单编号获取订单详情
+     * 根据订单编号获取订单详情
+     *
      * @param orderId
      * @param customerId
      * @param erpUserName
@@ -111,4 +115,6 @@ public interface OrderApiController {
     @ResponseBody
     ApiResult obtainOrder(String orderId, int customerId,
                           String erpUserName) throws IOException;
+
+    ApiResult syncInventory(String orderId, int customerId, String erpUserName) throws IOException;
 }

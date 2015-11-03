@@ -57,4 +57,10 @@ public interface OrderProxyController {
             String orderId,
             @RequestAttribute ERPInfo erpInfo
     ) throws Exception;
+
+    @RequestMapping("/getOrderDetail")
+    ApiResult getOrderDetail(
+            String orderId,
+            @RequestAttribute ERPInfo erpInfo
+    ) throws Exception;
 }

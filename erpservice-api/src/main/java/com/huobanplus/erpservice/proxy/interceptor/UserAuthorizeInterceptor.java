@@ -10,13 +10,13 @@
 package com.huobanplus.erpservice.proxy.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huobanplus.erpservice.common.util.DxDESCipher;
 import com.huobanplus.erpservice.common.util.SignBuilder;
-import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
-import com.huobanplus.erpservice.proxy.common.CommonUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -31,6 +31,9 @@ import java.util.TreeMap;
  */
 @Component
 public class UserAuthorizeInterceptor extends HandlerInterceptorAdapter {
+    @Autowired
+    private ERPDetailConfigService detailConfigService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         ApiResult apiResult;
@@ -53,14 +56,12 @@ public class UserAuthorizeInterceptor extends HandlerInterceptorAdapter {
                 }
             }
         });
-        //得到商家的secretKey
-        String sign = SignBuilder.buildSign(signMap, null, CommonUtils.SECRET_KEY);
+        //得到商家的erp配置
+        int customerId = Integer.parseInt(request.getParameter("customerId"));
+        ERPDetailConfigEntity detailConfigEntity = detailConfigService.findByCustomerIdAndDefault(customerId);
+        String sign = SignBuilder.buildSign(signMap, null, "66668888");
         if (sign.equals(requestSign)) {
-            //反序列化erpInfo
-            String sysDataJson = request.getParameter("sysDataJson");
-            String erpName = request.getParameter("erpName");
-            sysDataJson = DxDESCipher.decrypt(sysDataJson);
-            ERPInfo erpInfo = new ERPInfo(erpName, sysDataJson);
+            ERPInfo erpInfo = new ERPInfo(detailConfigEntity.getErpType(), detailConfigEntity.getErpSysData());
             request.setAttribute("erpInfo", erpInfo);
             return true;
         } else {

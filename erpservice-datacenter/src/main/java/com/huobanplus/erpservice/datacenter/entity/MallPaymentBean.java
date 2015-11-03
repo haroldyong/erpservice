@@ -16,7 +16,7 @@ import java.util.Date;
  * 付款单实体
  */
 @Entity
-@Table(name = "Mall_Payments")
+@Table(name = "ERP_Payments")
 public class MallPaymentBean {
     /**
      * 付款单号
@@ -146,9 +146,11 @@ public class MallPaymentBean {
     public String getOrderId() {
         return orderId;
     }
+
     public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
+
     public int getMemberId() {
         return memberId;
     }
