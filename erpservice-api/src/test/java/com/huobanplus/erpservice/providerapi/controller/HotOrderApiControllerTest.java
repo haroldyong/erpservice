@@ -86,7 +86,4 @@ public class HotOrderApiControllerTest extends SpringWebTest {
 
     }
 
-    @Test
-    public void test
-
 }
