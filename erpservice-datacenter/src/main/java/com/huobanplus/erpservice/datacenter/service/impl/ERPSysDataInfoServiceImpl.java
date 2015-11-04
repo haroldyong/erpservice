@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Created by liual on 2015-10-29.
  */
@@ -35,5 +37,10 @@ public class ERPSysDataInfoServiceImpl implements ERPSysDataInfoService {
     @Transactional
     public void batchDelete(int customerId, ERPTypeEnum.ProviderType providerType) {
         sysDataInfoRepository.batchDelete(customerId, providerType);
+    }
+
+    @Override
+    public List<ERPSysDataInfo> findByErpTypeAndErpUserType(ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
+        return sysDataInfoRepository.findByErpTypeAndErpUserType(providerType, erpUserType);
     }
 }

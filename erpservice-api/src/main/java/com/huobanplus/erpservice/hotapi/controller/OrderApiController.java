@@ -9,7 +9,9 @@
 
 package com.huobanplus.erpservice.hotapi.controller;
 
+import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,7 +37,7 @@ public interface OrderApiController {
      * @param remark
      * @param dicDeliverItemsStr
      * @param customerId
-     * @param erpUserName
+     * @param erpUserType
      * @return
      * @throws IOException
      */
@@ -49,7 +51,7 @@ public interface OrderApiController {
             @RequestParam(required = false) String remark,
             @RequestParam(required = false) String dicDeliverItemsStr,
             int customerId,
-            String erpUserName
+            @RequestAttribute ERPTypeEnum.UserType erpUserType
     ) throws IOException;
 
     /**
@@ -66,7 +68,7 @@ public interface OrderApiController {
      * @param remark
      * @param dicDeliverItemsStr
      * @param customerId
-     * @param erpUserName
+     * @param erpUserType
      * @return
      * @throws IOException
      */
@@ -84,7 +86,7 @@ public interface OrderApiController {
             @RequestParam(required = false) String remark,
             @RequestParam(required = false) String dicDeliverItemsStr,
             int customerId,
-            String erpUserName
+            @RequestAttribute ERPTypeEnum.UserType erpUserType
     ) throws IOException;
 
     /**
@@ -93,28 +95,35 @@ public interface OrderApiController {
      * @param pageable
      * @param orderStauts
      * @param customerId
-     * @param erpUserName
+     * @param erpUserType
      * @return
      * @throws IOException
      */
     @RequestMapping("/obtainOrders")
     @ResponseBody
-    ApiResult obtainOrders(Pageable pageable, int orderStauts, int customerId,
-                           String erpUserName) throws IOException;
+    ApiResult obtainOrders(
+            Pageable pageable,
+            int orderStauts,
+            int customerId,
+            @RequestAttribute ERPTypeEnum.UserType erpUserType
+    ) throws IOException;
 
     /**
      * 根据订单编号获取订单详情
      *
      * @param orderId
      * @param customerId
-     * @param erpUserName
+     * @param erpUserType
      * @return
      * @throws IOException
      */
     @RequestMapping("/obtainOrder")
     @ResponseBody
-    ApiResult obtainOrder(String orderId, int customerId,
-                          String erpUserName) throws IOException;
+    ApiResult obtainOrder(
+            String orderId,
+            int customerId,
+            @RequestAttribute ERPTypeEnum.UserType erpUserType
+    ) throws IOException;
 
     ApiResult syncInventory(String orderId, int customerId, String erpUserName) throws IOException;
 }

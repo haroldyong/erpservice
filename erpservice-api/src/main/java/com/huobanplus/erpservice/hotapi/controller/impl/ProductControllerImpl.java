@@ -12,6 +12,7 @@ package com.huobanplus.erpservice.hotapi.controller.impl;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.InventoryEvent;
@@ -43,9 +44,9 @@ public class ProductControllerImpl implements ProductApiController {
             String proBn,
             int stock,
             @RequestAttribute int customerId,
-            @RequestAttribute String erpUserName) throws IOException {
+            @RequestAttribute ERPTypeEnum.UserType erpUserType) throws IOException {
         ERPUserInfo erpUserInfo = new ERPUserInfo();
-        erpUserInfo.setERPUserName(erpUserName);
+        erpUserInfo.setErpUserType(erpUserType);
         erpUserInfo.setCustomerId(customerId);
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {

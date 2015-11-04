@@ -93,7 +93,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                 }
 
                 @Override
-                public EventResult handleRequest(HttpServletRequest request) {
+                public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
                     return null;
                 }
             };

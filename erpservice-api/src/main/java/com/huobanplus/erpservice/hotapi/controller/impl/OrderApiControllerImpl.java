@@ -12,6 +12,7 @@ package com.huobanplus.erpservice.hotapi.controller.impl;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.*;
 import com.huobanplus.erpservice.eventhandler.model.*;
 import com.huobanplus.erpservice.hotapi.common.ERPApiBaseController;
@@ -49,12 +50,12 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
             @RequestParam(required = false) String remark,
             @RequestParam(required = false) String dicDeliverItemsStr,
             @RequestAttribute int customerId,
-            @RequestAttribute String erpUserName
+            @RequestAttribute ERPTypeEnum.UserType erpUserType
     ) throws IOException {
 
         //得到使用者事件处理器
         ERPUserInfo erpUserInfo = new ERPUserInfo();
-        erpUserInfo.setERPUserName(erpUserName);
+        erpUserInfo.setErpUserType(erpUserType);
         erpUserInfo.setCustomerId(customerId);
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {
@@ -92,10 +93,10 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
             @RequestParam(required = false) String remark,
             @RequestParam(required = false) String dicDeliverItemsStr,
             @RequestAttribute int customerId,
-            @RequestAttribute String erpUserName
+            @RequestAttribute ERPTypeEnum.UserType erpUserType
     ) throws IOException {
         ERPUserInfo erpUserInfo = new ERPUserInfo();
-        erpUserInfo.setERPUserName(erpUserName);
+        erpUserInfo.setErpUserType(erpUserType);
         erpUserInfo.setCustomerId(customerId);
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {
@@ -125,9 +126,9 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
     @RequestMapping("/obtainOrders")
     @ResponseBody
     @Override
-    public ApiResult obtainOrders(Pageable pageable,  int orderStauts, int customerId, String erpUserName) throws IOException {
+    public ApiResult obtainOrders(Pageable pageable, int orderStauts, int customerId, @RequestAttribute ERPTypeEnum.UserType erpUserType) throws IOException {
         ERPUserInfo erpUserInfo = new ERPUserInfo();
-        erpUserInfo.setERPUserName(erpUserName);
+        erpUserInfo.setErpUserType(erpUserType);
         erpUserInfo.setCustomerId(customerId);
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {
@@ -149,9 +150,9 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
     @RequestMapping("/obtainOrder")
     @ResponseBody
     @Override
-    public ApiResult obtainOrder(String orderId, int customerId, String erpUserName) throws IOException {
+    public ApiResult obtainOrder(String orderId, int customerId, @RequestAttribute ERPTypeEnum.UserType erpUserType) throws IOException {
         ERPUserInfo erpUserInfo = new ERPUserInfo();
-        erpUserInfo.setERPUserName(erpUserName);
+        erpUserInfo.setErpUserType(erpUserType);
         erpUserInfo.setCustomerId(customerId);
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {

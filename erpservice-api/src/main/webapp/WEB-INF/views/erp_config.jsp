@@ -167,7 +167,7 @@
 
                     <div>
                         <span class="spModuleTitle">基本设置</span>
-                        <input type="hidden" value="${erpUserType}"/>
+                        <input type="hidden" name="erpUserType" value="${erpUserType}"/>
 
                         <div class="division">
                             <table width="100%" border="0" cellpadding="0" cellspacing="0">

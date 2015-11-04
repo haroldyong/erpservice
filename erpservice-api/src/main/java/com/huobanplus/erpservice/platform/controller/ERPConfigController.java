@@ -125,11 +125,13 @@ public class ERPConfigController {
             baseConfig.setSecretKey(secretKey.trim());
             if (erpType != -1) {
                 ERPTypeEnum.ProviderType providerType = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, erpType);
+                ERPTypeEnum.UserType erpUserTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
                 ERPDetailConfigEntity detailConfig = detailConfigService.findByCustomerIdAndType(customerId, providerType);
                 JSONObject jsonObject = JSON.parseObject(sysDataJson);
                 if (detailConfig == null) {
                     detailConfig = new ERPDetailConfigEntity();
                     detailConfig.setErpType(providerType);
+                    detailConfig.setErpUserType(erpUserTypeEnum);
                     detailConfig.setIsDefault(0);
                     detailConfig.setCustomerId(customerId);
                 }
@@ -143,6 +145,7 @@ public class ERPConfigController {
                     erpSysDataInfo.setParamName(item.getKey());
                     erpSysDataInfo.setCustomerId(customerId);
                     erpSysDataInfo.setColumnName("P" + index);
+                    erpSysDataInfo.setErpUserType(erpUserTypeEnum);
                     sysDataInfoService.save(erpSysDataInfo);
                     index++;
                 }
@@ -161,6 +164,6 @@ public class ERPConfigController {
             result = "error";
         }
         request.getSession().setAttribute("resultCode", result);
-        return "redirect: erpConfig";
+        return "redirect: erpConfig/" + erpUserType;
     }
 }

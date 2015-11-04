@@ -26,12 +26,12 @@ public class ERPDetailConfigRepositoryImpl implements ERPDetailConfigRepositoryC
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<ERPDetailConfigEntity> findBySysData(List<ERPSysDataInfo> sysDataInfos) {
+    public ERPDetailConfigEntity findBySysData(List<ERPSysDataInfo> sysDataInfos, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
         StringBuilder sqlWhere = new StringBuilder();
         StringBuilder sqlCustomerIn = new StringBuilder();
         int index = 0;
         for (ERPSysDataInfo sysDataInfo : sysDataInfos) {
-            sqlWhere.append("and").append(sysDataInfo.getColumnName() + "=" + sysDataInfo.getParamName()).append(" ");
+            sqlWhere.append(" AND").append(sysDataInfo.getColumnName() + "=" + sysDataInfo.getParamName()).append(" ");
             if (index == sysDataInfos.size() - 1) {
                 sqlCustomerIn.append(sysDataInfo.getCustomerId());
             } else {
@@ -39,8 +39,8 @@ public class ERPDetailConfigRepositoryImpl implements ERPDetailConfigRepositoryC
             }
             index++;
         }
-        String sql = "SELECT * FROM ERP_DetailConfig WHERE ISDEFAULT=1 " + sqlWhere.toString() + " AND CUSTOMERID IN (" + sqlCustomerIn.toString() + ")";
-        List<ERPDetailConfigEntity> lstDetailConfig = jdbcTemplate.query(sql, ((rs, rowNum) -> {
+        String sql = "SELECT * FROM ERP_DetailConfig WHERE ISDEFAULT=1 AND ERPTYPE=" + providerType + " AND ERPUSERTYPE=" + erpUserType.getCode() + sqlWhere.toString() + " AND CUSTOMERID IN (" + sqlCustomerIn.toString() + ")";
+        ERPDetailConfigEntity detailConfig = jdbcTemplate.queryForObject(sql, ((rs, rowNum) -> {
             ERPDetailConfigEntity detailConfigEntity = new ERPDetailConfigEntity();
             detailConfigEntity.setId(rs.getInt("ID"));
             detailConfigEntity.setErpType(EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, rs.getInt("ERPTYPE")));
@@ -49,6 +49,6 @@ public class ERPDetailConfigRepositoryImpl implements ERPDetailConfigRepositoryC
 
             return detailConfigEntity;
         }));
-        return lstDetailConfig;
+        return detailConfig;
     }
 }

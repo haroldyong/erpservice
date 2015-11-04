@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface ProviderApiController {
     @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}", method = RequestMethod.POST)
     String obtainOrderInfo(
-            @PathVariable("erpProviderType") int erpProviderType,
-            @PathVariable("erpUserType") ERPTypeEnum.UserType erpUserType,
+            @PathVariable("erpProviderType") int providerType,
+            @PathVariable("erpUserType") int erpUserType,
             HttpServletRequest request);
 }

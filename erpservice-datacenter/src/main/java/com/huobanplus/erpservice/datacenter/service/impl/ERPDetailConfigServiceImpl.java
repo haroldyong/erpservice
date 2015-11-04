@@ -68,8 +68,8 @@ public class ERPDetailConfigServiceImpl implements ERPDetailConfigService {
     }
 
     @Override
-    public List<ERPDetailConfigEntity> findBySysData(List<ERPSysDataInfo> sysDataInfos) {
-        return detailConfigRepository.findBySysData(sysDataInfos);
+    public ERPDetailConfigEntity findBySysData(List<ERPSysDataInfo> sysDataInfos, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
+        return detailConfigRepository.findBySysData(sysDataInfos, providerType, erpUserType);
     }
 
 

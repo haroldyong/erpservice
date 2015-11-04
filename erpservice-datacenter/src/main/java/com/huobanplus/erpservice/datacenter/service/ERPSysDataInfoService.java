@@ -12,6 +12,8 @@ package com.huobanplus.erpservice.datacenter.service;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 
+import java.util.List;
+
 /**
  * Created by liual on 2015-10-29.
  */
@@ -31,4 +33,13 @@ public interface ERPSysDataInfoService {
      * @param providerType
      */
     void batchDelete(int customerId, ERPTypeEnum.ProviderType providerType);
+
+    /**
+     * 通过erp系统类型和erp使用者类型得到系统数据信息
+     *
+     * @param providerType
+     * @param erpUserType
+     * @return
+     */
+    List<ERPSysDataInfo> findByErpTypeAndErpUserType(ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType);
 }

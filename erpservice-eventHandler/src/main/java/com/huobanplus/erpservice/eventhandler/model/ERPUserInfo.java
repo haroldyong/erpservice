@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.eventhandler.model;
 
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,13 +27,13 @@ public class ERPUserInfo implements Serializable {
     private static final long serialVersionUID = 52479852258664542L;
 
     /**
-     * erp使用者名称
+     * erp使用者类型
      * <ul>
      * <li>huobanmall</li>
      * <li>supplier</li>
      * </ul>
      */
-    private String ERPUserName;
+    private ERPTypeEnum.UserType erpUserType;
 
     /**
      * 商家id

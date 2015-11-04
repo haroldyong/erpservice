@@ -9,7 +9,9 @@
 
 package com.huobanplus.erpservice.hotapi.controller;
 
+import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -23,11 +25,12 @@ public interface ProductApiController {
 
     /**
      * 同步库存
+     *
      * @param goodBn
      * @param proBn
      * @param stock
      * @param customerId
-     * @param erpUserName
+     * @param erpUserType
      * @return
      * @throws IOException
      */
@@ -38,6 +41,6 @@ public interface ProductApiController {
             String proBn,
             int stock,
             int customerId,
-            String erpUserName
+            @RequestAttribute ERPTypeEnum.UserType erpUserType
     ) throws IOException;
 }
