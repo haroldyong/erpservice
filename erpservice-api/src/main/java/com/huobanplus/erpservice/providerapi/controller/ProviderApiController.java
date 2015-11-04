@@ -46,4 +46,41 @@ public interface ProviderApiController {
     String obtainOrderInfo(@PathVariable("erpProviderType") int providerType,
                            @PathVariable("erpUserType") int erpUserType,
                            HttpServletRequest request);
+
+    /**
+     * 发送发货通知
+     * @param providerType
+     * @param erpUserType
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/mSndGoods", method = RequestMethod.POST)
+    String mSndGoods(@PathVariable("erpProviderType") int providerType,
+                           @PathVariable("erpUserType") int erpUserType,
+                           HttpServletRequest request);
+
+    /**
+     * 获取商品列表
+     * @param providerType
+     * @param erpUserType
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/mGetGoods", method = RequestMethod.POST)
+    String mGetGoods(@PathVariable("erpProviderType") int providerType,
+                     @PathVariable("erpUserType") int erpUserType,
+                     HttpServletRequest request);
+
+    /**
+     * 同步库存
+     * @param providerType
+     * @param erpUserType
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/mSysGoods", method = RequestMethod.POST)
+    String mSysGoods(@PathVariable("erpProviderType") int providerType,
+                     @PathVariable("erpUserType") int erpUserType,
+                     HttpServletRequest request);
+
 }

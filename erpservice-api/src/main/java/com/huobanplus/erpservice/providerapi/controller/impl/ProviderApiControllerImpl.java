@@ -67,4 +67,52 @@ public class ProviderApiControllerImpl implements ProviderApiController {
         EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
         return eventResult.getData().toString();
     }
+
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/mSndGoods", method = RequestMethod.POST)
+    @Override
+    public String mSndGoods(@PathVariable("erpProviderType") int providerType, @PathVariable("erpUserType") int erpUserType, HttpServletRequest request) {
+        ERPTypeEnum.ProviderType providerTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, providerType);
+        ERPTypeEnum.UserType userTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
+        ERPInfo erpInfo = new ERPInfo();
+        erpInfo.setErpType(providerTypeEnum);
+        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
+        if (erpHandler == null) {
+            return "未找到相关erp处理器";
+        }
+
+        EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
+        return eventResult.getData().toString();
+    }
+
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/mGetGoods", method = RequestMethod.POST)
+    @Override
+    public String mGetGoods(@PathVariable("erpProviderType") int providerType, @PathVariable("erpUserType") int erpUserType, HttpServletRequest request) {
+        ERPTypeEnum.ProviderType providerTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, providerType);
+        ERPTypeEnum.UserType userTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
+        ERPInfo erpInfo = new ERPInfo();
+        erpInfo.setErpType(providerTypeEnum);
+        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
+        if (erpHandler == null) {
+            return "未找到相关erp处理器";
+        }
+
+        EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
+        return eventResult.getData().toString();
+    }
+
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/mSysGoods", method = RequestMethod.POST)
+    @Override
+    public String mSysGoods(@PathVariable("erpProviderType") int providerType, @PathVariable("erpUserType") int erpUserType, HttpServletRequest request) {
+        ERPTypeEnum.ProviderType providerTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, providerType);
+        ERPTypeEnum.UserType userTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
+        ERPInfo erpInfo = new ERPInfo();
+        erpInfo.setErpType(providerTypeEnum);
+        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
+        if (erpHandler == null) {
+            return "未找到相关erp处理器";
+        }
+
+        EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
+        return eventResult.getData().toString();
+    }
 }

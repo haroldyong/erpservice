@@ -63,7 +63,7 @@ public class HotOrderApiControllerTest extends SpringWebTest {
      */
     @Test
     public void testObtainOrderList() throws Exception {
-        String timestamp = String.valueOf(new Date().getTime());
+        String timestamp = String.valueOf(System.currentTimeMillis());
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("uCode", "123456");
         signMap.put("mType", "mOrderSearch");
@@ -92,7 +92,7 @@ public class HotOrderApiControllerTest extends SpringWebTest {
      */
     @Test
     public void testObtainOrderDetails() throws Exception {
-        String timestamp = String.valueOf(new Date().getTime());
+        String timestamp = String.valueOf(System.currentTimeMillis());
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("uCode", "123456");
         signMap.put("mType", "mGetOrder");
