@@ -34,19 +34,37 @@ public class ProviderApiControllerImpl implements ProviderApiController {
     private ERPRegister erpRegister;
 
     @Override
-    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}", method = RequestMethod.POST)
-    public String obtainOrderInfo(
-            @PathVariable("erpProviderType") ERPTypeEnum.ProviderType erpProviderType,
-            @PathVariable("erpUserType") ERPTypeEnum.UserType erpUserType,
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/obtainOrders", method = RequestMethod.POST)
+    public String obtainOrderInfos(
+            @PathVariable("erpProviderType") int providerType,
+            @PathVariable("erpUserType") int erpUserType,
             HttpServletRequest request) {
+        ERPTypeEnum.ProviderType providerTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, providerType);
+        ERPTypeEnum.UserType userTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
         ERPInfo erpInfo = new ERPInfo();
-        erpInfo.setErpType(erpProviderType);
+        erpInfo.setErpType(providerTypeEnum);
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
         if (erpHandler == null) {
             return "未找到相关erp处理器";
         }
 
-        EventResult eventResult = erpHandler.handleRequest(request, erpUserType);
+        EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
+        return eventResult.getData().toString();
+    }
+
+    @Override
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/obtainOrder", method = RequestMethod.POST)
+    public String obtainOrderInfo(@PathVariable("erpProviderType") int providerType, @PathVariable("erpUserType") int erpUserType, HttpServletRequest request) {
+        ERPTypeEnum.ProviderType providerTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, providerType);
+        ERPTypeEnum.UserType userTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
+        ERPInfo erpInfo = new ERPInfo();
+        erpInfo.setErpType(providerTypeEnum);
+        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
+        if (erpHandler == null) {
+            return "未找到相关erp处理器";
+        }
+
+        EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
         return eventResult.getData().toString();
     }
 }

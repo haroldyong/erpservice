@@ -72,5 +72,5 @@ public interface ERPDetailConfigService {
      * @param sysDataInfos
      * @return
      */
-    List<ERPDetailConfigEntity> findBySysData(List<ERPSysDataInfo> sysDataInfos);
+    ERPDetailConfigEntity findBySysData(List<ERPSysDataInfo> sysDataInfos, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType);
 }

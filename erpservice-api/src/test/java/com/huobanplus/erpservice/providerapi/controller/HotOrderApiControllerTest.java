@@ -74,7 +74,7 @@ public class HotOrderApiControllerTest extends SpringWebTest {
 
         String sign = buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
 
-        mockMvc.perform(post("/providerApi/netShop/obtainOrderInfo")
+        mockMvc.perform(post("/providerApi/rest/1/0/obtainOrders")
                 .param("uCode", "123456")
                 .param("mType", "mOrderSearch")
                 .param("TimeStamp", timestamp)
@@ -85,5 +85,32 @@ public class HotOrderApiControllerTest extends SpringWebTest {
                 .andDo(print());
 
     }
+
+    /**
+     * 测试获取订单详情
+     * @throws Exception
+     */
+    @Test
+    public void testObtainOrderDetails() throws Exception {
+        String timestamp = String.valueOf(new Date().getTime());
+        Map<String, String> signMap = new TreeMap<>();
+        signMap.put("uCode", "123456");
+        signMap.put("mType", "mGetOrder");
+        signMap.put("TimeStamp", timestamp);
+        signMap.put("OrderNO", "123456");
+
+        String sign = buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
+
+        mockMvc.perform(post("/providerApi/rest/1/0/obtainOrder")
+                .param("uCode", "123456")
+                .param("mType", "mGetOrder")
+                .param("TimeStamp", timestamp)
+                .param("OrderNO", "123456")
+                .param("sign", sign))
+                .andDo(print());
+
+    }
+
+
 
 }

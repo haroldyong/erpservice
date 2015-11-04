@@ -9,9 +9,12 @@
 
 package com.huobanplus.erpprovider.netshop.bean;
 
+import lombok.Data;
+
 /**
  * Created by liual on 2015-08-26.
  */
+@Data
 public class NSSysData {
     /**
      * <p>接入码，用于验证请求的有效性。主要用于区分店铺</p>
@@ -20,45 +23,5 @@ public class NSSysData {
     /**
      * <p>Secret是密钥，会在esAPI里面填写，商家自己这边需要设置，不会进行参数传值</p>
      */
-    private int secret;
-    /**
-     * 时间戳
-     */
-    private long timeStamp;
-    /**
-     * 方法名
-     */
-    private String mType;
-
-    public int getuCode() {
-        return uCode;
-    }
-
-    public void setuCode(int uCode) {
-        this.uCode = uCode;
-    }
-
-    public int getSecret() {
-        return secret;
-    }
-
-    public void setSecret(int secret) {
-        this.secret = secret;
-    }
-
-    public long getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
-    }
-
-    public String getmType() {
-        return mType;
-    }
-
-    public void setmType(String mType) {
-        this.mType = mType;
-    }
+    private String secret;
 }

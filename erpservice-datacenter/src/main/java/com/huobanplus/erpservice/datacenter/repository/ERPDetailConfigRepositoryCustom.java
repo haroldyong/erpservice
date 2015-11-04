@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.repository;
 
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 
@@ -24,5 +25,5 @@ public interface ERPDetailConfigRepositoryCustom {
      * @param sysDataInfos
      * @return
      */
-    List<ERPDetailConfigEntity> findBySysData(List<ERPSysDataInfo> sysDataInfos);
+    ERPDetailConfigEntity findBySysData(List<ERPSysDataInfo> sysDataInfos, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType);
 }

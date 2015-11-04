@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpuser.huobanmall.common;
 
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -34,7 +35,7 @@ public class HuobanmallHandlerBuilder implements ERPUserHandlerBuilder {
 
     @Override
     public ERPUserHandler buildHandler(ERPUserInfo info) {
-        if ("huobanmall".equals(info.getERPUserName())) {
+        if (info.getErpUserType() == ERPTypeEnum.UserType.HUOBAN_MALL) {
             return new ERPUserHandler() {
                 @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {

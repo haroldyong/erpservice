@@ -21,9 +21,29 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RequestMapping("/providerApi")
 public interface ProviderApiController {
-    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}", method = RequestMethod.POST)
-    String obtainOrderInfo(
-            @PathVariable("erpProviderType") ERPTypeEnum.ProviderType erpProviderType,
-            @PathVariable("erpUserType") ERPTypeEnum.UserType erpUserType,
+
+    /**
+     * 获取订单列表
+     * @param providerType
+     * @param erpUserType
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/obtainOrders", method = RequestMethod.POST)
+    String obtainOrderInfos(
+            @PathVariable("erpProviderType") int providerType,
+            @PathVariable("erpUserType") int erpUserType,
             HttpServletRequest request);
+
+    /**
+     * 获取订单详情
+     * @param providerType
+     * @param erpUserType
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/obtainOrder", method = RequestMethod.POST)
+    String obtainOrderInfo(@PathVariable("erpProviderType") int providerType,
+                           @PathVariable("erpUserType") int erpUserType,
+                           HttpServletRequest request);
 }

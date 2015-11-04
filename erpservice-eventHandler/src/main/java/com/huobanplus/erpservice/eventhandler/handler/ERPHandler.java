@@ -51,5 +51,5 @@ public interface ERPHandler {
      * @param request
      * @return
      */
-    EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.UserType erpUserType);
+    EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType);
 }

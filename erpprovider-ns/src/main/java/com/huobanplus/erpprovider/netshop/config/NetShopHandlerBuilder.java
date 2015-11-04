@@ -9,6 +9,8 @@
 
 package com.huobanplus.erpprovider.netshop.config;
 
+import com.alibaba.fastjson.JSON;
+import com.huobanplus.erpprovider.netshop.bean.NSSysData;
 import com.huobanplus.erpprovider.netshop.exceptionhandler.NSExceptionHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSOrderHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSProductHandler;
@@ -16,7 +18,9 @@ import com.huobanplus.erpprovider.netshop.util.Constant;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
+import com.huobanplus.erpservice.datacenter.service.ERPSysDataInfoService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.*;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
@@ -28,6 +32,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -38,6 +43,8 @@ import java.util.TreeMap;
 public class NetShopHandlerBuilder implements ERPHandlerBuilder {
     @Autowired
     private ERPDetailConfigService detailConfigService;
+    @Autowired
+    private ERPSysDataInfoService sysDataInfoService;
     @Autowired
     private NSOrderHandler nsOrderHandler;
     @Autowired
@@ -71,7 +78,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                 }
 
                 @Override
-                public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.UserType erpUserType) {
+                public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
                     String method = request.getParameter("mType");
                     try {
                         String requestSign = request.getParameter("sign");
@@ -88,10 +95,10 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                             }
                         });
                         //通过uCode得到指定erp配置信息
-                        
-                        String secretKey = "";
-                        int customerId = 5;
-                        String erpUserName = "";
+                        List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserType(providerType, erpUserType);
+                        ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
+                        NSSysData nsSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), NSSysData.class);
+                        String secretKey = nsSysData.getSecret();
                         String sign;
                         try {
                             sign = SignBuilder.buildSign(signMap, secretKey, secretKey);
@@ -101,7 +108,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                         if (sign.equals(requestSign)) {
                             //开始处理
                             //得到erpUserInfo
-                            ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserName, customerId);
+                            ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
                             switch (method) {
                                 case Constant.OBTAIN_ORDER_LIST:
                                     int orderStatus = Integer.parseInt(request.getParameter("OrderStatus"));

@@ -15,6 +15,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 /**
  * Created by liual on 2015-10-29.
  */
@@ -22,4 +24,6 @@ public interface ERPSysDataInfoRepository extends JpaRepository<ERPSysDataInfo, 
     @Query("delete from ERPSysDataInfo sysData where sysData.customerId=?1 and sysData.erpType = ?2")
     @Modifying
     void batchDelete(int customerId, ERPTypeEnum.ProviderType providerType);
+
+    List<ERPSysDataInfo> findByErpTypeAndErpUserType(ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType);
 }
