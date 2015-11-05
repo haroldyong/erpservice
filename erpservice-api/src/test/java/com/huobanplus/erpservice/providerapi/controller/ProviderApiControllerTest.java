@@ -11,7 +11,6 @@ package com.huobanplus.erpservice.providerapi.controller;
 
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.commons.config.WebConfig;
-import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +20,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
+
 import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 /**
  * Created by liual on 2015-11-03.
@@ -33,10 +38,21 @@ import static org.junit.Assert.*;
 public class ProviderApiControllerTest extends SpringWebTest {
     @Autowired
     private ERPBaseConfigService baseConfigService;
+    private String mockSecret = "123456";
 
     @Test
-    public void testObtainOrderInfo() throws Exception {
-        ERPBaseConfigEntity baseConfigEntity = baseConfigService.findByCustomerId(3447);
-        System.out.println(baseConfigEntity.getSecretKey());
+    public void testIndex() throws Exception {
+        long currentTime = new Date().getTime();
+        Map<String, String> signMap = new TreeMap<>();
+        signMap.put("mType", "testMethod");
+        signMap.put("timestamp", String.valueOf(currentTime));
+        signMap.put("uCode", "123456");
+        String sign = this.buildSign(signMap, mockSecret, mockSecret);
+        mockMvc.perform(post("/providerApi/rest/1/0")
+                .param("mType", "testMethod")
+                .param("timestamp", String.valueOf(currentTime))
+                .param("uCode", "123456")
+                .param("sign", sign))
+                .andDo(print());
     }
 }

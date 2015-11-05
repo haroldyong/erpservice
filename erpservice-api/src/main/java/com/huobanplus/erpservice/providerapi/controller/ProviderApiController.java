@@ -21,66 +21,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RequestMapping("/providerApi")
 public interface ProviderApiController {
-
-    /**
-     * 获取订单列表
-     * @param providerType
-     * @param erpUserType
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/obtainOrders", method = RequestMethod.POST)
-    String obtainOrderInfos(
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}", method = RequestMethod.POST)
+    String index(
             @PathVariable("erpProviderType") int providerType,
             @PathVariable("erpUserType") int erpUserType,
             HttpServletRequest request);
-
-    /**
-     * 获取订单详情
-     * @param providerType
-     * @param erpUserType
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/obtainOrder", method = RequestMethod.POST)
-    String obtainOrderInfo(@PathVariable("erpProviderType") int providerType,
-                           @PathVariable("erpUserType") int erpUserType,
-                           HttpServletRequest request);
-
-    /**
-     * 发送发货通知
-     * @param providerType
-     * @param erpUserType
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/mSndGoods", method = RequestMethod.POST)
-    String mSndGoods(@PathVariable("erpProviderType") int providerType,
-                           @PathVariable("erpUserType") int erpUserType,
-                           HttpServletRequest request);
-
-    /**
-     * 获取商品列表
-     * @param providerType
-     * @param erpUserType
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/mGetGoods", method = RequestMethod.POST)
-    String mGetGoods(@PathVariable("erpProviderType") int providerType,
-                     @PathVariable("erpUserType") int erpUserType,
-                     HttpServletRequest request);
-
-    /**
-     * 同步库存
-     * @param providerType
-     * @param erpUserType
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/mSysGoods", method = RequestMethod.POST)
-    String mSysGoods(@PathVariable("erpProviderType") int providerType,
-                     @PathVariable("erpUserType") int erpUserType,
-                     HttpServletRequest request);
 
 }

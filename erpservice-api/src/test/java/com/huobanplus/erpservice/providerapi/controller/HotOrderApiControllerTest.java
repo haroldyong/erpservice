@@ -74,7 +74,7 @@ public class HotOrderApiControllerTest extends SpringWebTest {
 
         String sign = buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
 
-        mockMvc.perform(post("/providerApi/rest/1/0/obtainOrders")
+        mockMvc.perform(post("/providerApi/rest/1/0")
                 .param("uCode", "123456")
                 .param("mType", "mOrderSearch")
                 .param("TimeStamp", timestamp)
@@ -101,7 +101,7 @@ public class HotOrderApiControllerTest extends SpringWebTest {
 
         String sign = buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
 
-        mockMvc.perform(post("/providerApi/rest/1/0/obtainOrder")
+        mockMvc.perform(post("/providerApi/rest/1/0")
                 .param("uCode", "123456")
                 .param("mType", "mGetOrder")
                 .param("TimeStamp", timestamp)
@@ -128,7 +128,7 @@ public class HotOrderApiControllerTest extends SpringWebTest {
 
         String sign = buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
 
-        mockMvc.perform(post("/providerApi/rest/1/0/mSndGoods")
+        mockMvc.perform(post("/providerApi/rest/1/0")
                 .param("uCode", "123456")
                 .param("mType", "mSndGoods")
                 .param("TimeStamp", timestamp)
