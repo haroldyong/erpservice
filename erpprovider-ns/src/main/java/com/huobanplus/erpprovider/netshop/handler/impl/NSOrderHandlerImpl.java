@@ -26,6 +26,7 @@ import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderListEvent;
 import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.OrderSearchInfo;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,10 +51,12 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.NO_DATA, "未找到数据源信息");
             }
             ObtainOrderListEvent orderListEvent = new ObtainOrderListEvent();
+            OrderSearchInfo orderSearchInfo = new OrderSearchInfo();
             orderListEvent.setErpUserInfo(erpUserInfo);
-            orderListEvent.setOrderStatus(orderStatus);
-            orderListEvent.setPageSize(pageSize);
-            orderListEvent.setPageIndex(pageIndex);
+            orderSearchInfo.setOrderStatus(orderStatus);
+            orderSearchInfo.setPageSize(pageSize);
+            orderSearchInfo.setPageIndex(pageIndex);
+            orderListEvent.setOrderSearchInfo(orderSearchInfo);
             //todo 调用相关使用者获得订单数据
             EventResult eventResult = erpUserHandler.handleEvent(orderListEvent);
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {

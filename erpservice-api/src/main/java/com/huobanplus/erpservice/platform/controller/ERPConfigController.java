@@ -79,7 +79,7 @@ public class ERPConfigController {
 
     @RequestMapping(value = "/setOpenStatus", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResult setOpenStatus(@RequestAttribute int customerId) {
+    public ApiResult setOpenStatus(@RequestAttribute int customerId, int erpUserType) {
         ERPBaseConfigEntity baseConfig;
         if (customerId > 0) {
             baseConfig = baseConfigService.findByCustomerId(customerId);
@@ -89,6 +89,8 @@ public class ERPConfigController {
                 baseConfig.setIsOpen(1);
                 baseConfig.setAppKey(StringUtil.createRandomStr(8));
                 baseConfig.setToken(StringUtil.createRandomStr32());
+                ERPTypeEnum.UserType erpUserTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
+                baseConfig.setErpUserType(erpUserTypeEnum);
             } else {
                 int isOpen = baseConfig.getIsOpen() == 0 ? 1 : 0;
                 baseConfig.setToken(StringUtil.createRandomStr32());

@@ -7,15 +7,12 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpservice.eventhandler.erpevent;
-
-import com.huobanplus.erpservice.eventhandler.model.OrderSearchInfo;
-import lombok.Data;
+package com.huobanplus.erpuser.hotsupplier.common;
 
 /**
- * <p>获取订单信息事件<p/>
+ * Created by liual on 2015-11-05.
  */
-@Data
-public class ObtainOrderListEvent extends ERPBaseEvent {
-    private OrderSearchInfo orderSearchInfo;
+public class SupConstant {
+    private static final String REQUEST_URL = "";
+    private static final String SECRET_KEY = "66668888";
 }

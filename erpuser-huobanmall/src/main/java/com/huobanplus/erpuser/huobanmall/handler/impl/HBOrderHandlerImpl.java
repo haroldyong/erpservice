@@ -9,11 +9,22 @@
 
 package com.huobanplus.erpuser.huobanmall.handler.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.huobanplus.erpservice.common.util.HttpUtil;
+import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
-import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.*;
+import com.huobanplus.erpuser.huobanmall.common.ApiResult;
+import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by liual on 2015-10-19.
@@ -25,17 +36,71 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
     public EventResult deliverInfo(DeliveryInfo deliveryInfo) {
         if (deliveryInfo == null)
             return EventResult.resultWith(EventResultEnum.NO_DATA);
-        
+
         return null;
     }
 
     @Override
-    public EventResult returnInfo(String orderId, String logiName, String logiNo, String returnAddr, String returnMobile, String returnName, String returnZip, int freight, String remark, String dicDeliverItemsStr) {
+    public EventResult returnInfo(ReturnInfo returnInfo) {
         return null;
     }
 
     @Override
-    public EventResult syncInventory(int goodId, int productId, String bn, int stock) {
+    public EventResult syncInventory(InventoryInfo inventoryInfo) {
         return null;
+    }
+
+    @Override
+    public EventResult obtainOrderList(OrderSearchInfo orderSearchInfo) {
+        HttpUtil httpUtil = HttpUtil.getInstance();
+        //获取伙伴商城接口数据
+        //签名
+        Map<String, String> signMap = new TreeMap<>();
+        if (orderSearchInfo.getOrderStatus() != null) {
+            signMap.put("orderStatus", String.valueOf(orderSearchInfo.getOrderStatus()));
+        }
+        if (orderSearchInfo.getPageIndex() != null) {
+            signMap.put("pageIndex", String.valueOf(orderSearchInfo.getPageIndex()));
+        }
+        if (orderSearchInfo.getPageSize() != null) {
+            signMap.put("pageSize", String.valueOf(orderSearchInfo.getPageSize()));
+        }
+        if (orderSearchInfo.getShipStatus() != null) {
+            signMap.put("shipStatus", String.valueOf(orderSearchInfo.getShipStatus()));
+        }
+        if (orderSearchInfo.getPayStatus() != null) {
+            signMap.put("payStatus", String.valueOf(orderSearchInfo.getPayStatus()));
+        }
+        signMap.put("timestamp", String.valueOf(new Date().getTime()));
+        try {
+            String sign = SignBuilder.buildSign(signMap, null, HBConstant.SECRET_KEY);
+            Map<String, String> requestMap = new HashMap<>(signMap);
+            requestMap.put("sign", sign);
+            String responseData = httpUtil.doPost(HBConstant.REQUEST_URL, requestMap);
+            ApiResult apiResult = JSON.parseObject(responseData, ApiResult.class);
+            return EventResult.resultWith(EventResultEnum.SUCCESS);
+        } catch (IOException e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public EventResult obtainOrderDetail(String orderId) {
+        if (StringUtils.isEmpty(orderId)) {
+            return EventResult.resultWith(EventResultEnum.BAD_REQUEST_PARAM, "orderId未传", null);
+        }
+        HttpUtil httpUtil = HttpUtil.getInstance();
+        Map<String, String> signMap = new TreeMap<>();
+        signMap.put("orderId", orderId);
+        signMap.put("timestamp", String.valueOf(new Date().getTime()));
+        try {
+            String sign = SignBuilder.buildSign(signMap, null, HBConstant.SECRET_KEY);
+            Map<String, String> requestMap = new HashMap<>(signMap);
+            requestMap.put("sign", sign);
+            String responseData = httpUtil.doPost(HBConstant.REQUEST_URL, requestMap);
+            return EventResult.resultWith(EventResultEnum.SUCCESS);
+        } catch (IOException e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
     }
 }

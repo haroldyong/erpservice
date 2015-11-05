@@ -15,7 +15,7 @@ import lombok.Data;
  * Created by liual on 2015-10-21.
  */
 @Data
-public class InventoryInfo {
+public class InventoryInfo extends BaseInfo {
     private String goodBn;
     private String proBn;
     private int stock;

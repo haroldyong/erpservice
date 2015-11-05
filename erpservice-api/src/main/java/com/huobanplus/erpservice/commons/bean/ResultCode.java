@@ -19,9 +19,11 @@ public enum ResultCode {
     EVENT_NOT_SUPPORT(6002, "该erp不支持此事件"),
     SYSTEM_BAD_REQUEST(5000, "系统请求失败"),
     ERP_BAD_REQUEST(5001, "erp系统请求失败"),
+    ERPUSER_BAD_REQUEST(5002, "erp使用者系统请求失败"),
     EMPTY_SIGN_CODE(4000, "签名参数不可为空"),
     WRONG_SIGN_CODE(4001, "签名验证不正确"),
-    BAD_APP_KEY_AND_TOKEN(3000, "为找到对应appKey和Token的商家信息");
+    BAD_REQUEST_PARAM(4002, "错误的请求参数"),
+    BAD_APP_KEY_AND_TOKEN(3000, "未找到对应appKey和Token的商家信息");
 
     private int resultCode;
     private String resultMsg;

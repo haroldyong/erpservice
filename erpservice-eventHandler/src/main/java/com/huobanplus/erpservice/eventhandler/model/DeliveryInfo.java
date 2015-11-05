@@ -15,7 +15,7 @@ import lombok.Data;
  * <b>类描述：</b>发货通知信息
  */
 @Data
-public class DeliveryInfo extends BaseInfo{
+public class DeliveryInfo extends BaseInfo {
     /**
      * 订单id
      */
@@ -31,7 +31,7 @@ public class DeliveryInfo extends BaseInfo{
     /**
      * 运费
      */
-    private int freight;
+    private double freight;
     /**
      * 备注
      */

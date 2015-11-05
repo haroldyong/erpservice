@@ -26,6 +26,7 @@
     <context:component-scan base-package="com.huobanplus.erpprovider.netshop"/>
     <!--erp-user-->
     <context:component-scan base-package="com.huobanplus.erpuser.huobanmall"/>
+    <context:component-scan base-package="com.huobanplus.erpuser.hotsupplier"/>
 
     <task:executor id="executor" pool-size="5"></task:executor>
     <task:scheduler id="scheduler" pool-size="10"></task:scheduler>
