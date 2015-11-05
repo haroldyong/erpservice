@@ -50,34 +50,6 @@ public class HotProductApiControllerTest extends SpringWebTest {
     }
 
     /**
-     * 发货通知
-     * @throws Exception
-     */
-    @Test
-    public void testSndGoods() throws Exception {
-        String timestamp = String.valueOf(System.currentTimeMillis());
-        Map<String, String> signMap = new TreeMap<>();
-        signMap.put("uCode", "123456");
-        signMap.put("mType", "mSndGoods");
-        signMap.put("TimeStamp", timestamp);
-        signMap.put("OrderNO", "123456");
-        signMap.put("SndStyle", "天天快递");
-        signMap.put("BillID", "123456");
-
-        String sign = buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
-
-        mockMvc.perform(post("/providerApi/rest/1/0/mSndGoods")
-                .param("uCode", "123456")
-                .param("mType", "mSndGoods")
-                .param("TimeStamp", timestamp)
-                .param("OrderNO", "123456")
-                .param("SndStyle", "天天快递")
-                .param("BillID", "123456")
-                .param("sign", sign))
-                .andDo(print());
-    }
-
-    /**
      * 商品查询接口
      * @throws Exception
      */
