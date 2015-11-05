@@ -39,6 +39,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
     public ERPHandler buildHandler(ERPInfo erpInfo) {
         if (erpInfo.getErpType() == ERPTypeEnum.ProviderType.EDB) {
             return new ERPHandler() {
+                @Override
                 public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
                     //todo 判断事件是否可以处理
                     if (baseEventClass == CreateOrderEvent.class) {
@@ -67,6 +68,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     return false;
                 }
 
+                @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                     if (erpBaseEvent instanceof CreateOrderEvent) {
                         CreateOrderEvent createOrderEvent = (CreateOrderEvent) erpBaseEvent;

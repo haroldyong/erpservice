@@ -9,6 +9,8 @@
 
 package com.huobanplus.erpservice.providerapi.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.huobanplus.erpprovider.netshop.bean.NSSysData;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
@@ -16,6 +18,7 @@ import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,34 +50,20 @@ public class HotOrderApiControllerTest extends SpringWebTest {
     private MallOrderService orderService;
 
     private MallOrderBean mockOrder;
+    private ERPInfo mockERP;
 
     @Before
     public void setUp() throws Exception {
-//        mockOrder = new MallOrderBean();
-//        mockOrder.setOutTid("123212322");
-//        mockOrder.setShopId("12");
-//        mockOrder.setStorageId("1");
-//        mockOrder.setExpress("dddd");
-//        mockOrder.setTidTime(new Date());
-//        mockOrder.setOrderId("123212322");
-//        mockOrder.setTid("123212322");
-//        mockOrder.setStatus("0");
 
-        MallOrderItemBean orderItem = new MallOrderItemBean();
-//        orderItem.setBarcode("123123");
-//        orderItem.setProName("方便面");
-//        orderItem.setSpecification("大碗");
-//        orderItem.setOutTid("123212322");
-//        orderItem.setProNum(1);
-//        orderItem.setFreight("10");
-        mockOrder.setOrderItems(Arrays.asList(orderItem));
-
-//        mockOrder = orderService.save(mockOrder);
     }
 
+    /**
+     * 测试获取订单列表
+     * @throws Exception
+     */
     @Test
-    public void testObtainOrder() throws Exception {
-        String timestamp = String.valueOf(new Date().getTime());
+    public void testObtainOrderList() throws Exception {
+        String timestamp = String.valueOf(System.currentTimeMillis());
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("uCode", "123456");
         signMap.put("mType", "mOrderSearch");
@@ -85,15 +74,71 @@ public class HotOrderApiControllerTest extends SpringWebTest {
 
         String sign = buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
 
-        mockMvc.perform(post("/hotErpApi/netShop/obtainOrder")
+        mockMvc.perform(post("/providerApi/rest/1/0")
                 .param("uCode", "123456")
                 .param("mType", "mOrderSearch")
                 .param("TimeStamp", timestamp)
                 .param("OrderStatus", "0")
                 .param("PageSize", "10")
                 .param("Page", "1")
-                .param("Sign", sign))
+                .param("sign", sign))
                 .andDo(print());
 
     }
+
+    /**
+     * 测试获取订单详情
+     * @throws Exception
+     */
+    @Test
+    public void testObtainOrderDetails() throws Exception {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        Map<String, String> signMap = new TreeMap<>();
+        signMap.put("uCode", "123456");
+        signMap.put("mType", "mGetOrder");
+        signMap.put("TimeStamp", timestamp);
+        signMap.put("OrderNO", "123456");
+
+        String sign = buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
+
+        mockMvc.perform(post("/providerApi/rest/1/0")
+                .param("uCode", "123456")
+                .param("mType", "mGetOrder")
+                .param("TimeStamp", timestamp)
+                .param("OrderNO", "123456")
+                .param("sign", sign))
+                .andDo(print());
+
+    }
+
+    /**
+     * 发货通知
+     * @throws Exception
+     */
+    @Test
+    public void testSndGoods() throws Exception {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        Map<String, String> signMap = new TreeMap<>();
+        signMap.put("uCode", "123456");
+        signMap.put("mType", "mSndGoods");
+        signMap.put("TimeStamp", timestamp);
+        signMap.put("OrderNO", "123456");
+        signMap.put("SndStyle", "天天快递");
+        signMap.put("BillID", "123456");
+
+        String sign = buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
+
+        mockMvc.perform(post("/providerApi/rest/1/0")
+                .param("uCode", "123456")
+                .param("mType", "mSndGoods")
+                .param("TimeStamp", timestamp)
+                .param("OrderNO", "123456")
+                .param("SndStyle", "天天快递")
+                .param("BillID", "123456")
+                .param("sign", sign))
+                .andDo(print());
+    }
+
+
+
 }

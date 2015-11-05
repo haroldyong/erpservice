@@ -47,55 +47,65 @@ public class HotProductApiControllerTest extends SpringWebTest {
 
     @Before
     public void setUp() throws Exception {
-        mockGood = new MallGoodEntity();
-        mockGood.setGoodId(1);
-        mockGood.setBn("123123");
-        mockGood.setGoodName("mockName");
-        mockGood.setNum(10);
-        mockGood.setPrice(12.4);
-        mockGood.setIsSku(1);
-        mockGood.setErpSysData("123456");
-        List<MallProductBean> productBeans = new ArrayList<>();
-
-        MallProductBean productBean = new MallProductBean();
-        productBean.setSkuName("ddd");
-        productBean.setSkuId("122");
-        productBean.setNum(5);
-        MallProductBean productBean1 = new MallProductBean();
-        productBean.setSkuName("aaa");
-        productBean.setSkuId("123");
-        productBean.setNum(5);
-        productBeans.add(productBean);
-        productBeans.add(productBean1);
-        mockGood.setProductBeans(productBeans);
-        mockGood = goodService.save(mockGood);
     }
 
+    /**
+     * 商品查询接口
+     * @throws Exception
+     */
     @Test
-    public void testObtainGood() throws Exception {
-        String timestamp = String.valueOf(new Date().getTime());
+    public void testMGetGoods() throws Exception {
+        String timestamp = String.valueOf(System.currentTimeMillis());
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("uCode", "123456");
         signMap.put("mType", "mGetGoods");
         signMap.put("TimeStamp", timestamp);
-        signMap.put("GoodsType", "");
-        signMap.put("OuterID", "");
-        signMap.put("GoodsName", "");
+        signMap.put("GoodsType", "1");
+        signMap.put("OuterID", "123456");
+        signMap.put("GoodsName", "123456");
         signMap.put("PageSize", "10");
         signMap.put("Page", "1");
 
         String sign = buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
 
-        mockMvc.perform(post("/hotErpApi/netShop/obtainGood")
+        mockMvc.perform(post("/providerApi/rest/1/0")
                 .param("uCode", "123456")
                 .param("mType", "mGetGoods")
                 .param("TimeStamp", timestamp)
-                .param("GoodsType", "")
-                .param("OuterID", "")
-                .param("GoodsName", "")
+                .param("GoodsType", "1")
+                .param("OuterID", "123456")
+                .param("GoodsName", "123456")
                 .param("PageSize", "10")
                 .param("Page", "1")
-                .param("Sign", sign))
+                .param("sign", sign))
+                .andDo(print());
+    }
+
+    /**
+     * 库存同步
+     * @throws Exception
+     */
+    @Test
+    public void testMSysGoods() throws Exception {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        Map<String, String> signMap = new TreeMap<>();
+        signMap.put("uCode", "123456");
+        signMap.put("mType", "mSysGoods");
+        signMap.put("TimeStamp", timestamp);
+        signMap.put("ItemID", "123456");
+        signMap.put("SkuID", "123456");
+        signMap.put("Quantity", "12");
+
+        String sign = buildSign(signMap, StringUtil.NETSHOP_SECRET, StringUtil.NETSHOP_SECRET);
+
+        mockMvc.perform(post("/providerApi/rest/1/0")
+                .param("uCode", "123456")
+                .param("mType", "mSysGoods")
+                .param("TimeStamp", timestamp)
+                .param("ItemID", "1")
+                .param("SkuID", "123456")
+                .param("Quantity", "123456")
+                .param("sign", sign))
                 .andDo(print());
     }
 }

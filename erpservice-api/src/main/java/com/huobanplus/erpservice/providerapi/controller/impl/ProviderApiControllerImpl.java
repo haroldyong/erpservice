@@ -33,7 +33,6 @@ public class ProviderApiControllerImpl implements ProviderApiController {
     @Autowired
     private ERPRegister erpRegister;
 
-    @Override
     @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}", method = RequestMethod.POST)
     public String index(
             @PathVariable("erpProviderType") int providerType,
@@ -51,4 +50,5 @@ public class ProviderApiControllerImpl implements ProviderApiController {
         EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
         return eventResult.getData().toString();
     }
+
 }
