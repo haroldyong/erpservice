@@ -31,7 +31,7 @@ public class ERPDetailConfigRepositoryImpl implements ERPDetailConfigRepositoryC
         StringBuilder sqlCustomerIn = new StringBuilder();
         int index = 0;
         for (ERPSysDataInfo sysDataInfo : sysDataInfos) {
-            sqlWhere.append(" AND").append(sysDataInfo.getColumnName() + "=" + sysDataInfo.getParamName()).append(" ");
+            sqlWhere.append(" AND ").append(sysDataInfo.getColumnName() + "='" + sysDataInfo.getParamValue()).append("' ");
             if (index == sysDataInfos.size() - 1) {
                 sqlCustomerIn.append(sysDataInfo.getCustomerId());
             } else {
@@ -39,7 +39,7 @@ public class ERPDetailConfigRepositoryImpl implements ERPDetailConfigRepositoryC
             }
             index++;
         }
-        String sql = "SELECT * FROM ERP_DetailConfig WHERE ISDEFAULT=1 AND ERPTYPE=" + providerType + " AND ERPUSERTYPE=" + erpUserType.getCode() + sqlWhere.toString() + " AND CUSTOMERID IN (" + sqlCustomerIn.toString() + ")";
+        String sql = "SELECT * FROM ERP_DetailConfig WHERE ISDEFAULT=1 AND ERPTYPE=" + providerType.getCode() + " AND ERPUSERTYPE=" + erpUserType.getCode() + sqlWhere.toString() + " AND CUSTOMERID IN (" + sqlCustomerIn.toString() + ")";
         ERPDetailConfigEntity detailConfig = jdbcTemplate.queryForObject(sql, ((rs, rowNum) -> {
             ERPDetailConfigEntity detailConfigEntity = new ERPDetailConfigEntity();
             detailConfigEntity.setId(rs.getInt("ID"));

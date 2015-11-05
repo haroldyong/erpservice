@@ -28,5 +28,6 @@ public class ERPSysDataInfo {
     private ERPTypeEnum.UserType erpUserType;
     private String columnName;
     private String paramName;
+    private String paramValue;
     private int customerId;
 }

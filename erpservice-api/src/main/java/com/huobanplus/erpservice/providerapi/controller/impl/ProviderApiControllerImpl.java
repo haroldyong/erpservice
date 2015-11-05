@@ -35,7 +35,7 @@ public class ProviderApiControllerImpl implements ProviderApiController {
 
     @Override
     @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}", method = RequestMethod.POST)
-    public String obtainOrderInfo(
+    public String index(
             @PathVariable("erpProviderType") int providerType,
             @PathVariable("erpUserType") int erpUserType,
             HttpServletRequest request) {

@@ -146,6 +146,7 @@ public class ERPConfigController {
                     erpSysDataInfo.setCustomerId(customerId);
                     erpSysDataInfo.setColumnName("P" + index);
                     erpSysDataInfo.setErpUserType(erpUserTypeEnum);
+                    erpSysDataInfo.setParamValue((String) item.getValue());
                     sysDataInfoService.save(erpSysDataInfo);
                     index++;
                 }
