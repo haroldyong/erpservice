@@ -47,7 +47,7 @@
     </style>
     <script type="text/javascript">
         var ajaxUrl = "<c:url value="/erpService/" />";
-        //var erpType = ${erpType};
+        var erpType = ${erpType};
         var configHandler = {
             setOpenStatus: function (isOpen) {
                 var msg = isOpen == 1 ? "确定要打开erp数据服务？请仔细填写相关设置" : "确定要关闭？您将失去相关erp数据服务";
