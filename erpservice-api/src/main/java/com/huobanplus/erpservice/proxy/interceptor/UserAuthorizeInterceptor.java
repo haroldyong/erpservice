@@ -13,9 +13,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -59,7 +61,8 @@ public class UserAuthorizeInterceptor extends HandlerInterceptorAdapter {
         //得到商家的erp配置
         int customerId = Integer.parseInt(request.getParameter("customerId"));
         ERPDetailConfigEntity detailConfigEntity = detailConfigService.findByCustomerIdAndDefault(customerId);
-        String sign = SignBuilder.buildSign(signMap, null, "66668888");
+        String secretKey = detailConfigEntity.getErpUserType() == ERPTypeEnum.UserType.HUOBAN_MALL ? HBConstant.SECRET_KEY : "";
+        String sign = SignBuilder.buildSign(signMap, null, secretKey);
         if (sign.equals(requestSign)) {
             ERPInfo erpInfo = new ERPInfo(detailConfigEntity.getErpType(), detailConfigEntity.getErpSysData());
             request.setAttribute("erpInfo", erpInfo);

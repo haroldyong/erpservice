@@ -9,8 +9,8 @@
 
 package com.huobanplus.erpuser.huobanmall.handler;
 
-import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
-import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderDetailEvent;
+import com.huobanplus.erpservice.eventhandler.model.*;
 
 /**
  * 订单相关处理
@@ -28,28 +28,32 @@ public interface HBOrderHandler {
     /**
      * 退货通知
      *
-     * @param orderId
-     * @param logiName
-     * @param logiNo
-     * @param returnAddr
-     * @param returnMobile
-     * @param returnName
-     * @param returnZip
-     * @param freight
-     * @param remark
-     * @param dicDeliverItemsStr
+     * @param returnInfo
      * @return
      */
-    EventResult returnInfo(String orderId, String logiName, String logiNo, String returnAddr, String returnMobile, String returnName, String returnZip, int freight, String remark, String dicDeliverItemsStr);
+    EventResult returnInfo(ReturnInfo returnInfo);
 
     /**
      * 库存同步
      *
-     * @param goodId
-     * @param productId
-     * @param bn
-     * @param stock
+     * @param inventoryInfo
      * @return
      */
-    EventResult syncInventory(int goodId, int productId, String bn, int stock);
+    EventResult syncInventory(InventoryInfo inventoryInfo);
+
+    /**
+     * 获取订单列表
+     *
+     * @param orderSearchInfo
+     * @return
+     */
+    EventResult obtainOrderList(OrderSearchInfo orderSearchInfo);
+
+    /**
+     * 获得订单详情
+     *
+     * @param orderId
+     * @return
+     */
+    EventResult obtainOrderDetail(String orderId);
 }

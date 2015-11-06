@@ -23,10 +23,12 @@ import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
@@ -136,9 +138,12 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
         }
 
         ObtainOrderListEvent orderListEvent = new ObtainOrderListEvent();
-        orderListEvent.setOrderStatus(orderStauts);
-        orderListEvent.setPageIndex(pageable.getOffset());
-        orderListEvent.setPageSize(pageable.getPageSize());
+        orderListEvent.setErpUserInfo(erpUserInfo);
+        OrderSearchInfo orderSearchInfo = new OrderSearchInfo();
+        orderSearchInfo.setOrderStatus(orderStauts);
+        orderSearchInfo.setPageIndex(pageable.getOffset());
+        orderSearchInfo.setPageSize(pageable.getPageSize());
+        orderListEvent.setOrderSearchInfo(orderSearchInfo);
         EventResult eventResult = erpUserHandler.handleEvent(orderListEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
@@ -171,6 +176,11 @@ public class OrderApiControllerImpl extends ERPApiBaseController implements Orde
 
     @Override
     public ApiResult syncInventory(String orderId, int customerId, String erpUserName) throws IOException {
+        return null;
+    }
+
+    @Override
+    public ApiResult index(@PathVariable("eventType") String eventType, @RequestAttribute ERPUserInfo erpUserInfo, HttpServletRequest request) {
         return null;
     }
 }

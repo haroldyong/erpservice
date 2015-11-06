@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.entity;
 
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -32,4 +33,5 @@ public class ERPBaseConfigEntity {
      * 是否开通erp，1表示开通
      */
     private int isOpen;
+    private ERPTypeEnum.UserType erpUserType;
 }

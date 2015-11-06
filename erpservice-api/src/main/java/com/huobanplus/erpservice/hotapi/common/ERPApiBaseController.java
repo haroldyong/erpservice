@@ -24,6 +24,7 @@ import java.io.IOException;
  */
 @Controller
 public class ERPApiBaseController {
+
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ApiResult exceptionResolver(Exception ex) {

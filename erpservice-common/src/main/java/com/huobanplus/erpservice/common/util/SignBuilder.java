@@ -10,6 +10,7 @@
 package com.huobanplus.erpservice.common.util;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
@@ -36,7 +37,9 @@ public class SignBuilder {
         Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, String> next = iterator.next();
-            stringBuilder.append(next.getKey()).append(next.getValue());
+            if (!StringUtils.isEmpty(next.getValue())) {
+                stringBuilder.append(next.getKey()).append(next.getValue());
+            }
         }
         stringBuilder.append(suffix);
         return DigestUtils.md5Hex(stringBuilder.toString().getBytes("utf-8")).toUpperCase();

@@ -12,11 +12,14 @@ package com.huobanplus.erpservice.hotapi.controller;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
@@ -25,7 +28,7 @@ import java.util.Map;
  * 订单相关接口
  * Created by liual on 2015-10-14.
  */
-@RequestMapping("/hotApi/order")
+@RequestMapping("/hotApi/rest/order")
 public interface OrderApiController {
     /**
      * 发货通知
@@ -126,4 +129,11 @@ public interface OrderApiController {
     ) throws IOException;
 
     ApiResult syncInventory(String orderId, int customerId, String erpUserName) throws IOException;
+
+    @RequestMapping("/hotApi/rest/order/index/{eventType}")
+    ApiResult index(
+            @PathVariable("eventType") String eventType,
+            @RequestAttribute ERPUserInfo erpUserInfo,
+            HttpServletRequest request
+    );
 }

@@ -11,17 +11,16 @@ package com.huobanplus.erpservice.eventhandler.model;
 
 import lombok.Data;
 
-import java.util.Date;
-
 /**
- * Created by liual on 2015-10-23.
+ * Created by liual on 2015-11-05.
  */
 @Data
-public class OrderDeliverInfo extends BaseInfo {
-    private String orderId;
-    private Date deliverTime;
-    private String logiName;
-    private String logiNo;
-    private String weight;
-    private OrderDeliverInfo orderDeliverInfo;
+public class OrderSearchInfo extends BaseInfo {
+    private Integer orderStatus;
+    private Integer pageIndex;
+    private Integer pageSize;
+    private Integer shipStatus;
+    private Integer payStatus;
+    private String beginTime;
+    private String endTime;
 }

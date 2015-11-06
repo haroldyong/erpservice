@@ -7,11 +7,7 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpuser.huobanmall.common;
-
 /**
- * Created by liual on 2015-10-19.
+ * Created by liual on 2015-11-05.
  */
-public class Constant {
-    private static String REQUEST_URI = "";
-}
+package com.huobanplus.erpuser.hotsupplier;

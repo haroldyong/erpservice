@@ -471,14 +471,9 @@ public class StringUtil {
      * @param pattern
      * @return
      */
-    public static Date DateFormat(String dateStr, String pattern) {
+    public static Date DateFormat(String dateStr, String pattern) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        Date date = null;
-        try {
-            date = sdf.parse(dateStr);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Date date = sdf.parse(dateStr);
 
         return date;
     }
@@ -513,5 +508,26 @@ public class StringUtil {
             stringBuilder.append(base.charAt(number));
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * 如果为空，则返回默认数值
+     *
+     * @param number
+     * @param defNumber
+     * @return
+     */
+    public static Integer getWithDefault(Object number, Integer defNumber) {
+        if (StringUtil.isEmpty(number)) {
+            return defNumber;
+        }
+        return (int) number;
+    }
+
+    public static Double getWithDefault(Object object, Double defNumber) {
+        if (StringUtil.isEmpty(object)) {
+            return defNumber;
+        }
+        return (double) object;
     }
 }

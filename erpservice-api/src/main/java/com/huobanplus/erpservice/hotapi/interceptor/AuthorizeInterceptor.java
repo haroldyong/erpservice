@@ -13,6 +13,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
+import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -27,20 +31,22 @@ import java.util.TreeMap;
  */
 @Component
 public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
+    @Autowired
+    private ERPBaseConfigService baseConfigService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         ApiResult apiResult = null;
         String appKey = request.getParameter("appKey");
         String token = request.getParameter("token");
         //todo 通过appKey和token得到对应商家customerId, secretKey, erpUserName
-        int customerId = 5;
-        if (customerId == 0) {
+        ERPBaseConfigEntity baseConfig = baseConfigService.findByAppKeyAndToken(appKey, token);
+        if (baseConfig == null) {
             apiResult = ApiResult.resultWith(ResultCode.BAD_APP_KEY_AND_TOKEN);
             response.getWriter().write(new ObjectMapper().writeValueAsString(apiResult));
             return false;
         }
-        String erpUserName = "huobanmall";
-        String secretKey = "";
+
         //签名验证
         String requestSign = request.getParameter("sign");
         if (StringUtils.isEmpty(requestSign)) {
@@ -59,11 +65,11 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
             }
         });
 
-        String sign = SignBuilder.buildSign(signMap, null, secretKey);
+        String sign = SignBuilder.buildSign(signMap, null, baseConfig.getSecretKey());
         if (sign.equals(requestSign)) {
             //验证通过插入商户信息
-            request.setAttribute("customerId", customerId);
-            request.setAttribute("erpUserName", erpUserName);
+            ERPUserInfo erpUserInfo = new ERPUserInfo(baseConfig.getErpUserType(), baseConfig.getCustomerId());
+            request.setAttribute("erpUserInfo", erpUserInfo);
             return true;
         } else {
             response.getWriter().write(new ObjectMapper().writeValueAsString(apiResult));
