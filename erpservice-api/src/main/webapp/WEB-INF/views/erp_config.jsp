@@ -47,14 +47,14 @@
     </style>
     <script type="text/javascript">
         var ajaxUrl = "<c:url value="/erpService/" />";
-        //var erpType = ${erpType};
+        var erpType = ${erpType};
         var configHandler = {
             setOpenStatus: function (isOpen) {
                 var msg = isOpen == 1 ? "确定要打开erp数据服务？请仔细填写相关设置" : "确定要关闭？您将失去相关erp数据服务";
                 J.jboxConfirm(msg, function () {
                     var tip = isOpen == 1 ? "打开" : "关闭"
                     $.jBox.tip("正在" + tip + "...", "loading");
-                    J.GetJsonRespons(ajaxUrl + "setOpenStatus", null, function (json) {
+                    J.GetJsonRespons(ajaxUrl + "setOpenStatus", {erpUserType:${erpUserType}}, function (json) {
                         if (json.resultCode == 2000) {
                             $.jBox.tip("erp数据服务已" + tip, "success");
                             window.location.reload();
@@ -80,7 +80,7 @@
                 switch (erpType) {
                     case "-1":
                         $("#erpDetailConfigDiv").hide();
-                            $("#currentErp").html("您还为选择任何erp系统");
+                        $("#currentErp").html("您还为选择任何erp系统");
                         break;
                     case "0":
                         $("#erpDetailConfigDiv").show();
@@ -159,7 +159,7 @@
     <div class="container" style="display: block; position: relative; margin-top: 100px;">
         <div class="blank10">
         </div>
-        <div class="block" >
+        <div class="block">
             <div class="h">
                 <span class="icon-sprite icon-list"></span>
 
@@ -275,22 +275,21 @@
 <script>
     //setp
     //所有步骤的数据
-    var stepListJson=[{StepNum:1,StepText:"ERP开关"},
-        {StepNum:2,StepText:"基础数据设置"},
-        {StepNum:3,StepText:"平台数据设置"}];
+    var stepListJson = [{StepNum: 1, StepText: "ERP开关"},
+        {StepNum: 2, StepText: "基础数据设置"},
+        {StepNum: 3, StepText: "平台数据设置"}];
 
     //当前进行到第几步
-    var currentStep=1;
+    var currentStep = 1;
     //new一个工具类
-    var StepTool = new Step_Tool_dc("test","mycall");
+    var StepTool = new Step_Tool_dc("test", "mycall");
     //使用工具对页面绘制相关流程步骤图形显示
-    StepTool.drawStep(currentStep,stepListJson);
+    StepTool.drawStep(currentStep, stepListJson);
     //回调函数
-    function mycall(restult){
+    function mycall(restult) {
 
         //TODO...这里可以填充点击步骤的后加载相对应数据的代码
-        switch (result.value)
-        {
+        switch (result.value) {
             case "1":
             {
                 //隐藏其他选项
@@ -299,23 +298,23 @@
                 $(".tag3").hide();
                 $(".tag4").hide();
                 $("#erpDetailConfigDiv").hide();
-                StepTool.drawStep(result.value,stepListJson);
+                StepTool.drawStep(result.value, stepListJson);
 
             }
                 break;
             case "2":
             {
                 <c:if test="${baseConfig==null || baseConfig.isOpen==0}">
-                    $.jBox.tip("当前ERP数据服务未开启，配置操作无效。");
+                $.jBox.tip("当前ERP数据服务未开启，配置操作无效。");
                 </c:if>
                 <c:if test="${baseConfig!=null && baseConfig.isOpen==1}">
-                    //隐藏其他选项
-                    $(".tag1").show();
-                    $(".tag2").show();
-                    $(".tag3").hide();
-                    $(".tag4").hide();
-                    $("#erpDetailConfigDiv").hide();
-                    StepTool.drawStep(result.value,stepListJson);
+                //隐藏其他选项
+                $(".tag1").show();
+                $(".tag2").show();
+                $(".tag3").hide();
+                $(".tag4").hide();
+                $("#erpDetailConfigDiv").hide();
+                StepTool.drawStep(result.value, stepListJson);
                 </c:if>
 
             }
@@ -323,36 +322,32 @@
             case "3":
             {
                 <c:if test="${baseConfig==null || baseConfig.isOpen==0}">
-                    $.jBox.tip("当前ERP数据服务未开启，配置操作无效。");
+                $.jBox.tip("当前ERP数据服务未开启，配置操作无效。");
                 </c:if>
                 <c:if test="${baseConfig!=null && baseConfig.isOpen==1}">
-                    //判断第二步数据是否为空
-                    if($.trim($("#appKey").val()).length == 0)
-                    {
-                        $.jBox.tip("基础数据接入码未配置。");
-                    }
-                    else if($.trim($("#token").val()).length == 0)
-                    {
-                        $.jBox.tip("基础数据Token未配置。");
-                    }
-                    else if($.trim($("#secretKey").val()).length == 0)
-                    {
-                        $.jBox.tip("基础数据签名秘钥未配置。");
-                    }
-                    else
-                    {
-                        $(".tag1").show();
-                        $(".tag2").show();
-                        $(".tag3").show();
-                        $(".tag4").show();
-                        $("#erpDetailConfigDiv").show();
-                        StepTool.drawStep(result.value,stepListJson);
-                    }
+                //判断第二步数据是否为空
+                if ($.trim($("#appKey").val()).length == 0) {
+                    $.jBox.tip("基础数据接入码未配置。");
+                }
+                else if ($.trim($("#token").val()).length == 0) {
+                    $.jBox.tip("基础数据Token未配置。");
+                }
+                else if ($.trim($("#secretKey").val()).length == 0) {
+                    $.jBox.tip("基础数据签名秘钥未配置。");
+                }
+                else {
+                    $(".tag1").show();
+                    $(".tag2").show();
+                    $(".tag3").show();
+                    $(".tag4").show();
+                    $("#erpDetailConfigDiv").show();
+                    StepTool.drawStep(result.value, stepListJson);
+                }
                 </c:if>
             }
                 break;
             default:
-                    break;
+                break;
 
         }
 
