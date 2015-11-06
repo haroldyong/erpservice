@@ -277,79 +277,111 @@
     //所有步骤的数据
     var stepListJson = [{StepNum: 1, StepText: "ERP开关"},
         {StepNum: 2, StepText: "基础数据设置"},
-        {StepNum: 3, StepText: "平台数据设置"}];
+        {StepNum: 3, StepText: "平台数据设置"},
+        {StepNum: 4, StepText: "完成"}];
 
-    //当前进行到第几步
-    var currentStep = 1;
-    //new一个工具类
-    var StepTool = new Step_Tool_dc("test", "mycall");
-    //使用工具对页面绘制相关流程步骤图形显示
-    StepTool.drawStep(currentStep, stepListJson);
-    //回调函数
-    function mycall(restult) {
 
-        //TODO...这里可以填充点击步骤的后加载相对应数据的代码
-        switch (result.value) {
-            case "1":
-            {
-                //隐藏其他选项
-                $(".tag1").show();
-                $(".tag2").hide();
-                $(".tag3").hide();
-                $(".tag4").hide();
-                $("#erpDetailConfigDiv").hide();
-                StepTool.drawStep(result.value, stepListJson);
+    if(erpType==-1)
+    {
+        var currentStep = 1;
 
-            }
-                break;
-            case "2":
-            {
-                <c:if test="${baseConfig==null || baseConfig.isOpen==0}">
-                $.jBox.tip("当前ERP数据服务未开启，配置操作无效。");
-                </c:if>
-                <c:if test="${baseConfig!=null && baseConfig.isOpen==1}">
-                //隐藏其他选项
-                $(".tag1").show();
-                $(".tag2").show();
-                $(".tag3").hide();
-                $(".tag4").hide();
-                $("#erpDetailConfigDiv").hide();
-                StepTool.drawStep(result.value, stepListJson);
-                </c:if>
+        //new一个工具类
+        var StepTool = new Step_Tool_dc("test", "mycall1");
+        //使用工具对页面绘制相关流程步骤图形显示
+        StepTool.drawStep(currentStep, stepListJson);
+        //回调函数
+        function mycall1(restult) {
 
-            }
-                break;
-            case "3":
-            {
-                <c:if test="${baseConfig==null || baseConfig.isOpen==0}">
-                $.jBox.tip("当前ERP数据服务未开启，配置操作无效。");
-                </c:if>
-                <c:if test="${baseConfig!=null && baseConfig.isOpen==1}">
-                //判断第二步数据是否为空
-                if ($.trim($("#appKey").val()).length == 0) {
-                    $.jBox.tip("基础数据接入码未配置。");
+            //TODO...这里可以填充点击步骤的后加载相对应数据的代码
+            switch (result.value) {
+                case "1":
+                {
+                    //隐藏其他选项
+                    $(".tag1").show();
+                    $(".tag2").hide();
+                    $(".tag3").hide();
+                    $(".tag4").hide();
+                    $("#erpDetailConfigDiv").hide();
+                    StepTool.drawStep(result.value, stepListJson);
+
                 }
-                else if ($.trim($("#token").val()).length == 0) {
-                    $.jBox.tip("基础数据Token未配置。");
-                }
-                else if ($.trim($("#secretKey").val()).length == 0) {
-                    $.jBox.tip("基础数据签名秘钥未配置。");
-                }
-                else {
+                    break;
+                case "2":
+                {
+                    <c:if test="${baseConfig==null || baseConfig.isOpen==0}">
+                    $.jBox.tip("当前ERP数据服务未开启，配置操作无效。");
+                    </c:if>
+                    <c:if test="${baseConfig!=null && baseConfig.isOpen==1}">
+                    //隐藏其他选项
                     $(".tag1").show();
                     $(".tag2").show();
-                    $(".tag3").show();
-                    $(".tag4").show();
-                    $("#erpDetailConfigDiv").show();
+                    $(".tag3").hide();
+                    $(".tag4").hide();
+                    $("#erpDetailConfigDiv").hide();
                     StepTool.drawStep(result.value, stepListJson);
+                    </c:if>
+
                 }
-                </c:if>
+                    break;
+                case "3":
+                {
+                    <c:if test="${baseConfig==null || baseConfig.isOpen==0}">
+                    $.jBox.tip("当前ERP数据服务未开启，配置操作无效。");
+                    </c:if>
+                    <c:if test="${baseConfig!=null && baseConfig.isOpen==1}">
+                    //判断第二步数据是否为空
+                    if ($.trim($("#appKey").val()).length == 0) {
+                        $.jBox.tip("基础数据接入码未配置。");
+                    }
+                    else if ($.trim($("#token").val()).length == 0) {
+                        $.jBox.tip("基础数据Token未配置。");
+                    }
+                    else if ($.trim($("#secretKey").val()).length == 0) {
+                        $.jBox.tip("基础数据签名秘钥未配置。");
+                    }
+                    else {
+                        $(".tag1").show();
+                        $(".tag2").show();
+                        $(".tag3").show();
+                        $(".tag4").show();
+                        //$("#erpDetailConfigDiv").show();
+                        StepTool.drawStep(result.value, stepListJson);
+                    }
+                    </c:if>
+                }
+                    break;
+                default:
+                    break;
+
             }
-                break;
-            default:
-                break;
+
+        }
+    }
+    else
+    {
+        var currentStep = 4;
+
+        //new一个工具类
+        var StepTool = new Step_Tool_dc("test", "mycall2");
+        //使用工具对页面绘制相关流程步骤图形显示
+        StepTool.drawStep(currentStep, stepListJson);
+        $(".tag1").show();
+        $(".tag2").show();
+        $(".tag3").show();
+        $(".tag4").show();
+        $("#erpDetailConfigDiv").show();
+        //回调函数
+        function mycall2(restult) {
+
+            //TODO...这里可以填充点击步骤的后加载相对应数据的代码
+            $(".tag1").show();
+            $(".tag2").show();
+            $(".tag3").show();
+            $(".tag4").show();
+            $("#erpDetailConfigDiv").show();
 
         }
 
     }
+
 </script>
