@@ -125,6 +125,7 @@ public class ERPConfigController {
             ERPBaseConfigEntity baseConfig = baseConfigService.findByCustomerId(customerId);
             baseConfig.setToken(token.trim());
             baseConfig.setSecretKey(secretKey.trim());
+            baseConfigService.save(baseConfig);
             if (erpType != -1) {
                 ERPTypeEnum.ProviderType providerType = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, erpType);
                 ERPTypeEnum.UserType erpUserTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);

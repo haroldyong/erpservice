@@ -31,7 +31,7 @@ public class ERPDetailConfigEntity {
      * 是否在使用，0表示未使用，1表示正在使用，每个商户只可以使用一个erp
      */
     private int isDefault;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private ERPBaseConfigEntity erpBaseConfig;
     private int customerId;
 

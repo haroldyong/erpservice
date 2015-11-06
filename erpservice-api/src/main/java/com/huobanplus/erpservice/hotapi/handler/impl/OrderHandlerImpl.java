@@ -15,6 +15,7 @@ import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderListEvent;
 import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -113,6 +114,27 @@ public class OrderHandlerImpl implements OrderHandler {
         orderSearchInfo.setEndTime(endTime);
         obtainOrderListEvent.setOrderSearchInfo(orderSearchInfo);
         EventResult eventResult = erpUserHandler.handleEvent(obtainOrderListEvent);
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
+        }
+
+        return ApiResult.resultWith(ResultCode.ERPUSER_BAD_REQUEST, eventResult.getResultMsg(), null);
+    }
+
+    @Override
+    public ApiResult obtainOrderDetail(HttpServletRequest request, ERPUserInfo erpUserInfo) {
+        String orderId = request.getParameter("orderId");
+        if (StringUtils.isEmpty(orderId)) {
+            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "未传入有效的orderId", null);
+        }
+        ObtainOrderDetailEvent obtainOrderDetailEvent = new ObtainOrderDetailEvent();
+        obtainOrderDetailEvent.setErpUserInfo(erpUserInfo);
+        obtainOrderDetailEvent.setOrderId(orderId);
+        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+        if (erpUserHandler == null) {
+            return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
+        }
+        EventResult eventResult = erpUserHandler.handleEvent(obtainOrderDetailEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
         }
