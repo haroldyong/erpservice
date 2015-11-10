@@ -122,21 +122,18 @@ public class OrderHandlerImpl implements OrderHandler {
     }
 
     @Override
-    public ApiResult obtainOrderdetail(HttpServletRequest request, ERPUserInfo erpUserInfo) throws ParseException {
-
-        //获取订单编号
+    public ApiResult obtainOrderDetail(HttpServletRequest request, ERPUserInfo erpUserInfo) {
         String orderId = request.getParameter("orderId");
-        if(StringUtils.isEmpty(orderId))
-        {
-            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "订单编号为空", null);
+        if (StringUtils.isEmpty(orderId)) {
+            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "未传入有效的orderId", null);
         }
-
+        ObtainOrderDetailEvent obtainOrderDetailEvent = new ObtainOrderDetailEvent();
+        obtainOrderDetailEvent.setErpUserInfo(erpUserInfo);
+        obtainOrderDetailEvent.setOrderId(orderId);
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
         }
-
-        ObtainOrderDetailEvent obtainOrderDetailEvent = new ObtainOrderDetailEvent();
         obtainOrderDetailEvent.setOrderId(orderId);
         EventResult eventResult = erpUserHandler.handleEvent(obtainOrderDetailEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {

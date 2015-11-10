@@ -11,6 +11,7 @@ package com.huobanplus.erpservice.hotapi.controller.impl;
 
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
+import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.hotapi.common.HotApiConstant;
 import com.huobanplus.erpservice.hotapi.controller.HotApiController;
@@ -46,24 +47,16 @@ public class HotApiControllerImpl implements HotApiController {
                 break;
             case HotApiConstant.OBTAIN_ORDER_DETAIL:
                 //获取订单详情
-                try {
-                    orderHandler.obtainOrderdetail(request, erpUserInfo);
-                } catch (ParseException e) {
-                    logger.error(e.getMessage());
-                }
+                orderHandler.obtainOrderDetail(request, erpUserInfo);
                 break;
             case HotApiConstant.OBTAIN_ORDER_LIST:
                 //获取订单列表
-                try {
-                    orderHandler.obtainOrderList(request, erpUserInfo);
-                } catch (ParseException e) {
-                    logger.error(e.getMessage());
-                }
+                orderHandler.obtainOrderList(request, erpUserInfo);
                 break;
             default:
                 break;
         }
-        return null;
+        return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT, "不被支持的事件方法", null);
     }
 
     @Override
