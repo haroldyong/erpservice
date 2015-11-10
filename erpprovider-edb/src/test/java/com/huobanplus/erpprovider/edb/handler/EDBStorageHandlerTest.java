@@ -33,7 +33,7 @@ import java.util.Arrays;
 @ContextConfiguration(classes = {EDBConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class EDBStorageHandlerTest {
-    @Autowired
+//    @Autowired
     private EDBStorageHandler storageHandler;
 
     private ERPInfo mockERP;

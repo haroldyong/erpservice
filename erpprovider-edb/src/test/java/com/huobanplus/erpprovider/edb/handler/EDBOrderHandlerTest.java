@@ -35,7 +35,7 @@ import java.util.Date;
 @ContextConfiguration(classes = {EDBConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class EDBOrderHandlerTest {
-    @Autowired
+//    @Autowired
     private EDBOrderHandler edbOrderHandler;
 
     private ERPInfo mockERP;

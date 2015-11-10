@@ -10,13 +10,16 @@
 package com.huobanplus.erpuser.huobanmall.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.huobanplus.erpservice.common.util.HttpUtil;
 import com.huobanplus.erpservice.common.util.SignBuilder;
+import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.*;
 import com.huobanplus.erpuser.huobanmall.common.ApiResult;
 import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
+import com.huobanplus.erpuser.huobanmall.model.OrderListParse;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -33,7 +36,7 @@ import java.util.TreeMap;
 public class HBOrderHandlerImpl implements HBOrderHandler {
 
     @Override
-    public EventResult deliverInfo(DeliveryInfo deliveryInfo) {
+    public EventResult deliverInfo(DeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo) {
         if (deliveryInfo == null)
             return EventResult.resultWith(EventResultEnum.NO_DATA);
 
@@ -41,17 +44,17 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
     }
 
     @Override
-    public EventResult returnInfo(ReturnInfo returnInfo) {
+    public EventResult returnInfo(ReturnInfo returnInfo, ERPUserInfo erpUserInfo) {
         return null;
     }
 
     @Override
-    public EventResult syncInventory(InventoryInfo inventoryInfo) {
+    public EventResult syncInventory(InventoryInfo inventoryInfo, ERPUserInfo erpUserInfo) {
         return null;
     }
 
     @Override
-    public EventResult obtainOrderList(OrderSearchInfo orderSearchInfo) {
+    public EventResult obtainOrderList(OrderSearchInfo orderSearchInfo, ERPUserInfo erpUserInfo) {
         HttpUtil httpUtil = HttpUtil.getInstance();
         //获取伙伴商城接口数据
         //签名
@@ -72,20 +75,27 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             signMap.put("payStatus", String.valueOf(orderSearchInfo.getPayStatus()));
         }
         signMap.put("timestamp", String.valueOf(new Date().getTime()));
+        signMap.put("customerId", String.valueOf(erpUserInfo.getCustomerId()));
+        signMap.put("beginTime", orderSearchInfo.getBeginTime());
+        signMap.put("endTime", orderSearchInfo.getEndTime());
         try {
             String sign = SignBuilder.buildSign(signMap, null, HBConstant.SECRET_KEY);
             Map<String, String> requestMap = new HashMap<>(signMap);
             requestMap.put("sign", sign);
-            String responseData = httpUtil.doPost(HBConstant.REQUEST_URL, requestMap);
-            ApiResult apiResult = JSON.parseObject(responseData, ApiResult.class);
-            return EventResult.resultWith(EventResultEnum.SUCCESS);
+            String responseData = httpUtil.doPost(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderList", requestMap);
+            ApiResult<OrderListParse> apiResult = JSON.parseObject(responseData, new TypeReference<ApiResult<OrderListParse>>() {
+            }.getType());
+            if (apiResult.getCode() == 200) {
+                return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
         } catch (IOException e) {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
     @Override
-    public EventResult obtainOrderDetail(String orderId) {
+    public EventResult obtainOrderDetail(String orderId, ERPUserInfo erpUserInfo) {
         if (StringUtils.isEmpty(orderId)) {
             return EventResult.resultWith(EventResultEnum.BAD_REQUEST_PARAM, "orderId未传", null);
         }
@@ -97,8 +107,13 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             String sign = SignBuilder.buildSign(signMap, null, HBConstant.SECRET_KEY);
             Map<String, String> requestMap = new HashMap<>(signMap);
             requestMap.put("sign", sign);
-            String responseData = httpUtil.doPost(HBConstant.REQUEST_URL, requestMap);
-            return EventResult.resultWith(EventResultEnum.SUCCESS);
+            String responseData = httpUtil.doPost(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderDetail", requestMap);
+            ApiResult<MallOrderBean> apiResult = JSON.parseObject(responseData, new TypeReference<ApiResult<MallOrderBean>>() {
+            });
+            if (apiResult.getCode() == 200) {
+                return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
         } catch (IOException e) {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }

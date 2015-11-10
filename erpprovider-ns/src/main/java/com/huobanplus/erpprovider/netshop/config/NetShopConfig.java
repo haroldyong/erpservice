@@ -21,7 +21,7 @@ import javax.annotation.PostConstruct;
  * 类描述：网店管家配置服务
  */
 @Configuration
-@ComponentScan({"com.huobanplus.erpprovider.netshop", "com.huobanplus.erpservice.eventhandler"})
+//@ComponentScan({"com.huobanplus.erpprovider.netshop", "com.huobanplus.erpservice.eventhandler"})
 public class NetShopConfig {
     @Autowired
     private ERPRegister register;

@@ -23,7 +23,7 @@ public interface HBOrderHandler {
      * @param deliveryInfo
      * @return
      */
-    EventResult deliverInfo(DeliveryInfo deliveryInfo);
+    EventResult deliverInfo(DeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo);
 
     /**
      * 退货通知
@@ -31,7 +31,7 @@ public interface HBOrderHandler {
      * @param returnInfo
      * @return
      */
-    EventResult returnInfo(ReturnInfo returnInfo);
+    EventResult returnInfo(ReturnInfo returnInfo, ERPUserInfo erpUserInfo);
 
     /**
      * 库存同步
@@ -39,7 +39,7 @@ public interface HBOrderHandler {
      * @param inventoryInfo
      * @return
      */
-    EventResult syncInventory(InventoryInfo inventoryInfo);
+    EventResult syncInventory(InventoryInfo inventoryInfo, ERPUserInfo erpUserInfo);
 
     /**
      * 获取订单列表
@@ -47,7 +47,7 @@ public interface HBOrderHandler {
      * @param orderSearchInfo
      * @return
      */
-    EventResult obtainOrderList(OrderSearchInfo orderSearchInfo);
+    EventResult obtainOrderList(OrderSearchInfo orderSearchInfo, ERPUserInfo erpUserInfo);
 
     /**
      * 获得订单详情
@@ -55,5 +55,5 @@ public interface HBOrderHandler {
      * @param orderId
      * @return
      */
-    EventResult obtainOrderDetail(String orderId);
+    EventResult obtainOrderDetail(String orderId, ERPUserInfo erpUserInfo);
 }

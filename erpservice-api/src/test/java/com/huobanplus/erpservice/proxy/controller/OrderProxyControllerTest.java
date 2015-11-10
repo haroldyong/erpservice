@@ -20,10 +20,13 @@ import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
+import com.huobanplus.erpservice.datacenter.entity.People;
+import com.huobanplus.erpservice.datacenter.service.impl.TestService;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -144,15 +147,16 @@ public class OrderProxyControllerTest extends SpringWebTest {
                 .andExpect(status().isOk());
     }
 
+    @Autowired
+    private TestService testService;
+
     @Test
     public void testCancelOrder() throws Exception {
-        String jsonData = "{\"requestUrl\":\"12312312\",\"dbHost\":\"12312312\",\"appKey\":\"312312\",\"appSecret\":\"3123\",\"token\":\"12312\",\"ip\":\"3123\"}";
-        JSONObject jsonObject = JSON.parseObject(jsonData);
-        ERPDetailConfigEntity detailConfigEntity = new ERPDetailConfigEntity();
-        int index = 0;
-        for (Map.Entry<String, Object> item : jsonObject.entrySet()) {
-            detailConfigEntity.getClass().getDeclaredMethod("setP" + index, String.class).invoke(detailConfigEntity, item.getValue());
-            index++;
-        }
+        People people = new People();
+        people.setName("allan");
+        people.setSex(1);
+        people = testService.save();
+        People people1 = testService.findById(1);
+        System.out.println("end");
     }
 }

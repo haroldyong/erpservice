@@ -20,15 +20,18 @@ import com.huobanplus.erpservice.hotapi.controller.HotApiController;
 import com.huobanplus.erpservice.hotapi.handler.OrderHandler;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
 
 /**
  * Created by liual on 2015-11-05.
  */
+@Controller
 @RequestMapping("/hotApi")
 public class HotApiControllerImpl implements HotApiController {
     @Autowired
@@ -36,38 +39,25 @@ public class HotApiControllerImpl implements HotApiController {
     private static Logger logger = Logger.getLogger(HotApiControllerImpl.class);
 
     @Override
-    @RequestMapping("/rest/index/{eventType}/{erpUserType}")
-    public ApiResult index(@PathVariable("eventType") String eventType, @PathVariable("erpUserType") int erpUserType, HttpServletRequest request) {
-
-        //构建使用者
-        ERPUserInfo erpUserInfo = new ERPUserInfo();
-        erpUserInfo.setErpUserType(EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType));
-        erpUserInfo.setCustomerId(3447);
-
+    @RequestMapping(value = "/hotApi/rest/order/index/{eventType}", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResult orderIndex(@PathVariable("eventType") String eventType, @RequestAttribute ERPUserInfo erpUserInfo, HttpServletRequest request) {
         switch (eventType) {
             case HotApiConstant.DELIVERY_INFO:
-                //发货
-                orderHandler.deliveryInfo(request, erpUserInfo);
-                break;
+                return orderHandler.deliveryInfo(request, erpUserInfo);
             case HotApiConstant.RETURN_INFO:
-                //退货
-                orderHandler.returnInfo(request, erpUserInfo);
-                break;
+                return orderHandler.returnInfo(request, erpUserInfo);
             case HotApiConstant.OBTAIN_ORDER_DETAIL:
-                //获取订单详情
-                orderHandler.obtainOrderDetail(request, erpUserInfo);
-                break;
+                return orderHandler.obtainOrderDetail(request, erpUserInfo);
             case HotApiConstant.OBTAIN_ORDER_LIST:
-                //获取订单列表
-                orderHandler.obtainOrderList(request, erpUserInfo);
-                break;
-            default:
-                break;
+                return orderHandler.obtainOrderList(request, erpUserInfo);
         }
         return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT, "不被支持的事件方法", null);
     }
 
     @Override
+    @RequestMapping(value = "/hotApi/rest/product/index/{eventType}", method = RequestMethod.POST)
+    @ResponseBody
     public ApiResult proIndex() {
         return null;
     }

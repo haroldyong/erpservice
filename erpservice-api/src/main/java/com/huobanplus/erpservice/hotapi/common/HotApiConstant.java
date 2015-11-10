@@ -13,8 +13,11 @@ package com.huobanplus.erpservice.hotapi.common;
  * Created by liual on 2015-11-05.
  */
 public class HotApiConstant {
-    public static final String DELIVERY_INFO = "hotDeliveryInfo";
-    public static final String RETURN_INFO = "hotReturnInfo";
-    public static final String OBTAIN_ORDER_LIST = "hotObtainOrderList";
-    public static final String OBTAIN_ORDER_DETAIL = "hotObtainOrderDetail";
+    public static final String DELIVERY_INFO = "hbpDeliveryInfo";
+    public static final String RETURN_INFO = "hbpReturnInfo";
+    public static final String OBTAIN_ORDER_LIST = "hbpOrderList";
+    public static final String OBTAIN_ORDER_DETAIL = "hbpOrderDetail";
+
+    public static final String SYNC_INVENTORY = "hbpSyncInventory";
+    public static final String OBTAIN_GOOD_LIST = "hbpGoodList";
 }

@@ -34,23 +34,33 @@ public interface HotApiController {
     /**
      * <b>订单相关</b>
      * <ul>
-     * <li>hotDeliveryInfo:发货通知</li>
-     * <li>hotReturnInfo:退货通知</li>
-     * <li>hotObtainOrderList:获得订单列表</li>
-     * <li>hotObtainOrderDetail：获得订单详情</li>
+     * <li>hbpDeliveryInfo:发货通知</li>
+     * <li>hbpReturnInfo:退货通知</li>
+     * <li>hbpOrderList:获得订单列表</li>
+     * <li>hbpOrderDetail：获得订单详情</li>
      * </ul>
      *
      * @param eventType
-     * @param erpUserType
+     * @param erpUserInfo
      * @param request
      * @return
      */
-    @RequestMapping("/rest/index/{eventType}/{erpUserType}")
-    ApiResult index(
+    @RequestMapping("/rest/index/{eventType}")
+    ApiResult orderIndex(
             @PathVariable("eventType") String eventType,
-            @PathVariable("erpUserType") int erpUserType,
+            @RequestAttribute ERPUserInfo erpUserInfo,
             HttpServletRequest request
     );
 
+    /**
+     * <b>商品相关</b>
+     * <ul>
+     * <li>hbpSyncInventory: 库存同步</li>
+     * <li>hbpGoodList: 货品列表</li>
+     * </ul>
+     *
+     * @return
+     */
+    @RequestMapping("/rest/index/{eventType}")
     ApiResult proIndex();
 }
