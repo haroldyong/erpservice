@@ -7,17 +7,13 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpuser.huobanmall.common;
+package com.huobanplus.erpservice.datacenter.repository;
 
-import lombok.Data;
+import com.huobanplus.erpservice.datacenter.entity.Man;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * 伙伴商城返回的数据接口
- * Created by liual on 2015-11-05.
+ * Created by liual on 2015-11-07.
  */
-@Data
-public class ApiResult<T> {
-    private int code;
-    private String msg;
-    private T data;
+public interface ManRepository extends JpaRepository<Man, Integer> {
 }

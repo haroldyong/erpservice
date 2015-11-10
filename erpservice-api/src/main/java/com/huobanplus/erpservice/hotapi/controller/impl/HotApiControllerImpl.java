@@ -17,37 +17,42 @@ import com.huobanplus.erpservice.hotapi.common.HotApiConstant;
 import com.huobanplus.erpservice.hotapi.controller.HotApiController;
 import com.huobanplus.erpservice.hotapi.handler.OrderHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by liual on 2015-11-05.
  */
+@Controller
 public class HotApiControllerImpl implements HotApiController {
     @Autowired
     private OrderHandler orderHandler;
 
     @Override
+    @RequestMapping(value = "/hotApi/rest/order/index/{eventType}", method = RequestMethod.POST)
+    @ResponseBody
     public ApiResult orderIndex(@PathVariable("eventType") String eventType, @RequestAttribute ERPUserInfo erpUserInfo, HttpServletRequest request) {
         switch (eventType) {
             case HotApiConstant.DELIVERY_INFO:
-                orderHandler.deliveryInfo(request, erpUserInfo);
-                break;
+                return orderHandler.deliveryInfo(request, erpUserInfo);
             case HotApiConstant.RETURN_INFO:
-                orderHandler.returnInfo(request, erpUserInfo);
-                break;
+                return orderHandler.returnInfo(request, erpUserInfo);
             case HotApiConstant.OBTAIN_ORDER_DETAIL:
-                orderHandler.obtainOrderDetail(request, erpUserInfo);
-                break;
+                return orderHandler.obtainOrderDetail(request, erpUserInfo);
             case HotApiConstant.OBTAIN_ORDER_LIST:
-                orderHandler.obtainOrderList(request, erpUserInfo);
-                break;
+                return orderHandler.obtainOrderList(request, erpUserInfo);
         }
         return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT, "不被支持的事件方法", null);
     }
 
     @Override
+    @RequestMapping(value = "/hotApi/rest/product/index/{eventType}", method = RequestMethod.POST)
+    @ResponseBody
     public ApiResult proIndex() {
         return null;
     }

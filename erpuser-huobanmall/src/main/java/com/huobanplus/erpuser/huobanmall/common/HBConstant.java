@@ -18,5 +18,5 @@ public class HBConstant {
      */
     public static final String SECRET_KEY = "66668888";
 
-    public static final String REQUEST_URL = "";
+    public static final String REQUEST_URL = "http://localhost:31105";
 }

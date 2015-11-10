@@ -21,7 +21,7 @@ import javax.annotation.PostConstruct;
  * Created by allan on 2015/7/13.
  */
 @Configuration
-@ComponentScan({"com.huobanplus.erpprovider.edb", "com.huobanplus.erpservice.eventhandler"})
+//@ComponentScan({"com.huobanplus.erpprovider.edb", "com.huobanplus.erpservice.eventhandler"})
 public class EDBConfig {
     @Autowired
     private ERPRegister register;

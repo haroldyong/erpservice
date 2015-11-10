@@ -521,7 +521,7 @@ public class StringUtil {
         if (StringUtil.isEmpty(number)) {
             return defNumber;
         }
-        return (int) number;
+        return Integer.valueOf(number.toString());
     }
 
     public static Double getWithDefault(Object object, Double defNumber) {

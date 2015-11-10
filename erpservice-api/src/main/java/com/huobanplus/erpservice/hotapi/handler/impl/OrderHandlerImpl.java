@@ -24,6 +24,7 @@ import com.huobanplus.erpservice.eventhandler.model.OrderSearchInfo;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import com.huobanplus.erpservice.hotapi.handler.OrderHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,7 @@ import java.text.SimpleDateFormat;
 /**
  * Created by liual on 2015-11-05.
  */
+@Service
 public class OrderHandlerImpl implements OrderHandler {
     @Autowired
     private ERPRegister erpRegister;

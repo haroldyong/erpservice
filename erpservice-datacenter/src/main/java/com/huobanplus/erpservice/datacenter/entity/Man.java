@@ -7,17 +7,19 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpuser.huobanmall.common;
+package com.huobanplus.erpservice.datacenter.entity;
 
 import lombok.Data;
 
+import javax.persistence.*;
+
 /**
- * 伙伴商城返回的数据接口
- * Created by liual on 2015-11-05.
+ * Created by liual on 2015-11-07.
  */
+@Entity
+@Table(name = "Test_Man")
+@DiscriminatorValue(value = "0")
 @Data
-public class ApiResult<T> {
-    private int code;
-    private String msg;
-    private T data;
+public class Man extends People {
+    private String ptest;
 }

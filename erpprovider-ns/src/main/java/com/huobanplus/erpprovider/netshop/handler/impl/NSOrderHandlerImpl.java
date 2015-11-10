@@ -53,7 +53,7 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             ObtainOrderListEvent orderListEvent = new ObtainOrderListEvent();
             OrderSearchInfo orderSearchInfo = new OrderSearchInfo();
             orderListEvent.setErpUserInfo(erpUserInfo);
-            orderSearchInfo.setOrderStatus(orderStatus);
+            orderSearchInfo.setPayStatus(orderStatus);
             orderSearchInfo.setPageSize(pageSize);
             orderSearchInfo.setPageIndex(pageIndex);
             orderListEvent.setOrderSearchInfo(orderSearchInfo);

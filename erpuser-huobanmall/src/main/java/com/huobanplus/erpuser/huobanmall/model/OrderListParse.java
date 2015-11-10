@@ -7,17 +7,18 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpuser.huobanmall.common;
+package com.huobanplus.erpuser.huobanmall.model;
 
+import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import lombok.Data;
 
+import java.util.List;
+
 /**
- * 伙伴商城返回的数据接口
- * Created by liual on 2015-11-05.
+ * Created by liual on 2015-11-09.
  */
 @Data
-public class ApiResult<T> {
-    private int code;
-    private String msg;
-    private T data;
+public class OrderListParse {
+    private int recordCount;
+    private List<MallOrderBean> orderList;
 }

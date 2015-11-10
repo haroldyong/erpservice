@@ -24,7 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(classes = {EDBConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class EDBProductHandlerTest {
-    @Autowired
+//    @Autowired
     private EDBProductHandler EDBProductHandler;
 
     @Test

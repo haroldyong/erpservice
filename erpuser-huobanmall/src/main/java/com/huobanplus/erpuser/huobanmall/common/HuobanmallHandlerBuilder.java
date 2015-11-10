@@ -12,6 +12,8 @@ package com.huobanplus.erpuser.huobanmall.common;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderDetailEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderListEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.model.FailedBean;
@@ -36,14 +38,15 @@ public class HuobanmallHandlerBuilder implements ERPUserHandlerBuilder {
     @Override
     public ERPUserHandler buildHandler(ERPUserInfo info) {
         if (info.getErpUserType() == ERPTypeEnum.UserType.HUOBAN_MALL) {
-            return new ERPUserHandler() {
-                @Override
-                public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
-                    if (erpBaseEvent instanceof DeliveryInfoEvent) {
-                        return orderHandler.deliverInfo(((DeliveryInfoEvent) erpBaseEvent).getDeliveryInfo());
-                    }
-                    return null;
+            return erpBaseEvent -> {
+                if (erpBaseEvent instanceof ObtainOrderListEvent) {
+                    return orderHandler.obtainOrderList(((ObtainOrderListEvent) erpBaseEvent).getOrderSearchInfo(), info);
+                } else if (erpBaseEvent instanceof DeliveryInfoEvent) {
+                    return orderHandler.deliverInfo(((DeliveryInfoEvent) erpBaseEvent).getDeliveryInfo(), info);
+                } else if (erpBaseEvent instanceof ObtainOrderDetailEvent) {
+                    return orderHandler.obtainOrderDetail(((ObtainOrderDetailEvent) erpBaseEvent).getOrderId(), info);
                 }
+                return null;
             };
         }
         return null;
