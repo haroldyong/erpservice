@@ -15,28 +15,52 @@ import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.hotapi.common.HotApiConstant;
 import com.huobanplus.erpservice.hotapi.controller.HotApiController;
 import com.huobanplus.erpservice.hotapi.handler.OrderHandler;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 
 /**
  * Created by liual on 2015-11-05.
  */
+@RequestMapping("/hotApi")
 public class HotApiControllerImpl implements HotApiController {
     @Autowired
     private OrderHandler orderHandler;
+    private static Logger logger = Logger.getLogger(HotApiControllerImpl.class);
 
     @Override
-    public ApiResult orderIndex(@PathVariable("eventType") String eventType, @RequestAttribute ERPUserInfo erpUserInfo, HttpServletRequest request) {
+    @RequestMapping("/rest/index/{eventType}")
+    public ApiResult index(@PathVariable("eventType") String eventType, @RequestAttribute ERPUserInfo erpUserInfo, HttpServletRequest request) {
         switch (eventType) {
             case HotApiConstant.DELIVERY_INFO:
+                //发货
+                orderHandler.deliveryInfo(request, erpUserInfo);
                 break;
             case HotApiConstant.RETURN_INFO:
+                //退货
+                orderHandler.returnInfo(request, erpUserInfo);
                 break;
             case HotApiConstant.OBTAIN_ORDER_DETAIL:
+                //获取订单详情
+                try {
+                    orderHandler.obtainOrderdetail(request, erpUserInfo);
+                } catch (ParseException e) {
+                    logger.error(e.getMessage());
+                }
                 break;
             case HotApiConstant.OBTAIN_ORDER_LIST:
+                //获取订单列表
+                try {
+                    orderHandler.obtainOrderList(request, erpUserInfo);
+                } catch (ParseException e) {
+                    logger.error(e.getMessage());
+                }
+                break;
+            default:
                 break;
         }
         return null;

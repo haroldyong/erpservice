@@ -23,4 +23,5 @@ public class OrderSearchInfo extends BaseInfo {
     private Integer payStatus;
     private String beginTime;
     private String endTime;
+    private String orderId;
 }

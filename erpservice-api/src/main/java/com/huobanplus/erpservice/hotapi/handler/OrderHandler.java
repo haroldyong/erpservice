@@ -77,4 +77,13 @@ public interface OrderHandler {
      * @return
      */
     ApiResult obtainOrderList(HttpServletRequest request, ERPUserInfo erpUserInfo) throws ParseException;
+
+    /**
+     * 获取订单详情
+     * @param request
+     * @param erpUserInfo
+     * @return
+     * @throws ParseException
+     */
+    ApiResult obtainOrderdetail(HttpServletRequest request, ERPUserInfo erpUserInfo) throws ParseException;
 }

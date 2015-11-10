@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  * Created by liual on 2015-11-05.
  */
+@RequestMapping("/hotApi")
 public interface HotApiController {
     /**
      * <b>订单相关</b>
@@ -44,8 +45,8 @@ public interface HotApiController {
      * @param request
      * @return
      */
-    @RequestMapping("/hotApi/rest/order/index/{eventType}")
-    ApiResult orderIndex(
+    @RequestMapping("/rest/index/{eventType}")
+    ApiResult index(
             @PathVariable("eventType") String eventType,
             @RequestAttribute ERPUserInfo erpUserInfo,
             HttpServletRequest request
