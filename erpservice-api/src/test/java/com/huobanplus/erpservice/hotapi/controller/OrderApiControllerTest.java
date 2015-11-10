@@ -34,9 +34,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @Transactional
 public class OrderApiControllerTest extends SpringWebTest {
 
+
+    /**
+     * 发货通知测试
+     * @throws Exception
+     */
     @Test
     public void testDeliverInfo() throws Exception {
-        String response = mockMvc.perform(post("/hotapi/deliverInfo")
+        String response = mockMvc.perform(post("/hotApi/rest/index/hotDeliveryInfo/0")
                 .param("appKey", "123123")
                 .param("token", "123213")
                 .param("sign", "sfsdf123123")

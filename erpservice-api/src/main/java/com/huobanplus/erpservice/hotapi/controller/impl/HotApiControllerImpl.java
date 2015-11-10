@@ -9,9 +9,11 @@
 
 package com.huobanplus.erpservice.hotapi.controller.impl;
 
+import com.huobanplus.erpservice.common.util.EnumHelper;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.hotapi.common.HotApiConstant;
 import com.huobanplus.erpservice.hotapi.controller.HotApiController;
@@ -34,8 +36,14 @@ public class HotApiControllerImpl implements HotApiController {
     private static Logger logger = Logger.getLogger(HotApiControllerImpl.class);
 
     @Override
-    @RequestMapping("/rest/index/{eventType}")
-    public ApiResult index(@PathVariable("eventType") String eventType, @RequestAttribute ERPUserInfo erpUserInfo, HttpServletRequest request) {
+    @RequestMapping("/rest/index/{eventType}/{erpUserType}")
+    public ApiResult index(@PathVariable("eventType") String eventType, @PathVariable("erpUserType") int erpUserType, HttpServletRequest request) {
+
+        //构建使用者
+        ERPUserInfo erpUserInfo = new ERPUserInfo();
+        erpUserInfo.setErpUserType(EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType));
+        erpUserInfo.setCustomerId(3447);
+
         switch (eventType) {
             case HotApiConstant.DELIVERY_INFO:
                 //发货
