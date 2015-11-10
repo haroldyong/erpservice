@@ -16,6 +16,7 @@ import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.hotapi.common.HotApiConstant;
 import com.huobanplus.erpservice.hotapi.controller.HotApiController;
 import com.huobanplus.erpservice.hotapi.handler.OrderHandler;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,9 +30,11 @@ import javax.servlet.http.HttpServletRequest;
  * Created by liual on 2015-11-05.
  */
 @Controller
+@RequestMapping("/hotApi")
 public class HotApiControllerImpl implements HotApiController {
     @Autowired
     private OrderHandler orderHandler;
+    private static Logger logger = Logger.getLogger(HotApiControllerImpl.class);
 
     @Override
     @RequestMapping(value = "/hotApi/rest/order/index/{eventType}", method = RequestMethod.POST)

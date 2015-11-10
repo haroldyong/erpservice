@@ -136,6 +136,7 @@ public class OrderHandlerImpl implements OrderHandler {
         if (erpUserHandler == null) {
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
         }
+        obtainOrderDetailEvent.setOrderId(orderId);
         EventResult eventResult = erpUserHandler.handleEvent(obtainOrderDetailEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());

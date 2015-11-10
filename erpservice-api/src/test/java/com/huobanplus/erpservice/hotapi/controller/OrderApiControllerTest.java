@@ -127,7 +127,7 @@ public class OrderApiControllerTest extends SpringWebTest {
         signMap.put("timestamp", String.valueOf(now.getTime()));
         signMap.put("appKey", mockBaseConfigEntity.getAppKey());
         signMap.put("token", mockBaseConfigEntity.getToken());
-        
+
         String sign = buildSign(signMap, null, mockBaseConfigEntity.getSecretKey());
     }
 }
