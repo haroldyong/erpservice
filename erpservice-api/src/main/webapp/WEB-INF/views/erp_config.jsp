@@ -46,7 +46,7 @@
         }
     </style>
     <script type="text/javascript">
-        var ajaxUrl = "<c:url value="/erpService/" />";
+        var ajaxUrl = "/erpService/";
         var erpType = ${erpType};
         var configHandler = {
             setOpenStatus: function (isOpen) {
