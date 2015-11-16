@@ -33,13 +33,6 @@ public class SignBuilder {
         if (suffix == null)
             suffix = "";
         StringBuilder stringBuilder = new StringBuilder(prefix);
-//        TreeMap<String, String> map = new TreeMap<>(new Comparator() {
-//            @Override
-//            public int compare(Object o1, Object o2) {
-//                return o1.toString().toLowerCase().compareTo(o2.toString().toLowerCase());
-//            }
-//        });
-//        map.putAll(params);
         Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, String> next = iterator.next();

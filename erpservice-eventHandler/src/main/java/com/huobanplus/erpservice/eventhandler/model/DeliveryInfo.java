@@ -39,5 +39,5 @@ public class DeliveryInfo extends BaseInfo {
     /**
      * 发货数量序列化字段（itemId,发货数量|itemid,发货数量，itemId为订单内容OrderItem的主键id
      */
-    private String dicDeliverItemsStr;
+    private String deliverItemsStr;
 }

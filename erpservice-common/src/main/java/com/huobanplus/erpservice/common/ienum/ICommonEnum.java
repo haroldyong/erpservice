@@ -7,7 +7,7 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpservice.common.util;
+package com.huobanplus.erpservice.common.ienum;
 
 /**
  * Created by liual on 2015-10-23.

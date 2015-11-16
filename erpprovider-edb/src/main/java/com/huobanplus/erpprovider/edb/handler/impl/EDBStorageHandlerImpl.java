@@ -17,7 +17,7 @@ import com.huobanplus.erpprovider.edb.bean.EDBProductOut;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.handler.BaseHandler;
 import com.huobanplus.erpprovider.edb.handler.EDBStorageHandler;
-import com.huobanplus.erpservice.common.util.HttpUtil;
+import com.huobanplus.erpservice.common.httputil.HttpUtil;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.entity.MallOutStoreBean;
 import com.huobanplus.erpservice.datacenter.entity.MallProductOutBean;

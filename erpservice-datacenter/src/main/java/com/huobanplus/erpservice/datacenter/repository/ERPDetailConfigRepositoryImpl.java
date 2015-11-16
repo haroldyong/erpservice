@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.repository;
 
-import com.huobanplus.erpservice.common.util.EnumHelper;
+import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;

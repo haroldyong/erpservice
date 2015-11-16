@@ -17,6 +17,7 @@ import lombok.Data;
 @Data
 public class ReturnInfo extends BaseInfo {
     private String orderId;
+    private String reason;
     private String logiName;
     private String logiNo;
     private String returnAddr;
@@ -25,5 +26,5 @@ public class ReturnInfo extends BaseInfo {
     private String returnZip;
     private int freight;
     private String remark;
-    private String dicDeliverItemsStr;
+    private String returnItemStr;
 }

@@ -56,7 +56,7 @@ public class OrderHandlerImpl implements OrderHandler {
         }
         double freight = StringUtil.getWithDefault(request.getParameter("freight"), 0);
         String remark = request.getParameter("remark");
-        String dicDeliverItemsStr = request.getParameter("dicDeliverItemsStr");
+        String deliverItemsStr = request.getParameter("deliverItemsStr");
 
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {
@@ -69,7 +69,7 @@ public class OrderHandlerImpl implements OrderHandler {
         deliveryInfo.setLogiNo(logiNo);
         deliveryInfo.setFreight(freight);
         deliveryInfo.setRemark(remark);
-        deliveryInfo.setDicDeliverItemsStr(dicDeliverItemsStr);
+        deliveryInfo.setDeliverItemsStr(deliverItemsStr);
         deliveryInfoEvent.setDeliveryInfo(deliveryInfo);
         EventResult eventResult = erpUserHandler.handleEvent(deliveryInfoEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {

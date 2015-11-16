@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.common;
 
-import com.huobanplus.erpservice.common.util.ICommonEnum;
+import com.huobanplus.erpservice.common.ienum.ICommonEnum;
 
 /**
  * Created by liual on 2015-11-03.

@@ -20,7 +20,7 @@ import java.util.*;
 public class StringUtil {
     public static String DATE_PATTERN = "yyyy-MM-dd";
     public static String TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
-    public static String ENCODING = "utf-8";
+    public static String UTF8 = "utf-8";
 
     public static final String NETSHOP_SECRET = "123456";
 
@@ -96,6 +96,19 @@ public class StringUtil {
             e.printStackTrace();
             return "";
         }
+    }
+
+    /**
+     * 相当于重写String.valueOf，如果object为空，不返回"null"，而返回null
+     *
+     * @param object
+     * @return
+     */
+    public static String valueOf(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return String.valueOf(object);
     }
 
     /**

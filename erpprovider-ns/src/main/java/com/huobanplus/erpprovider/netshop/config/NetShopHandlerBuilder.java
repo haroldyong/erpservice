@@ -87,7 +87,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                         }
                         //签名验证
                         Map<String, String[]> paramMap = request.getParameterMap();
-                        Map<String, String> signMap = new TreeMap<>();
+                        Map<String, Object> signMap = new TreeMap<>();
                         paramMap.forEach((key, value) -> {
                             if (!"sign".equals(key.toLowerCase())) {
                                 if (value != null && value.length > 0)
@@ -101,7 +101,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                         String secretKey = nsSysData.getSecret();
                         String sign;
                         try {
-                            sign = SignBuilder.buildSign(signMap, secretKey, secretKey);
+                            sign = SignBuilder.buildSignIgnoreEmpty(signMap, secretKey, secretKey);
                         } catch (UnsupportedEncodingException e) {
                             return NSExceptionHandler.handleException(method, EventResultEnum.ERROR, e.getMessage());
                         }

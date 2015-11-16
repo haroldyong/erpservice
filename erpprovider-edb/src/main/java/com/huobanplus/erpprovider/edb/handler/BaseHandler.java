@@ -11,7 +11,7 @@ package com.huobanplus.erpprovider.edb.handler;
 
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.util.Constant;
-import com.huobanplus.erpprovider.edb.util.SignBuilder;
+import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.common.util.StringUtil;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class BaseHandler {
      *
      * @return
      */
-    protected Map<String, String> getSysRequestData(String method,   EDBSysData sysData) throws IOException {
+    protected Map<String, String> getSysRequestData(String method, EDBSysData sysData) throws IOException {
         Map<String, String> requestData = new HashMap<>();
         String timestamp = StringUtil.DateFormat(new Date(), Constant.TIMESTAMP_PATTERN);
         requestData.put("dbhost", sysData.getDbHost());
@@ -51,8 +51,6 @@ public class BaseHandler {
      * @return
      */
     protected String getSign(Map signMap, EDBSysData sysData) throws UnsupportedEncodingException {
-//        signMap.put("appscret", Constant.APP_SECRET);
-//        signMap.put("token", Constant.TOKEN);
         signMap.put("appscret", sysData.getAppSecret());
         signMap.put("token", sysData.getToken());
         return SignBuilder.buildSign(signMap, sysData.getAppKey(), "");

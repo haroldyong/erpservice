@@ -11,7 +11,7 @@ package com.huobanplus.erpservice.platform.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.huobanplus.erpservice.common.util.EnumHelper;
+import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
@@ -25,6 +25,7 @@ import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPSysDataInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,6 +69,7 @@ public class ERPConfigController {
                 }
             }
         }
+
         model.addAttribute("baseConfig", baseConfig);
         model.addAttribute("lstDetailConfig", lstDetailConfig);
         model.addAttribute("erpType", erpType);

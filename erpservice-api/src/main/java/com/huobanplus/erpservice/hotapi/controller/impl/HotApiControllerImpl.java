@@ -30,14 +30,14 @@ import javax.servlet.http.HttpServletRequest;
  * Created by liual on 2015-11-05.
  */
 @Controller
-@RequestMapping("/hotApi")
+@RequestMapping("/hotApi/rest")
 public class HotApiControllerImpl implements HotApiController {
     @Autowired
     private OrderHandler orderHandler;
     private static Logger logger = Logger.getLogger(HotApiControllerImpl.class);
 
     @Override
-    @RequestMapping(value = "/hotApi/rest/order/index/{eventType}", method = RequestMethod.POST)
+    @RequestMapping(value = "/order/index/{eventType}", method = RequestMethod.POST)
     @ResponseBody
     public ApiResult orderIndex(@PathVariable("eventType") String eventType, @RequestAttribute ERPUserInfo erpUserInfo, HttpServletRequest request) {
         switch (eventType) {
@@ -54,7 +54,7 @@ public class HotApiControllerImpl implements HotApiController {
     }
 
     @Override
-    @RequestMapping(value = "/hotApi/rest/product/index/{eventType}", method = RequestMethod.POST)
+    @RequestMapping(value = "/product/index/{eventType}", method = RequestMethod.POST)
     @ResponseBody
     public ApiResult proIndex() {
         return null;

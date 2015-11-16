@@ -10,11 +10,14 @@
 package com.huobanplus.erpservice.hotapi.controller;
 
 import com.huobanplus.erpservice.SpringWebTest;
+import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
+import com.huobanplus.erpservice.eventhandler.model.BaseInfo;
+import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.hotapi.common.HotApiConstant;
 import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -28,6 +31,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
@@ -88,6 +93,7 @@ public class OrderApiControllerTest extends SpringWebTest {
         signMap.put("pageSize", "20");
         signMap.put("beginTime", "2015-10-01 00:00:00");
         signMap.put("endTime", date);
+
         String sign = buildSign(signMap, null, mockBaseConfigEntity.getSecretKey());
         mockMvc.perform(post("/hotApi/rest/order/index/hbpOrderList")
                 .param("pageIndex", "1")
@@ -123,11 +129,39 @@ public class OrderApiControllerTest extends SpringWebTest {
     @Test
     public void testDeliveryInfo() throws Exception {
         Date now = new Date();
-        Map<String, String> signMap = new TreeMap<>();
+        Map<String, Object> signMap = new TreeMap<>();
         signMap.put("timestamp", String.valueOf(now.getTime()));
         signMap.put("appKey", mockBaseConfigEntity.getAppKey());
         signMap.put("token", mockBaseConfigEntity.getToken());
+        signMap.put("orderId", "2015011719995195");
+        signMap.put("logiName", "申通快递");
+        signMap.put("logiNo", "12312331");
+        signMap.put("remark", "大家立刻就开始");
+        signMap.put("deliverItemsStr", "01,1");
+        String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, mockBaseConfigEntity.getSecretKey());
 
-        String sign = buildSign(signMap, null, mockBaseConfigEntity.getSecretKey());
+        mockMvc.perform(post("/hotApi/rest/order/index/hbpDeliveryInfo")
+                .param("timestamp", String.valueOf(now.getTime()))
+                .param("appKey", mockBaseConfigEntity.getAppKey())
+                .param("token", mockBaseConfigEntity.getToken())
+                .param("orderId", "2015011719995195")
+                .param("logiName", "申通快递")
+                .param("logiNo", "12312331")
+                .param("remark", "大家立刻就开始")
+                .param("deliverItemsStr", "01,1")
+                .param("sign", sign))
+                .andDo(print());
+    }
+
+    @Test
+    public void testReturnInfo() throws Exception {
+        BaseInfo deliveryInfo = new DeliveryInfo();
+
+        Class deliverClass = deliveryInfo.getClass();
+        Field[] fields = deliverClass.getDeclaredFields();
+        for (Field field : fields) {
+            System.out.println(field.getName());
+            String methodName = "get" + String.valueOf(field.getName().charAt(0)).toUpperCase() + field.getName().substring(1);
+        }
     }
 }

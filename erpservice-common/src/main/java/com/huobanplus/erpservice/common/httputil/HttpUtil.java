@@ -7,7 +7,7 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpservice.common.util;
+package com.huobanplus.erpservice.common.httputil;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;

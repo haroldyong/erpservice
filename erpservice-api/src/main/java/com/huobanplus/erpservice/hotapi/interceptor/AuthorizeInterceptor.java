@@ -55,7 +55,7 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
         Map<String, String[]> requestMap = request.getParameterMap();
-        Map<String, String> signMap = new TreeMap<>();
+        Map<String, Object> signMap = new TreeMap<>();
         requestMap.forEach((action, strings) -> {
             if (!"sign".equals(action)) {
                 if (strings != null && strings.length > 0) {
@@ -65,7 +65,7 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
             }
         });
 
-        String sign = SignBuilder.buildSign(signMap, null, baseConfig.getSecretKey());
+        String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, baseConfig.getSecretKey());
         if (sign.equals(requestSign)) {
             //验证通过插入商户信息
             ERPUserInfo erpUserInfo = new ERPUserInfo(baseConfig.getErpUserType(), baseConfig.getCustomerId());

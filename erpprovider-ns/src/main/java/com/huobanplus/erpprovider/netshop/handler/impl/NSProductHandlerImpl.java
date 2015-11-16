@@ -15,7 +15,7 @@ import com.huobanplus.erpprovider.netshop.bean.NSGoodItemResult;
 import com.huobanplus.erpprovider.netshop.bean.NSGoodResult;
 import com.huobanplus.erpprovider.netshop.exceptionhandler.NSExceptionHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSProductHandler;
-import com.huobanplus.erpservice.common.util.HttpUtil;
+import com.huobanplus.erpservice.common.httputil.HttpUtil;
 import com.huobanplus.erpservice.datacenter.entity.MallGoodEntity;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;

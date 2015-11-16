@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpprovider.edb.common;
 
-import com.huobanplus.erpservice.common.util.ICommonEnum;
+import com.huobanplus.erpservice.common.ienum.ICommonEnum;
 
 /**
  * Created by liual on 2015-10-23.

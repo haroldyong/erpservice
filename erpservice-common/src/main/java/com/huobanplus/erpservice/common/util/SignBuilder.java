@@ -22,6 +22,33 @@ import java.util.Map;
 public class SignBuilder {
     /**
      * 创建一个sign签名
+     * 忽略值为空的
+     *
+     * @param params 代签名参数，key排序的map
+     * @param prefix 签名前缀
+     * @param suffix 签名后缀
+     * @return 返回鉴权信息字符串
+     */
+    public static String buildSignIgnoreEmpty(Map<String, Object> params, String prefix, String suffix) throws UnsupportedEncodingException {
+        if (prefix == null)
+            prefix = "";
+        if (suffix == null)
+            suffix = "";
+        StringBuilder stringBuilder = new StringBuilder(prefix);
+        Iterator<Map.Entry<String, Object>> iterator = params.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Object> next = iterator.next();
+            if (!StringUtils.isEmpty(next.getValue())) {
+                stringBuilder.append(next.getKey()).append(next.getValue());
+            }
+        }
+        stringBuilder.append(suffix);
+        return DigestUtils.md5Hex(stringBuilder.toString().getBytes("utf-8")).toUpperCase();
+    }
+
+    /**
+     * 创建一个sign签名
+     * 不忽略值为空的
      *
      * @param params 代签名参数，key排序的map
      * @param prefix 签名前缀
@@ -37,9 +64,7 @@ public class SignBuilder {
         Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, String> next = iterator.next();
-            if (!StringUtils.isEmpty(next.getValue())) {
-                stringBuilder.append(next.getKey()).append(next.getValue());
-            }
+            stringBuilder.append(next.getKey()).append(next.getValue());
         }
         stringBuilder.append(suffix);
         return DigestUtils.md5Hex(stringBuilder.toString().getBytes("utf-8")).toUpperCase();

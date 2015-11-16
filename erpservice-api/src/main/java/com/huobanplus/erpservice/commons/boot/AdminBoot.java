@@ -33,5 +33,5 @@ public class AdminBoot extends AbstractAnnotationConfigDispatcherServletInitiali
     protected String[] getServletMappings() {
         return new String[]{"/"};
     }
-
+    
 }

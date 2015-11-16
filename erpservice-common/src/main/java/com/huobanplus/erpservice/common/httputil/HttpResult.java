@@ -7,18 +7,17 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpuser.huobanmall.common;
+package com.huobanplus.erpservice.common.httputil;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * 伙伴商城返回的数据接口
- * Created by liual on 2015-11-05.
+ * Created by liual on 2015-11-11.
  */
 @Data
-public class ApiResult<T> {
-    private int code;
-    private String msg;
-    private T data;
+@AllArgsConstructor
+public class HttpResult {
+    private int httpStatus;
+    private String httpContent;
 }

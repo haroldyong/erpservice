@@ -89,7 +89,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
 //            signMap.put("validation", info.getValidation());
 //            signMap.put("sysDataJson", info.getSysDataJson());
 //            signMap.put("timestamp", info.getTimestamp());
-//            String checkSign = buildSign(signMap, signKey, null);
+//            String checkSign = buildSignIgnoreEmpty(signMap, signKey, null);
 //
 //            if (!sign.equals(checkSign)) {
 //                return ApiResult.resultWith(ResultCode.WRONG_SIGN_CODE);

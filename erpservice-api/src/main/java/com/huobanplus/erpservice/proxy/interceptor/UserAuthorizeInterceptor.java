@@ -48,7 +48,7 @@ public class UserAuthorizeInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
         Map<String, String[]> requestMap = request.getParameterMap();
-        Map<String, String> signMap = new TreeMap<>();
+        Map<String, Object> signMap = new TreeMap<>();
         requestMap.forEach((key, values) -> {
             if (!"sign".equals(key)) {
                 if (values != null && values.length > 0) {
@@ -62,7 +62,7 @@ public class UserAuthorizeInterceptor extends HandlerInterceptorAdapter {
         int customerId = Integer.parseInt(request.getParameter("customerId"));
         ERPDetailConfigEntity detailConfigEntity = detailConfigService.findByCustomerIdAndDefault(customerId);
         String secretKey = detailConfigEntity.getErpUserType() == ERPTypeEnum.UserType.HUOBAN_MALL ? HBConstant.SECRET_KEY : "";
-        String sign = SignBuilder.buildSign(signMap, null, secretKey);
+        String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, secretKey);
         if (sign.equals(requestSign)) {
             ERPInfo erpInfo = new ERPInfo(detailConfigEntity.getErpType(), detailConfigEntity.getErpSysData());
             request.setAttribute("erpInfo", erpInfo);

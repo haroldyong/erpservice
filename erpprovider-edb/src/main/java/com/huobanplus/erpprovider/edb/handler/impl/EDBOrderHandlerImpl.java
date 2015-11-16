@@ -19,14 +19,17 @@ import com.huobanplus.erpprovider.edb.common.EDBEnum;
 import com.huobanplus.erpprovider.edb.handler.BaseHandler;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.util.Constant;
-import com.huobanplus.erpservice.common.util.EnumHelper;
-import com.huobanplus.erpservice.common.util.HttpUtil;
+import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
+import com.huobanplus.erpservice.common.httputil.HttpResult;
+import com.huobanplus.erpservice.common.ienum.EnumHelper;
+import com.huobanplus.erpservice.common.httputil.HttpUtil;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -148,16 +151,16 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
             requestData.put("sign", getSign(signMap, sysData));
 
-            String responseData = htNetService.doPost(sysData.getRequestUrl(), requestData);
-            if (responseData == null) {
-                return EventResult.resultWith(EventResultEnum.ERROR);
-            }
-            JSONObject jsonObject = JSON.parseObject(responseData);
-            if (jsonObject.getJSONObject("Success") == null) {
-                return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);
-            } else {
+            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
+                if (jsonObject.getJSONObject("Success") == null) {
+                    return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);
+                }
                 return EventResult.resultWith(EventResultEnum.SUCCESS);
             }
+
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
         } catch (IOException ex) {
             return EventResult.resultWith(EventResultEnum.ERROR, ex.getMessage(), null);
         }
@@ -340,8 +343,8 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             Map<String, String> signMap = new TreeMap<>(requestData);
             String beginTime = StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN);
             String endTime = LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            requestData.put("begin_time", URLEncoder.encode(beginTime, StringUtil.ENCODING));
-            requestData.put("end_time", URLEncoder.encode(endTime, StringUtil.ENCODING));
+            requestData.put("begin_time", URLEncoder.encode(beginTime, StringUtil.UTF8));
+            requestData.put("end_time", URLEncoder.encode(endTime, StringUtil.UTF8));
             signMap.put("begin_time", beginTime);
             signMap.put("end_time", endTime);
 

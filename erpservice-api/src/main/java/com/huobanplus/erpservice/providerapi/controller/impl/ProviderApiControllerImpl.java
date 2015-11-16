@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.providerapi.controller.impl;
 
-import com.huobanplus.erpservice.common.util.EnumHelper;
+import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;

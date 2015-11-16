@@ -30,7 +30,7 @@ public interface OrderHandler {
      * <li>logiNo</li>
      * <li>freight</li>
      * <li>remark</li>
-     * <li>dicDeliverItemsStr</li>
+     * <li>deliverItemsStr</li>
      * </ul>
      *
      * @param erpUserInfo
@@ -51,7 +51,7 @@ public interface OrderHandler {
      * <li>returnZip</li>
      * <li>freight</li>
      * <li>remark</li>
-     * <li>dicDeliverItemsStr</li>
+     * <li>returnItemStr</li>
      * </ul>
      *
      * @param erpUserInfo
