@@ -19,7 +19,7 @@
     </appender>
     <appender name="ServerDailyRollingFile" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
-        <param name="File" value="erpservice.log"/>
+        <param name="File" value="logs/erpService/erpService.log"/>
         <param name="Append" value="true"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d - %m%n"/>

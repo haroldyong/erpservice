@@ -12,25 +12,23 @@ package com.huobanplus.erpservice.hotapi.handler.impl;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderListEvent;
-import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
-import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
-import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.OrderSearchInfo;
+import com.huobanplus.erpservice.eventhandler.erpevent.ReturnInfoEvent;
+import com.huobanplus.erpservice.eventhandler.model.*;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import com.huobanplus.erpservice.hotapi.handler.OrderHandler;
+import com.huobanplus.erpservice.hotapi.jsonmodel.OrderList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.beans.EventHandler;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Created by liual on 2015-11-05.
@@ -81,24 +79,60 @@ public class OrderHandlerImpl implements OrderHandler {
 
     @Override
     public ApiResult returnInfo(HttpServletRequest request, ERPUserInfo erpUserInfo) {
-        return null;
+        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+        if (erpUserHandler == null) {
+            return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
+        }
+
+        String orderId = request.getParameter("orderId");
+        if (StringUtils.isEmpty(orderId)) {
+            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "未传入有效的orderId", null);
+        }
+        String logiName = request.getParameter("logiName");
+        String logiNo = request.getParameter("logiNo");
+        String returnAddr = request.getParameter("returnAddr");
+        String returnMobile = request.getParameter("returnMobile");
+        String returnName = request.getParameter("returnName");
+        String returnZip = request.getParameter("returnZip");
+        double freight = StringUtil.getWithDefault(request.getParameter("freight"), 0);
+        String remark = request.getParameter("remark");
+        String returnItemsStr = request.getParameter("returnItemsStr");
+        ReturnInfo returnInfo = new ReturnInfo();
+        returnInfo.setOrderId(orderId);
+        returnInfo.setLogiName(logiName);
+        returnInfo.setLogiNo(logiNo);
+        returnInfo.setReturnAddr(returnAddr);
+        returnInfo.setReturnMobile(returnMobile);
+        returnInfo.setReturnName(returnName);
+        returnInfo.setReturnZip(returnZip);
+        returnInfo.setFreight(freight);
+        returnInfo.setRemark(remark);
+        returnInfo.setReturnItemStr(returnItemsStr);
+        ReturnInfoEvent returnInfoEvent = new ReturnInfoEvent();
+        returnInfoEvent.setReturnInfo(returnInfo);
+        EventResult eventResult = erpUserHandler.handleEvent(returnInfoEvent);
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            return ApiResult.resultWith(ResultCode.SUCCESS);
+        }
+        //todo 推送失败是否需要保存到本地等待下次推送
+        return ApiResult.resultWith(ResultCode.ERPUSER_BAD_REQUEST, eventResult.getResultMsg(), null);
     }
 
     @Override
     public ApiResult obtainOrderList(HttpServletRequest request, ERPUserInfo erpUserInfo) {
-        Integer pageIndex = StringUtil.getWithDefault(request.getParameter("pageIndex"), (Integer) null);
-        Integer pageSize = StringUtil.getWithDefault(request.getParameter("pageSize"), 20);
+        Integer pageIndex = StringUtil.getWithDefault(request.getParameter("pageIndex"), 1);
+        Integer pageSize = StringUtil.getWithDefault(request.getParameter("pageSize"), 10);
         Integer orderStatus = StringUtil.getWithDefault(request.getParameter("orderStatus"), (Integer) null);
-        Integer shipStatus = StringUtil.getWithDefault(request.getParameter("shipStatus"), (Integer) null);
-        Integer payStatus = StringUtil.getWithDefault(request.getParameter("payStatus"), (Integer) null);
+        Integer shipStatus = StringUtil.getWithDefault(request.getParameter("shipStatus"), -1);
+        Integer payStatus = StringUtil.getWithDefault(request.getParameter("payStatus"), -1);
         String beginTime = request.getParameter("beginTime");
-        if (StringUtils.isEmpty(beginTime)) {
-            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "开始时间未传", null);
-        }
         String endTime = request.getParameter("endTime");
-        if (StringUtil.isEmpty(endTime)) {
-            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "结束时间未传", null);
-        }
+        String beginPayTime = request.getParameter("beginPayTime");
+        String endPayTime = request.getParameter("endPayTime");
+        String beginUpdateTime = request.getParameter("beginUpdateTime");
+        String endUpdateTime = request.getParameter("endUpdateTime");
+        String orderBy = StringUtil.getWithDefault(request.getParameter("orderBy"), "createTime");
+        String orderType = StringUtil.getWithDefault(request.getParameter("orderType"), "desc");
 
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {
@@ -114,10 +148,25 @@ public class OrderHandlerImpl implements OrderHandler {
         orderSearchInfo.setPayStatus(payStatus);
         orderSearchInfo.setBeginTime(beginTime);
         orderSearchInfo.setEndTime(endTime);
+        orderSearchInfo.setBeginPayTime(beginPayTime);
+        orderSearchInfo.setEndPayTime(endPayTime);
+        orderSearchInfo.setBeginUpdateTime(beginUpdateTime);
+        orderSearchInfo.setEndUpdateTime(endUpdateTime);
+        orderSearchInfo.setOrderBy(orderBy);
+        orderSearchInfo.setOrderType(orderType);
+
         obtainOrderListEvent.setOrderSearchInfo(orderSearchInfo);
         EventResult eventResult = erpUserHandler.handleEvent(obtainOrderListEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-            return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
+            OrderList orderList = new OrderList();
+            List<Order> orders = (List<Order>) eventResult.getData();
+            orderList.setRecordCount(orders.size());
+            orderList.setPageIndex(pageIndex);
+            orderList.setPageSize(pageSize);
+            orderList.setOrderBy(orderBy);
+            orderList.setOrderType(orderType);
+            orderList.setOrders(orders);
+            return ApiResult.resultWith(ResultCode.SUCCESS, orderList);
         }
 
         return ApiResult.resultWith(ResultCode.ERPUSER_BAD_REQUEST, eventResult.getResultMsg(), null);

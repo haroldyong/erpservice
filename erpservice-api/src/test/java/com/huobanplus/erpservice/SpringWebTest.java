@@ -40,7 +40,7 @@ public class SpringWebTest {
     protected ServletContext servletContext;
     @Autowired
     protected MockHttpServletRequest request;
-    
+
     @PersistenceContext(unitName = "basePu")
     protected EntityManager entityManager;
     @Resource(name = "entityManagerFactory")

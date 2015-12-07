@@ -17,6 +17,7 @@ import com.huobanplus.erpservice.common.httputil.HttpUtil;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.*;
 import com.huobanplus.erpuser.huobanmall.common.ApiResult;
@@ -89,11 +90,6 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
     }
 
     @Override
-    public EventResult syncInventory(InventoryInfo inventoryInfo, ERPUserInfo erpUserInfo) {
-        return null;
-    }
-
-    @Override
     public EventResult obtainOrderList(OrderSearchInfo orderSearchInfo, ERPUserInfo erpUserInfo) {
         //获取伙伴商城接口数据
         //签名
@@ -114,7 +110,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             requestMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderList", requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                ApiResult<OrderListParse> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<OrderListParse>>() {
+                ApiResult<List<Order>> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<List<Order>>>() {
                 });
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());

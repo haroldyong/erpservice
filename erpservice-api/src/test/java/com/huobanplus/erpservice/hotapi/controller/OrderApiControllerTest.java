@@ -25,14 +25,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.charset.CharsetEncoder;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
@@ -53,6 +56,9 @@ public class OrderApiControllerTest extends SpringWebTest {
     @Autowired
     private ERPBaseConfigService baseConfigService;
 
+    private String mockAppKey = "fhcpam1w";
+    private String mockToken = "975733031175ed399a48702d51012879";
+
     @Before
     public void setUp() throws Exception {
         mockBaseConfigEntity = new ERPBaseConfigEntity();
@@ -63,6 +69,8 @@ public class OrderApiControllerTest extends SpringWebTest {
         mockBaseConfigEntity.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);
         mockBaseConfigEntity.setSecretKey("123456");
         mockBaseConfigEntity = baseConfigService.save(mockBaseConfigEntity);
+        entityManager.clear();
+        managerFactory.getCache().evictAll();
     }
 
     @Test
@@ -86,44 +94,53 @@ public class OrderApiControllerTest extends SpringWebTest {
         Date now = new Date();
         String date = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
         Map<String, String> signMap = new TreeMap<>();
-        signMap.put("appKey", mockBaseConfigEntity.getAppKey());
-        signMap.put("token", mockBaseConfigEntity.getToken());
+        signMap.put("appKey", mockAppKey);
+        signMap.put("token", mockToken);
         signMap.put("timestamp", String.valueOf(now.getTime()));
         signMap.put("pageIndex", "1");
-        signMap.put("pageSize", "20");
+        signMap.put("pageSize", "2");
         signMap.put("beginTime", "2015-10-01 00:00:00");
         signMap.put("endTime", date);
+        signMap.put("eventType", HotApiConstant.OBTAIN_ORDER_LIST);
 
         String sign = buildSign(signMap, null, mockBaseConfigEntity.getSecretKey());
-        mockMvc.perform(post("/hotApi/rest/order/index/hbpOrderList")
+        ResultActions result = mockMvc.perform(post("/hotApi/rest/order/index")
                 .param("pageIndex", "1")
-                .param("pageSize", "20")
+                .param("pageSize", "2")
                 .param("beginTime", "2015-10-01 00:00:00")
                 .param("endTime", date)
+                .param("eventType", HotApiConstant.OBTAIN_ORDER_LIST)
                 .param("sign", sign)
-                .param("appKey", mockBaseConfigEntity.getAppKey())
-                .param("token", mockBaseConfigEntity.getToken())
+                .param("appKey", mockAppKey)
+                .param("token", mockToken)
                 .param("timestamp", String.valueOf(now.getTime())))
                 .andDo(print());
+        MockHttpServletResponse response = result.andReturn().getResponse();
+        response.setCharacterEncoding("utf-8");
+        System.out.println(response.getContentAsString());
     }
 
     @Test
     public void testObtainOrderDetail() throws Exception {
         Date now = new Date();
         Map<String, String> signMap = new TreeMap<>();
-        signMap.put("orderId", "2015110263231953");
+        signMap.put("orderId", "2015120726126556");
         signMap.put("timestamp", String.valueOf(now.getTime()));
-        signMap.put("appKey", mockBaseConfigEntity.getAppKey());
-        signMap.put("token", mockBaseConfigEntity.getToken());
+        signMap.put("appKey", mockAppKey);
+        signMap.put("token", mockToken);
+        signMap.put("eventType", "hbpOrderDetail");
         String sign = buildSign(signMap, null, mockBaseConfigEntity.getSecretKey());
-        String response = mockMvc.perform(post("/hotApi/rest/order/index/hbpOrderDetail")
-                .param("orderId", "2015110263231953")
+        MockHttpServletResponse response = mockMvc.perform(post("/hotApi/rest/order/index")
+                .param("orderId", "2015120726126556")
                 .param("timestamp", String.valueOf(now.getTime()))
-                .param("appKey", mockBaseConfigEntity.getAppKey())
-                .param("token", mockBaseConfigEntity.getToken())
+                .param("appKey", mockAppKey)
+                .param("token", mockToken)
+                .param("eventType", "hbpOrderDetail")
                 .param("sign", sign))
                 .andDo(print())
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse();
+        response.setCharacterEncoding("utf-8");
+        System.out.println(response.getContentAsString());
     }
 
     @Test

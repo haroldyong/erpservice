@@ -26,6 +26,8 @@ import com.huobanplus.erpservice.common.httputil.HttpUtil;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
+import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
+import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -46,7 +48,7 @@ import java.util.List;
 @Component
 public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler {
     @Override
-    public EventResult createOrder(MallOrderBean orderInfo, ERPInfo info) {
+    public EventResult createOrder(Order orderInfo, ERPInfo info) {
         HttpUtil htNetService = HttpUtil.getInstance();
         try {
             EDBCreateOrderInfo edbCreateOrderInfo = new EDBCreateOrderInfo();
@@ -71,17 +73,17 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             edbCreateOrderInfo.setActualFreightGet(orderInfo.getCostFreight());
             edbCreateOrderInfo.setActual_RP(orderInfo.getFinalAmount());
 //        edbCreateOrderInfo.setShipMethod(orderInfo.getShipping());
-            edbCreateOrderInfo.setExpress(orderInfo.getExpressNo());
+            edbCreateOrderInfo.setExpress(orderInfo.getLogiCode());
 //        edbCreateOrderInfo.setIsInvoiceOpened(orderInfo.getInvoiceSituation());
 //        edbCreateOrderInfo.setInvoiceType(orderInfo.getInvoiceType());
 //        edbCreateOrderInfo.setInvoiceMoney(orderInfo.getInvoiceMoney());
 //        edbCreateOrderInfo.setInvoiceTitle(orderInfo.getInvoiceTitle());
 //        edbCreateOrderInfo.setInvoiceMsg(orderInfo.getInvoiceContent());
 //        edbCreateOrderInfo.setOrderType(orderInfo.getOrderType());
-            edbCreateOrderInfo.setProcessStatus(EnumHelper.getEnumName(EDBEnum.OrderStatusEnum.class, orderInfo.getStatus()));
+            edbCreateOrderInfo.setProcessStatus(EnumHelper.getEnumName(EDBEnum.OrderStatusEnum.class, orderInfo.getOrderStatus()));
             edbCreateOrderInfo.setPayStatus(EnumHelper.getEnumName(EDBEnum.PayStatusEnum.class, orderInfo.getPayStatus()));
             edbCreateOrderInfo.setDeliverStatus(EnumHelper.getEnumName(EDBEnum.ShipStatusEnum.class, orderInfo.getShipStatus()));
-            edbCreateOrderInfo.setIsCOD(orderInfo.getCashOnDly());
+//            edbCreateOrderInfo.setIsCOD(orderInfo.getCashOnDly());
 //        edbCreateOrderInfo.setServerCostCOD(orderInfo.getCodServiceFee());
             edbCreateOrderInfo.setOrderTotalMoney(orderInfo.getFinalAmount());
             edbCreateOrderInfo.setProductTotalMoney(orderInfo.getCostItem());
@@ -93,8 +95,8 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 //        edbCreateOrderInfo.setAlipayTransactionNo(orderInfo.getAlipayTransactionNo());
 //        edbCreateOrderInfo.setOutPayNo(orderInfo.getOutPayTid());
             edbCreateOrderInfo.setOutExpressMethod(orderInfo.getLogiName());
-            edbCreateOrderInfo.setOrderDate(StringUtil.DateFormat(orderInfo.getCreateTime(), StringUtil.TIME_PATTERN));
-            edbCreateOrderInfo.setPayDate(StringUtil.DateFormat(orderInfo.getPayTime(), StringUtil.TIME_PATTERN));
+            edbCreateOrderInfo.setOrderDate(orderInfo.getCreateTime());
+            edbCreateOrderInfo.setPayDate(orderInfo.getPayTime());
 //        edbCreateOrderInfo.setFinishDate(StringUtil.DateFormat(orderInfo.getFinishTime(), StringUtil.TIME_PATTERN));
 //        edbCreateOrderInfo.setPlatType(orderInfo.getPlatType());
 //        edbCreateOrderInfo.setDistributorNo(orderInfo.getDistributorId());
@@ -109,9 +111,9 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 //        edbCreateOrderInfo.setIsScorePay(orderInfo.getPointPay());
 //        edbCreateOrderInfo.setIsNeedInvoice(orderInfo.getIsBill());
             List<EDBOrderItem> edbOrderItemList = new ArrayList<>();
-            for (MallOrderItemBean orderItem : orderInfo.getOrderItems()) {
+            for (OrderItem orderItem : orderInfo.getOrderItems()) {
                 EDBOrderItem edbOrderItem = new EDBOrderItem();
-                edbOrderItem.setBarCode(orderItem.getBn());
+                edbOrderItem.setBarCode(orderItem.getProductBn());
                 edbOrderItem.setProductTitle(orderItem.getName());
                 edbOrderItem.setStandard(orderItem.getStandard());
                 edbOrderItem.setOutPrice(orderItem.getAmount());
@@ -129,7 +131,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
                 edbOrderItem.setShopId(sysData.getShopId());
                 edbOrderItem.setOutTid(orderInfo.getOrderId());
 //            edbOrderItem.setOutProductId(orderItem.getOutProId());
-                edbOrderItem.setOutBarCode(orderItem.getBn());
+                edbOrderItem.setOutBarCode(orderItem.getProductBn());
                 edbOrderItem.setProductIntro(orderItem.getBrief());
                 edbOrderItemList.add(edbOrderItem);
             }

@@ -7,18 +7,24 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpuser.huobanmall.model;
+package com.huobanplus.erpservice.hotapi.jsonmodel;
 
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 /**
- * Created by liual on 2015-11-09.
+ * Created by liual on 2015-12-07.
  */
-@Data
-public class OrderListParse {
+@Setter
+@Getter
+public class OrderList {
     private int recordCount;
-    private List<Order> orderList;
+    private int pageIndex;
+    private int pageSize;
+    private String orderBy;
+    private String orderType;
+    private List<Order> orders;
 }

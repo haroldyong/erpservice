@@ -10,6 +10,7 @@
 package com.huobanplus.erpprovider.edb.handler;
 
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
@@ -31,7 +32,7 @@ public interface EDBOrderHandler {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    EventResult createOrder(MallOrderBean orderInfo, ERPInfo info);
+    EventResult createOrder(Order orderInfo, ERPInfo info);
 
     /**
      * 获取订单列表

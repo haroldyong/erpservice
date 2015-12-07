@@ -7,18 +7,8 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpuser.huobanmall.model;
-
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
-import lombok.Data;
-
-import java.util.List;
-
 /**
- * Created by liual on 2015-11-09.
+ * 主要用于json数据格式传输
+ * Created by liual on 2015-12-07.
  */
-@Data
-public class OrderListParse {
-    private int recordCount;
-    private List<Order> orderList;
-}
+package com.huobanplus.erpservice.datacenter.jsonmodel;

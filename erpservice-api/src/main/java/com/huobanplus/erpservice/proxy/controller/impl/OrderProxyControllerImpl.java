@@ -11,10 +11,12 @@ package com.huobanplus.erpservice.proxy.controller.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.huobanplus.erpservice.common.util.ClassUtil;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -56,15 +58,17 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
         }
         if (erpHandler.eventSupported(CreateOrderEvent.class)) {
-            MallOrderBean orderBean = JSON.parseObject(orderInfoJson, MallOrderBean.class);
+            Order order = JSON.parseObject(orderInfoJson, Order.class);
             CreateOrderEvent createOrderEvent = new CreateOrderEvent();
             createOrderEvent.setErpInfo(erpInfo);
-            createOrderEvent.setOrderInfo(orderBean);
+            createOrderEvent.setOrderInfo(order);
             EventResult eventResult = erpHandler.handleEvent(createOrderEvent);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 return ApiResult.resultWith(ResultCode.SUCCESS);
             } else {
                 //如果未推送成功，则保存数据到erp数据服务平台，交由相关处理器处理
+                MallOrderBean orderBean = new MallOrderBean();
+                ClassUtil.cloneClass(order, orderBean);
                 orderBean.setErpInfo(JSON.toJSONString(erpInfo));
                 orderService.save(orderBean);
                 return ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, "推送给erp时失败，将交给相关处理进行第二次尝试", null);

@@ -45,9 +45,9 @@ public interface HotApiController {
      * @param request
      * @return
      */
-    @RequestMapping("/rest/index/{eventType}")
+    @RequestMapping("/rest/index")
     ApiResult orderIndex(
-            @PathVariable("eventType") String eventType,
+            String eventType,
             @RequestAttribute ERPUserInfo erpUserInfo,
             HttpServletRequest request
     );

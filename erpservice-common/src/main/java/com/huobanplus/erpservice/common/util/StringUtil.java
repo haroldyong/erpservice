@@ -543,4 +543,11 @@ public class StringUtil {
         }
         return (double) object;
     }
+
+    public static String getWithDefault(Object object, String defStr) {
+        if (StringUtil.isEmpty(object)) {
+            return defStr;
+        }
+        return String.valueOf(object);
+    }
 }

@@ -37,9 +37,9 @@ public class HotApiControllerImpl implements HotApiController {
     private static Logger logger = Logger.getLogger(HotApiControllerImpl.class);
 
     @Override
-    @RequestMapping(value = "/order/index/{eventType}", method = RequestMethod.POST)
+    @RequestMapping(value = "/order/index", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResult orderIndex(@PathVariable("eventType") String eventType, @RequestAttribute ERPUserInfo erpUserInfo, HttpServletRequest request) {
+    public ApiResult orderIndex(String eventType, @RequestAttribute ERPUserInfo erpUserInfo, HttpServletRequest request) {
         switch (eventType) {
             case HotApiConstant.DELIVERY_INFO:
                 return orderHandler.deliveryInfo(request, erpUserInfo);

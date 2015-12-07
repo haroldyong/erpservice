@@ -34,14 +34,6 @@ public interface HBOrderHandler {
     EventResult returnInfo(ReturnInfo returnInfo, ERPUserInfo erpUserInfo);
 
     /**
-     * 库存同步
-     *
-     * @param inventoryInfo
-     * @return
-     */
-    EventResult syncInventory(InventoryInfo inventoryInfo, ERPUserInfo erpUserInfo);
-
-    /**
      * 获取订单列表
      *
      * @param orderSearchInfo

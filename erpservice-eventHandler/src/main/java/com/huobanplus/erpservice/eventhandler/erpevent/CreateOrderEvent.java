@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.eventhandler.erpevent;
 
-import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import lombok.Data;
 
 /**
@@ -18,5 +18,5 @@ import lombok.Data;
  */
 @Data
 public class CreateOrderEvent extends ERPBaseEvent {
-    private MallOrderBean orderInfo;
+    private Order orderInfo;
 }

@@ -32,13 +32,13 @@ import java.io.IOException;
  * Created by liual on 2015-10-21.
  */
 @Controller
-@RequestMapping(value = "/hotApi/product", method = RequestMethod.POST)
+@RequestMapping(value = "/hotApi/rest", method = RequestMethod.POST)
 public class ProductControllerImpl implements ProductApiController {
     @Autowired
     private ERPRegister erpRegister;
 
     @Override
-    @RequestMapping("/syncInventory")
+    @RequestMapping(value = "/product/index", method = RequestMethod.POST)
     public ApiResult syncInventory(
             String goodBn,
             String proBn,

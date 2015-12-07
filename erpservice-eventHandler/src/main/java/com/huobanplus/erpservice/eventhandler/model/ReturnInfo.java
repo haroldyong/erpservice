@@ -24,7 +24,7 @@ public class ReturnInfo extends BaseInfo {
     private String returnMobile;
     private String returnName;
     private String returnZip;
-    private int freight;
+    private double freight;
     private String remark;
     private String returnItemStr;
 }
