@@ -23,7 +23,8 @@ public enum ResultCode {
     EMPTY_SIGN_CODE(4000, "签名参数不可为空"),
     WRONG_SIGN_CODE(4001, "签名验证不正确"),
     BAD_REQUEST_PARAM(4002, "错误的请求参数"),
-    BAD_APP_KEY_AND_TOKEN(3000, "未找到对应appKey和Token的商家信息");
+    BAD_APP_KEY_AND_TOKEN(3000, "未找到对应appKey和Token的商家信息"),
+    ERP_NOT_OPEN(3001, "为开启erp数据服务");
 
     private int resultCode;
     private String resultMsg;

@@ -47,11 +47,11 @@ public class ERPConfigController {
     @Autowired
     private ERPSysDataInfoService sysDataInfoService;
 
-    @RequestMapping("/erpConfig/{erpUserType}")
+    @RequestMapping("/erpConfig")
     public String erpConfig(
             @RequestAttribute int customerId,
+            int erpUserType,
             HttpServletRequest request,
-            @PathVariable("erpUserType") int erpUserType,
             Model model
     ) {
         ERPBaseConfigEntity baseConfig = null;
@@ -170,6 +170,6 @@ public class ERPConfigController {
             result = "error";
         }
         request.getSession().setAttribute("resultCode", result);
-        return "redirect: erpConfig/" + erpUserType;
+        return "redirect: erpConfig?erpUserType=" + erpUserType;
     }
 }

@@ -45,7 +45,7 @@ public class OrderScheduled {
                     //推送给erp
                     CreateOrderEvent createOrderEvent = new CreateOrderEvent();
                     createOrderEvent.setErpInfo(erpInfo);
-                    createOrderEvent.setOrderInfo(order);
+//                    createOrderEvent.setOrderInfo(order);
                     EventResult eventResult = erpHandler.handleEvent(createOrderEvent);
                 }
             }

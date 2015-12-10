@@ -10,30 +10,23 @@
 package com.huobanplus.erpservice.proxy.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.util.Constant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.DxDESCipher;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.config.WebConfig;
-import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
-import com.huobanplus.erpservice.datacenter.entity.People;
-import com.huobanplus.erpservice.datacenter.service.impl.TestService;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import javax.persistence.Entity;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -145,18 +138,5 @@ public class OrderProxyControllerTest extends SpringWebTest {
                 .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk());
-    }
-
-    @Autowired
-    private TestService testService;
-
-    @Test
-    public void testCancelOrder() throws Exception {
-        People people = new People();
-        people.setName("allan");
-        people.setSex(1);
-        people = testService.save();
-        People people1 = testService.findById(1);
-        System.out.println("end");
     }
 }

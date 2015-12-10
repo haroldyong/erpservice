@@ -46,7 +46,11 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
             response.getWriter().write(new ObjectMapper().writeValueAsString(apiResult));
             return false;
         }
-
+        if (baseConfig.getIsOpen() == 0) {
+            apiResult = ApiResult.resultWith(ResultCode.ERP_NOT_OPEN);
+            response.getWriter().write(new ObjectMapper().writeValueAsString(apiResult));
+            return false;
+        }
         //签名验证
         String requestSign = request.getParameter("sign");
         if (StringUtils.isEmpty(requestSign)) {

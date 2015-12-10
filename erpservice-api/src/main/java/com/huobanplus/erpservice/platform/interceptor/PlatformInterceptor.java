@@ -22,7 +22,12 @@ import javax.servlet.http.HttpServletResponse;
 public class PlatformInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        request.setAttribute("customerId", 3677);
+        String erpUserType = request.getParameter("erpUserType");
+        if (erpUserType.equals("0")) {
+            request.setAttribute("customerId", 3447);
+        } else {
+            request.setAttribute("customerId", 3447);
+        }
         return true;
     }
 }

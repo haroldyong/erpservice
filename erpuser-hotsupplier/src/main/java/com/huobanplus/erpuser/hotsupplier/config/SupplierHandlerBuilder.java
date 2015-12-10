@@ -10,11 +10,13 @@
 package com.huobanplus.erpuser.hotsupplier.config;
 
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.*;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandlerBuilder;
+import com.huobanplus.erpuser.hotsupplier.handler.SupOrderHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,15 +24,23 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SupplierHandlerBuilder implements ERPUserHandlerBuilder {
+    @Autowired
+    private SupOrderHandler orderHandler;
 
     @Override
     public ERPUserHandler buildHandler(ERPUserInfo info) {
         if (info.getErpUserType() == ERPTypeEnum.UserType.HUOBAN_SUPPLIER) {
-            return new ERPUserHandler() {
-                @Override
-                public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
-                    return null;
+            return erpBaseEvent -> {
+                if (erpBaseEvent instanceof ObtainOrderListEvent) {
+                    return orderHandler.obtainOrderList(((ObtainOrderListEvent) erpBaseEvent).getOrderSearchInfo(), info);
+                } else if (erpBaseEvent instanceof DeliveryInfoEvent) {
+                    return orderHandler.deliverInfo(((DeliveryInfoEvent) erpBaseEvent).getDeliveryInfo(), info);
+                } else if (erpBaseEvent instanceof ObtainOrderDetailEvent) {
+                    return orderHandler.obtainOrderDetail(((ObtainOrderDetailEvent) erpBaseEvent).getOrderId(), info);
+                } else if (erpBaseEvent instanceof ReturnInfoEvent) {
+                    return orderHandler.returnInfo(((ReturnInfoEvent) erpBaseEvent).getReturnInfo(), info);
                 }
+                return null;
             };
         }
         return null;

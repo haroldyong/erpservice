@@ -31,7 +31,9 @@ public class ClassUtil {
         for (Field field : fields) {
             String fieldName = field.getName();
             Object value = sourceClass.getDeclaredMethod("get" + fieldName).invoke(source);
-            targetClass.getDeclaredMethod("set" + fieldName).invoke(target, value);
+            if (targetClass.getDeclaredField(fieldName).getType() == field.getType()) {
+                targetClass.getDeclaredMethod("set" + fieldName).invoke(target, value);
+            }
         }
     }
 }

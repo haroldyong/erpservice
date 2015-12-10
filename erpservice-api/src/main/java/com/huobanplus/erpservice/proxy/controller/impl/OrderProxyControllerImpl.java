@@ -68,6 +68,7 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
             } else {
                 //如果未推送成功，则保存数据到erp数据服务平台，交由相关处理器处理
                 MallOrderBean orderBean = new MallOrderBean();
+
                 ClassUtil.cloneClass(order, orderBean);
                 orderBean.setErpInfo(JSON.toJSONString(erpInfo));
                 orderService.save(orderBean);

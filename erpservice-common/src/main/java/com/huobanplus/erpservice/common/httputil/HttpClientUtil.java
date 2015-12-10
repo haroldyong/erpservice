@@ -39,7 +39,6 @@ public class HttpClientUtil {
     private static HttpClientUtil httpClientUtil = new HttpClientUtil();
 
     private HttpClientUtil() {
-        initHttpClient();
     }
 
     public static HttpClientUtil getInstance() {
@@ -51,6 +50,7 @@ public class HttpClientUtil {
     }
 
     public HttpResult post(String url, Map requestMap) {
+        initHttpClient();
         String msg = null;
         List<NameValuePair> nameValuePairs = new ArrayList<>();
         CloseableHttpResponse response = null;
@@ -85,6 +85,7 @@ public class HttpClientUtil {
     }
 
     public HttpResult get(String url, Map requestMap) {
+        initHttpClient();
         String msg = null;
         CloseableHttpResponse response = null;
         try {
