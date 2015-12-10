@@ -88,6 +88,7 @@ public class OrderApiControllerTest extends SpringWebTest {
 
     /**
      * 发货通知测试
+     *
      * @throws Exception
      */
     @Test
@@ -170,24 +171,49 @@ public class OrderApiControllerTest extends SpringWebTest {
     @Test
     public void testObtainOrderDetail() throws Exception {
         Date now = new Date();
+        //使用者：伙伴商城
         Map<String, String> signMap = new TreeMap<>();
         signMap.put("orderId", "2015120726126556");
         signMap.put("timestamp", String.valueOf(now.getTime()));
-        signMap.put("appKey", mockAppKey);
-        signMap.put("token", mockToken);
+        signMap.put("appKey", mockHbBaseConfig.getAppKey());
+        signMap.put("token", mockHbBaseConfig.getToken());
         signMap.put("eventType", "hbpOrderDetail");
         String sign = buildSign(signMap, null, mockHbBaseConfig.getSecretKey());
         MockHttpServletResponse response = mockMvc.perform(post("/hotApi/rest/order/index")
                 .param("orderId", "2015120726126556")
                 .param("timestamp", String.valueOf(now.getTime()))
-                .param("appKey", mockAppKey)
-                .param("token", mockToken)
+                .param("appKey", mockHbBaseConfig.getAppKey())
+                .param("token", mockHbBaseConfig.getToken())
                 .param("eventType", "hbpOrderDetail")
                 .param("sign", sign))
                 .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value(ResultCode.SUCCESS.getResultCode()))
                 .andReturn().getResponse();
         response.setCharacterEncoding("utf-8");
         System.out.println(response.getContentAsString());
+        //使用者：供应商平台
+        Map<String, Object> supSignMap = new TreeMap<>();
+        supSignMap.put("orderId", "2015120726126556");
+        supSignMap.put("timestamp", String.valueOf(now.getTime()));
+        supSignMap.put("appKey", mockSupBaseConfig.getAppKey());
+        supSignMap.put("token", mockSupBaseConfig.getToken());
+        supSignMap.put("eventType", "hbpOrderDetail");
+
+        String supSign = SignBuilder.buildSignIgnoreEmpty(supSignMap, null, mockSupBaseConfig.getSecretKey());
+        MockHttpServletResponse supResponse = mockMvc.perform(post("/hotApi/rest/order/index")
+                .param("orderId", "2015120726126556")
+                .param("timestamp", String.valueOf(now.getTime()))
+                .param("appKey", mockSupBaseConfig.getAppKey())
+                .param("token", mockSupBaseConfig.getToken())
+                .param("eventType", "hbpOrderDetail")
+                .param("sign", supSign))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value(ResultCode.SUCCESS.getResultCode()))
+                .andReturn().getResponse();
+        response.setCharacterEncoding("utf-8");
+        System.out.println(supResponse.getContentAsString());
     }
 
     @Test
