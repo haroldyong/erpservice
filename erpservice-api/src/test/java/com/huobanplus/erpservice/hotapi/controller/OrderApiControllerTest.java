@@ -94,14 +94,14 @@ public class OrderApiControllerTest extends SpringWebTest {
     public void testDeliverInfo() throws Exception {
 
         Map<String, String> signMap = new TreeMap<>();
-        signMap.put("appKey", mockBaseConfigEntity.getAppKey());
-        signMap.put("token", mockBaseConfigEntity.getToken());
+        signMap.put("appKey", mockHbBaseConfig.getAppKey());
+        signMap.put("token", mockHbBaseConfig.getToken());
         signMap.put("timestamp", String.valueOf(System.currentTimeMillis()));
         signMap.put("orderId", "1231232222");
         signMap.put("logiName", "中国邮政");
         signMap.put("logiNo", "12312321");
         signMap.put("remark", "");
-        String sign = buildSign(signMap, null, mockBaseConfigEntity.getSecretKey());
+        String sign = buildSign(signMap, null, mockHbBaseConfig.getSecretKey());
         mockMvc.perform(post("/hotApi/rest/index/hotDeliveryInfo")
                 .param("appKey", "123123")
                 .param("token", "123213")
