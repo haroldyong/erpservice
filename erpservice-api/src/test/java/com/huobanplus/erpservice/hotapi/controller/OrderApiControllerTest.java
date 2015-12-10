@@ -85,20 +85,33 @@ public class OrderApiControllerTest extends SpringWebTest {
         mockSupBaseConfig = baseConfigService.save(mockSupBaseConfig);
     }
 
+
+    /**
+     * 发货通知测试
+     * @throws Exception
+     */
     @Test
     public void testDeliverInfo() throws Exception {
-        String response = mockMvc.perform(post("/hotapi/deliverInfo")
+
+        Map<String, String> signMap = new TreeMap<>();
+        signMap.put("appKey", mockBaseConfigEntity.getAppKey());
+        signMap.put("token", mockBaseConfigEntity.getToken());
+        signMap.put("timestamp", String.valueOf(System.currentTimeMillis()));
+        signMap.put("orderId", "1231232222");
+        signMap.put("logiName", "中国邮政");
+        signMap.put("logiNo", "12312321");
+        signMap.put("remark", "");
+        String sign = buildSign(signMap, null, mockBaseConfigEntity.getSecretKey());
+        mockMvc.perform(post("/hotApi/rest/index/hotDeliveryInfo")
                 .param("appKey", "123123")
                 .param("token", "123213")
-                .param("sign", "sfsdf123123")
-                .param("timestamp", String.valueOf(new Date().getTime()))
+                .param("sign", sign)
+                .param("timestamp", String.valueOf(System.currentTimeMillis()))
                 .param("orderId", "1231232222")
                 .param("logiName", "中国邮政")
                 .param("logiNo", "12312321")
                 .param("remark", ""))
-                .andDo(print())
-                .andReturn().getResponse().getContentAsString();
-        System.out.println(response);
+                .andDo(print());
     }
 
     @Test
