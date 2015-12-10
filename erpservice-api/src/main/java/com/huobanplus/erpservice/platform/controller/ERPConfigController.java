@@ -38,7 +38,7 @@ import java.util.Map;
  * Created by liual on 2015-10-28.
  */
 @Controller
-@RequestMapping("/erpService")
+@RequestMapping("/erpService/platform")
 public class ERPConfigController {
     @Autowired
     private ERPBaseConfigService baseConfigService;

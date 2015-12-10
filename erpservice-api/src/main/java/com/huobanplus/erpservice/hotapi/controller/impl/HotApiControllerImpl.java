@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  * Created by liual on 2015-11-05.
  */
 @Controller
-@RequestMapping("/hotApi/rest")
+@RequestMapping("/erpService/hotApi/rest")
 public class HotApiControllerImpl implements HotApiController {
     @Autowired
     private OrderHandler orderHandler;

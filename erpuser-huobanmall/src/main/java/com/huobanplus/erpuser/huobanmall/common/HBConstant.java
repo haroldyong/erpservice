@@ -25,7 +25,7 @@ public class HBConstant {
      */
     public static final String SECRET_KEY = "66668888";
 
-    public static final String REQUEST_URL = "http://localhost:31105";
+    public static final String REQUEST_URL = "http://192.168.191.1:31105";
 
     public static Map buildSignMap(BaseInfo baseInfo) {
         Map<String, Object> signMap = new TreeMap<>();

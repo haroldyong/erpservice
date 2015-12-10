@@ -14,6 +14,8 @@ import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  * Created by liual on 2015-11-05.
  */
-@RequestMapping("/hotApi")
+@RequestMapping("/erpService/hotApi/rest")
 public interface HotApiController {
     /**
      * <b>订单相关</b>
@@ -45,7 +47,8 @@ public interface HotApiController {
      * @param request
      * @return
      */
-    @RequestMapping("/rest/index")
+    @RequestMapping(value = "/order/index", method = RequestMethod.POST)
+    @ResponseBody
     ApiResult orderIndex(
             String eventType,
             @RequestAttribute ERPUserInfo erpUserInfo,

@@ -22,7 +22,7 @@ import java.util.TreeMap;
 public class SupConstant {
     public static final String SECRET_KEY = "66668888";
 
-    public static final String HB_REQUEST_URL = "http://localhost:31105";
+    public static final String HB_REQUEST_URL = "http://192.168.191.1:31105";
 
     public static final String SUP_REQUEST_URL = "";
 
