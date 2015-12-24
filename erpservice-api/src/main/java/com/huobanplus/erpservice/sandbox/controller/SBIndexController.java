@@ -20,4 +20,5 @@ public class SBIndexController {
     public String index(){
         return "sandbox/index";
     }
+
 }

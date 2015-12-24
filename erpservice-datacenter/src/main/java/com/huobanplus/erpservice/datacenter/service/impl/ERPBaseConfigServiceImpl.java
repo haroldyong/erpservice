@@ -9,7 +9,9 @@
 
 package com.huobanplus.erpservice.datacenter.service.impl;
 
+import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.util.StringUtil;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.repository.ERPBaseConfigRepository;
 import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
@@ -52,8 +54,7 @@ public class ERPBaseConfigServiceImpl implements ERPBaseConfigService {
     }
 
     @Override
-    @Transactional
-    public ERPBaseConfigEntity findByCustomerId(int customerId) {
-        return erpBaseConfigRepository.findOne(customerId);
+    public ERPBaseConfigEntity findByCustomerId(int customerId, ERPTypeEnum.UserType erpUserType) {
+        return erpBaseConfigRepository.findByCustomerIdAndErpUserType(customerId, erpUserType);
     }
 }

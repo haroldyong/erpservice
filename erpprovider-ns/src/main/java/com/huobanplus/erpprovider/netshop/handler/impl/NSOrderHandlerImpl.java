@@ -127,7 +127,7 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
 //            orderDetailResult.setInvoiceTitle(orderBean.getInvoiceTitle());
             orderDetailResult.setRemark(orderBean.getRemark());
             List<NSOrderItemResult> orderItemResults = new ArrayList<>();
-            orderBean.getOrderItems().forEach(item -> {
+            orderBean.getOrderItemBeans().forEach(item -> {
                 NSOrderItemResult orderItemResult = new NSOrderItemResult();
                 orderItemResult.setGoodsID(item.getBn());
                 orderItemResult.setGoodsName(item.getName());

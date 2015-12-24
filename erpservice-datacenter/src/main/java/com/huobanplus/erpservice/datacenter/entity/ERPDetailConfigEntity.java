@@ -15,6 +15,10 @@ import lombok.Data;
 import javax.persistence.*;
 
 /**
+ * 每个商户,erp使用者类型和是否正在使用确定一个erp详细设置
+ * 也就是说,相同一个商户,即使供应商也是分销商,
+ * 那么作为一个供应商可以在后台设置多个类型的erp,但一个生效
+ * 作为一个分销商,同样也是如此
  * Created by liual on 2015-10-28.
  */
 @Entity

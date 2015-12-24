@@ -14,7 +14,8 @@
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://192.168.1.146:3307/hoterpservice_dev?useUnicode=true&amp;characterEncoding=UTF8&amp;autoReconnect=true&amp;rewriteBatchedStatements=TRUE"/>
+        <property name="url"
+                  value="jdbc:mysql://192.168.1.146:3307/hoterpservice_dev?useUnicode=true&amp;characterEncoding=UTF8"/>
         <property name="username" value="dbuser"/>
         <property name="password" value="ddbbuusseerr"/>
     </bean>
@@ -24,7 +25,6 @@
         <property name="packagesToScan" value="com.huobanplus.erpservice.datacenter.entity"/>
         <property name="persistenceUnitName" value="basePu"/>
         <property name="persistenceProvider">
-            <!--<entity class="org.hibernate.jpa.HibernatePersistenceProvider"/>-->
             <bean class="org.eclipse.persistence.jpa.PersistenceProvider"/>
         </property>
         <property name="jpaDialect">

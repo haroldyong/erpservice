@@ -24,7 +24,7 @@ public class MallOutStoreBean {
      * 出库单号
      */
     @Id
-    @Column(name = "OutStorage_No")
+    @Column(name = "OutStorage_No",length = 30)
     private String outStorageNo;
     /**
      * 出库类型编号（可在档案管理-仓库档案-出库类型设置中查看）

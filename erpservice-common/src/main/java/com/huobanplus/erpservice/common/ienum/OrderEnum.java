@@ -119,5 +119,41 @@ public interface OrderEnum {
         }
     }
 
+    enum PaymentOptions implements ICommonEnum {
+        ALIPAY_MOBILE(1, "支付宝手机网页即时到账"),
+        WEIXINPAY(2, "微信支付"),
+        ALIPAY_PC(7, "支付宝网页即时到账"),
+        REDEMPTION(8, "提货券"),
+        WEIXINPAY_V3(9, "微信支付V3"),
+        UNIONPAY(100, "银联在线支付"),
+        BAIDUPAY(200, "百度钱包"),
+        WEIXINPAY_APP(300, "微信APP支付"),
+        WEIFUTONG(500, "威富通");
 
+        private int code;
+        private String name;
+
+        PaymentOptions(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 }

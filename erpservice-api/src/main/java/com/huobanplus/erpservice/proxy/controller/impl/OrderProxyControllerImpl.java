@@ -106,7 +106,7 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
                 } else {
                     preOrder.setLogiName(orderInfo.getLogiName());
                     preOrder.setLogiNo(orderInfo.getLogiNo());
-                    preOrder.setDeliverTime(orderInfo.getDeliverTime());
+//                    preOrder.setDeliverTime(orderInfo.getDeliverTime());
                     preOrder.setWeight(orderInfo.getWeight());
                     orderService.save(orderInfo);
                 }

@@ -16,6 +16,7 @@ import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 import java.util.List;
 
 /**
+ * 商户有角色,供应商或者伙伴商城
  * Created by liual on 2015-10-29.
  */
 public interface ERPDetailConfigService {
@@ -28,43 +29,43 @@ public interface ERPDetailConfigService {
     ERPDetailConfigEntity save(ERPDetailConfigEntity erpDetailConfigEntity);
 
     /**
-     * 根据商户id和类型得到对应的erp详细配置信息
+     * 根据商户id,角色和类型得到对应的erp详细配置信息
      *
      * @param customerId
      * @param providerType
      * @return
      */
-    ERPDetailConfigEntity findByCustomerIdAndType(int customerId, ERPTypeEnum.ProviderType providerType);
+    ERPDetailConfigEntity findByCustomerIdAndType(int customerId, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType userType);
 
     /**
-     * 得到商户使用的erp详细配置信息
+     * 得到商户和角色使用的erp详细配置信息
      *
      * @param customerId
      * @return
      */
-    ERPDetailConfigEntity findByCustomerIdAndDefault(int customerId);
+    ERPDetailConfigEntity findByCustomerIdAndDefault(int customerId, ERPTypeEnum.UserType userType);
 
     /**
      * 设置某个为默认
      *
      * @param id
      */
-    void setDefault(int id, int customerId);
+    void setDefault(int id, int customerId, ERPTypeEnum.UserType userType);
 
     /**
-     * 全部设为非默认
+     * 将某个商户对应角色下的所有设为非默认
      *
      * @param customerId
      */
-    void setUnDefault(int customerId);
+    void setUnDefault(int customerId, ERPTypeEnum.UserType userType);
 
     /**
-     * 得到商户设置过的所有erp系统
+     * 得到某个角色的商户设置过的所有erp系统
      *
      * @param customerId
      * @return
      */
-    List<ERPDetailConfigEntity> findByCustomerId(int customerId);
+    List<ERPDetailConfigEntity> findByCustomerId(int customerId, ERPTypeEnum.UserType userType);
 
     /**
      * 通过系统参数过的erp详细配置信息
@@ -73,4 +74,11 @@ public interface ERPDetailConfigService {
      * @return
      */
     ERPDetailConfigEntity findBySysData(List<ERPSysDataInfo> sysDataInfos, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType);
+
+    /**
+     * 得到所有正在使用的某种erp提供者的所有配置信息
+     *
+     * @return
+     */
+    List<ERPDetailConfigEntity> findByErpTypeAndDefault(ERPTypeEnum.ProviderType erpType);
 }

@@ -11,7 +11,7 @@ package com.huobanplus.erpservice.proxy.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
-import com.huobanplus.erpprovider.edb.util.Constant;
+import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
 import com.huobanplus.erpservice.commons.config.WebConfig;
@@ -47,15 +47,15 @@ public class HotProductControllerTest extends SpringWebTest {
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
         EDBSysData sysData = new EDBSysData();
-        sysData.setRequestUrl(Constant.REQUEST_URI);
-        sysData.setDbHost(Constant.DB_HOST);
-        sysData.setAppKey(Constant.APP_KEY);
-        sysData.setAppSecret(Constant.APP_SECRET);
-        sysData.setToken(Constant.TOKEN);
-        sysData.setFormat(Constant.FORMAT);
-        sysData.setV(Constant.V);
-        sysData.setSlencry(Constant.SLENCRY);
-        sysData.setIp(Constant.IP);
+        sysData.setRequestUrl(EDBConstant.REQUEST_URI);
+        sysData.setDbHost(EDBConstant.DB_HOST);
+        sysData.setAppKey(EDBConstant.APP_KEY);
+        sysData.setAppSecret(EDBConstant.APP_SECRET);
+        sysData.setToken(EDBConstant.TOKEN);
+        sysData.setFormat(EDBConstant.FORMAT);
+        sysData.setV(EDBConstant.V);
+        sysData.setSlencry(EDBConstant.SLENCRY);
+        sysData.setIp(EDBConstant.IP);
         ObjectMapper objectMapper = new ObjectMapper();
 
         mockERP.setSysDataJson(objectMapper.writeValueAsString(sysData));

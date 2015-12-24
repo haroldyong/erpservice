@@ -11,7 +11,7 @@ package com.huobanplus.erpservice.proxy.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
-import com.huobanplus.erpprovider.edb.util.Constant;
+import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.DxDESCipher;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
@@ -34,7 +34,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -66,15 +65,15 @@ public class HotStorageControllerTest extends SpringWebTest {
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
         EDBSysData sysData = new EDBSysData();
-        sysData.setRequestUrl(Constant.REQUEST_URI);
-        sysData.setDbHost(Constant.DB_HOST);
-        sysData.setAppKey(Constant.APP_KEY);
-        sysData.setAppSecret(Constant.APP_SECRET);
-        sysData.setToken(Constant.TOKEN);
-        sysData.setFormat(Constant.FORMAT);
-        sysData.setV(Constant.V);
-        sysData.setSlencry(Constant.SLENCRY);
-        sysData.setIp(Constant.IP);
+        sysData.setRequestUrl(EDBConstant.REQUEST_URI);
+        sysData.setDbHost(EDBConstant.DB_HOST);
+        sysData.setAppKey(EDBConstant.APP_KEY);
+        sysData.setAppSecret(EDBConstant.APP_SECRET);
+        sysData.setToken(EDBConstant.TOKEN);
+        sysData.setFormat(EDBConstant.FORMAT);
+        sysData.setV(EDBConstant.V);
+        sysData.setSlencry(EDBConstant.SLENCRY);
+        sysData.setIp(EDBConstant.IP);
         ObjectMapper objectMapper = new ObjectMapper();
 
         mockERP.setSysDataJson(objectMapper.writeValueAsString(sysData));
@@ -94,7 +93,7 @@ public class HotStorageControllerTest extends SpringWebTest {
 //        orderItem.setSpecification("大碗");
 //        orderItem.setOutTid("123212322334");
 //        orderItem.setProNum(1);
-        mockOrder.setOrderItems(Arrays.asList(orderItem));
+//        mockOrder.setOrderItems(Arrays.asList(orderItem));
 
         mockOrder = orderService.save(mockOrder);
 

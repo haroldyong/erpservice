@@ -10,13 +10,16 @@
 package com.huobanplus.erpservice.proxy.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.commons.utils.CommonUtils;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.sandbox.common.SBConstant;
 import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,21 +50,13 @@ public class UserAuthorizeInterceptor extends HandlerInterceptorAdapter {
             response.getWriter().write(new ObjectMapper().writeValueAsString(apiResult));
             return false;
         }
-        Map<String, String[]> requestMap = request.getParameterMap();
-        Map<String, Object> signMap = new TreeMap<>();
-        requestMap.forEach((key, values) -> {
-            if (!"sign".equals(key)) {
-                if (values != null && values.length > 0) {
-                    if (!StringUtils.isEmpty(values[0])) {
-                        signMap.put(key, values[0]);
-                    }
-                }
-            }
-        });
+        Map<String, Object> signMap = CommonUtils.getSignMap(request);
         //得到商家的erp配置
         int customerId = Integer.parseInt(request.getParameter("customerId"));
-        ERPDetailConfigEntity detailConfigEntity = detailConfigService.findByCustomerIdAndDefault(customerId);
-        String secretKey = detailConfigEntity.getErpUserType() == ERPTypeEnum.UserType.HUOBAN_MALL ? HBConstant.SECRET_KEY : "";
+        int userType = Integer.parseInt(request.getParameter("userType"));
+        ERPTypeEnum.UserType erpUserType = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, userType);
+        ERPDetailConfigEntity detailConfigEntity = detailConfigService.findByCustomerIdAndDefault(customerId, erpUserType);
+        String secretKey = detailConfigEntity.getErpUserType() == ERPTypeEnum.UserType.HUOBAN_MALL ? HBConstant.SECRET_KEY : SBConstant.SECRET_KEY;
         String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, secretKey);
         if (sign.equals(requestSign)) {
             ERPInfo erpInfo = new ERPInfo(detailConfigEntity.getErpType(), detailConfigEntity.getErpSysData());

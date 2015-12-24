@@ -10,6 +10,7 @@
 package com.huobanplus.erpservice.common.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * 类操作相关工具
@@ -28,12 +29,36 @@ public class ClassUtil {
         Class sourceClass = source.getClass();
         Class targetClass = target.getClass();
         Field[] fields = sourceClass.getDeclaredFields();
-        for (Field field : fields) {
-            String fieldName = field.getName();
-            Object value = sourceClass.getDeclaredMethod("get" + fieldName).invoke(source);
-            if (targetClass.getDeclaredField(fieldName).getType() == field.getType()) {
-                targetClass.getDeclaredMethod("set" + fieldName).invoke(target, value);
+
+        Method[] methods = sourceClass.getDeclaredMethods();
+        for (Method method : methods) {
+            String methodName = method.getName();
+            if (methodName.startsWith("get")) {
+                if (hasMethod(targetClass, methodName, method.getReturnType())) {
+                    Object value = method.invoke(source);
+                    String targetGetMethodName = methodName.replaceFirst("get", "set");
+                    Method targetGetMethod = targetClass.getDeclaredMethod(targetGetMethodName, method.getReturnType());
+                    targetGetMethod.invoke(target, value);
+                }
             }
         }
+
+//        for (Field field : fields) {
+//            String fieldName = field.getName();
+//            Object value = sourceClass.getDeclaredMethod("get" + fieldName).invoke(source);
+//            if (targetClass.getDeclaredField(fieldName).getType() == field.getType()) {
+//                targetClass.getDeclaredMethod("set" + fieldName).invoke(target, value);
+//            }
+//        }
+    }
+
+    public static boolean hasMethod(Class cl, String methodName, Class returnType) {
+        Method[] methods = cl.getDeclaredMethods();
+        for (Method method : methods) {
+            if (method.getName().equals(methodName) && method.getReturnType() == returnType) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -12,21 +12,14 @@ package com.huobanplus.erpprovider.edb.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.edb.EDBConfig;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
-import com.huobanplus.erpprovider.edb.util.Constant;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
+import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
-import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.Arrays;
-import java.util.Date;
 
 /**
  * Created by allan on 2015/7/29.
@@ -35,7 +28,7 @@ import java.util.Date;
 @ContextConfiguration(classes = {EDBConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class EDBOrderHandlerTest {
-//    @Autowired
+    //    @Autowired
     private EDBOrderHandler edbOrderHandler;
 
     private ERPInfo mockERP;
@@ -44,15 +37,15 @@ public class EDBOrderHandlerTest {
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
         EDBSysData sysData = new EDBSysData();
-        sysData.setRequestUrl(Constant.REQUEST_URI);
-        sysData.setDbHost(Constant.DB_HOST);
-        sysData.setAppKey(Constant.APP_KEY);
-        sysData.setAppSecret(Constant.APP_SECRET);
-        sysData.setToken(Constant.TOKEN);
-        sysData.setFormat(Constant.FORMAT);
-        sysData.setV(Constant.V);
-        sysData.setSlencry(Constant.SLENCRY);
-        sysData.setIp(Constant.IP);
+        sysData.setRequestUrl(EDBConstant.REQUEST_URI);
+        sysData.setDbHost(EDBConstant.DB_HOST);
+        sysData.setAppKey(EDBConstant.APP_KEY);
+        sysData.setAppSecret(EDBConstant.APP_SECRET);
+        sysData.setToken(EDBConstant.TOKEN);
+        sysData.setFormat(EDBConstant.FORMAT);
+        sysData.setV(EDBConstant.V);
+        sysData.setSlencry(EDBConstant.SLENCRY);
+        sysData.setIp(EDBConstant.IP);
         ObjectMapper objectMapper = new ObjectMapper();
 
         mockERP.setSysDataJson(objectMapper.writeValueAsString(sysData));

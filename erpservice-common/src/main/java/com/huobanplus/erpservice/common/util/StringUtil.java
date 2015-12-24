@@ -484,9 +484,13 @@ public class StringUtil {
      * @param pattern
      * @return
      */
-    public static Date DateFormat(String dateStr, String pattern) throws ParseException {
+    public static Date DateFormat(String dateStr, String pattern){
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        Date date = sdf.parse(dateStr);
+        Date date = null;
+        try {
+            date = sdf.parse(dateStr);
+        } catch (ParseException e) {
+        }
 
         return date;
     }

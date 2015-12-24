@@ -9,345 +9,236 @@
 
 package com.huobanplus.erpprovider.edb.bean;
 
-import lombok.Data;
+import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 /**
  * Created by liual on 2015-10-23.
  */
+@Setter
+@Getter
 public class EDBOrderDetail {
+    /**
+     * edb平台订单编号
+     */
     private String tid;
+    /**
+     * 仓库编号
+     */
+    @JSONField(name = "storage_id")
     private String storageId;
     /**
      * 交易编号
      */
+    @JSONField(name = "transaction_id")
     private String transactionId;
     /**
      * 客户编号
      */
+    @JSONField(name = "customer_id")
     private String edbCustomerId;
     /**
      * 分销商编号
      */
+    @JSONField(name = "distributor_id")
     private String edbDistributorId;
+    /**
+     * 店铺名称
+     */
+    @JSONField(name = "shop_name")
     private String shopName;
     /**
      * 外部平台订单编号
      */
+    @JSONField(name = "out_tid")
     private String outTid;
-    private String outPayTid;
     /**
-     * 凭证单号
+     * 外部平台付款单号
      */
-    private String voucherId;
+    @JSONField(name = "out_pay_tid")
+    private String outPayTid;
     /**
      * 店铺代码
      */
+    @JSONField(name = "shopid")
     private String shopId;
+    /**
+     * 订单渠道
+     */
+    @JSONField(name = "order_channel")
+    private String orderChannel;
+    /**
+     * 订单来源
+     */
+    @JSONField(name = "order_from")
+    private String orderFrom;
+    /**
+     * 买家id（昵称）
+     */
+    @JSONField(name = "buyer_id")
+    private String buyerId;
+    /**
+     * 买家姓名
+     */
+    @JSONField(name = "buyer_name")
+    private String buyerName;
+    /**
+     * 订单类型
+     */
     private String type;
-    private String express;
-    private String expressNo;
+    /**
+     * 处理状态
+     */
     private String status;
+    /**
+     * 收货人姓名
+     */
+    @JSONField(name = "receiver_name")
+    private String receiverName;
+    /**
+     * 收货人手机
+     */
+    @JSONField(name = "receiver_mobile")
+    private String receiverMobile;
+    /**
+     * 电话
+     */
+    private String phone;
+    private String city;
+    private String province;
+    /**
+     * 区
+     */
+    private String district;
+    /**
+     * 地址
+     */
+    private String address;
+    /**
+     * 邮编
+     */
+    private String post;
+    private String email;
+    /**
+     * 商品总金额
+     */
+    @JSONField(name = "pro_totalfee")
+    private double proTotalFee;
+    /**
+     * 订单总金额
+     */
+    @JSONField(name = "order_totalfee")
+    private double orderTotalFee;
+    /**
+     * 退款总金额
+     */
+    @JSONField(name = "refund_totalfee")
+    private Double refundTotalFee;
+    /**
+     * 优惠金额
+     */
+    @JSONField(name = "discount_fee")
+    private Double discountFee;
+    /**
+     * 整单优惠金额
+     */
+    @JSONField(name = "order_disfee")
+    private Double orderDisFee;
+    /**
+     * 快递公司
+     */
+    private String express;
+    /**
+     * 快递单号
+     */
+    @JSONField(name = "express_no")
+    private String expressNo;
+    /**
+     * 快递公司编码
+     */
+    @JSONField(name = "express_coding")
+    private String expressCode;
+    /**
+     * 配送方式
+     */
+    @JSONField(name = "sending_type")
+    private String sendingType;
+    /**
+     * 实收运费
+     */
+    @JSONField(name = "real_income_freight")
+    private Double realIncomeFreight;
+    /**
+     * 实付运费
+     */
+    @JSONField(name = "real_pay_freight")
+    private Double realPayFreight;
+    /**
+     * 运费说明
+     */
+    @JSONField(name = "freight_explain")
+    private String freightExplain;
+    /**
+     * 下单时间
+     */
+    @JSONField(name = "tid_time")
+    private String tidTime;
+    /**
+     * 获取时间
+     */
+    @JSONField(name = "get_time")
     private String getTime;
-    private String reviewOrdersOperator;
-    private String reviewOrdersTime;
-    private String financeReviewOperator;
-    private String financeReviewTime;
-    private String printer;
-    private String printTime;
     /**
-     * 配货员
+     * 付款时间
      */
-    private String distributer;
+    @JSONField(name = "pay_time")
+    private String payTime;
     /**
-     * 配货时间
+     * 完成时间
      */
-    private String distributTime;
-    /**
-     * 验货员
-     */
-    private String inspecter;
-    /**
-     * 验货时间
-     */
-    private String inspectTime;
-    /**
-     * 取消员
-     */
-    private String cancelOperator;
-    /**
-     * 取消世间
-     */
-    private String cancelTime;
-    private String deliveryOperator;
-    private String deliveryTime;
+    @JSONField(name = "finish_time")
     private String finishTime;
+    /**
+     * 订单修改时间
+     */
+    @JSONField(name = "modity_time")
     private String modifyTime;
+    @JSONField(name = "pay_status")
+    private String payStatus;
+    /**
+     * 发货状态
+     */
+    @JSONField(name = "delivery_status")
     private String deliveryStatus;
+    /**
+     * 系统备注
+     */
+    @JSONField(name = "system_remarks")
+    private String systemRemark;
+    /**
+     * 产品数量
+     */
+    @JSONField(name = "product_num")
+    private int productNum;
+    /**
+     * 平台发货状态
+     */
+    @JSONField(name = "plat_send_status")
+    private String platSendStatus;
+    /**
+     * 最后一次退货时间
+     */
+    @JSONField(name = "last_returned_time")
+    private String lastReturnedTime;
+    /**
+     * 最后一次退款时间
+     */
+    @JSONField(name = "last_refund_time")
+    private String lastRefundTime;
+    @JSONField(name = "tid_item")
     private List<EDBOrderItemDetail> orderItemDetails;
 
-    public String getTid() {
-        return tid;
-    }
-
-    public void setTid(String tid) {
-        this.tid = tid;
-    }
-
-    public String getStorageId() {
-        return storageId;
-    }
-
-    public void setStorageId(String storageId) {
-        this.storageId = storageId;
-    }
-
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public String getEdbCustomerId() {
-        return edbCustomerId;
-    }
-
-    public void setEdbCustomerId(String edbCustomerId) {
-        this.edbCustomerId = edbCustomerId;
-    }
-
-    public String getEdbDistributorId() {
-        return edbDistributorId;
-    }
-
-    public void setEdbDistributorId(String edbDistributorId) {
-        this.edbDistributorId = edbDistributorId;
-    }
-
-    public String getShopName() {
-        return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
-    }
-
-    public String getOutTid() {
-        return outTid;
-    }
-
-    public void setOutTid(String outTid) {
-        this.outTid = outTid;
-    }
-
-    public String getOutPayTid() {
-        return outPayTid;
-    }
-
-    public void setOutPayTid(String outPayTid) {
-        this.outPayTid = outPayTid;
-    }
-
-    public String getVoucherId() {
-        return voucherId;
-    }
-
-    public void setVoucherId(String voucherId) {
-        this.voucherId = voucherId;
-    }
-
-    public String getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getExpress() {
-        return express;
-    }
-
-    public void setExpress(String express) {
-        this.express = express;
-    }
-
-    public String getExpressNo() {
-        return expressNo;
-    }
-
-    public void setExpressNo(String expressNo) {
-        this.expressNo = expressNo;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getGetTime() {
-        return getTime;
-    }
-
-    public void setGetTime(String getTime) {
-        this.getTime = getTime;
-    }
-
-    public String getReviewOrdersOperator() {
-        return reviewOrdersOperator;
-    }
-
-    public void setReviewOrdersOperator(String reviewOrdersOperator) {
-        this.reviewOrdersOperator = reviewOrdersOperator;
-    }
-
-    public String getReviewOrdersTime() {
-        return reviewOrdersTime;
-    }
-
-    public void setReviewOrdersTime(String reviewOrdersTime) {
-        this.reviewOrdersTime = reviewOrdersTime;
-    }
-
-    public String getFinanceReviewOperator() {
-        return financeReviewOperator;
-    }
-
-    public void setFinanceReviewOperator(String financeReviewOperator) {
-        this.financeReviewOperator = financeReviewOperator;
-    }
-
-    public String getFinanceReviewTime() {
-        return financeReviewTime;
-    }
-
-    public void setFinanceReviewTime(String financeReviewTime) {
-        this.financeReviewTime = financeReviewTime;
-    }
-
-    public String getPrinter() {
-        return printer;
-    }
-
-    public void setPrinter(String printer) {
-        this.printer = printer;
-    }
-
-    public String getPrintTime() {
-        return printTime;
-    }
-
-    public void setPrintTime(String printTime) {
-        this.printTime = printTime;
-    }
-
-    public String getDistributer() {
-        return distributer;
-    }
-
-    public void setDistributer(String distributer) {
-        this.distributer = distributer;
-    }
-
-    public String getDistributTime() {
-        return distributTime;
-    }
-
-    public void setDistributTime(String distributTime) {
-        this.distributTime = distributTime;
-    }
-
-    public String getInspecter() {
-        return inspecter;
-    }
-
-    public void setInspecter(String inspecter) {
-        this.inspecter = inspecter;
-    }
-
-    public String getInspectTime() {
-        return inspectTime;
-    }
-
-    public void setInspectTime(String inspectTime) {
-        this.inspectTime = inspectTime;
-    }
-
-    public String getCancelOperator() {
-        return cancelOperator;
-    }
-
-    public void setCancelOperator(String cancelOperator) {
-        this.cancelOperator = cancelOperator;
-    }
-
-    public String getCancelTime() {
-        return cancelTime;
-    }
-
-    public void setCancelTime(String cancelTime) {
-        this.cancelTime = cancelTime;
-    }
-
-    public String getDeliveryOperator() {
-        return deliveryOperator;
-    }
-
-    public void setDeliveryOperator(String deliveryOperator) {
-        this.deliveryOperator = deliveryOperator;
-    }
-
-    public String getDeliveryTime() {
-        return deliveryTime;
-    }
-
-    public void setDeliveryTime(String deliveryTime) {
-        this.deliveryTime = deliveryTime;
-    }
-
-    public String getFinishTime() {
-        return finishTime;
-    }
-
-    public void setFinishTime(String finishTime) {
-        this.finishTime = finishTime;
-    }
-
-    public String getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(String modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-
-    public String getDeliveryStatus() {
-        return deliveryStatus;
-    }
-
-    public void setDeliveryStatus(String deliveryStatus) {
-        this.deliveryStatus = deliveryStatus;
-    }
-
-    public List<EDBOrderItemDetail> getOrderItemDetails() {
-        return orderItemDetails;
-    }
-
-    public void setOrderItemDetails(List<EDBOrderItemDetail> orderItemDetails) {
-        this.orderItemDetails = orderItemDetails;
-    }
 }

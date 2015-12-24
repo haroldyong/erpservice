@@ -12,6 +12,7 @@ package com.huobanplus.erpservice.commons.config;
 import com.huobanplus.erpservice.hotapi.interceptor.AuthorizeInterceptor;
 import com.huobanplus.erpservice.platform.interceptor.PlatformInterceptor;
 import com.huobanplus.erpservice.proxy.interceptor.UserAuthorizeInterceptor;
+import com.huobanplus.erpservice.sandbox.interceptor.SandboxInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -50,17 +52,21 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private UserAuthorizeInterceptor userAuthorizeInterceptor;
     @Autowired
     private PlatformInterceptor platformInterceptor;
+    @Autowired
+    private SandboxInterceptor sandboxInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authorizeInterceptor).addPathPatterns("/**/hotApi/rest/**");
         registry.addInterceptor(userAuthorizeInterceptor).addPathPatterns("/**/hotProxy/**");
         registry.addInterceptor(platformInterceptor).addPathPatterns("/**/erpService/platform/**");
+        registry.addInterceptor(sandboxInterceptor).addPathPatterns("/**/erpService/sandbox/rest/**");
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         super.addArgumentResolvers(argumentResolvers);
+
         argumentResolvers.add(new AttributeArgumentResolver());
     }
 

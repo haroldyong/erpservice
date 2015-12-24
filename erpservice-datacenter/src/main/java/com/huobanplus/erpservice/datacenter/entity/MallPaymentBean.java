@@ -22,7 +22,7 @@ public class MallPaymentBean {
      * 付款单号
      */
     @Id
-    @Column(name = "Payment_Id")
+    @Column(name = "Payment_Id",length = 30)
     private String paymentId;
     /**
      * 订单号

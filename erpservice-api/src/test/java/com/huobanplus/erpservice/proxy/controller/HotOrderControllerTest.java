@@ -11,7 +11,7 @@ package com.huobanplus.erpservice.proxy.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
-import com.huobanplus.erpprovider.edb.util.Constant;
+import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.DxDESCipher;
 import com.huobanplus.erpservice.commons.config.WebConfig;
@@ -55,25 +55,25 @@ public class HotOrderControllerTest extends SpringWebTest {
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
         EDBSysData sysData = new EDBSysData();
-//        sysData.setRequestUrl(Constant.REQUEST_URI_TEST);
-//        sysData.setDbHost(Constant.DB_HOST_TEST);
-//        sysData.setAppKey(Constant.APP_KEY_TEST);
-//        sysData.setAppSecret(Constant.APP_SECRET_TEST);
-//        sysData.setToken(Constant.TOKEN_TEST);
-//        sysData.setFormat(Constant.FORMAT);
-//        sysData.setV(Constant.V);
-//        sysData.setSlencry(Constant.SLENCRY);
-//        sysData.setIp(Constant.IP_TEST);
+//        sysData.setRequestUrl(EDBConstant.REQUEST_URI_TEST);
+//        sysData.setDbHost(EDBConstant.DB_HOST_TEST);
+//        sysData.setAppKey(EDBConstant.APP_KEY_TEST);
+//        sysData.setAppSecret(EDBConstant.APP_SECRET_TEST);
+//        sysData.setToken(EDBConstant.TOKEN_TEST);
+//        sysData.setFormat(EDBConstant.FORMAT);
+//        sysData.setV(EDBConstant.V);
+//        sysData.setSlencry(EDBConstant.SLENCRY);
+//        sysData.setIp(EDBConstant.IP_TEST);
 
-        sysData.setRequestUrl(Constant.REQUEST_URI);
-        sysData.setDbHost(Constant.DB_HOST);
-        sysData.setAppKey(Constant.APP_KEY);
-        sysData.setAppSecret(Constant.APP_SECRET);
-        sysData.setToken(Constant.TOKEN);
-        sysData.setFormat(Constant.FORMAT);
-        sysData.setV(Constant.V);
-        sysData.setSlencry(Constant.SLENCRY);
-        sysData.setIp(Constant.IP);
+        sysData.setRequestUrl(EDBConstant.REQUEST_URI);
+        sysData.setDbHost(EDBConstant.DB_HOST);
+        sysData.setAppKey(EDBConstant.APP_KEY);
+        sysData.setAppSecret(EDBConstant.APP_SECRET);
+        sysData.setToken(EDBConstant.TOKEN);
+        sysData.setFormat(EDBConstant.FORMAT);
+        sysData.setV(EDBConstant.V);
+        sysData.setSlencry(EDBConstant.SLENCRY);
+        sysData.setIp(EDBConstant.IP);
         ObjectMapper objectMapper = new ObjectMapper();
 
         mockERP.setSysDataJson(objectMapper.writeValueAsString(sysData));
@@ -90,7 +90,7 @@ public class HotOrderControllerTest extends SpringWebTest {
         orderInfo.setOrderId("1232222132");
 
         MallOrderItemBean orderItem = new MallOrderItemBean();
-        orderInfo.setOrderItems(Arrays.asList(orderItem));
+//        orderInfo.setOrderItems(Arrays.asList(orderItem));
 
         String orderInfoJson = new ObjectMapper().writeValueAsString(orderInfo);
 
@@ -126,7 +126,7 @@ public class HotOrderControllerTest extends SpringWebTest {
         MallOrderBean orderInfo = new MallOrderBean();
         orderInfo.setOrderId(mockOrder.getOrderId());
 //        orderInfo.setDeliveryTime(new Date());
-        orderInfo.setExpressNo("12323");
+        orderInfo.setLogiCode("12323");
 //        orderInfo.setExpress("mockExpress");
 //        orderInfo.setGrossWeight("dd");
         String orderInfoJson = new ObjectMapper().writeValueAsString(orderInfo);
@@ -159,7 +159,7 @@ public class HotOrderControllerTest extends SpringWebTest {
 //        orderItem.setTid(orderInfo.getOrderId());
 //        orderItem.setBarcode("1123123213");
 //        orderItem.setInspectionNum(1);
-        orderInfo.setOrderItems(Arrays.asList(orderItem));
+//        orderInfo.setOrderItems(Arrays.asList(orderItem));
 
         String orderInfoJson = new ObjectMapper().writeValueAsString(orderInfo);
         Map<String, String> signMap = new TreeMap<>();

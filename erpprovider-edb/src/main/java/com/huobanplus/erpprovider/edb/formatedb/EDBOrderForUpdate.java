@@ -7,9 +7,8 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huobanplus.erpprovider.edb.bean;
+package com.huobanplus.erpprovider.edb.formatedb;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import java.util.List;

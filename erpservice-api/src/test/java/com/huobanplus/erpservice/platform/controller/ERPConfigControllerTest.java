@@ -12,6 +12,7 @@ package com.huobanplus.erpservice.platform.controller;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.config.WebConfig;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -61,7 +62,7 @@ public class ERPConfigControllerTest extends SpringWebTest {
         mockMvc.perform(post("/erpService/setOpenStatus"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value(2000));
-        mockNull = baseConfigService.findByCustomerId(5);
+        mockNull = baseConfigService.findByCustomerId(5, ERPTypeEnum.UserType.HUOBAN_MALL);
         assertNotNull(mockNull);
 
         mockMvc.perform(post("/erpService/setOpenStatus"))
@@ -69,7 +70,7 @@ public class ERPConfigControllerTest extends SpringWebTest {
                 .andExpect(jsonPath("$.resultCode").value(2000));
         entityManager.clear();
         managerFactory.getCache().evictAll();
-        mockNull = baseConfigService.findByCustomerId(5);
+        mockNull = baseConfigService.findByCustomerId(5, ERPTypeEnum.UserType.HUOBAN_MALL);
         assertEquals(0, mockNull.getIsOpen());
     }
 

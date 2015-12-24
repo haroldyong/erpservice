@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.repository;
 
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -29,4 +30,6 @@ public interface ERPBaseConfigRepository extends JpaRepository<ERPBaseConfigEnti
     @Query("update ERPBaseConfigEntity baseConfig set baseConfig.isOpen=?2 where baseConfig.customerId=?1")
     @Modifying
     void updateOpenStatus(int customerId, int isOpen);
+
+    ERPBaseConfigEntity findByCustomerIdAndErpUserType(int customerId, ERPTypeEnum.UserType userType);
 }

@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.service;
 
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 
 /**
@@ -47,10 +48,10 @@ public interface ERPBaseConfigService {
     void updateOpenStatus(int customerId, int isOpen);
 
     /**
-     * 根据customerId得到基本信息
+     * 根据customerId和使用者类型得到基本信息
      *
      * @param customerId
      * @return
      */
-    ERPBaseConfigEntity findByCustomerId(int customerId);
+    ERPBaseConfigEntity findByCustomerId(int customerId, ERPTypeEnum.UserType erpUserType);
 }

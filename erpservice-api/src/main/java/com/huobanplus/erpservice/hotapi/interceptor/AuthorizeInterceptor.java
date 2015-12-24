@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.commons.utils.CommonUtils;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -58,16 +59,7 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
             response.getWriter().write(new ObjectMapper().writeValueAsString(apiResult));
             return false;
         }
-        Map<String, String[]> requestMap = request.getParameterMap();
-        Map<String, Object> signMap = new TreeMap<>();
-        requestMap.forEach((action, strings) -> {
-            if (!"sign".equals(action)) {
-                if (strings != null && strings.length > 0) {
-                    if (!StringUtils.isEmpty(strings[0]))
-                        signMap.put(action, strings[0]);
-                }
-            }
-        });
+        Map<String,Object> signMap = CommonUtils.getSignMap(request);
 
         String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, baseConfig.getSecretKey());
         if (sign.equals(requestSign)) {

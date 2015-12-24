@@ -21,18 +21,28 @@ import java.util.List;
  * Created by liual on 2015-10-28.
  */
 public interface ERPDetailConfigRepository extends JpaRepository<ERPDetailConfigEntity, Integer>, ERPDetailConfigRepositoryCustom {
-    ERPDetailConfigEntity findByCustomerIdAndErpType(int customerId, ERPTypeEnum.ProviderType providerType);
+    ERPDetailConfigEntity findByCustomerIdAndErpTypeAndErpUserType(int customerId, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType userType);
 
-    @Query("select detailConfig from ERPDetailConfigEntity detailConfig where detailConfig.customerId=?1 and detailConfig.isDefault=1")
-    ERPDetailConfigEntity findByCustomerIdAndDefault(int customerId);
+    /**
+     * 得到某个商户某个使用者的默认配置
+     *
+     * @param customerId
+     * @return
+     */
+    @Query("select detailConfig from ERPDetailConfigEntity detailConfig where detailConfig.customerId=?1 and detailConfig.isDefault=1 and detailConfig.erpUserType=?2")
+    ERPDetailConfigEntity findByCustomerIdAndDefault(int customerId, ERPTypeEnum.UserType userType);
 
-    @Query("update ERPDetailConfigEntity detailConfig set detailConfig.isDefault=0 where detailConfig.customerId=?1")
+
+    @Query("update ERPDetailConfigEntity detailConfig set detailConfig.isDefault=0 where detailConfig.customerId=?1 and detailConfig.erpUserType=?2")
     @Modifying
-    void setUnDefault(int customerId);
+    void setUnDefault(int customerId, ERPTypeEnum.UserType userType);
 
     @Query("update ERPDetailConfigEntity detailConfig set detailConfig.isDefault=?2 where detailConfig.id=?1")
     @Modifying
     void setDefaultById(int id, int isDefault);
 
-    List<ERPDetailConfigEntity> findByCustomerId(int customerId);
+    List<ERPDetailConfigEntity> findByCustomerId(int customerId, ERPTypeEnum.UserType userType);
+
+    @Query("select detailConfig from ERPDetailConfigEntity detailConfig where detailConfig.isDefault=1 and detailConfig.erpType=?1")
+    List<ERPDetailConfigEntity> findByErpTypeAndDefault(ERPTypeEnum.ProviderType erpTypeEnum);
 }

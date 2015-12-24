@@ -49,7 +49,7 @@ public class HttpClientUtil {
         httpClient = HttpClients.createDefault();
     }
 
-    public HttpResult post(String url, Map requestMap) {
+    public HttpResult post(String url, Map<String, Object> requestMap) {
         initHttpClient();
         String msg = null;
         List<NameValuePair> nameValuePairs = new ArrayList<>();
@@ -57,7 +57,12 @@ public class HttpClientUtil {
         try {
             requestMap.forEach((key, value) -> {
                 if (value != null) {
-                    nameValuePairs.add(new BasicNameValuePair((String) key, String.valueOf(value)));
+//                    nameValuePairs.add(new BasicNameValuePair(key, String.valueOf(value)));
+                    try {
+                        nameValuePairs.add(new BasicNameValuePair(key, URLEncoder.encode(String.valueOf(value),StringUtil.UTF8)));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairs, StringUtil.UTF8);

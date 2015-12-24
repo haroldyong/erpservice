@@ -9,12 +9,14 @@
 
 package com.huobanplus.erpprovider.edb.handler;
 
+import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -43,6 +45,7 @@ public interface EDBOrderHandler {
      */
 //    @Scheduled(fixedRate = 60000, initialDelay = 60000)
 //    void obtainOrderList() throws IOException;
+    EventResult obtainOrderList(int pageIndex, LocalDateTime beginTime, LocalDateTime endTime, ERPDetailConfigEntity detailConfig);
 
     /**
      * 更新订单导入标记为 已导入，可更新条件为

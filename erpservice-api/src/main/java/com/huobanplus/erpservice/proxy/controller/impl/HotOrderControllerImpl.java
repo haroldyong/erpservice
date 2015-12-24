@@ -135,7 +135,7 @@ public class HotOrderControllerImpl extends HotBaseController implements HotOrde
                     MallOrderBean preBean = orderService.findByOrderId(orderInfo.getOrderId());
 //                    preBean.setDeliveryTime(orderInfo.getDeliveryTime());
 //                    preBean.setExpress(orderInfo.getExpress());
-                    preBean.setExpressNo(orderInfo.getExpressNo());
+                    preBean.setLogiCode(orderInfo.getLogiCode());
 //                    preBean.setTidNetWeight(orderInfo.getTidNetWeight());
                     orderService.save(preBean);
 

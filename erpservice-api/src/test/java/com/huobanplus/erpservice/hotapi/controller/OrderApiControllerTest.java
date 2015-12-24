@@ -128,7 +128,7 @@ public class OrderApiControllerTest extends SpringWebTest {
         signMap.put("eventType", HotApiConstant.OBTAIN_ORDER_LIST);
 
         String sign = buildSign(signMap, null, mockHbBaseConfig.getSecretKey());
-        ResultActions result = mockMvc.perform(post("/hotApi/rest/order/index")
+        ResultActions result = mockMvc.perform(post("/erpService/hotApi/rest/order/index")
                 .param("pageIndex", "1")
                 .param("pageSize", "2")
                 .param("eventType", HotApiConstant.OBTAIN_ORDER_LIST)
@@ -136,7 +136,6 @@ public class OrderApiControllerTest extends SpringWebTest {
                 .param("appKey", mockHbBaseConfig.getAppKey())
                 .param("token", mockHbBaseConfig.getToken())
                 .param("timestamp", String.valueOf(now.getTime())))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value(ResultCode.SUCCESS.getResultCode()));
         MockHttpServletResponse response = result.andReturn().getResponse();
@@ -152,7 +151,7 @@ public class OrderApiControllerTest extends SpringWebTest {
         supSignMap.put("eventType", HotApiConstant.OBTAIN_ORDER_LIST);
 
         String supSign = SignBuilder.buildSignIgnoreEmpty(supSignMap, null, mockSupBaseConfig.getSecretKey());
-        ResultActions supResult = mockMvc.perform(post("/hotApi/rest/order/index")
+        ResultActions supResult = mockMvc.perform(post("/erpService/hotApi/rest/order/index")
                 .param("pageIndex", "1")
                 .param("pageSize", "2")
                 .param("eventType", HotApiConstant.OBTAIN_ORDER_LIST)
@@ -160,7 +159,6 @@ public class OrderApiControllerTest extends SpringWebTest {
                 .param("appKey", mockSupBaseConfig.getAppKey())
                 .param("token", mockSupBaseConfig.getToken())
                 .param("timestamp", String.valueOf(now.getTime())))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value(ResultCode.SUCCESS.getResultCode()));
         MockHttpServletResponse supResponse = supResult.andReturn().getResponse();
@@ -179,14 +177,13 @@ public class OrderApiControllerTest extends SpringWebTest {
         signMap.put("token", mockHbBaseConfig.getToken());
         signMap.put("eventType", "hbpOrderDetail");
         String sign = buildSign(signMap, null, mockHbBaseConfig.getSecretKey());
-        MockHttpServletResponse response = mockMvc.perform(post("/hotApi/rest/order/index")
+        MockHttpServletResponse response = mockMvc.perform(post("/erpService/hotApi/rest/order/index")
                 .param("orderId", "2015120726126556")
                 .param("timestamp", String.valueOf(now.getTime()))
                 .param("appKey", mockHbBaseConfig.getAppKey())
                 .param("token", mockHbBaseConfig.getToken())
                 .param("eventType", "hbpOrderDetail")
                 .param("sign", sign))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value(ResultCode.SUCCESS.getResultCode()))
                 .andReturn().getResponse();
@@ -201,14 +198,13 @@ public class OrderApiControllerTest extends SpringWebTest {
         supSignMap.put("eventType", "hbpOrderDetail");
 
         String supSign = SignBuilder.buildSignIgnoreEmpty(supSignMap, null, mockSupBaseConfig.getSecretKey());
-        MockHttpServletResponse supResponse = mockMvc.perform(post("/hotApi/rest/order/index")
+        MockHttpServletResponse supResponse = mockMvc.perform(post("/erpService/hotApi/rest/order/index")
                 .param("orderId", "2015120726126556")
                 .param("timestamp", String.valueOf(now.getTime()))
                 .param("appKey", mockSupBaseConfig.getAppKey())
                 .param("token", mockSupBaseConfig.getToken())
                 .param("eventType", "hbpOrderDetail")
                 .param("sign", supSign))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value(ResultCode.SUCCESS.getResultCode()))
                 .andReturn().getResponse();

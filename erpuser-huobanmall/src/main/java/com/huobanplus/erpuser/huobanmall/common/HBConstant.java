@@ -10,6 +10,9 @@
 package com.huobanplus.erpuser.huobanmall.common;
 
 import com.huobanplus.erpservice.eventhandler.model.BaseInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -19,13 +22,14 @@ import java.util.TreeMap;
 /**
  * Created by liual on 2015-11-05.
  */
+@Component
 public class HBConstant {
     /**
      * 伙伴商城和erp数据服务平台的签名密钥
      */
-    public static final String SECRET_KEY = "66668888";
+    public static String SECRET_KEY = "66668888";
 
-    public static final String REQUEST_URL = "http://192.168.191.1:31105";
+    public static String REQUEST_URL;
 
     public static Map buildSignMap(BaseInfo baseInfo) {
         Map<String, Object> signMap = new TreeMap<>();
@@ -48,5 +52,10 @@ public class HBConstant {
             }
         }
         return signMap;
+    }
+
+    @Autowired
+    private void initConstant(Environment environment) {
+        REQUEST_URL = environment.getProperty("huobanmall.pushUrl", "http://192.168.2.3:31105");
     }
 }

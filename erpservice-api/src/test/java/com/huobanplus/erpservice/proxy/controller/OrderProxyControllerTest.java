@@ -11,14 +11,16 @@ package com.huobanplus.erpservice.proxy.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
-import com.huobanplus.erpprovider.edb.util.Constant;
+import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.DxDESCipher;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.config.WebConfig;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
+import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,12 +29,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
-import java.util.TreeMap;
+import java.net.URLEncoder;
+import java.util.*;
 
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -47,40 +46,44 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class OrderProxyControllerTest extends SpringWebTest {
     private ERPInfo mockERP;
 
-    private MallOrderBean mockOrder;
+//    private MallOrderBean mockOrder;
 
-    private String mockCustomer = "5";
+    private Order mockOrder;
+
+    private String mockCustomer = "3447";
+
+    private ERPTypeEnum.UserType mockUserType = ERPTypeEnum.UserType.HUOBAN_MALL;
 
     @Before
     public void setUp() throws Exception {
         mockERP = new ERPInfo();
         EDBSysData sysData = new EDBSysData();
 
-        sysData.setRequestUrl(Constant.REQUEST_URI);
-        sysData.setDbHost(Constant.DB_HOST);
-        sysData.setAppKey(Constant.APP_KEY);
-        sysData.setAppSecret(Constant.APP_SECRET);
-        sysData.setToken(Constant.TOKEN);
-        sysData.setFormat(Constant.FORMAT);
-        sysData.setV(Constant.V);
-        sysData.setSlencry(Constant.SLENCRY);
-        sysData.setIp(Constant.IP);
+        sysData.setRequestUrl(EDBConstant.REQUEST_URI);
+        sysData.setDbHost(EDBConstant.DB_HOST);
+        sysData.setAppKey(EDBConstant.APP_KEY);
+        sysData.setAppSecret(EDBConstant.APP_SECRET);
+        sysData.setToken(EDBConstant.TOKEN);
+        sysData.setFormat(EDBConstant.FORMAT);
+        sysData.setV(EDBConstant.V);
+        sysData.setSlencry(EDBConstant.SLENCRY);
+        sysData.setIp(EDBConstant.IP);
         mockERP.setSysDataJson(JSON.toJSONString(sysData));
         mockERP.setSysDataJson(DxDESCipher.encrypt(mockERP.getSysDataJson()));
 
-        mockOrder = new MallOrderBean();
+        mockOrder = new Order();
         mockOrder.setOrderId("12312312321");
-        mockOrder.setCreateTime(new Date());
-        mockOrder.setPayTime(new Date());
-        mockOrder.setExpressNo("1212");
-        MallOrderItemBean orderItem = new MallOrderItemBean();
-        orderItem.setItemId(1);
-        orderItem.setBn("123213");
+        mockOrder.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
+        mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
+        mockOrder.setLogiCode("1212");
+        OrderItem orderItem = new OrderItem();
+        orderItem.setProductBn("123213");
         orderItem.setName("方便面");
         orderItem.setStandard("大碗");
-        orderItem.setOrderId(mockOrder.getOrderId());
-        orderItem.setNum(1);
         mockOrder.setOrderItems(Arrays.asList(orderItem));
+//        orderItem.setOrderId(mockOrder.getOrderId());
+//        orderItem.setNum(1);
+//        mockOrder.setOrderItems(Arrays.asList(orderItem));
 
     }
 
@@ -91,11 +94,12 @@ public class OrderProxyControllerTest extends SpringWebTest {
         signMap.put("orderInfoJson", orderInfoJson);
         signMap.put("customerId", mockCustomer);
 
-        String sign = buildSign(signMap, null, "66668888");
+        String sign = buildSign(signMap, null, HBConstant.SECRET_KEY);
         mockMvc.perform(post("/hotProxy/order/createOrder")
                 .param("orderInfoJson", orderInfoJson)
                 .param("customerId", mockCustomer)
-                .param("sign", sign))
+                .param("sign", sign)
+                .param("userType", String.valueOf(mockUserType.getCode())))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

@@ -56,11 +56,13 @@ public class ERPConfigController {
     ) {
         ERPBaseConfigEntity baseConfig = null;
         List<ERPDetailConfigEntity> lstDetailConfig = new ArrayList<>();
+
         int erpType = -1;
         if (customerId > 0) {
-            baseConfig = baseConfigService.findByCustomerId(customerId);
+            ERPTypeEnum.UserType userType = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
+            baseConfig = baseConfigService.findByCustomerId(customerId, userType);
             if (baseConfig != null && baseConfig.getIsOpen() == 1) {
-                lstDetailConfig = detailConfigService.findByCustomerId(customerId);
+                lstDetailConfig = detailConfigService.findByCustomerId(customerId, userType);
                 for (ERPDetailConfigEntity item : lstDetailConfig) {
                     if (item.getIsDefault() == 1) {
                         erpType = item.getErpType().getCode();
@@ -82,9 +84,10 @@ public class ERPConfigController {
     @RequestMapping(value = "/setOpenStatus", method = RequestMethod.POST)
     @ResponseBody
     public ApiResult setOpenStatus(@RequestAttribute int customerId, int erpUserType) {
+        ERPTypeEnum.UserType userType = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
         ERPBaseConfigEntity baseConfig;
         if (customerId > 0) {
-            baseConfig = baseConfigService.findByCustomerId(customerId);
+            baseConfig = baseConfigService.findByCustomerId(customerId, userType);
             if (baseConfig == null) {
                 baseConfig = new ERPBaseConfigEntity();
                 baseConfig.setCustomerId(customerId);
@@ -124,14 +127,18 @@ public class ERPConfigController {
     ) {
         String result;
         try {
-            ERPBaseConfigEntity baseConfig = baseConfigService.findByCustomerId(customerId);
+            ERPTypeEnum.ProviderType providerType = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, erpType);
+            ERPTypeEnum.UserType erpUserTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
+
+            ERPBaseConfigEntity baseConfig = baseConfigService.findByCustomerId(customerId, erpUserTypeEnum);
             baseConfig.setToken(token.trim());
             baseConfig.setSecretKey(secretKey.trim());
             baseConfigService.save(baseConfig);
+
+
             if (erpType != -1) {
-                ERPTypeEnum.ProviderType providerType = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, erpType);
-                ERPTypeEnum.UserType erpUserTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
-                ERPDetailConfigEntity detailConfig = detailConfigService.findByCustomerIdAndType(customerId, providerType);
+
+                ERPDetailConfigEntity detailConfig = detailConfigService.findByCustomerIdAndType(customerId, providerType, erpUserTypeEnum);
                 JSONObject jsonObject = JSON.parseObject(sysDataJson);
                 if (detailConfig == null) {
                     detailConfig = new ERPDetailConfigEntity();
@@ -159,10 +166,10 @@ public class ERPConfigController {
                 detailConfig.setErpSysData(sysDataJson);
                 detailConfig = detailConfigService.save(detailConfig);
                 //设为默认
-                detailConfigService.setDefault(detailConfig.getId(), customerId);
+                detailConfigService.setDefault(detailConfig.getId(), customerId, erpUserTypeEnum);
                 model.addAttribute("detailConfig", detailConfig);
             } else {
-                detailConfigService.setUnDefault(customerId);
+                detailConfigService.setUnDefault(customerId, erpUserTypeEnum);
             }
 
             result = "success";

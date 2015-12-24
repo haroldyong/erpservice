@@ -10,6 +10,7 @@
 package com.huobanplus.erpservice.datacenter.service;
 
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
+import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -46,6 +47,16 @@ public interface MallOrderService {
      * @return
      */
     Page<MallOrderBean> findAll(Integer orderStatus, Integer payStatus, String orderId, String sysData, int pageIndex, int pageSize);
+
+    /**
+     * 条件分组查询订单
+     * @param orderSearchInfo
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    Page<MallOrderBean> findAll(OrderSearchInfo orderSearchInfo, int pageIndex, int pageSize);
+
 
     /**
      * 得到所有订单

@@ -29,7 +29,10 @@ public class EnumHelper {
         return "";
     }
 
-    public static <T extends ICommonEnum> T getEnumType(Class<T> cls, int value) {
+    public static <T extends ICommonEnum> T getEnumType(Class<T> cls, Integer value) {
+        if (value == null) {
+            return null;
+        }
         for (T item : cls.getEnumConstants()) {
             if (item.getCode() == value) {
                 return item;

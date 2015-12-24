@@ -10,29 +10,26 @@
 package com.huobanplus.erpservice.datacenter.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * 商品实体
  */
 @Entity
 @Table(name = "ERP_OrderItem")
-@Data
+@Setter
+@Getter
 public class MallOrderItemBean {
     @Id
     @GeneratedValue
     private Integer itemId;
-    private String orderId;
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
+    @ManyToOne
+    @JoinColumn(name = "ORDERID")
+    private MallOrderBean orderBean;
     private String unionOrderId;
     private int productId;
     private String bn;
@@ -69,7 +66,7 @@ public class MallOrderItemBean {
      */
     private int customerId;
     private int goodId;
-
+    private String goodBn;
     /**
      * 网店规格
      */

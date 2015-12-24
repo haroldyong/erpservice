@@ -107,4 +107,72 @@ public interface EDBEnum {
             this.name = name;
         }
     }
+
+    enum OrderDateType implements ICommonEnum {
+        CREATE_TIME(0, "订货日期"),
+        PAY_TIME(1, "付款日期"),
+        DELIVERY_TIME(2, "发货日期"),
+        FILE_TIME(3, "归档日期"),
+        PRE_FILE_TIME(4, "预计归档日期"),
+        RECEIVE_TIME(5, "到货日期"),
+        UPDATE_TIME(6, "订单修改日期"),
+        CANCEL_TIME(7, "取消时间"),
+        FINISH_TIME(8, "完成时间");
+
+        private int code;
+        private String name;
+
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        OrderDateType(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+
+    enum ObtainType implements ICommonEnum {
+        ORDER_DETAIL_LIST(0, "订单列表"),
+        PRODUCT_DETAIL_LIST(1, "商品列表");
+        private int code;
+        private String name;
+
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        ObtainType(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+    }
 }

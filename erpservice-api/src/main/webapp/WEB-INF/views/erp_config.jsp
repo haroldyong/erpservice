@@ -44,7 +44,7 @@
         }
     </style>
     <script type="text/javascript">
-        var ajaxUrl = "/erpService/";
+        var ajaxUrl = "<c:url value="/erpService/platform/" />";
         var erpType = ${erpType};
         var configHandler = {
             setOpenStatus: function (isOpen) {
@@ -152,7 +152,7 @@
     </script>
 </head>
 <body>
-<form method="post" id="submitForm" action="<c:url value="/erpService/saveConfig" />">
+<form method="post" id="submitForm" action="<c:url value="/erpService/platform/saveConfig" />">
     <div class="container">
         <div class="blank10">
         </div>

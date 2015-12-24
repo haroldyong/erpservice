@@ -10,6 +10,8 @@
 package com.huobanplus.erpuser.hotsupplier.common;
 
 import com.huobanplus.erpservice.eventhandler.model.BaseInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -22,9 +24,9 @@ import java.util.TreeMap;
 public class SupConstant {
     public static final String SECRET_KEY = "66668888";
 
-    public static final String HB_REQUEST_URL = "http://192.168.191.1:31105";
+    public static String HB_REQUEST_URL;
 
-    public static final String SUP_REQUEST_URL = "";
+    public static String SUP_REQUEST_URL;
 
     public static Map buildSignMap(BaseInfo baseInfo) {
         Map<String, Object> signMap = new TreeMap<>();
@@ -47,5 +49,11 @@ public class SupConstant {
             }
         }
         return signMap;
+    }
+
+    @Autowired
+    private void initConstant(Environment environment) {
+        HB_REQUEST_URL = environment.getProperty("huobanmall.pushUrl", "http://192.168.2.3:31105");
+        SUP_REQUEST_URL = environment.getProperty("supplier.pushUrl", "");
     }
 }

@@ -30,7 +30,7 @@
     </modules>
 
     <properties>
-        <spring.version>4.1.7.RELEASE</spring.version>
+        <spring.version>4.2.2.RELEASE</spring.version>
     </properties>
 
     <build>
@@ -46,6 +46,18 @@
             </plugin>
         </plugins>
     </build>
+    <dependencyManagement>
+        <!--spring-security 针对4.1.6涉及 -->
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

@@ -9,139 +9,83 @@
 
 package com.huobanplus.erpprovider.edb.bean;
 
-import lombok.Data;
+import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by liual on 2015-10-26.
  */
+@Setter
+@Getter
 public class EDBOrderItemDetail {
+    /**
+     * 仓库编号
+     */
+    @JSONField(name = "storage_id")
     private String storageId;
+    /**
+     * 订单编号
+     */
     private String tid;
+    /**
+     * 产品名称
+     */
+    @JSONField(name = "pro_name")
     private String proName;
+    /**
+     * 规格
+     */
     private String specification;
+    /**
+     * 条形码（货号）
+     */
     private String barcode;
+    /**
+     * 订货数量
+     */
+    @JSONField(name = "pro_num")
     private int proNum;
-    private int sendNum;
-    private int refundNum;
+    /**
+     * 发货数量
+     */
+    @JSONField(name = "send_num")
+    private String sendNum;
+
+    /**
+     * 退货数量
+     */
+    @JSONField(name = "refund_num")
+    private String refundNum;
     /**
      * 退货到货数量
      */
-    private int refundRenum;
+    @JSONField(name = "refund_renum")
+    private int refundReNum;
+    /**
+     * 成本价
+     */
+    @JSONField(name = "cost_price")
     private double costPrice;
+    /**
+     * 销售价
+     */
+    @JSONField(name = "sell_price")
     private double sellPrice;
+    /**
+     * 店铺id
+     */
+    @JSONField(name = "shopid")
     private String shopId;
+    /**
+     * 外部平台订单编号
+     */
+    @JSONField(name = "out_tid")
     private String outTid;
+    /**
+     * 外部平台货品id
+     */
+    @JSONField(name = "out_proid")
     private String outProId;
 
-    public String getStorageId() {
-        return storageId;
-    }
-
-    public void setStorageId(String storageId) {
-        this.storageId = storageId;
-    }
-
-    public String getTid() {
-        return tid;
-    }
-
-    public void setTid(String tid) {
-        this.tid = tid;
-    }
-
-    public String getProName() {
-        return proName;
-    }
-
-    public void setProName(String proName) {
-        this.proName = proName;
-    }
-
-    public String getSpecification() {
-        return specification;
-    }
-
-    public void setSpecification(String specification) {
-        this.specification = specification;
-    }
-
-    public String getBarcode() {
-        return barcode;
-    }
-
-    public void setBarcode(String barcode) {
-        this.barcode = barcode;
-    }
-
-    public int getProNum() {
-        return proNum;
-    }
-
-    public void setProNum(int proNum) {
-        this.proNum = proNum;
-    }
-
-    public int getSendNum() {
-        return sendNum;
-    }
-
-    public void setSendNum(int sendNum) {
-        this.sendNum = sendNum;
-    }
-
-    public int getRefundNum() {
-        return refundNum;
-    }
-
-    public void setRefundNum(int refundNum) {
-        this.refundNum = refundNum;
-    }
-
-    public int getRefundRenum() {
-        return refundRenum;
-    }
-
-    public void setRefundRenum(int refundRenum) {
-        this.refundRenum = refundRenum;
-    }
-
-    public double getCostPrice() {
-        return costPrice;
-    }
-
-    public void setCostPrice(double costPrice) {
-        this.costPrice = costPrice;
-    }
-
-    public double getSellPrice() {
-        return sellPrice;
-    }
-
-    public void setSellPrice(double sellPrice) {
-        this.sellPrice = sellPrice;
-    }
-
-    public String getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
-    }
-
-    public String getOutTid() {
-        return outTid;
-    }
-
-    public void setOutTid(String outTid) {
-        this.outTid = outTid;
-    }
-
-    public String getOutProId() {
-        return outProId;
-    }
-
-    public void setOutProId(String outProId) {
-        this.outProId = outProId;
-    }
 }
