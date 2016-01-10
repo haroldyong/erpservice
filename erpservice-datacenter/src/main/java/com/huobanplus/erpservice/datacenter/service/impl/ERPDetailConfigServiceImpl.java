@@ -64,7 +64,7 @@ public class ERPDetailConfigServiceImpl implements ERPDetailConfigService {
     @Override
     @Transactional(readOnly = true)
     public List<ERPDetailConfigEntity> findByCustomerId(int customerId, ERPTypeEnum.UserType userType) {
-        return detailConfigRepository.findByCustomerId(customerId, userType);
+        return detailConfigRepository.findByCustomerIdAndErpUserType(customerId, userType);
     }
 
     @Override

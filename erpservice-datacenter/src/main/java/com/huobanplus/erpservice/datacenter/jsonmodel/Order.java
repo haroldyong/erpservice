@@ -9,8 +9,6 @@
 
 package com.huobanplus.erpservice.datacenter.jsonmodel;
 
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
@@ -32,6 +30,9 @@ public class Order {
 
     private String shipName;
     private String shipArea;
+    private String province;
+    private String city;
+    private String district;
     private String shipAddr;
     private String shipZip;
     private String shipTel;
@@ -204,6 +205,30 @@ public class Order {
 
     public void setShipArea(String shipArea) {
         this.shipArea = shipArea;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
     }
 
     public String getShipAddr() {

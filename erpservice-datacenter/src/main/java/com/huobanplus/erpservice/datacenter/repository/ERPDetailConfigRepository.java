@@ -41,7 +41,7 @@ public interface ERPDetailConfigRepository extends JpaRepository<ERPDetailConfig
     @Modifying
     void setDefaultById(int id, int isDefault);
 
-    List<ERPDetailConfigEntity> findByCustomerId(int customerId, ERPTypeEnum.UserType userType);
+    List<ERPDetailConfigEntity> findByCustomerIdAndErpUserType(int customerId, ERPTypeEnum.UserType userType);
 
     @Query("select detailConfig from ERPDetailConfigEntity detailConfig where detailConfig.isDefault=1 and detailConfig.erpType=?1")
     List<ERPDetailConfigEntity> findByErpTypeAndDefault(ERPTypeEnum.ProviderType erpTypeEnum);

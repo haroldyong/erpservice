@@ -19,6 +19,7 @@ import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.*;
 import com.huobanplus.erpuser.hotsupplier.common.ApiResult;
+import com.huobanplus.erpuser.hotsupplier.common.SupApiResult;
 import com.huobanplus.erpuser.hotsupplier.common.SupConstant;
 import com.huobanplus.erpuser.hotsupplier.handler.SupOrderHandler;
 import org.apache.http.HttpStatus;
@@ -35,12 +36,47 @@ import java.util.*;
 public class SupOrderHandlerImpl implements SupOrderHandler {
     @Override
     public EventResult deliverInfo(DeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo) {
-        return null;
+        Map<String, Object> signMap = SupConstant.buildSignMap(deliveryInfo);
+        signMap.put("timestamp", String.valueOf(new Date().getTime()));
+        try {
+            String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, SupConstant.SECRET_KEY);
+            Map<String, Object> requestMap = new HashMap<>(signMap);
+
+            requestMap.put("sign", sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(SupConstant.SUP_REQUEST_URL + "/order/deliveryInfo", requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                SupApiResult apiResult = JSON.parseObject(httpResult.getHttpContent(), SupApiResult.class);
+                if (apiResult.getCode() == 200) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+        } catch (IOException e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
     }
 
     @Override
     public EventResult returnInfo(ReturnInfo returnInfo, ERPUserInfo erpUserInfo) {
-        return null;
+        Map<String, Object> signMap = SupConstant.buildSignMap(returnInfo);
+        signMap.put("timestamp", String.valueOf(new Date().getTime()));
+        try {
+            String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, SupConstant.SECRET_KEY);
+            Map<String, Object> requestMap = new HashMap<>(signMap);
+            requestMap.put("sign", sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(SupConstant.SUP_REQUEST_URL + "/order/returnInfo", requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                SupApiResult apiResult = JSON.parseObject(httpResult.getHttpContent(), SupApiResult.class);
+                if (apiResult.getCode() == 200) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+        } catch (IOException e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
     }
 
     @Override

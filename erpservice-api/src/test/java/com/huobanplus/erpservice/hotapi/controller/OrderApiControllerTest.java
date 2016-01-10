@@ -10,6 +10,8 @@
 package com.huobanplus.erpservice.hotapi.controller;
 
 import com.huobanplus.erpservice.SpringWebTest;
+import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
+import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
@@ -17,8 +19,6 @@ import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
-import com.huobanplus.erpservice.eventhandler.model.BaseInfo;
-import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.hotapi.common.HotApiConstant;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,16 +32,14 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by liual on 2015-10-19.
@@ -123,6 +121,8 @@ public class OrderApiControllerTest extends SpringWebTest {
         signMap.put("appKey", mockHbBaseConfig.getAppKey());
         signMap.put("token", mockHbBaseConfig.getToken());
         signMap.put("timestamp", String.valueOf(now.getTime()));
+        signMap.put("beginUpdateTime", "2016-01-06 23:22:28");
+        signMap.put("endUpdateTime", "2016-01-17 22:22:28");
         signMap.put("pageIndex", "1");
         signMap.put("pageSize", "2");
         signMap.put("eventType", HotApiConstant.OBTAIN_ORDER_LIST);
@@ -133,6 +133,8 @@ public class OrderApiControllerTest extends SpringWebTest {
                 .param("pageSize", "2")
                 .param("eventType", HotApiConstant.OBTAIN_ORDER_LIST)
                 .param("sign", sign)
+                .param("beginUpdateTime", "2016-01-06 23:22:28")
+                .param("endUpdateTime", "2016-01-17 22:22:28")
                 .param("appKey", mockHbBaseConfig.getAppKey())
                 .param("token", mockHbBaseConfig.getToken())
                 .param("timestamp", String.valueOf(now.getTime())))
@@ -215,39 +217,136 @@ public class OrderApiControllerTest extends SpringWebTest {
     @Test
     public void testDeliveryInfo() throws Exception {
         Date now = new Date();
-        Map<String, Object> signMap = new TreeMap<>();
-        signMap.put("timestamp", String.valueOf(now.getTime()));
-        signMap.put("appKey", mockHbBaseConfig.getAppKey());
-        signMap.put("token", mockHbBaseConfig.getToken());
-        signMap.put("orderId", "2015011719995195");
-        signMap.put("logiName", "申通快递");
-        signMap.put("logiNo", "12312331");
-        signMap.put("remark", "大家立刻就开始");
-        signMap.put("deliverItemsStr", "01,1");
-        String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, mockHbBaseConfig.getSecretKey());
+        //分销商
+//        Map<String, Object> signMap = new TreeMap<>();
+//        signMap.put("timestamp", String.valueOf(now.getTime()));
+//        signMap.put("appKey", mockHbBaseConfig.getAppKey());
+//        signMap.put("token", mockHbBaseConfig.getToken());
+//        signMap.put("orderId", "2016010785229941");
+//        signMap.put("logiName", "申通快递");
+//        signMap.put("logiNo", "12312331");
+//        signMap.put("remark", "大家立刻就开始");
+//        signMap.put("deliverItemsStr", "3677HHUVBwYO,1");
+//        String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, mockHbBaseConfig.getSecretKey());
+//
+//        mockMvc.perform(post("/hotApi/rest/order/index/hbpDeliveryInfo")
+//                .param("timestamp", String.valueOf(now.getTime()))
+//                .param("appKey", mockHbBaseConfig.getAppKey())
+//                .param("token", mockHbBaseConfig.getToken())
+//                .param("orderId", "2015011719995195")
+//                .param("logiName", "申通快递")
+//                .param("logiNo", "12312331")
+//                .param("remark", "大家立刻就开始")
+//                .param("deliverItemsStr", "3677HHUVBwYO,1")
+//                .param("sign", sign))
+//                .andDo(print());
+        //供应商
+        Map<String, Object> supSignMap = new TreeMap<>();
+        supSignMap.put("timestamp", String.valueOf(now.getTime()));
+        supSignMap.put("appKey", mockSupBaseConfig.getAppKey());
+        supSignMap.put("token", mockSupBaseConfig.getToken());
+        supSignMap.put("orderId", "2016011033869248");
+        supSignMap.put("logiName", "申通快递");
+        supSignMap.put("logiNo", "12312331");
+        supSignMap.put("remark", "大家立刻就开始");
+        supSignMap.put("eventType", HotApiConstant.DELIVERY_INFO);
+        String supSign = SignBuilder.buildSignIgnoreEmpty(supSignMap, null, mockSupBaseConfig.getSecretKey());
 
-        mockMvc.perform(post("/hotApi/rest/order/index/hbpDeliveryInfo")
+        MockHttpServletResponse supResponse = mockMvc.perform(post("/erpService/hotApi/rest/order/index")
                 .param("timestamp", String.valueOf(now.getTime()))
-                .param("appKey", mockHbBaseConfig.getAppKey())
-                .param("token", mockHbBaseConfig.getToken())
-                .param("orderId", "2015011719995195")
+                .param("appKey", mockSupBaseConfig.getAppKey())
+                .param("token", mockSupBaseConfig.getToken())
+                .param("orderId", "2016011033869248")
                 .param("logiName", "申通快递")
                 .param("logiNo", "12312331")
                 .param("remark", "大家立刻就开始")
-                .param("deliverItemsStr", "01,1")
-                .param("sign", sign))
-                .andDo(print());
+                .param("eventType", HotApiConstant.DELIVERY_INFO)
+                .param("sign", supSign))
+                .andDo(print()).andReturn().getResponse();
+        supResponse.setCharacterEncoding(StringUtil.UTF8);
+        System.out.println(supResponse.getContentAsString());
     }
 
     @Test
     public void testReturnInfo() throws Exception {
-        BaseInfo deliveryInfo = new DeliveryInfo();
+        Date now = new Date();
+        String returnAddr = "mockAddr";
+        String returnMobile = "12877876656";
+        String returnName = "mockReturnName";
+        String remark = "jdjdjdjd记得记得";
+        String logiName = "申通快递";
+        //供应商
+        Map<String, Object> supSignMap = new TreeMap<>();
+        supSignMap.put("timestamp", String.valueOf(now.getTime()));
+        supSignMap.put("appKey", mockSupBaseConfig.getAppKey());
+        supSignMap.put("token", mockSupBaseConfig.getToken());
+        supSignMap.put("orderId", "2016011183564599");
+        supSignMap.put("logiName", logiName);
+        supSignMap.put("logiNo", "12312331");
+        supSignMap.put("remark", remark);
+        supSignMap.put("eventType", HotApiConstant.RETURN_INFO);
+        supSignMap.put("returnAddr", returnAddr);
+        supSignMap.put("returnMobile", returnMobile);
+        supSignMap.put("returnName", returnName);
+        String supSign = SignBuilder.buildSignIgnoreEmpty(supSignMap, null, mockSupBaseConfig.getSecretKey());
 
-        Class deliverClass = deliveryInfo.getClass();
-        Field[] fields = deliverClass.getDeclaredFields();
-        for (Field field : fields) {
-            System.out.println(field.getName());
-            String methodName = "get" + String.valueOf(field.getName().charAt(0)).toUpperCase() + field.getName().substring(1);
-        }
+        MockHttpServletResponse supResponse = mockMvc.perform(post("/erpService/hotApi/rest/order/index")
+                .param("timestamp", String.valueOf(now.getTime()))
+                .param("appKey", mockSupBaseConfig.getAppKey())
+                .param("token", mockSupBaseConfig.getToken())
+                .param("orderId", "2016011183564599")
+                .param("logiName", logiName)
+                .param("logiNo", "12312331")
+                .param("remark", remark)
+                .param("eventType", HotApiConstant.RETURN_INFO)
+                .param("sign", supSign)
+                .param("returnAddr", returnAddr)
+                .param("returnMobile", returnMobile)
+                .param("returnName", returnName))
+                .andReturn().getResponse();
+        supResponse.setCharacterEncoding(StringUtil.UTF8);
+        System.out.println(supResponse.getContentAsString());
+    }
+
+    @Test
+    public void testOnline() throws Exception {
+        Date now = new Date();
+        String url = "http://test.erp.51flashmall.com:8081/erpService/hotApi/rest/order/index";
+        Map<String, Object> signMap = new TreeMap<>();
+        signMap.put("appKey", "6q1e9jpm");
+        signMap.put("token", "9d9a17fa304b5a3b15b6e58c48191630");
+        signMap.put("timestamp", now.getTime());
+        signMap.put("pageIndex", 1);
+        signMap.put("pageSize", 2);
+        signMap.put("eventType", HotApiConstant.OBTAIN_ORDER_LIST);
+        signMap.put("orderStatus", 0);
+        signMap.put("payStatus", 1);
+        signMap.put("shipStatus", 0);
+        signMap.put("beginUpdateTime", "2016-01-10 23:19:28");
+        signMap.put("endUpdateTime", "2016-01-10 23:22:28");
+
+
+        String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, "123456");
+        signMap.put("sign", sign);
+        HttpResult httpResult = HttpClientUtil.getInstance().post(url, signMap);
+        System.out.println(httpResult.getHttpContent());
+
+        //发货
+        Map<String, Object> deliverSignMap = new TreeMap<>();
+        deliverSignMap.put("timestamp", String.valueOf(now.getTime()));
+        deliverSignMap.put("appKey", "6q1e9jpm");
+        deliverSignMap.put("token", "9d9a17fa304b5a3b15b6e58c48191630");
+        deliverSignMap.put("orderId", "2016011063522159");
+        deliverSignMap.put("logiName", "申通快递");
+        deliverSignMap.put("logiNo", "12312331");
+        deliverSignMap.put("remark", "大家立刻就开始");
+        deliverSignMap.put("eventType", HotApiConstant.DELIVERY_INFO);
+        String deliverSign = SignBuilder.buildSignIgnoreEmpty(deliverSignMap, null, "123456");
+        deliverSignMap.put("sign", deliverSign);
+        HttpResult httpResult1 = HttpClientUtil.getInstance().post(url, deliverSignMap);
+        System.out.println(httpResult1.getHttpContent());
+
+        //退货
+
     }
 }

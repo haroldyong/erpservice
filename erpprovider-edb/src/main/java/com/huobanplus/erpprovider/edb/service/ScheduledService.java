@@ -20,12 +20,12 @@ import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.OrderScheduledLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushOrderListInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.Jsr310Converters;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -49,7 +49,7 @@ public class ScheduledService {
     /**
      * 获取订单列表轮训服务
      */
-    @Scheduled
+//    @Scheduled
     public void scheduledOrder() {
         LocalDateTime now = LocalDateTime.now();
         Date nowDate = Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(now);
@@ -73,7 +73,8 @@ public class ScheduledService {
                     //推送给erp使用商户
                     ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
                     ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-                    EventResult pushResult = erpUserHandler.handleEvent(null);
+                    PushOrderListInfoEvent pushOrderListInfoEvent = new PushOrderListInfoEvent(jsonArray.toJSONString());
+                    EventResult pushResult = erpUserHandler.handleEvent(pushOrderListInfoEvent);
                     if (pushResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
 
                         int totalPage = totalResult / EDBConstant.PAGE_SIZE;
@@ -89,7 +90,8 @@ public class ScheduledService {
                                     JSONObject nextJsonObject = (JSONObject) nextResult.getData();
                                     JSONArray nextJsonArray = nextJsonObject.getJSONObject("items").getJSONArray("item");
                                     //推送给erp使用商户
-                                    EventResult nextPushResult = erpUserHandler.handleEvent(null);
+                                    pushOrderListInfoEvent = new PushOrderListInfoEvent(jsonArray.toJSONString());
+                                    EventResult nextPushResult = erpUserHandler.handleEvent(pushOrderListInfoEvent);
                                     if (nextPushResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
                                         result = false;
                                         break;

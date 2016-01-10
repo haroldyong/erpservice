@@ -13,23 +13,18 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
-import com.huobanplus.erpservice.common.httputil.HttpUtil;
 import com.huobanplus.erpservice.common.util.SignBuilder;
-import com.huobanplus.erpservice.common.util.StringUtil;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.*;
 import com.huobanplus.erpuser.huobanmall.common.ApiResult;
 import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
-import com.huobanplus.erpuser.huobanmall.model.OrderListParse;
 import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -138,10 +133,36 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             requestMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderDetail", requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                ApiResult<MallOrderBean> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<MallOrderBean>>() {
+                ApiResult<Order> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<Order>>() {
                 });
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+        } catch (IOException e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public EventResult pushOrderDetailList(String orderListJson, ERPUserInfo erpUserInfo) {
+        if (StringUtils.isEmpty(orderListJson)) {
+            return EventResult.resultWith(EventResultEnum.BAD_REQUEST_PARAM, "没有可以推送的订单数据", null);
+        }
+        Map<String, Object> signMap = new TreeMap<>();
+        signMap.put("orderListJson", orderListJson);
+        signMap.put("timestamp", new Date().getTime());
+        try {
+            String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
+            Map<String, Object> requestMap = new HashMap<>(signMap);
+            requestMap.put("sign", sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/UpdateOrerList", requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                ApiResult apiResult = JSON.parseObject(httpResult.getHttpContent(), ApiResult.class);
+                if (apiResult.getCode() == 200) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }
                 return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
             }

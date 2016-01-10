@@ -10,9 +10,9 @@
 package com.huobanplus.erpservice.common.httputil;
 
 import com.huobanplus.erpservice.common.util.StringUtil;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -23,7 +23,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,9 +33,8 @@ import java.util.Map;
  * Created by liual on 2015-11-11.
  */
 public class HttpClientUtil {
-    private CloseableHttpClient httpClient = null;
-
     private static HttpClientUtil httpClientUtil = new HttpClientUtil();
+    private CloseableHttpClient httpClient = null;
 
     private HttpClientUtil() {
     }
@@ -57,18 +55,13 @@ public class HttpClientUtil {
         try {
             requestMap.forEach((key, value) -> {
                 if (value != null) {
-//                    nameValuePairs.add(new BasicNameValuePair(key, String.valueOf(value)));
-                    try {
-                        nameValuePairs.add(new BasicNameValuePair(key, URLEncoder.encode(String.valueOf(value),StringUtil.UTF8)));
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                    nameValuePairs.add(new BasicNameValuePair(key, String.valueOf(value)));
                 }
             });
-            UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairs, StringUtil.UTF8);
-
             HttpPost httpPost = new HttpPost(url);
-            httpPost.setEntity(encodedFormEntity);
+            HttpEntity httpEntity = new UrlEncodedFormEntity(nameValuePairs, StringUtil.UTF8);
+
+            httpPost.setEntity(httpEntity);
             response = httpClient.execute(httpPost);
             HttpResult httpResult = new HttpResult(response.getStatusLine().getStatusCode(), EntityUtils.toString(response.getEntity()));
             EntityUtils.consume(response.getEntity());

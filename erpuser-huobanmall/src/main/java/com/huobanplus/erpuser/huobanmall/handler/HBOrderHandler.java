@@ -9,7 +9,6 @@
 
 package com.huobanplus.erpuser.huobanmall.handler;
 
-import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.model.*;
 
 /**
@@ -48,4 +47,13 @@ public interface HBOrderHandler {
      * @return
      */
     EventResult obtainOrderDetail(String orderId, ERPUserInfo erpUserInfo);
+
+    /**
+     * 推送订单列表信息,到角色出保存
+     *
+     * @param orderListJson
+     * @param erpUserInfo
+     * @return
+     */
+    EventResult pushOrderDetailList(String orderListJson, ERPUserInfo erpUserInfo);
 }

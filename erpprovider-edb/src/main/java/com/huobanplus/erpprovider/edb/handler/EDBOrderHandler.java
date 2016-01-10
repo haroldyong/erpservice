@@ -44,7 +44,6 @@ public interface EDBOrderHandler {
      * @throws IOException IO异常
      */
 //    @Scheduled(fixedRate = 60000, initialDelay = 60000)
-//    void obtainOrderList() throws IOException;
     EventResult obtainOrderList(int pageIndex, LocalDateTime beginTime, LocalDateTime endTime, ERPDetailConfigEntity detailConfig);
 
     /**

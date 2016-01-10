@@ -15,10 +15,10 @@ import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderDetailEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderListEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.ReturnInfoEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailListEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.*;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import com.huobanplus.erpservice.hotapi.handler.OrderHandler;
@@ -60,7 +60,7 @@ public class OrderHandlerImpl implements OrderHandler {
         if (erpUserHandler == null) {
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
         }
-        DeliveryInfoEvent deliveryInfoEvent = new DeliveryInfoEvent();
+        PushDeliveryInfoEvent pushDeliveryInfoEvent = new PushDeliveryInfoEvent();
         DeliveryInfo deliveryInfo = new DeliveryInfo();
         deliveryInfo.setOrderId(orderId);
         deliveryInfo.setLogiName(logiName);
@@ -68,8 +68,8 @@ public class OrderHandlerImpl implements OrderHandler {
         deliveryInfo.setFreight(freight);
         deliveryInfo.setRemark(remark);
         deliveryInfo.setDeliverItemsStr(deliverItemsStr);
-        deliveryInfoEvent.setDeliveryInfo(deliveryInfo);
-        EventResult eventResult = erpUserHandler.handleEvent(deliveryInfoEvent);
+        pushDeliveryInfoEvent.setDeliveryInfo(deliveryInfo);
+        EventResult eventResult = erpUserHandler.handleEvent(pushDeliveryInfoEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             return ApiResult.resultWith(ResultCode.SUCCESS);
         }
@@ -108,7 +108,7 @@ public class OrderHandlerImpl implements OrderHandler {
         returnInfo.setFreight(freight);
         returnInfo.setRemark(remark);
         returnInfo.setReturnItemStr(returnItemsStr);
-        ReturnInfoEvent returnInfoEvent = new ReturnInfoEvent();
+        PushReturnInfoEvent returnInfoEvent = new PushReturnInfoEvent();
         returnInfoEvent.setReturnInfo(returnInfo);
         EventResult eventResult = erpUserHandler.handleEvent(returnInfoEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -139,7 +139,7 @@ public class OrderHandlerImpl implements OrderHandler {
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
         }
 
-        ObtainOrderListEvent obtainOrderListEvent = new ObtainOrderListEvent();
+        GetOrderDetailListEvent getOrderDetailListEvent = new GetOrderDetailListEvent();
         OrderSearchInfo orderSearchInfo = new OrderSearchInfo();
         orderSearchInfo.setPageIndex(pageIndex);
         orderSearchInfo.setPageSize(pageSize);
@@ -155,8 +155,8 @@ public class OrderHandlerImpl implements OrderHandler {
         orderSearchInfo.setOrderBy(orderBy);
         orderSearchInfo.setOrderType(orderType);
 
-        obtainOrderListEvent.setOrderSearchInfo(orderSearchInfo);
-        EventResult eventResult = erpUserHandler.handleEvent(obtainOrderListEvent);
+        getOrderDetailListEvent.setOrderSearchInfo(orderSearchInfo);
+        EventResult eventResult = erpUserHandler.handleEvent(getOrderDetailListEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             OrderList orderList = new OrderList();
             List<Order> orders = (List<Order>) eventResult.getData();
@@ -178,15 +178,15 @@ public class OrderHandlerImpl implements OrderHandler {
         if (StringUtils.isEmpty(orderId)) {
             return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "未传入有效的orderId", null);
         }
-        ObtainOrderDetailEvent obtainOrderDetailEvent = new ObtainOrderDetailEvent();
-        obtainOrderDetailEvent.setErpUserInfo(erpUserInfo);
-        obtainOrderDetailEvent.setOrderId(orderId);
+        GetOrderDetailEvent getOrderDetailEvent = new GetOrderDetailEvent();
+        getOrderDetailEvent.setErpUserInfo(erpUserInfo);
+        getOrderDetailEvent.setOrderId(orderId);
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
         }
-        obtainOrderDetailEvent.setOrderId(orderId);
-        EventResult eventResult = erpUserHandler.handleEvent(obtainOrderDetailEvent);
+        getOrderDetailEvent.setOrderId(orderId);
+        EventResult eventResult = erpUserHandler.handleEvent(getOrderDetailEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
         }

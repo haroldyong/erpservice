@@ -10,9 +10,11 @@
 package com.huobanplus.erpuser.hotsupplier.config;
 
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.*;
+import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailListEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
-import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandlerBuilder;
 import com.huobanplus.erpuser.hotsupplier.handler.SupOrderHandler;
@@ -31,14 +33,14 @@ public class SupplierHandlerBuilder implements ERPUserHandlerBuilder {
     public ERPUserHandler buildHandler(ERPUserInfo info) {
         if (info.getErpUserType() == ERPTypeEnum.UserType.HUOBAN_SUPPLIER) {
             return erpBaseEvent -> {
-                if (erpBaseEvent instanceof ObtainOrderListEvent) {
-                    return orderHandler.obtainOrderList(((ObtainOrderListEvent) erpBaseEvent).getOrderSearchInfo(), info);
-                } else if (erpBaseEvent instanceof DeliveryInfoEvent) {
-                    return orderHandler.deliverInfo(((DeliveryInfoEvent) erpBaseEvent).getDeliveryInfo(), info);
-                } else if (erpBaseEvent instanceof ObtainOrderDetailEvent) {
-                    return orderHandler.obtainOrderDetail(((ObtainOrderDetailEvent) erpBaseEvent).getOrderId(), info);
-                } else if (erpBaseEvent instanceof ReturnInfoEvent) {
-                    return orderHandler.returnInfo(((ReturnInfoEvent) erpBaseEvent).getReturnInfo(), info);
+                if (erpBaseEvent instanceof GetOrderDetailListEvent) {
+                    return orderHandler.obtainOrderList(((GetOrderDetailListEvent) erpBaseEvent).getOrderSearchInfo(), info);
+                } else if (erpBaseEvent instanceof PushDeliveryInfoEvent) {
+                    return orderHandler.deliverInfo(((PushDeliveryInfoEvent) erpBaseEvent).getDeliveryInfo(), info);
+                } else if (erpBaseEvent instanceof GetOrderDetailEvent) {
+                    return orderHandler.obtainOrderDetail(((GetOrderDetailEvent) erpBaseEvent).getOrderId(), info);
+                } else if (erpBaseEvent instanceof PushReturnInfoEvent) {
+                    return orderHandler.returnInfo(((PushReturnInfoEvent) erpBaseEvent).getReturnInfo(), info);
                 }
                 return null;
             };

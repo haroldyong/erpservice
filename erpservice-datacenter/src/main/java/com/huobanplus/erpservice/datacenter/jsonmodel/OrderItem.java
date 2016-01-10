@@ -65,4 +65,9 @@ public class OrderItem {
      * 产品简介
      */
     private String brief;
+
+    /**
+     * 发货状态
+     */
+    private int shipStatus;
 }

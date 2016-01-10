@@ -43,7 +43,7 @@ public class SignBuilder {
             }
         }
         stringBuilder.append(suffix);
-        return DigestUtils.md5Hex(stringBuilder.toString().getBytes("utf-8")).toUpperCase();
+        return DigestUtils.md5Hex(stringBuilder.toString().getBytes("utf-8"));
     }
 
     /**

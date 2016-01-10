@@ -21,7 +21,7 @@
 <head id="Head1">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>
-        商城基本设置
+        商城基本设置${customerId}
     </title>
     <link href="<c:url value="/resource/css/admin.global.css" />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/resource/css/admin.content.css" />" rel="stylesheet" type="text/css">
@@ -176,10 +176,12 @@
                                     <th>是否开通ERP数据服务：</th>
                                     <td>
                                         <c:if test="${baseConfig==null || baseConfig.isOpen==0}">
-                                            <input type="button" onclick="configHandler.setOpenStatus(1)" value="开启" style="cursor: pointer;"/>
+                                            <input type="button" onclick="configHandler.setOpenStatus(1)" value="开启"
+                                                   style="cursor: pointer;"/>
                                         </c:if>
                                         <c:if test="${baseConfig!=null && baseConfig.isOpen==1}">
-                                            <input type="button" value="关闭" onclick="configHandler.setOpenStatus(0)" style="cursor: pointer;"/>
+                                            <input type="button" value="关闭" onclick="configHandler.setOpenStatus(0)"
+                                                   style="cursor: pointer;"/>
                                         </c:if>
 
                                     </td>
@@ -194,20 +196,24 @@
                                     <tr>
                                         <th style="vertical-align: middle;">接入码（appKey）：</th>
                                         <td>
-                                            <input name="appKey" type="text" value="${baseConfig.appKey}" id="appKey" class="input-normal" readonly="readonly">
+                                            <input name="appKey" type="text" value="${baseConfig.appKey}" id="appKey"
+                                                   class="input-normal" readonly="readonly">
                                         </td>
                                     </tr>
                                     <tr>
                                         <th style="vertical-align: middle;">Token：</th>
                                         <td>
-                                            <input name="token" type="text" value="${baseConfig.token}" id="token" class="input-big" readonly="readonly">
-                                            <input type="button" style="cursor: pointer;" onclick="configHandler.rebuildToken()" value="重新生成"/>
+                                            <input name="token" type="text" value="${baseConfig.token}" id="token"
+                                                   class="input-big" readonly="readonly">
+                                            <input type="button" style="cursor: pointer;"
+                                                   onclick="configHandler.rebuildToken()" value="重新生成"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th style="vertical-align: middle;">签名密钥（secretKey）：</th>
                                         <td>
-                                            <input name="secretKey" type="text" value="${baseConfig.secretKey}" id="secretKey" class="input-normal">（接口调用时用于安全校验，只允许数字跟字母的组合）
+                                            <input name="secretKey" type="text" value="${baseConfig.secretKey}"
+                                                   id="secretKey" class="input-normal">（接口调用时用于安全校验，只允许数字跟字母的组合）
                                         </td>
                                     </tr>
                                     <tr>

@@ -16,7 +16,8 @@ import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.hotapi.common.HotApiConstant;
 import com.huobanplus.erpservice.hotapi.controller.HotApiController;
 import com.huobanplus.erpservice.hotapi.handler.OrderHandler;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,25 +32,30 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/erpService/hotApi/rest")
 public class HotApiControllerImpl implements HotApiController {
+    private static final Log log = LogFactory.getLog(HotApiControllerImpl.class);
     @Autowired
     private OrderHandler orderHandler;
-    private static Logger logger = Logger.getLogger(HotApiControllerImpl.class);
 
     @Override
     @RequestMapping(value = "/order/index", method = RequestMethod.POST)
     @ResponseBody
     public ApiResult orderIndex(String eventType, @RequestAttribute ERPUserInfo erpUserInfo, HttpServletRequest request) {
-        switch (eventType) {
-            case HotApiConstant.DELIVERY_INFO:
-                return orderHandler.deliveryInfo(request, erpUserInfo);
-            case HotApiConstant.RETURN_INFO:
-                return orderHandler.returnInfo(request, erpUserInfo);
-            case HotApiConstant.OBTAIN_ORDER_DETAIL:
-                return orderHandler.obtainOrderDetail(request, erpUserInfo);
-            case HotApiConstant.OBTAIN_ORDER_LIST:
-                return orderHandler.obtainOrderList(request, erpUserInfo);
+        try {
+            log.info("enter erp orderIndex");
+            switch (eventType) {
+                case HotApiConstant.DELIVERY_INFO:
+                    return orderHandler.deliveryInfo(request, erpUserInfo);
+                case HotApiConstant.RETURN_INFO:
+                    return orderHandler.returnInfo(request, erpUserInfo);
+                case HotApiConstant.OBTAIN_ORDER_DETAIL:
+                    return orderHandler.obtainOrderDetail(request, erpUserInfo);
+                case HotApiConstant.OBTAIN_ORDER_LIST:
+                    return orderHandler.obtainOrderList(request, erpUserInfo);
+            }
+            return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT, "不被支持的事件方法", null);
+        } catch (Exception e) {
+            return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, e.getMessage(), null);
         }
-        return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT, "不被支持的事件方法", null);
     }
 
     @Override

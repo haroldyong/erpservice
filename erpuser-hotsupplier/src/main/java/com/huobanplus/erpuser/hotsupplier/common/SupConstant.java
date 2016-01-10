@@ -12,6 +12,7 @@ package com.huobanplus.erpuser.hotsupplier.common;
 import com.huobanplus.erpservice.eventhandler.model.BaseInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -21,6 +22,7 @@ import java.util.TreeMap;
 /**
  * Created by liual on 2015-11-05.
  */
+@Component
 public class SupConstant {
     public static final String SECRET_KEY = "66668888";
 
@@ -53,7 +55,7 @@ public class SupConstant {
 
     @Autowired
     private void initConstant(Environment environment) {
-        HB_REQUEST_URL = environment.getProperty("huobanmall.pushUrl", "http://192.168.2.3:31105");
-        SUP_REQUEST_URL = environment.getProperty("supplier.pushUrl", "");
+        HB_REQUEST_URL = environment.getProperty("huobanmall.pushUrl", "http://192.168.1.70:31105");
+        SUP_REQUEST_URL = environment.getProperty("supplier.pushUrl", "http://localhost:8080/erp/api/rest");
     }
 }
