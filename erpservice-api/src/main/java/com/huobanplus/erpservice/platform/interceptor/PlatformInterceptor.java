@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.platform.interceptor;
@@ -36,23 +36,26 @@ public class PlatformInterceptor extends HandlerInterceptorAdapter {
         Integer customerId;
         if (erpUserType.equals("0")) {
             customerId = CookieHelper.getCookieValInteger(request, "UserID");
-            if (customerId == null) {
-                response.sendRedirect(environment.getProperty("supplier_login", "http://localhost:8080"));
-                return false;
-            }
             if (environment.acceptsProfiles("development")) {
                 customerId = 3677;
             }
-//            request.setAttribute("customerId", );
-        } else {
-            customerId = CookieHelper.getCookieValInteger(request, "supplierId");
-            if (customerId == null) {
-                response.sendRedirect(environment.getProperty("huobanplus_login", "http://login.huobanplus.com"));
+
+            if (customerId == null || customerId == 0) {
+                response.sendRedirect(environment.getProperty("huobanplus_login", "http://localhost:8080"));
                 return false;
             }
 
+//            request.setAttribute("customerId", );
+        } else {
+            customerId = CookieHelper.getCookieValInteger(request, "supplierId");
+
             if (environment.acceptsProfiles("development")) {
                 customerId = 6340;
+            }
+
+            if (customerId == null || customerId == 0) {
+                response.sendRedirect(environment.getProperty("supplier_login", "http://login.huobanplus.com"));
+                return false;
             }
         }
         request.setAttribute("customerId", customerId);

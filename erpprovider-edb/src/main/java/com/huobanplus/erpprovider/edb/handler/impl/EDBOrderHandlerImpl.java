@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb.handler.impl;
@@ -12,25 +12,23 @@ package com.huobanplus.erpprovider.edb.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.huobanplus.erpprovider.edb.bean.*;
+import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.common.EDBEnum;
 import com.huobanplus.erpprovider.edb.formatedb.*;
 import com.huobanplus.erpprovider.edb.handler.BaseHandler;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
-import com.huobanplus.erpprovider.edb.handler.EDBStorageHandler;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
-import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.httputil.HttpUtil;
+import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.util.StringUtil;
-import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
-import com.huobanplus.erpservice.datacenter.entity.OrderScheduledLog;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
@@ -38,23 +36,19 @@ import com.huobanplus.erpservice.datacenter.service.OrderScheduledLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
-import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.convert.Jsr310Converters;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.List;
 
 /**
  * 订单处理事件实现类
@@ -128,32 +122,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             edbCreateOrderInfo.setProductInfos(edbOrderItemList);
 
 
-            String xmlResult = new XmlMapper().writeValueAsString(edbCreateOrderInfo);
-            int firstIndex = xmlResult.indexOf("<product_item>");
-            int lastIndex = xmlResult.lastIndexOf("</product_item>");
-            String firstPanel = xmlResult.substring(0, firstIndex);
-            String productPanel = xmlResult.substring(firstIndex + 14, lastIndex);
-            String xmlValues = ("<order>" + firstPanel + "<product_info>" + productPanel + "</product_info></orderInfo></order>").replaceAll(" xmlns=\"\"", "");
-
-
-            Map<String, Object> requestData = getSysRequestData(EDBConstant.CREATE_ORDER, sysData);
-            requestData.put("xmlvalues", xmlValues);
-            Map<String, Object> signMap = new TreeMap<>(requestData);
-//            requestData.put("xmlvalues", URLEncoder.encode(xmlValues, "utf-8"));
-//            signMap.put("xmlvalues", xmlValues);
-
-            requestData.put("sign", getSign(signMap, sysData));
-
-            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), requestData);
-            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
-                if (jsonObject.getJSONObject("Success") == null) {
-                    return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);
-                }
-                return EventResult.resultWith(EventResultEnum.SUCCESS);
-            }
-
-            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            return this.orderPush(edbCreateOrderInfo, sysData);
         } catch (IOException ex) {
             return EventResult.resultWith(EventResultEnum.ERROR, ex.getMessage(), null);
         }
@@ -209,13 +178,15 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         try {
             EDBSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), EDBSysData.class);
             Map<String, Object> requestData = getSysRequestData(EDBConstant.GET_ORDER_INFO, sysData);
-            requestData.put("date_type", EDBEnum.OrderDateType.UPDATE_TIME.getName());
+//            requestData.put("date_type", EDBEnum.OrderDateType.DELIVERY_TIME.getName());
             requestData.put("begin_time", beginTime.format(DateTimeFormatter.ofPattern(StringUtil.TIME_PATTERN)));
             requestData.put("end_time", endTime.format(DateTimeFormatter.ofPattern(StringUtil.TIME_PATTERN)));
             requestData.put("storage_id", sysData.getStorageId());
             requestData.put("shopid", sysData.getShopId());
             requestData.put("page_no", pageIndex);
             requestData.put("page_size", EDBConstant.PAGE_SIZE);
+            requestData.put("order_status", EDBEnum.ShipStatusEnum.ALL_DELIVER);
+            requestData.put("platform_status", EDBEnum.platformStatus.PAYED);
             Map<String, Object> signMap = new TreeMap<>(requestData);
             String sign = getSign(signMap, sysData);
             requestData.put("sign", sign);
@@ -422,6 +393,95 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             return EventResult.resultWith(EventResultEnum.ERROR.getResultCode(), EventResultEnum.ERROR.getResultMsg() + "--" + e.getMessage(), null);
         }
     }
+
+    @Override
+    public EventResult orderPush(EDBCreateOrderInfo edbCreateOrderInfo, EDBSysData sysData) throws JsonProcessingException, UnsupportedEncodingException {
+        String xmlResult = new XmlMapper().writeValueAsString(edbCreateOrderInfo);
+        int firstIndex = xmlResult.indexOf("<product_item>");
+        int lastIndex = xmlResult.lastIndexOf("</product_item>");
+        String firstPanel = xmlResult.substring(0, firstIndex);
+        String productPanel = xmlResult.substring(firstIndex + 14, lastIndex);
+        String xmlValues = ("<order>" + firstPanel + "<product_info>" + productPanel + "</product_info></orderInfo></order>").replaceAll(" xmlns=\"\"", "");
+
+
+        Map<String, Object> requestData = getSysRequestData(EDBConstant.CREATE_ORDER, sysData);
+        requestData.put("xmlvalues", xmlValues);
+        Map<String, Object> signMap = new TreeMap<>(requestData);
+//            requestData.put("xmlvalues", URLEncoder.encode(xmlValues, "utf-8"));
+//            signMap.put("xmlvalues", xmlValues);
+
+        requestData.put("sign", getSign(signMap, sysData));
+
+        HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), requestData);
+        if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+            JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
+            if (jsonObject.getJSONObject("Success") == null) {
+                return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);
+            }
+            return EventResult.resultWith(EventResultEnum.SUCCESS);
+        }
+
+        return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+    }
+
+    @Override
+    public EDBCreateOrderInfo jsonListToOrderInfo(JSONObject jsonObject) {
+        EDBCreateOrderInfo edbCreateOrderInfo = new EDBCreateOrderInfo();
+        edbCreateOrderInfo.setOutTid(jsonObject.getString("out_tid"));
+        edbCreateOrderInfo.setShopId(jsonObject.getString("shopid"));
+        edbCreateOrderInfo.setStorageId(jsonObject.getIntValue("storage_id"));
+//            edbCreateOrderInfo.setBuyerId();
+        edbCreateOrderInfo.setBuyerMsg(orderInfo.getMemo());
+        edbCreateOrderInfo.setSellerRemark(orderInfo.getRemark());
+        edbCreateOrderInfo.setConsignee(orderInfo.getShipName());
+        edbCreateOrderInfo.setAddress(orderInfo.getShipAddr());
+        edbCreateOrderInfo.setPostcode(orderInfo.getShipZip());
+        edbCreateOrderInfo.setTelephone(orderInfo.getShipTel());
+        edbCreateOrderInfo.setMobilPhone(orderInfo.getShipMobile());
+        String shipArea = orderInfo.getShipArea();
+        if (!StringUtils.isEmpty(shipArea)) {
+            String[] shipAreaArray = shipArea.split("/");
+            edbCreateOrderInfo.setProvince(shipAreaArray[0]);
+            edbCreateOrderInfo.setCity(shipAreaArray[1]);
+            edbCreateOrderInfo.setArea(shipAreaArray[2]);
+        }
+        edbCreateOrderInfo.setActualFreightGet(orderInfo.getCostFreight());
+        edbCreateOrderInfo.setActual_RP(orderInfo.getFinalAmount());
+        edbCreateOrderInfo.setExpress(orderInfo.getLogiCode());
+//            edbCreateOrderInfo.setOrderType(); //订单类型
+        edbCreateOrderInfo.setProcessStatus(EnumHelper.getEnumName(EDBEnum.OrderStatusEnum.class, orderInfo.getOrderStatus()));
+        edbCreateOrderInfo.setPayStatus(EnumHelper.getEnumName(EDBEnum.PayStatusEnum.class, orderInfo.getPayStatus()));
+        edbCreateOrderInfo.setDeliverStatus(EnumHelper.getEnumName(EDBEnum.ShipStatusEnum.class, orderInfo.getShipStatus()));
+        edbCreateOrderInfo.setOrderTotalMoney(orderInfo.getFinalAmount());
+        edbCreateOrderInfo.setProductTotalMoney(orderInfo.getCostItem());
+        edbCreateOrderInfo.setPayMethod(orderInfo.getPaymentName());
+        edbCreateOrderInfo.setFavorableMoney(orderInfo.getPmtAmount());
+        edbCreateOrderInfo.setOutExpressMethod(orderInfo.getLogiName());
+        edbCreateOrderInfo.setOrderDate(orderInfo.getCreateTime());
+        edbCreateOrderInfo.setPayDate(orderInfo.getPayTime());
+//            edbCreateOrderInfo.setDistributorNo(); 分销商编号
+        edbCreateOrderInfo.setWuLiu(orderInfo.getLogiName());
+        edbCreateOrderInfo.setWuLiuNo(orderInfo.getLogiNo());
+        edbCreateOrderInfo.setActualFreightPay(orderInfo.getCostFreight());
+        List<EDBOrderItem> edbOrderItemList = new ArrayList<>();
+        for (OrderItem orderItem : orderInfo.getOrderItems()) {
+            EDBOrderItem edbOrderItem = new EDBOrderItem();
+            edbOrderItem.setBarCode(orderItem.getProductBn());
+            edbOrderItem.setProductTitle(orderItem.getName());
+            edbOrderItem.setStandard(orderItem.getStandard());
+            edbOrderItem.setOutPrice(orderItem.getAmount());
+            edbOrderItem.setOrderGoodsNum(orderItem.getNum());
+            edbOrderItem.setCostPrice(orderItem.getAmount());
+            edbOrderItem.setShopId(sysData.getShopId());
+            edbOrderItem.setOutTid(orderInfo.getOrderId());
+            edbOrderItem.setOutBarCode(orderItem.getProductBn());
+            edbOrderItem.setProductIntro(orderItem.getBrief());
+            edbOrderItemList.add(edbOrderItem);
+        }
+        edbCreateOrderInfo.setProductInfos(edbOrderItemList);
+    }
+
+
 //
 //    private MallOrderBean wrapMapToBean(Map map) {
 //        MallOrderBean orderBean = new MallOrderBean();

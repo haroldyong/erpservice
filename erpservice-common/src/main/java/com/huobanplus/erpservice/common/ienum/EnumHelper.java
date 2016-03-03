@@ -4,10 +4,12 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.common.ienum;
+
+import org.springframework.util.StringUtils;
 
 /**
  * 枚举处理类
@@ -35,6 +37,18 @@ public class EnumHelper {
         }
         for (T item : cls.getEnumConstants()) {
             if (item.getCode() == value) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public static <T extends ICommonEnum> T getEnumType(Class<T> cls, String name) {
+        if (StringUtils.isEmpty(name)) {
+            return null;
+        }
+        for (T item : cls.getEnumConstants()) {
+            if (item.getName().equals(name)) {
                 return item;
             }
         }

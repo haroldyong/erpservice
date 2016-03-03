@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb.common;
@@ -22,6 +22,11 @@ public interface EDBEnum {
         private int code;
         private String name;
 
+        OrderStatusEnum(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
         public int getCode() {
             return code;
         }
@@ -35,11 +40,6 @@ public interface EDBEnum {
         }
 
         public void setName(String name) {
-            this.name = name;
-        }
-
-        OrderStatusEnum(int code, String name) {
-            this.code = code;
             this.name = name;
         }
     }
@@ -54,6 +54,11 @@ public interface EDBEnum {
         private int code;
         private String name;
 
+        PayStatusEnum(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
         public int getCode() {
             return code;
         }
@@ -67,11 +72,6 @@ public interface EDBEnum {
         }
 
         public void setName(String name) {
-            this.name = name;
-        }
-
-        PayStatusEnum(int code, String name) {
-            this.code = code;
             this.name = name;
         }
     }
@@ -86,6 +86,11 @@ public interface EDBEnum {
         private int code;
         private String name;
 
+        ShipStatusEnum(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
         public int getCode() {
             return code;
         }
@@ -99,11 +104,6 @@ public interface EDBEnum {
         }
 
         public void setName(String name) {
-            this.name = name;
-        }
-
-        ShipStatusEnum(int code, String name) {
-            this.code = code;
             this.name = name;
         }
     }
@@ -122,6 +122,11 @@ public interface EDBEnum {
         private int code;
         private String name;
 
+        OrderDateType(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
         @Override
         public int getCode() {
             return code;
@@ -137,11 +142,6 @@ public interface EDBEnum {
         }
 
         public void setName(String name) {
-            this.name = name;
-        }
-
-        OrderDateType(int code, String name) {
-            this.code = code;
             this.name = name;
         }
     }
@@ -152,6 +152,11 @@ public interface EDBEnum {
         private int code;
         private String name;
 
+        ObtainType(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
         @Override
         public int getCode() {
             return code;
@@ -169,9 +174,44 @@ public interface EDBEnum {
         public void setName(String name) {
             this.name = name;
         }
+    }
 
-        ObtainType(int code, String name) {
+    /**
+     * 平台订单状态
+     */
+    enum platformStatus implements ICommonEnum {
+        PARTY_DELIVER(0, "部分发货"),
+        WAIT_FOR_PARTY_REFUND(0, "待退款部分退款"),
+        WAIT_FOR_ALL_REFUND(1, "待退款全部退款"),
+        PAY_ON_DELIVERY(2, "货到付款"),
+        TRADE_SUCCESS(3, "交易成功"),
+        TRADE_CANCLED(4, "交易关闭"),
+        DELIVERY(5, "已发货"),
+        PAYED(6, "已付款");
+
+        private int code;
+        private String name;
+
+        platformStatus(int code, String name) {
             this.code = code;
+            this.name = name;
+        }
+
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
             this.name = name;
         }
     }

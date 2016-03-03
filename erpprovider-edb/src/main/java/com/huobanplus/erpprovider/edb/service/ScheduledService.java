@@ -4,13 +4,15 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.huobanplus.erpprovider.edb.formatedb.EDBOrderDetail;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
@@ -21,6 +23,7 @@ import com.huobanplus.erpservice.datacenter.service.OrderScheduledLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushOrderListInfoEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
@@ -59,23 +62,30 @@ public class ScheduledService {
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
             boolean result = true;
             int currentPageIndex = 1;
-            OrderScheduledLog lastLog = scheduledLogService.findFirst(detailConfig.getCustomerId());
-            LocalDateTime beginTime = lastLog == null ?
-                    now.minusMonths(1) :
-                    Jsr310Converters.DateToLocalDateTimeConverter.INSTANCE.convert(lastLog.getCreateTime());
+
+
+//            OrderScheduledLog lastLog = scheduledLogService.findFirst(detailConfig.getCustomerId());
+//            LocalDateTime beginTime = lastLog == null ?
+//                    now.minusMonths(10) :
+//                    Jsr310Converters.DateToLocalDateTimeConverter.INSTANCE.convert(lastLog.getCreateTime());
+            LocalDateTime beginTime = now.minusMonths(2);
 
             EventResult eventResult = edbOrderHandler.obtainOrderList(currentPageIndex, beginTime, now, detailConfig);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 JSONObject jsonObject = (JSONObject) eventResult.getData();
-                JSONArray jsonArray = jsonObject.getJSONObject("items").getJSONArray("item");
-                if (jsonArray.size() > 0) {
-                    int totalResult = jsonArray.getJSONObject(0).getIntValue("总数量");//本次获取的总数据量
+                JSONArray resultOrders = jsonObject.getJSONObject("items").getJSONArray("item");
+                if (resultOrders.size() > 0) {
+                    int totalResult = resultOrders.getJSONObject(0).getIntValue("总数量");//本次获取的总数据量
                     //推送给erp使用商户
                     ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
                     ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-                    PushOrderListInfoEvent pushOrderListInfoEvent = new PushOrderListInfoEvent(jsonArray.toJSONString());
+                    PushOrderListInfoEvent pushOrderListInfoEvent = new PushOrderListInfoEvent(resultOrders.toJSONString());
                     EventResult pushResult = erpUserHandler.handleEvent(pushOrderListInfoEvent);
+
                     if (pushResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
+
+                        List<EDBOrderDetail> orderDetails = JSON.parseArray(resultOrders.toJSONString(), EDBOrderDetail.class);
 
                         int totalPage = totalResult / EDBConstant.PAGE_SIZE;
                         if (totalResult % totalPage != 0) {
@@ -90,7 +100,7 @@ public class ScheduledService {
                                     JSONObject nextJsonObject = (JSONObject) nextResult.getData();
                                     JSONArray nextJsonArray = nextJsonObject.getJSONObject("items").getJSONArray("item");
                                     //推送给erp使用商户
-                                    pushOrderListInfoEvent = new PushOrderListInfoEvent(jsonArray.toJSONString());
+                                    pushOrderListInfoEvent = new PushOrderListInfoEvent(resultOrders.toJSONString());
                                     EventResult nextPushResult = erpUserHandler.handleEvent(pushOrderListInfoEvent);
                                     if (nextPushResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
                                         result = false;

@@ -4,10 +4,10 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpprovider.edb.bean;
+package com.huobanplus.erpprovider.edb.formatedb;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Getter;

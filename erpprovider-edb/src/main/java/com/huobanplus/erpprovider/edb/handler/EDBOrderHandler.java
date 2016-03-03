@@ -4,11 +4,15 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb.handler;
 
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.huobanplus.erpprovider.edb.bean.EDBSysData;
+import com.huobanplus.erpprovider.edb.formatedb.EDBCreateOrderInfo;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
@@ -16,6 +20,7 @@ import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -103,4 +108,15 @@ public interface EDBOrderHandler {
      * @return
      */
     EventResult cancelOrder(String orderId, ERPInfo erpInfo);
+
+
+    /**
+     * 推送订单
+     *
+     * @param edbCreateOrderInfo
+     * @return
+     */
+    EventResult orderPush(EDBCreateOrderInfo edbCreateOrderInfo, EDBSysData sysData) throws JsonProcessingException, UnsupportedEncodingException;
+
+    EDBCreateOrderInfo jsonListToOrderInfo(JSONObject jsonObject);
 }

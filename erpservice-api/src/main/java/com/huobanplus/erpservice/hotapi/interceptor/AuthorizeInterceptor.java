@@ -4,13 +4,12 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.hotapi.interceptor;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
@@ -54,7 +53,8 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
             }
             if (baseConfig.getIsOpen() == 0) {
                 apiResult = ApiResult.resultWith(ResultCode.ERP_NOT_OPEN);
-                response.getWriter().write(new ObjectMapper().writeValueAsString(apiResult));
+                response.getWriter().write(JSON.toJSONString(apiResult));
+
                 return false;
             }
             log.info("customerId=" + baseConfig.getCustomerId());
@@ -75,7 +75,7 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
                 request.setAttribute("erpUserInfo", erpUserInfo);
                 return true;
             } else {
-                response.getWriter().write(JSON.toJSONString(apiResult));
+                response.getWriter().write(JSON.toJSONString(ApiResult.resultWith(ResultCode.WRONG_SIGN_CODE)));
                 return false;
             }
         } catch (Exception e) {

@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.common.util;
@@ -55,15 +55,15 @@ public class SignBuilder {
      * @param suffix 签名后缀
      * @return 返回鉴权信息字符串
      */
-    public static String buildSign(Map<String, String> params, String prefix, String suffix) throws UnsupportedEncodingException {
+    public static String buildSign(Map<String, Object> params, String prefix, String suffix) throws UnsupportedEncodingException {
         if (prefix == null)
             prefix = "";
         if (suffix == null)
             suffix = "";
         StringBuilder stringBuilder = new StringBuilder(prefix);
-        Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
+        Iterator<Map.Entry<String, Object>> iterator = params.entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry<String, String> next = iterator.next();
+            Map.Entry<String, Object> next = iterator.next();
             stringBuilder.append(next.getKey()).append(next.getValue());
         }
         stringBuilder.append(suffix);

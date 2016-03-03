@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice;
@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.request.RequestContextListener;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -80,6 +79,6 @@ public class SpringWebTest {
             stringBuilder.append(next.getKey()).append(next.getValue());
         }
         stringBuilder.append(suffix);
-        return DigestUtils.md5Hex(stringBuilder.toString()).toUpperCase();
+        return DigestUtils.md5Hex(stringBuilder.toString());
     }
 }
