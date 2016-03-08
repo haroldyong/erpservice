@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.proxy.controller.impl;
@@ -20,7 +20,11 @@ import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.*;
+import com.huobanplus.erpservice.eventhandler.erpevent.CancelOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderDetailEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.OrderDeliverEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.OrderUpdateEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -57,12 +61,12 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
         if (erpHandler == null) {
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
         }
-        if (erpHandler.eventSupported(CreateOrderEvent.class)) {
+        if (erpHandler.eventSupported(PushNewOrderEvent.class)) {
             Order order = JSON.parseObject(orderInfoJson, Order.class);
-            CreateOrderEvent createOrderEvent = new CreateOrderEvent();
-            createOrderEvent.setErpInfo(erpInfo);
-            createOrderEvent.setOrderInfo(order);
-            EventResult eventResult = erpHandler.handleEvent(createOrderEvent);
+            PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
+            pushNewOrderEvent.setErpInfo(erpInfo);
+            pushNewOrderEvent.setOrderInfo(order);
+            EventResult eventResult = erpHandler.handleEvent(pushNewOrderEvent);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 return ApiResult.resultWith(ResultCode.SUCCESS);
             } else {

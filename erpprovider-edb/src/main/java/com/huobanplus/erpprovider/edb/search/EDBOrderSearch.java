@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb.search;
@@ -13,7 +13,7 @@ import com.huobanplus.erpprovider.edb.common.EDBEnum;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Created by allan on 12/25/15.
@@ -22,12 +22,10 @@ import java.time.LocalDateTime;
 @Getter
 public class EDBOrderSearch {
     private String dateType;
-    private LocalDateTime beginTime;
-    private LocalDateTime endTime;
+    private Date beginTime;
+    private Date endTime;
     private EDBEnum.PayStatusEnum payStatus;
-    private EDBEnum.OrderStatusEnum orderStatus;
-    private String shopId;
-    private String storageId;
-    private int pageNo;
-    private int pageSize;
+    private EDBEnum.ShipStatusEnum shipStatus;
+    private EDBEnum.PlatformStatus platformStatus;
+    private EDBEnum.OrderStatusEnum proceStatus;
 }

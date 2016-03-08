@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb.bean;
@@ -13,7 +13,10 @@ package com.huobanplus.erpprovider.edb.bean;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 /**
+ * EDB的系统数据
  * Created by allan on 2015/8/4.
  */
 @Getter
@@ -30,4 +33,6 @@ public class EDBSysData {
     private String ip;
     private String shopId;
     private String storageId;
+    private String express;
+    private Date beginTime;
 }

@@ -4,7 +4,7 @@
   ~
   ~ (c) Copyright Hangzhou Hot Technology Co., Ltd.
   ~ Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
-  ~ 2013-2015. All rights reserved.
+  ~ 2013-2016. All rights reserved.
   --%>
 
 <%--
@@ -30,6 +30,7 @@
     <script type="text/javascript" src="<c:url value="/resource/scripts/lib/jBox/jquery.jBox-2.3.min.js" />"></script>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resource/scripts/lib/jBox/Skins/Green/jbox.css"/>">
     <script src="<c:url value="/resource/scripts/lib/jquery.utils.js" />" type="text/javascript"></script>
+    <script src="<c:url value="/resource/scripts/lib/My97DatePicker/WdatePicker.js" />" type="text/javascript"></script>
     <style type="text/css">
         .spModuleTitle {
             padding: 3px 10px 0px 10px;
@@ -127,10 +128,15 @@
             if (result == "error") {
                 $.jBox.tip("保存失败", "error");
             }
+            var beginTime = "${beginTime}";
+
             <c:forEach items="${lstDetailConfig}" var="item">
             var erpSysData = ${item.erpSysData};
             switch (${item.erpType.getCode()}) {
                 case 0:
+                    if (erpSysData.beginTime == null || erpSysData.beginTime == "") {
+                        erpSysData.beginTime = beginTime;
+                    }
                     edbConfigHandler.setEdbValues(erpSysData);
                     break;
                 case 1:

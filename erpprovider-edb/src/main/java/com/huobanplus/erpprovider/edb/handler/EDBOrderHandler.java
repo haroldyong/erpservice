@@ -9,11 +9,10 @@
 
 package com.huobanplus.erpprovider.edb.handler;
 
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.formatedb.EDBCreateOrderInfo;
-import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -21,7 +20,6 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -49,7 +47,7 @@ public interface EDBOrderHandler {
      * @throws IOException IO异常
      */
 //    @Scheduled(fixedRate = 60000, initialDelay = 60000)
-    EventResult obtainOrderList(int pageIndex, LocalDateTime beginTime, LocalDateTime endTime, ERPDetailConfigEntity detailConfig);
+    EventResult obtainOrderList(int pageIndex, EDBSysData sysData, EDBOrderSearch edbOrderSearch);
 
     /**
      * 更新订单导入标记为 已导入，可更新条件为
@@ -118,5 +116,4 @@ public interface EDBOrderHandler {
      */
     EventResult orderPush(EDBCreateOrderInfo edbCreateOrderInfo, EDBSysData sysData) throws JsonProcessingException, UnsupportedEncodingException;
 
-    EDBCreateOrderInfo jsonListToOrderInfo(JSONObject jsonObject);
 }

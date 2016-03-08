@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.datacenter.entity;
@@ -30,6 +30,7 @@ public class ERPDetailConfigEntity {
     private Integer id;
     private ERPTypeEnum.ProviderType erpType;
     private ERPTypeEnum.UserType erpUserType;
+    @Lob
     private String erpSysData;
     /**
      * 是否在使用，0表示未使用，1表示正在使用，每个商户只可以使用一个erp

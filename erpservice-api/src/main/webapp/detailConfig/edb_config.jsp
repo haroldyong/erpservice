@@ -4,7 +4,7 @@
   ~
   ~ (c) Copyright Hangzhou Hot Technology Co., Ltd.
   ~ Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
-  ~ 2013-2015. All rights reserved.
+  ~ 2013-2016. All rights reserved.
   --%>
 
 <%--
@@ -27,6 +27,8 @@
             var ip = $.trim($("#ip").val());
             var shopId = $.trim($("#shopId").val());
             var storageId = $.trim($("#storageId").val());
+            var express = $.trim($("#express").val());
+            var beginTime = $.trim($("#beginTime").val());
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入请求地址");
                 return null;
@@ -60,6 +62,15 @@
                 $.jBox.tip("请输入仓库编号");
                 return null;
             }
+            if (express.length == 0) {
+                $.jBox.tip("请输入快递公司");
+                return null;
+            }
+
+            if (beginTime.length == 0) {
+                $.jBox.tip("请选择开始同步时间");
+                return null;
+            }
 
             var edbConfig = {
                 requestUrl: requestUrl,
@@ -69,7 +80,9 @@
                 token: edbToken,
                 ip: ip,
                 shopId: shopId,
-                storageId: storageId
+                storageId: storageId,
+                express: express,
+                beginTime: beginTime
             };
             return JSON.stringify(edbConfig);
         },
@@ -82,6 +95,9 @@
             $("#ip").val(jsonData.ip);
             $("#shopId").val(jsonData.shopId);
             $("#storageId").val(jsonData.storageId);
+            $("#express").val(jsonData.express);
+            $("#beginTime").val(jsonData.beginTime);
+
         }
     };
 </script>
@@ -140,6 +156,24 @@
         <td>
             <input name="storageId" type="text" value="" id="storageId" class="input-normal"/>
             （E店宝客户端档案管理→仓库档案→仓库设置中查看）
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">默认快递公司：</th>
+        <td>
+            <input name="express" type="text" value="" id="express" class="input-normal"/>
+            （E店宝客户端档案管理→仓库档案→快递公司设置查看）
+        </td>
+    </tr>
+
+    <tr>
+        <th style="vertical-align: middle;">同步开始时间：</th>
+        <td>
+            <input name="beginTime" type="text" id="beginTime"
+                   class="input-normal Wdate"
+                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false})"
+                   style="margin-left: 8px;"/>
+            （何时开始同步订单数据,以E店宝中订单的审单时间为准,默认当前时间的前一个月）
         </td>
     </tr>
     </tbody>

@@ -20,13 +20,13 @@ import com.huobanplus.erpprovider.edb.common.EDBEnum;
 import com.huobanplus.erpprovider.edb.formatedb.*;
 import com.huobanplus.erpprovider.edb.handler.BaseHandler;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
+import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.httputil.HttpUtil;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.util.StringUtil;
-import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
@@ -46,7 +46,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -88,7 +87,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             }
             edbCreateOrderInfo.setActualFreightGet(orderInfo.getCostFreight());
             edbCreateOrderInfo.setActual_RP(orderInfo.getFinalAmount());
-            edbCreateOrderInfo.setExpress(orderInfo.getLogiCode());
+            edbCreateOrderInfo.setExpress(sysData.getExpress());
 //            edbCreateOrderInfo.setOrderType(); //订单类型
             edbCreateOrderInfo.setProcessStatus(EnumHelper.getEnumName(EDBEnum.OrderStatusEnum.class, orderInfo.getOrderStatus()));
             edbCreateOrderInfo.setPayStatus(EnumHelper.getEnumName(EDBEnum.PayStatusEnum.class, orderInfo.getPayStatus()));
@@ -174,19 +173,24 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 //            }
 //        }
 //    }
-    public EventResult obtainOrderList(int pageIndex, LocalDateTime beginTime, LocalDateTime endTime, ERPDetailConfigEntity detailConfig) {
+    public EventResult obtainOrderList(int pageIndex, EDBSysData sysData, EDBOrderSearch edbOrderSearch) {
         try {
-            EDBSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), EDBSysData.class);
             Map<String, Object> requestData = getSysRequestData(EDBConstant.GET_ORDER_INFO, sysData);
-//            requestData.put("date_type", EDBEnum.OrderDateType.DELIVERY_TIME.getName());
-            requestData.put("begin_time", beginTime.format(DateTimeFormatter.ofPattern(StringUtil.TIME_PATTERN)));
-            requestData.put("end_time", endTime.format(DateTimeFormatter.ofPattern(StringUtil.TIME_PATTERN)));
+            //系统参数
             requestData.put("storage_id", sysData.getStorageId());
             requestData.put("shopid", sysData.getShopId());
+
+//            requestData.put("date_type", EDBEnum.OrderDateType.DELIVERY_TIME.getName());
+            requestData.put("begin_time", StringUtil.DateFormat(edbOrderSearch.getBeginTime(), StringUtil.TIME_PATTERN));
+            requestData.put("end_time", StringUtil.DateFormat(edbOrderSearch.getEndTime(), StringUtil.TIME_PATTERN));
             requestData.put("page_no", pageIndex);
             requestData.put("page_size", EDBConstant.PAGE_SIZE);
-            requestData.put("order_status", EDBEnum.ShipStatusEnum.ALL_DELIVER);
-            requestData.put("platform_status", EDBEnum.platformStatus.PAYED);
+//            requestData.put("order_status", EDBEnum.ShipStatusEnum.ALL_DELIVER);
+            requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
+//            requestData.put("platform_status", EDBEnum.PlatformStatus.PAYED);
+            requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
+            requestData.put("proce_Status", edbOrderSearch.getProceStatus().getName());
+
             Map<String, Object> signMap = new TreeMap<>(requestData);
             String sign = getSign(signMap, sysData);
             requestData.put("sign", sign);
@@ -422,63 +426,6 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         }
 
         return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
-    }
-
-    @Override
-    public EDBCreateOrderInfo jsonListToOrderInfo(JSONObject jsonObject) {
-        EDBCreateOrderInfo edbCreateOrderInfo = new EDBCreateOrderInfo();
-        edbCreateOrderInfo.setOutTid(jsonObject.getString("out_tid"));
-        edbCreateOrderInfo.setShopId(jsonObject.getString("shopid"));
-        edbCreateOrderInfo.setStorageId(jsonObject.getIntValue("storage_id"));
-//            edbCreateOrderInfo.setBuyerId();
-        edbCreateOrderInfo.setBuyerMsg(orderInfo.getMemo());
-        edbCreateOrderInfo.setSellerRemark(orderInfo.getRemark());
-        edbCreateOrderInfo.setConsignee(orderInfo.getShipName());
-        edbCreateOrderInfo.setAddress(orderInfo.getShipAddr());
-        edbCreateOrderInfo.setPostcode(orderInfo.getShipZip());
-        edbCreateOrderInfo.setTelephone(orderInfo.getShipTel());
-        edbCreateOrderInfo.setMobilPhone(orderInfo.getShipMobile());
-        String shipArea = orderInfo.getShipArea();
-        if (!StringUtils.isEmpty(shipArea)) {
-            String[] shipAreaArray = shipArea.split("/");
-            edbCreateOrderInfo.setProvince(shipAreaArray[0]);
-            edbCreateOrderInfo.setCity(shipAreaArray[1]);
-            edbCreateOrderInfo.setArea(shipAreaArray[2]);
-        }
-        edbCreateOrderInfo.setActualFreightGet(orderInfo.getCostFreight());
-        edbCreateOrderInfo.setActual_RP(orderInfo.getFinalAmount());
-        edbCreateOrderInfo.setExpress(orderInfo.getLogiCode());
-//            edbCreateOrderInfo.setOrderType(); //订单类型
-        edbCreateOrderInfo.setProcessStatus(EnumHelper.getEnumName(EDBEnum.OrderStatusEnum.class, orderInfo.getOrderStatus()));
-        edbCreateOrderInfo.setPayStatus(EnumHelper.getEnumName(EDBEnum.PayStatusEnum.class, orderInfo.getPayStatus()));
-        edbCreateOrderInfo.setDeliverStatus(EnumHelper.getEnumName(EDBEnum.ShipStatusEnum.class, orderInfo.getShipStatus()));
-        edbCreateOrderInfo.setOrderTotalMoney(orderInfo.getFinalAmount());
-        edbCreateOrderInfo.setProductTotalMoney(orderInfo.getCostItem());
-        edbCreateOrderInfo.setPayMethod(orderInfo.getPaymentName());
-        edbCreateOrderInfo.setFavorableMoney(orderInfo.getPmtAmount());
-        edbCreateOrderInfo.setOutExpressMethod(orderInfo.getLogiName());
-        edbCreateOrderInfo.setOrderDate(orderInfo.getCreateTime());
-        edbCreateOrderInfo.setPayDate(orderInfo.getPayTime());
-//            edbCreateOrderInfo.setDistributorNo(); 分销商编号
-        edbCreateOrderInfo.setWuLiu(orderInfo.getLogiName());
-        edbCreateOrderInfo.setWuLiuNo(orderInfo.getLogiNo());
-        edbCreateOrderInfo.setActualFreightPay(orderInfo.getCostFreight());
-        List<EDBOrderItem> edbOrderItemList = new ArrayList<>();
-        for (OrderItem orderItem : orderInfo.getOrderItems()) {
-            EDBOrderItem edbOrderItem = new EDBOrderItem();
-            edbOrderItem.setBarCode(orderItem.getProductBn());
-            edbOrderItem.setProductTitle(orderItem.getName());
-            edbOrderItem.setStandard(orderItem.getStandard());
-            edbOrderItem.setOutPrice(orderItem.getAmount());
-            edbOrderItem.setOrderGoodsNum(orderItem.getNum());
-            edbOrderItem.setCostPrice(orderItem.getAmount());
-            edbOrderItem.setShopId(sysData.getShopId());
-            edbOrderItem.setOutTid(orderInfo.getOrderId());
-            edbOrderItem.setOutBarCode(orderItem.getProductBn());
-            edbOrderItem.setProductIntro(orderItem.getBrief());
-            edbOrderItemList.add(edbOrderItem);
-        }
-        edbCreateOrderInfo.setProductInfos(edbOrderItemList);
     }
 
 

@@ -179,7 +179,7 @@ public interface EDBEnum {
     /**
      * 平台订单状态
      */
-    enum platformStatus implements ICommonEnum {
+    enum PlatformStatus implements ICommonEnum {
         PARTY_DELIVER(0, "部分发货"),
         WAIT_FOR_PARTY_REFUND(0, "待退款部分退款"),
         WAIT_FOR_ALL_REFUND(1, "待退款全部退款"),
@@ -192,7 +192,7 @@ public interface EDBEnum {
         private int code;
         private String name;
 
-        platformStatus(int code, String name) {
+        PlatformStatus(int code, String name) {
             this.code = code;
             this.name = name;
         }
