@@ -20,7 +20,11 @@ import org.springframework.test.context.ActiveProfiles;
  */
 @ActiveProfiles("test")
 @Configuration
-@ComponentScan({"com.huobanplus.erpprovider.edb", "com.huobanplus.erpservice.eventhandler"})
+@ComponentScan({
+        "com.huobanplus.erpprovider.edb",
+        "com.huobanplus.erpservice.eventhandler",
+        "com.huobanplus.erpuser.huobanmall"
+})
 @Import({DataCenterConfig.class})
 public class EDBTestConfig {
 

@@ -4,13 +4,14 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.proxy.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
+import com.huobanplus.erpprovider.edb.service.ScheduledService;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.DxDESCipher;
@@ -24,17 +25,20 @@ import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.net.URLEncoder;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by liual on 2015-10-26.
@@ -53,6 +57,8 @@ public class OrderProxyControllerTest extends SpringWebTest {
     private String mockCustomer = "3447";
 
     private ERPTypeEnum.UserType mockUserType = ERPTypeEnum.UserType.HUOBAN_MALL;
+    @Autowired
+    private ScheduledService scheduledService;
 
     @Before
     public void setUp() throws Exception {
@@ -95,7 +101,7 @@ public class OrderProxyControllerTest extends SpringWebTest {
         signMap.put("customerId", mockCustomer);
 
         String sign = buildSign(signMap, null, HBConstant.SECRET_KEY);
-        mockMvc.perform(post("/hotProxy/order/createOrder")
+        mockMvc.perform(post("/hotProxy/order/pushOrder")
                 .param("orderInfoJson", orderInfoJson)
                 .param("customerId", mockCustomer)
                 .param("sign", sign)
@@ -142,5 +148,10 @@ public class OrderProxyControllerTest extends SpringWebTest {
                 .param("sign", sign))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testScheduled() throws Exception {
+        scheduledService.syncOrderShip();
     }
 }

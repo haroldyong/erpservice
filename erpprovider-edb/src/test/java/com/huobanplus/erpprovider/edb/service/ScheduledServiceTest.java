@@ -10,8 +10,6 @@
 package com.huobanplus.erpprovider.edb.service;
 
 import com.huobanplus.erpprovider.edb.EDBTestBase;
-import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
-import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,10 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ScheduledServiceTest extends EDBTestBase {
     @Autowired
     private ScheduledService scheduledService;
-    @Autowired
-    private ERPDetailConfigService erpDetailConfigService;
-    @Autowired
-    private EDBOrderHandler edbOrderHandler;
 
     @Test
     public void testScheduledOrder() throws Exception {

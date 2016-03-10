@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpuser.huobanmall.handler.impl;
@@ -158,11 +158,11 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
             Map<String, Object> requestMap = new HashMap<>(signMap);
             requestMap.put("sign", sign);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/UpdateOrerList", requestMap);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/BatchDeliver", requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult apiResult = JSON.parseObject(httpResult.getHttpContent(), ApiResult.class);
                 if (apiResult.getCode() == 200) {
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }
                 return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
             }

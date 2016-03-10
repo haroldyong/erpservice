@@ -33,11 +33,11 @@ public interface EDBOrderHandler {
      * <p>返回字段：result(结果);status(状态)</p>
      *
      * @param orderInfo 订单信息实体
-     * @param info      ERP信息
+     * @param sysData   E店宝基本信息
      * @return 请求结果
      * @throws IOException IO异常
      */
-    EventResult createOrder(Order orderInfo, ERPInfo info);
+    EventResult pushOrder(Order orderInfo, EDBSysData sysData);
 
     /**
      * 获取订单列表

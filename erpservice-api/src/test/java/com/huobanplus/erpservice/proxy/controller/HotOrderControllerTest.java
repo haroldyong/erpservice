@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.proxy.controller;
@@ -30,11 +30,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by allan on 2015/8/4.
@@ -99,7 +101,7 @@ public class HotOrderControllerTest extends SpringWebTest {
         signMap.put("sysDataJson", mockERP.getSysDataJson());
 
         String sign = buildSign(signMap, signKey, null);
-        mockMvc.perform(post("/hotProxy/order/createOrder")
+        mockMvc.perform(post("/hotProxy/order/pushOrder")
                 .param("orderInfoJson", orderInfoJson)
                 .param("sysDataJson", DxDESCipher.encrypt(mockERP.getSysDataJson()))
                 .param("sign", sign))

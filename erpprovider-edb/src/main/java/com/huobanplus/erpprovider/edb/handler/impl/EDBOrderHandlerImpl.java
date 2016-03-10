@@ -63,10 +63,9 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
     private ERPRegister erpRegister;
 
     @Override
-    public EventResult createOrder(Order orderInfo, ERPInfo info) {
+    public EventResult pushOrder(Order orderInfo, EDBSysData sysData) {
         try {
             EDBCreateOrderInfo edbCreateOrderInfo = new EDBCreateOrderInfo();
-            EDBSysData sysData = JSON.parseObject(info.getSysDataJson(), EDBSysData.class);
             edbCreateOrderInfo.setOutTid(orderInfo.getOrderId());
             edbCreateOrderInfo.setShopId(sysData.getShopId());
             edbCreateOrderInfo.setStorageId(Integer.parseInt(sysData.getStorageId()));
@@ -91,6 +90,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 //            edbCreateOrderInfo.setOrderType(); //订单类型
             edbCreateOrderInfo.setProcessStatus(EnumHelper.getEnumName(EDBEnum.OrderStatusEnum.class, orderInfo.getOrderStatus()));
             edbCreateOrderInfo.setPayStatus(EnumHelper.getEnumName(EDBEnum.PayStatusEnum.class, orderInfo.getPayStatus()));
+//            edbCreateOrderInfo.setPayStatus("已发货");
             edbCreateOrderInfo.setDeliverStatus(EnumHelper.getEnumName(EDBEnum.ShipStatusEnum.class, orderInfo.getShipStatus()));
             edbCreateOrderInfo.setOrderTotalMoney(orderInfo.getFinalAmount());
             edbCreateOrderInfo.setProductTotalMoney(orderInfo.getCostItem());
@@ -183,13 +183,14 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 //            requestData.put("date_type", EDBEnum.OrderDateType.DELIVERY_TIME.getName());
             requestData.put("begin_time", StringUtil.DateFormat(edbOrderSearch.getBeginTime(), StringUtil.TIME_PATTERN));
             requestData.put("end_time", StringUtil.DateFormat(edbOrderSearch.getEndTime(), StringUtil.TIME_PATTERN));
+//            requestData.put("begin_time", "2016-03-07");
+//            requestData.put("end_time", "2016-03-10");
             requestData.put("page_no", pageIndex);
             requestData.put("page_size", EDBConstant.PAGE_SIZE);
-//            requestData.put("order_status", EDBEnum.ShipStatusEnum.ALL_DELIVER);
             requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
-//            requestData.put("platform_status", EDBEnum.PlatformStatus.PAYED);
             requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
             requestData.put("proce_Status", edbOrderSearch.getProceStatus().getName());
+//            requestData.put("out_tid", "2016031085824145");
 
             Map<String, Object> signMap = new TreeMap<>(requestData);
             String sign = getSign(signMap, sysData);
@@ -418,6 +419,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
         HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), requestData);
         if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+            System.out.println("ok");
             JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
             if (jsonObject.getJSONObject("Success") == null) {
                 return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);

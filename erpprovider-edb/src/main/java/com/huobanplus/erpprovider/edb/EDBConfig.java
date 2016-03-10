@@ -4,15 +4,13 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb;
 
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -25,11 +23,6 @@ import javax.annotation.PostConstruct;
 public class EDBConfig {
     @Autowired
     private ERPRegister register;
-
-    @Bean
-    public EDBHandlerBuilder edbHandlerBuilder() {
-        return edbHandlerBuilder;
-    }
 
     @Autowired
     private EDBHandlerBuilder edbHandlerBuilder;

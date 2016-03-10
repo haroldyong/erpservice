@@ -4,12 +4,14 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb;
 
 
+import com.alibaba.fastjson.JSON;
+import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
@@ -77,11 +79,12 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                        return edbOrderHandler.createOrder(pushNewOrderEvent.getOrderInfo(), erpBaseEvent.getErpInfo());
+                        EDBSysData sysData = JSON.parseObject(erpBaseEvent.getErpInfo().getSysDataJson(), EDBSysData.class);
+                        return edbOrderHandler.pushOrder(pushNewOrderEvent.getOrderInfo(), sysData);
                     }
 //                    if (erpBaseEvent instanceof CreateOrderEvent) {
 //                        CreateOrderEvent createOrderEvent = (CreateOrderEvent) erpBaseEvent;
-//                        return edbOrderHandler.createOrder(createOrderEvent.getOrderInfo(), erpBaseEvent.getErpInfo());
+//                        return edbOrderHandler.pushOrder(createOrderEvent.getOrderInfo(), erpBaseEvent.getErpInfo());
 //                    }
 //                    if (erpBaseEvent instanceof OrderUpdateEvent) {
 //                        OrderUpdateEvent orderUpdateEvent = (OrderUpdateEvent) erpBaseEvent;

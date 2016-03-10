@@ -4,20 +4,19 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpuser.huobanmall.common;
 
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 import javax.annotation.PostConstruct;
 
 /**
+ * 伙伴商城配置
  * Created by liual on 2015-10-15.
  */
 @Configuration

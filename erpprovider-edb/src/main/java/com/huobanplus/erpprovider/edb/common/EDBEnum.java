@@ -49,7 +49,8 @@ public interface EDBEnum {
         ALL_PAYED(1, "已付款"),
         PARTY_PAYED(3, "部分付款"),
         PARTY_REFUND(4, "已退款部分退款"),
-        ALL_REFUND(5, "已退款全部退款");
+        ALL_REFUND(5, "已退款全部退款"),
+        ALL_DELIVER(6, "已发货");
 
         private int code;
         private String name;
