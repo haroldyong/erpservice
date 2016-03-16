@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.datacenter.repository;
@@ -43,6 +43,6 @@ public interface ERPDetailConfigRepository extends JpaRepository<ERPDetailConfig
 
     List<ERPDetailConfigEntity> findByCustomerIdAndErpUserType(int customerId, ERPTypeEnum.UserType userType);
 
-    @Query("select detailConfig from ERPDetailConfigEntity detailConfig where detailConfig.isDefault=1 and detailConfig.erpType=?1")
+    @Query("select detailConfig from ERPDetailConfigEntity detailConfig where detailConfig.isDefault=1 and detailConfig.erpType=?1 and detailConfig.erpBaseConfig.isOpen=1")
     List<ERPDetailConfigEntity> findByErpTypeAndDefault(ERPTypeEnum.ProviderType erpTypeEnum);
 }

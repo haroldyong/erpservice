@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpuser.hotsupplier.config;
@@ -13,6 +13,7 @@ import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailListEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushOrderListInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
@@ -41,6 +42,9 @@ public class SupplierHandlerBuilder implements ERPUserHandlerBuilder {
                     return orderHandler.obtainOrderDetail(((GetOrderDetailEvent) erpBaseEvent).getOrderId(), info);
                 } else if (erpBaseEvent instanceof PushReturnInfoEvent) {
                     return orderHandler.returnInfo(((PushReturnInfoEvent) erpBaseEvent).getReturnInfo(), info);
+                } else if (erpBaseEvent instanceof PushOrderListInfoEvent) {
+                    PushOrderListInfoEvent pushOrderListInfoEvent = (PushOrderListInfoEvent) erpBaseEvent;
+                    return orderHandler.pushOrderDetailList(pushOrderListInfoEvent.getOrderListJson(), info);
                 }
                 return null;
             };

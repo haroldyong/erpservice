@@ -31,14 +31,10 @@ import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
-import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
-import com.huobanplus.erpservice.datacenter.service.OrderScheduledLogService;
-import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -55,13 +51,6 @@ import java.util.*;
  */
 @Component
 public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler {
-    @Autowired
-    private ERPDetailConfigService detailConfigService;
-    @Autowired
-    private OrderScheduledLogService scheduledLogService;
-    @Autowired
-    private ERPRegister erpRegister;
-
     @Override
     public EventResult pushOrder(Order orderInfo, EDBSysData sysData) {
         try {
@@ -187,10 +176,10 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 //            requestData.put("end_time", "2016-03-10");
             requestData.put("page_no", pageIndex);
             requestData.put("page_size", EDBConstant.PAGE_SIZE);
-            requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
-            requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
-            requestData.put("proce_Status", edbOrderSearch.getProceStatus().getName());
-//            requestData.put("out_tid", "2016031085824145");
+//            requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
+//            requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
+//            requestData.put("proce_Status", edbOrderSearch.getProceStatus().getName());
+            requestData.put("out_tid", "2016031677141131");
 
             Map<String, Object> signMap = new TreeMap<>(requestData);
             String sign = getSign(signMap, sysData);

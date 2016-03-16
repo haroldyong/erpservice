@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.commons.config;
@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -34,6 +33,15 @@ import java.util.List;
 @EnableWebMvc
 @Import(ApplicationConfig.class)
 public class WebConfig extends WebMvcConfigurerAdapter {
+    @Autowired
+    private AuthorizeInterceptor authorizeInterceptor;
+    @Autowired
+    private UserAuthorizeInterceptor userAuthorizeInterceptor;
+    @Autowired
+    private PlatformInterceptor platformInterceptor;
+    @Autowired
+    private SandboxInterceptor sandboxInterceptor;
+
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
@@ -45,15 +53,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         converter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON));
         converters.add(converter);
     }
-
-    @Autowired
-    private AuthorizeInterceptor authorizeInterceptor;
-    @Autowired
-    private UserAuthorizeInterceptor userAuthorizeInterceptor;
-    @Autowired
-    private PlatformInterceptor platformInterceptor;
-    @Autowired
-    private SandboxInterceptor sandboxInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -77,4 +76,5 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         resourceViewResolver.setSuffix(".jsp");
         registry.viewResolver(resourceViewResolver);
     }
+
 }

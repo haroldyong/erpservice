@@ -96,7 +96,7 @@ public class ScheduledService {
                         List<Order> successList = JSON.parseArray(String.valueOf(firstPushResult.getData()), Order.class);
 
                         int totalPage = totalResult / EDBConstant.PAGE_SIZE;
-                        if (totalResult % totalPage != 0) {
+                        if (totalResult % EDBConstant.PAGE_SIZE != 0) {
                             totalPage++;
                         }
                         if (totalPage > 1) {
@@ -166,11 +166,11 @@ public class ScheduledService {
                 if (!StringUtils.isEmpty(sendNum)) {
                     orderItem.setSendNum(Integer.parseInt(sendNum));
                 }
+                orderItem.setSendNum(1);
                 String refundNum = joItem.getString("refund_num");
                 if (!StringUtils.isEmpty(refundNum)) {
                     orderItem.setRefundNum(Integer.parseInt(refundNum));
                 }
-                orderItem.setSendNum(1);
                 orderItems.add(orderItem);
             }
             order.setOrderItems(orderItems);

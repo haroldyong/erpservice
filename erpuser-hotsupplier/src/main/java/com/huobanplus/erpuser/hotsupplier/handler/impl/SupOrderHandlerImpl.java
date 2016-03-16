@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpuser.hotsupplier.handler.impl;
@@ -122,6 +122,32 @@ public class SupOrderHandlerImpl implements SupOrderHandler {
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult<MallOrderBean> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<MallOrderBean>>() {
                 });
+                if (apiResult.getCode() == 200) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+        } catch (IOException e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public EventResult pushOrderDetailList(String orderListJson, ERPUserInfo erpUserInfo) {
+        if (StringUtils.isEmpty(orderListJson)) {
+            return EventResult.resultWith(EventResultEnum.BAD_REQUEST_PARAM, "没有可以推送的订单数据", null);
+        }
+        Map<String, Object> signMap = new TreeMap<>();
+        signMap.put("orderListJson", orderListJson);
+        signMap.put("timestamp", new Date().getTime());
+        try {
+            String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, SupConstant.SECRET_KEY);
+            Map<String, Object> requestMap = new HashMap<>(signMap);
+            requestMap.put("sign", sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(SupConstant.SUP_REQUEST_URL + "/order/batchDeliver", requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                ApiResult apiResult = JSON.parseObject(httpResult.getHttpContent(), ApiResult.class);
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }
