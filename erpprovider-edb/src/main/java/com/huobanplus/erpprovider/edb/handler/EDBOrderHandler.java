@@ -88,7 +88,7 @@ public interface EDBOrderHandler {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    EventResult orderDeliver(String orderId, Date deliverTime, String expressNo, String express, String weight, ERPInfo info);
+    EventResult orderDeliver(String orderId, Date deliverTime, String expressNo, String express, String weight, EDBSysData sysData);
 
     /**
      * 根据外部订单编号获取订单详情

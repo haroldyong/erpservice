@@ -4,12 +4,12 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb.handler;
 
-import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 import java.io.IOException;
@@ -22,11 +22,11 @@ public interface EDBProductHandler {
     /**
      * 获取货品库存信息
      *
-     * @param info erp信息
+     * @param sysData erp信息
      * @return 返回结果
      * @throws IOException IO 异常
      */
-    EventResult getProInventoryInfo(ERPInfo info) throws IOException;
+    EventResult getProInventoryInfo(EDBSysData sysData, int pageIndex) throws IOException;
 
 //    EventResult getProBaseInfo(ERPInfo info)
 }

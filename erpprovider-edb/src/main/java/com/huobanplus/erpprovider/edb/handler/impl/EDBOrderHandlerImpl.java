@@ -176,10 +176,10 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 //            requestData.put("end_time", "2016-03-10");
             requestData.put("page_no", pageIndex);
             requestData.put("page_size", EDBConstant.PAGE_SIZE);
-//            requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
-//            requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
-//            requestData.put("proce_Status", edbOrderSearch.getProceStatus().getName());
-            requestData.put("out_tid", "2016031677141131");
+            requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
+            requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
+            requestData.put("proce_Status", edbOrderSearch.getProceStatus().getName());
+//            requestData.put("out_tid", "2016031677141131");
 
             Map<String, Object> signMap = new TreeMap<>(requestData);
             String sign = getSign(signMap, sysData);
@@ -288,37 +288,30 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
     }
 
     @Override
-    public EventResult orderDeliver(String orderId, Date deliverTime, String expressNo, String express, String weight, ERPInfo info) {
+    public EventResult orderDeliver(String orderId, Date deliverTime, String expressNo, String express, String weight, EDBSysData sysData) {
         try {
-            EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
-            //todo 通过orderId获取edb平台tid
-            EventResult eventResult = this.getOrderDetail(orderId, info);
-            if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
-                return EventResult.resultWith(EventResultEnum.ERROR, "从edb获取数据失败--" + eventResult.getResultMsg(), null);
-            }
-            String tid = ((EDBOrderDetail) eventResult.getData()).getTid();
-
             EDBOrderDeliver orderDeliver = new EDBOrderDeliver();
-            orderDeliver.setOrderId(tid);
+            orderDeliver.setOrderId(orderId);
             orderDeliver.setDeliveryTime(StringUtil.DateFormat(deliverTime, StringUtil.TIME_PATTERN));
-            orderDeliver.setExpress(URLEncoder.encode(express, "utf-8"));
+            orderDeliver.setExpress(express);
             orderDeliver.setExpressNo(expressNo);
-            orderDeliver.setWeight(URLEncoder.encode(weight, "utf-8"));
+            orderDeliver.setWeight(weight);
 
             String xmlValues = "<order>" + new XmlMapper().writeValueAsString(orderDeliver) + "</order>";
 
             Map<String, Object> requestData = getSysRequestData(EDBConstant.ORDER_DELIVER, sysData);
+            requestData.put("xmlValues", xmlValues);
             Map<String, Object> signMap = new TreeMap<>(requestData);
-            requestData.put("xmlValues", URLEncoder.encode(xmlValues, "utf-8"));
-            signMap.put("xmlValues", xmlValues);
 
             requestData.put("sign", getSign(signMap, sysData));
 
-            String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
-            if (responseData == null) {
-                return EventResult.resultWith(EventResultEnum.ERROR);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+
+                return EventResult.resultWith(EventResultEnum.SUCCESS);
             }
-            return EventResult.resultWith(EventResultEnum.SUCCESS, responseData);
+
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
         } catch (Exception e) {
             return EventResult.resultWith(EventResultEnum.ERROR.getResultCode(), EventResultEnum.ERROR.getResultMsg() + "--" + e.getMessage(), null);
         }
