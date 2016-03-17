@@ -76,5 +76,5 @@ public class EDBConstant {
 
     public static final String ENCODING = "utf-8";
 
-    public static final int PAGE_SIZE = 50;
+    public static final int PAGE_SIZE = 200;
 }
