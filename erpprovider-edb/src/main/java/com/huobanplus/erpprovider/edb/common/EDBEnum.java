@@ -82,7 +82,9 @@ public interface EDBEnum {
         ALL_DELIVER(1, "已发货"),
         PARTY_DELIVER(2, "部分发货"),
         PARTY_RETURN(3, "退货到货部分退货"),
-        ALL_RETURN(4, "退货到货全部退货");
+        ALL_RETURN(4, "退货到货全部退货"),
+        WAIT_FOR_PARTY_RETURN(5, "待退货部分退货"),
+        WAIT_FOR_ALL_RETURN(6, "待退货全部退货");
 
         private int code;
         private String name;

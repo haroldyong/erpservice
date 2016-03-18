@@ -29,7 +29,7 @@ public interface ERPDetailConfigRepository extends JpaRepository<ERPDetailConfig
      * @param customerId
      * @return
      */
-    @Query("select detailConfig from ERPDetailConfigEntity detailConfig where detailConfig.customerId=?1 and detailConfig.isDefault=1 and detailConfig.erpUserType=?2")
+    @Query("select detailConfig from ERPDetailConfigEntity detailConfig where detailConfig.customerId=?1 and detailConfig.isDefault=1 and detailConfig.erpUserType=?2 and detailConfig.erpBaseConfig.isOpen=1")
     ERPDetailConfigEntity findByCustomerIdAndDefault(int customerId, ERPTypeEnum.UserType userType);
 
 

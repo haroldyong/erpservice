@@ -4,11 +4,12 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.proxy.interceptor;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.util.SignBuilder;
@@ -29,7 +30,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by liual on 2015-10-19.
@@ -47,7 +47,7 @@ public class UserAuthorizeInterceptor extends HandlerInterceptorAdapter {
 
         if (StringUtils.isEmpty(requestSign)) {
             apiResult = ApiResult.resultWith(ResultCode.EMPTY_SIGN_CODE);
-            response.getWriter().write(new ObjectMapper().writeValueAsString(apiResult));
+            response.getWriter().write(JSON.toJSONString(apiResult));
             return false;
         }
         Map<String, Object> signMap = CommonUtils.getSignMap(request);
@@ -56,6 +56,11 @@ public class UserAuthorizeInterceptor extends HandlerInterceptorAdapter {
         int userType = Integer.parseInt(request.getParameter("userType"));
         ERPTypeEnum.UserType erpUserType = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, userType);
         ERPDetailConfigEntity detailConfigEntity = detailConfigService.findByCustomerIdAndDefault(customerId, erpUserType);
+        if (detailConfigEntity == null) {
+            apiResult = ApiResult.resultWith(ResultCode.ERP_NOT_OPEN);
+            response.getWriter().write(JSON.toJSONString(apiResult));
+            return false;
+        }
         String secretKey = detailConfigEntity.getErpUserType() == ERPTypeEnum.UserType.HUOBAN_MALL ? HBConstant.SECRET_KEY : SBConstant.SECRET_KEY;
         String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, secretKey);
         if (sign.equals(requestSign)) {

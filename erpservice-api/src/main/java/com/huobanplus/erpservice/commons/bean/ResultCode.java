@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.commons.bean;
@@ -24,10 +24,15 @@ public enum ResultCode {
     WRONG_SIGN_CODE(4001, "签名验证不正确"),
     BAD_REQUEST_PARAM(4002, "错误的请求参数"),
     BAD_APP_KEY_AND_TOKEN(3000, "未找到对应appKey和Token的商家信息"),
-    ERP_NOT_OPEN(3001, "为开启erp数据服务");
+    ERP_NOT_OPEN(3001, "未开启erp数据服务");
 
     private int resultCode;
     private String resultMsg;
+
+    ResultCode(int resultCode, String resultMsg) {
+        this.resultCode = resultCode;
+        this.resultMsg = resultMsg;
+    }
 
     public int getResultCode() {
         return resultCode;
@@ -42,11 +47,6 @@ public enum ResultCode {
     }
 
     public void setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
-    }
-
-    ResultCode(int resultCode, String resultMsg) {
-        this.resultCode = resultCode;
         this.resultMsg = resultMsg;
     }
 }

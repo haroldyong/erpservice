@@ -79,6 +79,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 //            edbCreateOrderInfo.setOrderType(); //订单类型
             edbCreateOrderInfo.setProcessStatus(EnumHelper.getEnumName(EDBEnum.OrderStatusEnum.class, orderInfo.getOrderStatus()));
             edbCreateOrderInfo.setPayStatus(EnumHelper.getEnumName(EDBEnum.PayStatusEnum.class, orderInfo.getPayStatus()));
+//            edbCreateOrderInfo.setPayStatus("买家已经申请退款,等待卖家同意");
 //            edbCreateOrderInfo.setPayStatus("已发货");
             edbCreateOrderInfo.setDeliverStatus(EnumHelper.getEnumName(EDBEnum.ShipStatusEnum.class, orderInfo.getShipStatus()));
             edbCreateOrderInfo.setOrderTotalMoney(orderInfo.getFinalAmount());
