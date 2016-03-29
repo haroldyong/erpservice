@@ -61,7 +61,6 @@ public class ScheduledService {
         //得到所有配置过edb信息的商家,准备获取数据
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.EDB);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
-            boolean result = true;
             int currentPageIndex = 1;
             EDBSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), EDBSysData.class);
 

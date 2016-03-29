@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.datacenter.entity.support;
@@ -23,11 +23,17 @@ import javax.persistence.Converter;
 public class ShipStatusConverter implements AttributeConverter<OrderEnum.ShipStatus, Integer> {
     @Override
     public Integer convertToDatabaseColumn(OrderEnum.ShipStatus attribute) {
+        if (attribute == null) {
+            return null;
+        }
         return attribute.getCode();
     }
 
     @Override
     public OrderEnum.ShipStatus convertToEntityAttribute(Integer dbData) {
+        if (dbData == null) {
+            return null;
+        }
         return EnumHelper.getEnumType(OrderEnum.ShipStatus.class, dbData);
     }
 }
