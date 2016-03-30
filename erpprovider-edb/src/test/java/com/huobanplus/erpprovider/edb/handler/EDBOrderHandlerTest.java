@@ -9,46 +9,23 @@
 
 package com.huobanplus.erpprovider.edb.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huobanplus.erpprovider.edb.EDBConfig;
-import com.huobanplus.erpprovider.edb.bean.EDBSysData;
-import com.huobanplus.erpprovider.edb.util.EDBConstant;
+import com.huobanplus.erpprovider.edb.EDBTestBase;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by allan on 2015/7/29.
  */
-@ActiveProfiles("test")
-@ContextConfiguration(classes = {EDBConfig.class})
-@RunWith(SpringJUnit4ClassRunner.class)
-public class EDBOrderHandlerTest {
-    //    @Autowired
+public class EDBOrderHandlerTest extends EDBTestBase {
+    @Autowired
     private EDBOrderHandler edbOrderHandler;
 
     private ERPInfo mockERP;
 
     @Before
     public void setUp() throws Exception {
-        mockERP = new ERPInfo();
-        EDBSysData sysData = new EDBSysData();
-        sysData.setRequestUrl(EDBConstant.REQUEST_URI);
-        sysData.setDbHost(EDBConstant.DB_HOST);
-        sysData.setAppKey(EDBConstant.APP_KEY);
-        sysData.setAppSecret(EDBConstant.APP_SECRET);
-        sysData.setToken(EDBConstant.TOKEN);
-        sysData.setFormat(EDBConstant.FORMAT);
-        sysData.setV(EDBConstant.V);
-        sysData.setSlencry(EDBConstant.SLENCRY);
-        sysData.setIp(EDBConstant.IP);
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        mockERP.setSysDataJson(objectMapper.writeValueAsString(sysData));
 
     }
 

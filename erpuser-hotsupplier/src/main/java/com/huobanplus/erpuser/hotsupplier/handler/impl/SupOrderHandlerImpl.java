@@ -22,7 +22,9 @@ import com.huobanplus.erpuser.hotsupplier.common.ApiResult;
 import com.huobanplus.erpuser.hotsupplier.common.SupApiResult;
 import com.huobanplus.erpuser.hotsupplier.common.SupConstant;
 import com.huobanplus.erpuser.hotsupplier.handler.SupOrderHandler;
+import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
 import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -34,6 +36,9 @@ import java.util.*;
  */
 @Service
 public class SupOrderHandlerImpl implements SupOrderHandler {
+    @Autowired
+    private HBOrderHandler hbOrderHandler;
+
     @Override
     public EventResult deliverInfo(DeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo) {
         Map<String, Object> signMap = SupConstant.buildSignMap(deliveryInfo);
@@ -134,28 +139,29 @@ public class SupOrderHandlerImpl implements SupOrderHandler {
     }
 
     @Override
-    public EventResult pushOrderDetailList(String orderListJson, ERPUserInfo erpUserInfo) {
-        if (StringUtils.isEmpty(orderListJson)) {
-            return EventResult.resultWith(EventResultEnum.BAD_REQUEST_PARAM, "没有可以推送的订单数据", null);
-        }
-        Map<String, Object> signMap = new TreeMap<>();
-        signMap.put("orderListJson", orderListJson);
-        signMap.put("timestamp", new Date().getTime());
-        try {
-            String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, SupConstant.SECRET_KEY);
-            Map<String, Object> requestMap = new HashMap<>(signMap);
-            requestMap.put("sign", sign);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(SupConstant.SUP_REQUEST_URL + "/order/batchDeliver", requestMap);
-            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                ApiResult apiResult = JSON.parseObject(httpResult.getHttpContent(), ApiResult.class);
-                if (apiResult.getCode() == 200) {
-                    return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
-                }
-                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
-            }
-            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
-        } catch (IOException e) {
-            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
-        }
+    public EventResult pushOrderDetailList(String orderListJson) {
+//        if (StringUtils.isEmpty(orderListJson)) {
+//            return EventResult.resultWith(EventResultEnum.BAD_REQUEST_PARAM, "没有可以推送的订单数据", null);
+//        }
+//        Map<String, Object> signMap = new TreeMap<>();
+//        signMap.put("orderListJson", orderListJson);
+//        signMap.put("timestamp", new Date().getTime());
+//        try {
+//            String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, SupConstant.SECRET_KEY);
+//            Map<String, Object> requestMap = new HashMap<>(signMap);
+//            requestMap.put("sign", sign);
+//            HttpResult httpResult = HttpClientUtil.getInstance().post(SupConstant.SUP_REQUEST_URL + "/order/batchDeliver", requestMap);
+//            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+//                ApiResult apiResult = JSON.parseObject(httpResult.getHttpContent(), ApiResult.class);
+//                if (apiResult.getCode() == 200) {
+//                    return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+//                }
+//                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+//            }
+//            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+//        } catch (IOException e) {
+//            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+//        }
+        return hbOrderHandler.pushOrderDetailList(orderListJson);
     }
 }

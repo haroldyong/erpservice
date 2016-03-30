@@ -147,7 +147,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
     }
 
     @Override
-    public EventResult pushOrderDetailList(String orderListJson, ERPUserInfo erpUserInfo) {
+    public EventResult pushOrderDetailList(String orderListJson) {
         if (StringUtils.isEmpty(orderListJson)) {
             return EventResult.resultWith(EventResultEnum.BAD_REQUEST_PARAM, "没有可以推送的订单数据", null);
         }

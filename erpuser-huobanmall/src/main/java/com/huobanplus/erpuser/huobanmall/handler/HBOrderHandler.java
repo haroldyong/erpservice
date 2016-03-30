@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpuser.huobanmall.handler;
@@ -52,8 +52,7 @@ public interface HBOrderHandler {
      * 推送订单列表信息,到角色出保存
      *
      * @param orderListJson
-     * @param erpUserInfo
      * @return
      */
-    EventResult pushOrderDetailList(String orderListJson, ERPUserInfo erpUserInfo);
+    EventResult pushOrderDetailList(String orderListJson);
 }

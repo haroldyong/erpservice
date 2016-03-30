@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpuser.huobanmall.common;
@@ -32,6 +32,7 @@ public class HuobanmallHandlerBuilder implements ERPUserHandlerBuilder {
 
 
     @Override
+    @SuppressWarnings("Duplicates")
     public ERPUserHandler buildHandler(ERPUserInfo info) {
         if (info.getErpUserType() == ERPTypeEnum.UserType.HUOBAN_MALL) {
             return erpBaseEvent -> {
@@ -45,7 +46,7 @@ public class HuobanmallHandlerBuilder implements ERPUserHandlerBuilder {
                     return orderHandler.returnInfo(((PushReturnInfoEvent) erpBaseEvent).getReturnInfo(), info);
                 } else if (erpBaseEvent instanceof PushOrderListInfoEvent) {
                     PushOrderListInfoEvent pushOrderListInfoEvent = (PushOrderListInfoEvent) erpBaseEvent;
-                    return orderHandler.pushOrderDetailList(pushOrderListInfoEvent.getOrderListJson(), info);
+                    return orderHandler.pushOrderDetailList(pushOrderListInfoEvent.getOrderListJson());
                 }
                 return null;
             };

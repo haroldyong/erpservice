@@ -31,6 +31,7 @@ public class SupplierHandlerBuilder implements ERPUserHandlerBuilder {
     private SupOrderHandler orderHandler;
 
     @Override
+    @SuppressWarnings("Duplicates")
     public ERPUserHandler buildHandler(ERPUserInfo info) {
         if (info.getErpUserType() == ERPTypeEnum.UserType.HUOBAN_SUPPLIER) {
             return erpBaseEvent -> {
@@ -44,7 +45,7 @@ public class SupplierHandlerBuilder implements ERPUserHandlerBuilder {
                     return orderHandler.returnInfo(((PushReturnInfoEvent) erpBaseEvent).getReturnInfo(), info);
                 } else if (erpBaseEvent instanceof PushOrderListInfoEvent) {
                     PushOrderListInfoEvent pushOrderListInfoEvent = (PushOrderListInfoEvent) erpBaseEvent;
-                    return orderHandler.pushOrderDetailList(pushOrderListInfoEvent.getOrderListJson(), info);
+                    return orderHandler.pushOrderDetailList(pushOrderListInfoEvent.getOrderListJson());
                 }
                 return null;
             };

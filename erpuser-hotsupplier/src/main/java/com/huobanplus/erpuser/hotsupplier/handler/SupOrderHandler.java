@@ -54,5 +54,5 @@ public interface SupOrderHandler {
      * @param erpUserInfo
      * @return
      */
-    EventResult pushOrderDetailList(String orderListJson, ERPUserInfo erpUserInfo);
+    EventResult pushOrderDetailList(String orderListJson);
 }
