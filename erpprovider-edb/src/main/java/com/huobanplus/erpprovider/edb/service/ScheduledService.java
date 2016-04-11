@@ -17,6 +17,7 @@ import com.huobanplus.erpprovider.edb.common.EDBEnum;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
+import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.OrderScheduledLog;
@@ -30,6 +31,8 @@ import com.huobanplus.erpservice.eventhandler.erpevent.push.PushOrderListInfoEve
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -43,6 +46,8 @@ import java.util.List;
  */
 @Service
 public class ScheduledService {
+    private static final Log log = LogFactory.getLog(ScheduledService.class);
+
     @Autowired
     private ERPDetailConfigService detailConfigService;
     @Autowired
@@ -58,9 +63,11 @@ public class ScheduledService {
 //    @Scheduled
     public void syncOrderShip() {
         Date now = new Date();
+        log.info("E店宝获取订单开始:" + StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
         //得到所有配置过edb信息的商家,准备获取数据
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.EDB);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
+            log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "开始获取订单数据进行同步");
             int currentPageIndex = 1;
             EDBSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), EDBSysData.class);
 
@@ -77,6 +84,7 @@ public class ScheduledService {
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 JSONObject jsonObject = (JSONObject) eventResult.getData();
                 JSONArray resultOrders = jsonObject.getJSONObject("items").getJSONArray("item");
+                log.info("本次获取" + resultOrders.size() + "条订单数据");
                 if (resultOrders.size() > 0) {
                     int totalResult = resultOrders.getJSONObject(0).getIntValue("总数量");//本次获取的总数据量
                     int successCount = 0;//成功走完流程的数量

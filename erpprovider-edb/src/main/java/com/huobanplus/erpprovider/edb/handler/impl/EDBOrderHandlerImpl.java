@@ -177,10 +177,10 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 //            requestData.put("end_time", "2016-03-10");
             requestData.put("page_no", pageIndex);
             requestData.put("page_size", EDBConstant.PAGE_SIZE);
-//            requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
-//            requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
-//            requestData.put("proce_Status", edbOrderSearch.getProceStatus().getName());
-            requestData.put("out_tid", "2016033087939569");
+            requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
+            requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
+            requestData.put("proce_Status", edbOrderSearch.getProceStatus().getName());
+//            requestData.put("out_tid", "2016033087939569");
 
             Map<String, Object> signMap = new TreeMap<>(requestData);
             String sign = getSign(signMap, sysData);

@@ -34,6 +34,7 @@ import java.util.*;
 public class HBOrderHandlerImpl implements HBOrderHandler {
 
     @Override
+    @SuppressWarnings("Duplicates")
     public EventResult deliverInfo(DeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo) {
         Map<String, Object> signMap = HBConstant.buildSignMap(deliveryInfo);
 //        signMap.put("orderId", deliveryInfo.getOrderId());
@@ -63,6 +64,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
     }
 
     @Override
+    @SuppressWarnings("Duplicates")
     public EventResult returnInfo(ReturnInfo returnInfo, ERPUserInfo erpUserInfo) {
         Map<String, Object> signMap = HBConstant.buildSignMap(returnInfo);
         signMap.put("timestamp", String.valueOf(new Date().getTime()));
@@ -98,6 +100,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
 //        signMap.put("beginTime", orderSearchInfo.getBeginTime());
 //        signMap.put("endTime", orderSearchInfo.getEndTime());
         signMap.put("customerId", erpUserInfo.getCustomerId());
+        signMap.put("erpUserType", erpUserInfo.getErpUserType().getCode());
         signMap.put("timestamp", new Date().getTime());
         try {
             String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);

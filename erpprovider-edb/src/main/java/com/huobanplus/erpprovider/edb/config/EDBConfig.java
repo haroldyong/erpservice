@@ -7,7 +7,7 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpprovider.edb;
+package com.huobanplus.erpprovider.edb.config;
 
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import org.springframework.beans.factory.annotation.Autowired;

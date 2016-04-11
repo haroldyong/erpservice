@@ -4,14 +4,14 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huobanplus.erpprovider.edb.EDBConfig;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
+import com.huobanplus.erpprovider.edb.config.EDBConfig;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.datacenter.entity.MallOutStoreBean;
 import com.huobanplus.erpservice.datacenter.entity.MallProductOutBean;

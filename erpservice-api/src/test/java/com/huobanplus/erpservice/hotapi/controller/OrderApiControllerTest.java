@@ -249,7 +249,7 @@ public class OrderApiControllerTest extends SpringWebTest {
         supSignMap.put("timestamp", String.valueOf(now.getTime()));
         supSignMap.put("appKey", mockSupBaseConfig.getAppKey());
         supSignMap.put("token", mockSupBaseConfig.getToken());
-        supSignMap.put("orderId", "2016011519814797");
+        supSignMap.put("orderId", "2016033018932132");
         supSignMap.put("logiName", "申通快递");
         supSignMap.put("logiNo", "12312331");
         supSignMap.put("remark", "大家立刻就开始");
@@ -260,7 +260,7 @@ public class OrderApiControllerTest extends SpringWebTest {
                 .param("timestamp", String.valueOf(now.getTime()))
                 .param("appKey", mockSupBaseConfig.getAppKey())
                 .param("token", mockSupBaseConfig.getToken())
-                .param("orderId", "2016011519814797")
+                .param("orderId", "2016033018932132")
                 .param("logiName", "申通快递")
                 .param("logiNo", "12312331")
                 .param("remark", "大家立刻就开始")
@@ -315,18 +315,18 @@ public class OrderApiControllerTest extends SpringWebTest {
     @Test
     public void testOnlineObtainOrderList() throws Exception {
         Date now = new Date();
-        String url = "http://erpservice.olquan.cn/erpService/hotApi/rest/order/index";
+        String url = "http://test.erp.51flashmall.com:8081/erpService/hotApi/rest/order/index";
         Map<String, Object> signMap = new TreeMap<>();
-        signMap.put("appKey", "cqep4ice");
-        signMap.put("token", "a7b5f1da25cc613911b240f28fef7954");
-        signMap.put("timestamp", now.getTime());
+        signMap.put("appKey", "v4mx0dc4");
+        signMap.put("token", "a648959dae990babc726dc0e591e90f4");
+//        signMap.put("timestamp", now.getTime());
         signMap.put("pageSize", 20);
         signMap.put("eventType", HotApiConstant.OBTAIN_ORDER_LIST);
         signMap.put("orderStatus", 0);
         signMap.put("payStatus", 1);
         signMap.put("shipStatus", 0);
-        signMap.put("beginUpdateTime", "2016-01-18 10:39:00");
-        signMap.put("endUpdateTime", "2016-01-20 10:40:00");
+        signMap.put("beginUpdateTime", "2015-01-18 10:39:00");
+        signMap.put("endUpdateTime", "2016-05-20 10:40:00");
 
 
         String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, "123456");

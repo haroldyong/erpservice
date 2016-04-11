@@ -7,7 +7,7 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpprovider.edb;
+package com.huobanplus.erpprovider.edb.config;
 
 
 import com.alibaba.fastjson.JSON;
