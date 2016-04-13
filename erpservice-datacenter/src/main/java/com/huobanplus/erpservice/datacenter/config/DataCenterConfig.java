@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.datacenter.config;
@@ -28,7 +28,7 @@ import javax.sql.DataSource;
         entityManagerFactoryRef = "entityManagerFactory",
         transactionManagerRef = "transactionManager")
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-@EnableTransactionManagement(proxyTargetClass = true)
+@EnableTransactionManagement
 @ImportResource({"classpath:config_prod.xml", "classpath:config_test.xml"})
 public class DataCenterConfig {
     @Autowired

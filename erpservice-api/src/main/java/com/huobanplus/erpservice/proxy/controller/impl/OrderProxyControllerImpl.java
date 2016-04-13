@@ -11,12 +11,10 @@ package com.huobanplus.erpservice.proxy.controller.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huobanplus.erpservice.common.util.ClassUtil;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -24,13 +22,13 @@ import com.huobanplus.erpservice.eventhandler.erpevent.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.OrderDeliverEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.OrderUpdateEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.model.OrderDeliverInfo;
 import com.huobanplus.erpservice.proxy.common.ProxyBaseController;
 import com.huobanplus.erpservice.proxy.controller.OrderProxyController;
+import com.huobanplus.erpservice.proxy.utils.OrderProxyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -50,6 +48,8 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     private ERPRegister erpRegister;
     @Autowired
     private MallOrderService orderService;
+    @Autowired
+    private OrderProxyService orderProxyService;
 
     @Override
     @RequestMapping(value = "/createOrder")
@@ -57,30 +57,7 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     public ApiResult createOrder(String orderInfoJson, @RequestAttribute ERPInfo erpInfo) throws Exception {
 
         //如果开通了erp，交由erp处理器推送到指定erp
-        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
-        if (erpHandler == null) {
-            return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
-        }
-        if (erpHandler.eventSupported(PushNewOrderEvent.class)) {
-            Order order = JSON.parseObject(orderInfoJson, Order.class);
-            PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
-            pushNewOrderEvent.setErpInfo(erpInfo);
-            pushNewOrderEvent.setOrderInfo(order);
-            EventResult eventResult = erpHandler.handleEvent(pushNewOrderEvent);
-            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                return ApiResult.resultWith(ResultCode.SUCCESS);
-            } else {
-                //如果未推送成功，则保存数据到erp数据服务平台，交由相关处理器处理
-                MallOrderBean orderBean = new MallOrderBean();
-
-                ClassUtil.cloneClass(order, orderBean);
-                orderBean.setErpInfo(JSON.toJSONString(erpInfo));
-                orderService.save(orderBean);
-                return ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, "推送给erp时失败，将交给相关处理进行第二次尝试", null);
-            }
-        } else {
-            return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT);
-        }
+        return orderProxyService.pushOrder(orderInfoJson, erpInfo);
     }
 
     @Override

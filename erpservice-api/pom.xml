@@ -19,6 +19,15 @@
     <packaging>war</packaging>
     <name>erpservice-api Maven Webapp</name>
     <url>http://maven.apache.org</url>
+
+    <repositories>
+        <repository>
+            <id>repo-huotu</id>
+            <name>Hot Repository</name>
+            <url>http://repo.51flashmall.com:8081/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -102,6 +111,11 @@
             <artifactId>json-path</artifactId>
             <version>2.0.0</version>
         </dependency>
+        <!--<dependency>-->
+        <!--<groupId>com.sap</groupId>-->
+        <!--<artifactId>sapjoc3</artifactId>-->
+        <!--<version>3.0.0</version>-->
+        <!--</dependency>-->
     </dependencies>
     <build>
         <finalName>erpservice-api</finalName>

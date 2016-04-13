@@ -34,6 +34,7 @@ import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -60,7 +61,7 @@ public class ScheduledService {
     /**
      * 同步订单发货状态轮训服务
      */
-//    @Scheduled
+    @Scheduled(cron = "0 0 */2 * * ?")
     public void syncOrderShip() {
         Date now = new Date();
         log.info("E店宝获取订单开始:" + StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
