@@ -76,21 +76,29 @@
             },
             changeErpType: function () {
                 var erpType = $("#erpType").val();
-                switch (erpType) {
-                    case "-1":
-                        $("#erpDetailConfigDiv").hide();
-                        break;
-                    case "0":
-                        $("#erpDetailConfigDiv").show();
-                        $("#edbConfig").show();
-                        $("#nsConfig").hide();
-                        break;
-                    case "1":
-                        $("#erpDetailConfigDiv").show();
-                        $("#nsConfig").show();
-                        $("#edbConfig").hide();
-                        break;
+                if (erpType == "-1") {
+                    $("#erpDetailConfigDiv").hide();
+                } else {
+                    $("#erpDetailConfigDiv div").hide();
+                    $("#detailConfig_" + erpType).show();
                 }
+//                switch (erpType) {
+//                    case "-1":
+//                        $("#erpDetailConfigDiv").hide();
+//                        break;
+//                    case "0":
+//                        $("#erpDetailConfigDiv").show();
+//                        $("#edbConfig").show();
+//                        $("#nsConfig").hide();
+//                        break;
+//                    case "1":
+//                        $("#erpDetailConfigDiv").show();
+//                        $("#nsConfig").show();
+//                        $("#edbConfig").hide();
+//                        break;
+//                    case "2":
+//                        $("#erpDetailConfigDiv").show();
+//                }
             },
             getErpConfig: function (erpType) {
                 switch (erpType) {
@@ -100,6 +108,8 @@
                         return edbConfigHandler.getEdbConfig();
                     case "1":
                         return nsConfigHandler.getNSConfig();
+                    case "2":
+                        return sapConfigHandler.getSapConfig();
                 }
             },
             submitForm: function () {
@@ -141,6 +151,9 @@
                     break;
                 case 1:
                     nsConfigHandler.setNSValue(erpSysData);
+                    break;
+                case 2:
+                    sapConfigHandler.setSapValues(erpSysData);
             }
             </c:forEach>
 
@@ -248,6 +261,7 @@
                                                 <option value="-1">请选择</option>
                                                 <option value="0">E店宝</option>
                                                 <option value="1">网店管家</option>
+                                                <option value="2">SAP系统</option>
                                             </select>
                                         </td>
                                     </tr>
@@ -258,12 +272,16 @@
                             <div class="division" id="erpDetailConfigDiv">
                                 <input name="sysDataJson" id="sysDataJson" type="hidden"/>
 
-                                <div id="edbConfig">
+                                <div id="detailConfig_0">
                                     <%@include file="/detailConfig/edb_config.jsp" %>
                                 </div>
 
-                                <div id="nsConfig">
+                                <div id="detailConfig_1">
                                     <%@include file="/detailConfig/ns_config.jsp" %>
+                                </div>
+
+                                <div id="detailConfig_2">
+                                    <%@include file="/detailConfig/sap_config.jsp" %>
                                 </div>
                             </div>
                         </div>

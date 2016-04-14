@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.datacenter.jsonmodel;
@@ -27,16 +27,33 @@ public class Order {
     private int itemNum;
     private String lastUpdateTime;
     private String createTime;
-
+    /**
+     * 收货人
+     */
     private String shipName;
+    /**
+     * 收货区域
+     */
     private String shipArea;
     private String province;
     private String city;
     private String district;
+    /**
+     * 收货地址
+     */
     private String shipAddr;
+    /**
+     * 邮编
+     */
     private String shipZip;
+    /**
+     * 电话
+     */
     private String shipTel;
     private String shipEmail;
+    /**
+     * 手机
+     */
     private String shipMobile;
     private double costItem;
     /**
