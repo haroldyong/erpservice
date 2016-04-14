@@ -11,7 +11,7 @@ import lombok.Setter;
 public class SAPSaleOrderInfo {
 
     /**
-     * 订单类型
+     * 订单类型dd
      */
     private String orderType;
 
