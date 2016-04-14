@@ -1,4 +1,4 @@
-package com.huobanplus.erpprovider.sap.Handler.impl;
+package com.huobanplus.erpprovider.sap.handler.impl;
 
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
 import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
