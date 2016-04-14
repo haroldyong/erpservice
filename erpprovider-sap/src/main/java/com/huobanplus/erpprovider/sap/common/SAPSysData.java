@@ -20,7 +20,7 @@ public class SAPSysData {
     /**
      * 服务器
      */
-    private String sapHost;
+    private String host;
     /**
      * 系统编号
      */
@@ -32,9 +32,14 @@ public class SAPSysData {
     /**
      * 用户名
      */
-    private String username;
+    private String jcoUser;
     /**
      * 登录密码
      */
-    private String password;
+    private String jcoPass;
+
+    /**
+     * SAP路由
+     */
+    private String sapRouter;
 }

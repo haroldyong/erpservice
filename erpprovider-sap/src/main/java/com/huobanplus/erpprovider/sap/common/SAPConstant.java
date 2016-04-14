@@ -13,7 +13,7 @@ package com.huobanplus.erpprovider.sap.common;
  * Created by allan on 4/11/16.
  */
 public class SAPConstant {
-    public static final String language = "zh";
+    public static final String LANGUAGE = "zh";
     /**
      * 最大连接数
      */

@@ -71,7 +71,7 @@ public class OrderApiControllerTest extends SpringWebTest {
         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "zh");        //登录语言
         connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "3");  //最大连接数
         connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT, "10");     //最大连接线程
-        connectProperties.setProperty(DestinationDataProvider.JCO_SAPROUTER, "/H/202.107.243.45/H/");
+        connectProperties.setProperty(DestinationDataProvider.JCO_SAPROUTER, "/H/202.107.243.45/H/"); //路由
 
         createDataFile(ABAP_AS_POOLED, "jcoDestination", connectProperties);
     }
