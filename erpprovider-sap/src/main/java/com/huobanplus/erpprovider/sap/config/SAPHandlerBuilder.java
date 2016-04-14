@@ -9,6 +9,9 @@
 
 package com.huobanplus.erpprovider.sap.config;
 
+import com.alibaba.fastjson.JSON;
+import com.huobanplus.erpprovider.sap.common.SAPSysData;
+import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -16,6 +19,7 @@ import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +29,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component
 public class SAPHandlerBuilder implements ERPHandlerBuilder {
+
+
+    @Autowired
+    private SAPOrderHandler sapOrderHandler;
+
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
         if (info.getErpType() == ERPTypeEnum.ProviderType.SAP) {
@@ -39,11 +48,21 @@ public class SAPHandlerBuilder implements ERPHandlerBuilder {
 
                 @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
+
+                    if (erpBaseEvent instanceof PushNewOrderEvent) {
+                        PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
+                        SAPSysData sysData = JSON.parseObject(erpBaseEvent.getErpInfo().getSysDataJson(), SAPSysData.class);
+                        return sapOrderHandler.pushOrder(pushNewOrderEvent.getOrderInfo(), sysData);
+                    }
+
+
                     return null;
                 }
 
                 @Override
                 public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
+
+
                     return null;
                 }
             };
