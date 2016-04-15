@@ -20,10 +20,7 @@ import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
 import com.huobanplus.erpservice.hotapi.common.HotApiConstant;
-import com.sap.conn.jco.JCoDestination;
-import com.sap.conn.jco.JCoDestinationManager;
-import com.sap.conn.jco.JCoException;
-import com.sap.conn.jco.JCoFunction;
+import com.sap.conn.jco.*;
 import com.sap.conn.jco.ext.DestinationDataProvider;
 import org.junit.Before;
 import org.junit.Test;
@@ -93,6 +90,9 @@ public class OrderApiControllerTest extends SpringWebTest {
      * @param properties 属性文件内容
      */
     private static void createDataFile(String name, String suffix, Properties properties) {
+
+
+
         File cfg = new File(name + "." + suffix);
         if (cfg.exists()) {
             cfg.deleteOnExit();
@@ -126,14 +126,14 @@ public class OrderApiControllerTest extends SpringWebTest {
         JCoDestination destination = OrderApiControllerTest.connect();
         JCoFunction function = null;
         try {
-            function = destination.getRepository().getFunction("ZWS_DATA_IMPORT");
+            function = destination.getRepository().getFunction("Z_SY_WM_MATNR");
+            JCoRecord record =function.getImportParameterList();
+
+            record.setValue("I_BUKRS", "sd");
 
             function.execute(destination);
-
-//            function.getImportParameterList().setValue("name","wuxiongliu");
-//            function.execute(destination);
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
     }
 
