@@ -11,6 +11,7 @@ package com.huobanplus.erpprovider.sap.handler;
 
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 /**
@@ -27,7 +28,7 @@ public interface SAPOrderHandler {
      * @param sysData   SAP的系统数据
      * @return EventResult
      */
-    EventResult pushOrder(Order orderInfo, SAPSysData sysData);
+    EventResult pushOrder(Order orderInfo, SAPSysData sysData,ERPUserInfo erpUserInfo);
 
 
 }

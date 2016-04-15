@@ -93,6 +93,9 @@ public class OrderApiControllerTest extends SpringWebTest {
      * @param properties 属性文件内容
      */
     private static void createDataFile(String name, String suffix, Properties properties) {
+
+
+
         File cfg = new File(name + "." + suffix);
         if (cfg.exists()) {
             cfg.deleteOnExit();
@@ -129,6 +132,10 @@ public class OrderApiControllerTest extends SpringWebTest {
             function = destination.getRepository().getFunction("Z_SY_WM_MATNR");
 
             function.execute(destination);
+
+
+
+
         } catch (Exception e) {
 
         }

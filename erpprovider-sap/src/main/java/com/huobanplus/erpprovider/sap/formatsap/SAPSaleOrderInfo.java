@@ -11,7 +11,7 @@ import lombok.Setter;
 public class SAPSaleOrderInfo {
 
     /**
-     * 订单类型dd
+     * 订单类型
      */
     private String orderType;
 
@@ -43,12 +43,12 @@ public class SAPSaleOrderInfo {
     /**
      * 邮政编码 来自微商城
      */
-    private String postalcode;
+    private String shipZip;
 
     /**
      * 送货地址 来自微商城
      */
-    private String deliveryAddr;
+    private String shipAddr;
 
     /**
      * 销售组织
