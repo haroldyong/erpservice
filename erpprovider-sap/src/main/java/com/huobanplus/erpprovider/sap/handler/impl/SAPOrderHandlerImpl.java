@@ -30,10 +30,12 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
     public EventResult pushOrder(Order orderInfo, SAPSysData sysData, ERPUserInfo erpUserInfo) {
 
         SAPSaleOrderInfo sapSaleOrderInfo = new SAPSaleOrderInfo();
-        if (orderInfo.getPayStatus() == 1) {
+        if (orderInfo.getPayStatus() == 1) {//正常订单
             sapSaleOrderInfo.setOrderType("ZWOR");
-        } else {
+            sapSaleOrderInfo.setProvederFactory("8000");
+        } else {// 退货单
             sapSaleOrderInfo.setOrderType("ZWRE");
+            sapSaleOrderInfo.setProvederFactory("1000");
         }
         sapSaleOrderInfo.setOrderSaleFrom("售达方");
         sapSaleOrderInfo.setNumId("订单号");
