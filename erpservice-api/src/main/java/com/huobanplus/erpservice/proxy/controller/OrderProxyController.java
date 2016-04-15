@@ -12,6 +12,7 @@ package com.huobanplus.erpservice.proxy.controller;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +37,7 @@ public interface OrderProxyController {
     ApiResult createOrder(
             String orderInfoJson,
             @RequestAttribute ERPInfo erpInfo,
+            @RequestAttribute ERPUserInfo erpUserInfo,
             int eventType
     ) throws Exception;
 

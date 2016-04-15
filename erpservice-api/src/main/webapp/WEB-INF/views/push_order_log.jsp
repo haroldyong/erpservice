@@ -78,6 +78,8 @@
                 <span class="icon-sprite icon-magnifier"></span>
 
                 <h3>订单推送日志</h3>
+
+                <h3>返回</h3>
             </div>
             <div class="tl corner">
             </div>
@@ -88,106 +90,62 @@
             <div class="br corner">
             </div>
             <div class="cnt-wp" style="padding: 35px 10px 10px;">
-                <div class="cnt">
-                    <div class="search-bar">
-                        <div>
-                            <input type="hidden" name="erpUserType" value="${orderPushSearch.erpUserType}"/>
-                            <label class="first ">起始时间：</label>
-                            <input name="beginTime" type="text" id="txtCreateBeginTime" placeholder=" [开始时间]"
-                                   class="input-normal Wdate"
-                                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false})"
-                                   style="margin-left: 8px;" value="${orderPushSearch.beginTime}"/>
-                            <label class="first ">---</label>
-                            <input name="endTime" type="text" id="txtCreateEndTime" placeholder=" [结束时间]"
-                                   class="input-normal Wdate" value="${orderPushSearch.endTime}"
-                                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,minDate:'#F{$dp.$D(\'txtCreateBeginTime\')}'})"/>
-                            <select name="resultStatus" id="resultStatus">
-                                <option value="-1">全部</option>
-                                <option value="0">失败订单</option>
-                                <option value="1">成功订单</option>
-                            </select>
+                <div class="block">
+                    <div class="tl corner">
+                    </div>
+                    <div class="tr corner">
+                    </div>
+                    <div class="bl corner">
+                    </div>
+                    <div class="br corner">
+                    </div>
+                    <div class="cnt-wp" style="padding: 10px 10px 10px;display: block;">
 
-                            <label>
-                                <a class="btn-lit btn-middle" href="javascript:$('#searchForm').submit();"
-                                   style="margin-bottom: 3px;">
-                                    <span>查询</span>
-                                </a>
-                                <a class="btn-lit btn-middle"
-                                   href="<c:url value="/erpService/platform/orderPushLogs?erpUserType=${orderPushSearch.erpUserType}" />"
-                                   style="margin-bottom: 3px;">
-                                    <span>显示全部</span>
-                                </a>
-                            </label>
+                        <div class="cnt">
+                            <table class="data-table even1" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <thead>
+                                <tr class="even">
+                                    <th scope="col">订单号
+                                    </th>
+                                    <th scope="col">erp
+                                    </th>
+                                    <th scope="col">推送时间
+                                    </th>
+                                    <th scope="col">推送结果
+                                    </th>
+                                    <%--<th scope="col">备注--%>
+                                    <%--</th>--%>
+                                    <th scope="col">操作
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="log" items="${orderOperatorLogs}">
+                                    <tr>
+                                        <td class="txt40 c">${log.orderId}</td>
+                                        <td class="txt40 c">${log.providerType.name}</td>
+                                        <td class="txt40 c"><fmt:formatDate value="${log.createTime}"
+                                                                            pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                                        <td class="txt40 c">${log.resultStatus?'成功':'失败'}</td>
+                                            <%--<td class="txt80 c">${log.remark}</td>--%>
+                                        <td class="txt80 c">
+                                            <c:if test="${!log.resultStatus}">
+                                                <a href="javascript:rePush(${log.id},${log.userType.code})">重新推送</a>
+                                            </c:if>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+
+                                </tbody>
+
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="blank10">
-        </div>
-        <div class="block">
-            <div class="tl corner">
-            </div>
-            <div class="tr corner">
-            </div>
-            <div class="bl corner">
-            </div>
-            <div class="br corner">
-            </div>
-            <div class="cnt-wp" style="padding: 10px 10px 10px;display: block;">
 
-                <div class="cnt">
-                    <table class="data-table even1" width="100%" border="0" cellspacing="0" cellpadding="0">
-                        <thead>
-                        <tr class="even">
-                            <th scope="col">订单号
-                            </th>
-                            <th scope="col">erp
-                            </th>
-                            <th scope="col">推送时间
-                            </th>
-                            <th scope="col">推送结果
-                            </th>
-                            <%--<th scope="col">备注--%>
-                            <%--</th>--%>
-                            <th scope="col">操作
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <c:forEach var="log" items="${orderPushLogs.getContent()}">
-                            <tr>
-                                <td class="txt40 c">${log.orderId}</td>
-                                <td class="txt40 c">${log.providerType.name}</td>
-                                <td class="txt40 c"><fmt:formatDate value="${log.createTime}"
-                                                                    pattern="yyyy-MM-dd HH:mm:ss"/></td>
-                                <td class="txt40 c">${log.resultStatus==0?'失败':'成功'}</td>
-                                    <%--<td class="txt80 c">${log.remark}</td>--%>
-                                <td class="txt80 c">
-                                    <c:if test="${log.resultStatus==0}">
-                                        <a href="javascript:rePush(${log.id},${log.userType.code})">重新推送</a>
-                                    </c:if>
-                                </td>
-                            </tr>
-                        </c:forEach>
-
-                        </tbody>
-
-                    </table>
-                </div>
-
-                <script type="text/javascript">
-                    var pageSize = ${pageSize};
-                    var pageIndex = ${pageIndex};
-                    var pageCount = ${orderPushLogs.getTotalPages()};
-                    var recordCount = ${orderPushLogs.getTotalElements()};
-                    var formName = 'searchForm';
-                    Pager.Output(formName, 'pageIndex', pageSize, pageIndex, pageCount, recordCount);
-                </script>
-
-            </div>
-        </div>
     </form>
 </div>
 </body>

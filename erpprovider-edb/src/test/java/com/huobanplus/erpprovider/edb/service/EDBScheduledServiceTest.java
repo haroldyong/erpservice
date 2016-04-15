@@ -16,15 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Created by allan on 3/1/16.
  */
-public class ScheduledServiceTest extends EDBTestBase {
+public class EDBScheduledServiceTest extends EDBTestBase {
     @Autowired
-    private ScheduledService scheduledService;
+    private EDBScheduledService EDBScheduledService;
 
     @Test
     public void testScheduledOrder() throws Exception {
 //        ERPDetailConfigEntity erpDetailConfigEntity = erpDetailConfigService.findByCustomerIdAndDefault(3677, ERPTypeEnum.UserType.HUOBAN_MALL);
 //        ERPInfo erpInfo = new ERPInfo(ERPTypeEnum.ProviderType.EDB, erpDetailConfigEntity.getErpSysData());
 
-        scheduledService.syncOrderShip();
+        EDBScheduledService.syncOrderShip();
     }
 }

@@ -67,14 +67,10 @@ public class OrderOperatorServiceImpl implements OrderOperatorService {
     }
 
     @Override
-    public List<OrderOperatorLog> findByCustomerIdAndOrderId(int customerId, String orderId) {
-        return orderOperatorLogRepository.findByCustomerIdAndOrderId(customerId, orderId);
-    }
-
-    @Override
-    public OrderOperatorLog findByOrderId(String orderId) {
+    public List<OrderOperatorLog> findByOrderId(String orderId) {
         return orderOperatorLogRepository.findByOrderId(orderId);
     }
+
 
     @Override
     public OrderOperatorLog findById(long id) {

@@ -13,8 +13,6 @@ import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
-import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
-import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.common.EventType;
@@ -25,6 +23,7 @@ import com.huobanplus.erpservice.eventhandler.erpevent.OrderUpdateEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.model.OrderDeliverInfo;
 import com.huobanplus.erpservice.proxy.common.ProxyBaseController;
@@ -50,17 +49,13 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     @Autowired
     private OrderProxyService orderProxyService;
 
-    @Autowired
-    private OrderSyncService orderSyncService;
-    @Autowired
-    private OrderOperatorService orderOperatorService;
-
     @Override
     @RequestMapping(value = "/createOrder")
     @ResponseBody
     public ApiResult createOrder(
             String orderInfoJson,
             @RequestAttribute ERPInfo erpInfo,
+            @RequestAttribute ERPUserInfo erpUserInfo,
             int eventType
     ) throws Exception {
 
@@ -75,6 +70,7 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
             pushNewOrderEvent.setErpInfo(erpInfo);
             pushNewOrderEvent.setOrderInfoJson(orderInfoJson);
             pushNewOrderEvent.setEventType(eventTypeEnum);
+            pushNewOrderEvent.setErpUserInfo(erpUserInfo);
             //相关处理器处理时间推送订单至相应ERP系统
             EventResult eventResult = erpHandler.handleEvent(pushNewOrderEvent);
 

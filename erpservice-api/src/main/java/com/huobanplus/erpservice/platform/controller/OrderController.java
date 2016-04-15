@@ -14,7 +14,6 @@ import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.entity.OrderSync;
-import com.huobanplus.erpservice.datacenter.searchbean.OrderPushSearch;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderSyncSearch;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
@@ -28,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * Created by allan on 4/13/16.
@@ -59,21 +60,13 @@ public class OrderController {
         return "order_sync_list";
     }
 
-    @RequestMapping("/orderPushLogs")
-    private String orderPushLogs(
-            @RequestParam(required = false, defaultValue = "1") int pageIndex,
-            OrderPushSearch orderPushSearch,
-            @RequestAttribute int customerId,
-            @RequestParam(required = false, defaultValue = "-1") int resultStatus,
+    @RequestMapping("/orderOperatorLogs")
+    private String orderOperatorLogs(
+            String orderId,
             Model model
     ) {
-        orderPushSearch.setResultStatus(resultStatus);
-        Page<OrderOperatorLog> orderPushLogs = orderOperatorService.findAll(pageIndex, 20, orderPushSearch, customerId);
-        model.addAttribute("orderPushLogs", orderPushLogs);
-        model.addAttribute("orderPushSearch", orderPushSearch);
-        model.addAttribute("pageIndex", pageIndex);
-        model.addAttribute("pageSize", 20);
-        model.addAttribute("resultStatus", resultStatus);
+        List<OrderOperatorLog> orderOperatorLogs = orderOperatorService.findByOrderId(orderId);
+        model.addAttribute("orderOperatorLogs", orderOperatorLogs);
         return "push_order_log";
     }
 

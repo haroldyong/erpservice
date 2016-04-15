@@ -12,7 +12,7 @@ package com.huobanplus.erpservice.proxy.controller;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
-import com.huobanplus.erpprovider.edb.service.ScheduledService;
+import com.huobanplus.erpprovider.edb.service.EDBScheduledService;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.DxDESCipher;
@@ -58,7 +58,7 @@ public class OrderProxyControllerTest extends SpringWebTest {
 
     private ERPTypeEnum.UserType mockUserType = ERPTypeEnum.UserType.HUOBAN_MALL;
     @Autowired
-    private ScheduledService scheduledService;
+    private EDBScheduledService EDBScheduledService;
     @Autowired
     private EDBOrderHandler orderHandler;
 
@@ -154,7 +154,7 @@ public class OrderProxyControllerTest extends SpringWebTest {
 
     @Test
     public void testScheduled() throws Exception {
-        scheduledService.syncOrderShip();
+        EDBScheduledService.syncOrderShip();
     }
 
     @Test

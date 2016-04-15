@@ -27,7 +27,10 @@ import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.OrderScheduledLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.common.EventType;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushOrderListInfoEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
@@ -46,8 +49,8 @@ import java.util.List;
  * Created by allan on 12/24/15.
  */
 @Service
-public class ScheduledService {
-    private static final Log log = LogFactory.getLog(ScheduledService.class);
+public class EDBScheduledService {
+    private static final Log log = LogFactory.getLog(EDBScheduledService.class);
 
     @Autowired
     private ERPDetailConfigService detailConfigService;
@@ -126,9 +129,15 @@ public class ScheduledService {
                             }
                         }
                         //回写EDB,修改EDB的外部平台订单状态
+                        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
+                        pushNewOrderEvent.setEventType(EventType.RETURN);
+                        ERPInfo erpInfo = new ERPInfo(ERPTypeEnum.ProviderType.EDB, detailConfig.getErpSysData());
+                        pushNewOrderEvent.setErpInfo(erpInfo);
+                        pushNewOrderEvent.setErpUserInfo(erpUserInfo);
                         for (Order successOrder : successList) {
                             successOrder.setPayStatus(EDBEnum.PayStatusEnum.ALL_DELIVER.getCode());
-                            EventResult rewriteResult = edbOrderHandler.pushOrder(successOrder, sysData);
+                            pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(successOrder));
+                            EventResult rewriteResult = edbOrderHandler.pushOrder(pushNewOrderEvent);
                             if (rewriteResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                                 successCount++;
                             }

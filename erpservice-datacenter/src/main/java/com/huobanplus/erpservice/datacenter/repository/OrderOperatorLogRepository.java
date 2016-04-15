@@ -21,7 +21,5 @@ import java.util.List;
  */
 @Repository
 public interface OrderOperatorLogRepository extends JpaRepository<OrderOperatorLog, Long>, JpaSpecificationExecutor<OrderOperatorLog> {
-    OrderOperatorLog findByOrderId(String orderId);
-
-    List<OrderOperatorLog> findByCustomerIdAndOrderId(int customerId, String orderId);
+    List<OrderOperatorLog> findByOrderId(String orderId);
 }

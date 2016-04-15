@@ -31,7 +31,7 @@ public interface EDBOrderHandler {
      * <p>返回json</p>
      * <p>返回字段：result(结果);status(状态)</p>
      *
-     * @param orderInfo 订单信息实体
+     * @param pushNewOrderEvent 订单信息实体
      * @param pushNewOrderEvent   E店宝基本信息
      * @return 请求结果
      * @throws IOException IO异常

@@ -78,7 +78,7 @@ public class OrderSyncServiceImpl implements OrderSyncService {
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
         return orderSyncRepository.findAll(specification,
-                new PageRequest(pageIndex - 1, pageSize, new Sort(Sort.Direction.DESC, "id")));
+                new PageRequest(pageIndex - 1, pageSize, new Sort(Sort.Direction.DESC, "createTime")));
     }
 
     @Override

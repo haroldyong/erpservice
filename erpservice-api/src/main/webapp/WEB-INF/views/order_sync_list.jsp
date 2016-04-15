@@ -163,7 +163,7 @@
                                 <td class="txt40 c">${orderSync.orderStatus.name}</td>
                                 <td class="txt40 c">${orderSync.payStatus.name}</td>
                                 <td class="txt40 c">${orderSync.shipStatus.name}</td>
-                                <td class="txt40 c">${orderSync.outPayStatus+orderSync.outShipStatus}</td>
+                                <td class="txt40 c">${orderSync.outPayStatus}${orderSync.outShipStatus}</td>
                                 <td class="txt40 c"><fmt:formatDate value="${orderSync.createTime}"
                                                                     pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                 <td class="txt40 c"><fmt:formatDate value="${orderSync.lastSyncDate}"
@@ -171,8 +171,9 @@
                                 <td class="txt40 c">${orderSync.remark}</td>
                                 <td class="txt80 c">
                                     <c:if test="${log.resultStatus==0}">
-                                        <a href="javascript:rePush(${log.id},${log.userType.code})">重新推送</a>
+                                        <a href="javascript:rePush(${log.id},${log.userType.code})">重新推送</a> |
                                     </c:if>
+                                    <a href="<c:url value="/erpService/platform/orderOperatorLogs?erpUserType=${orderSyncSearch.erpUserType}&orderId=${orderSync.orderId}" />">查看日志</a>
                                 </td>
                             </tr>
                         </c:forEach>

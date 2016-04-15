@@ -78,7 +78,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
 
-                        return edbOrderHandler.pushOrder(pushNewOrderEvent.getOrderInfo(), erpInfo);
+                        return edbOrderHandler.pushOrder(pushNewOrderEvent);
                     }
 //                    if (erpBaseEvent instanceof CreateOrderEvent) {
 //                        CreateOrderEvent createOrderEvent = (CreateOrderEvent) erpBaseEvent;

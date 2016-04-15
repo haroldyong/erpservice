@@ -20,6 +20,7 @@ import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.sandbox.common.SBConstant;
 import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,9 @@ public class UserAuthorizeInterceptor extends HandlerInterceptorAdapter {
         String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, secretKey);
         if (sign.equals(requestSign)) {
             ERPInfo erpInfo = new ERPInfo(detailConfigEntity.getErpType(), detailConfigEntity.getErpSysData());
+            ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, customerId);
             request.setAttribute("erpInfo", erpInfo);
+            request.setAttribute("erpUserInfo", erpUserInfo);
             return true;
         } else {
             apiResult = ApiResult.resultWith(ResultCode.WRONG_SIGN_CODE);

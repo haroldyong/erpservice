@@ -23,9 +23,7 @@ public interface OrderOperatorService {
 
     Page<OrderOperatorLog> findAll(int pageIndex, int pageSize, OrderPushSearch orderPushSearch, int customerId);
 
-    List<OrderOperatorLog> findByCustomerIdAndOrderId(int customerId, String orderId);
-
-    OrderOperatorLog findByOrderId(String orderId);
+    List<OrderOperatorLog> findByOrderId(String orderId);
 
     OrderOperatorLog findById(long id);
 }
