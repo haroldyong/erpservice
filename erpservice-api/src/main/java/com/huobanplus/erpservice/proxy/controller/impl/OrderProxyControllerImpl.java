@@ -9,13 +9,9 @@
 
 package com.huobanplus.erpservice.proxy.controller.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.CancelOrderEvent;
@@ -47,8 +43,6 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     @Autowired
     private ERPRegister erpRegister;
     @Autowired
-    private MallOrderService orderService;
-    @Autowired
     private OrderProxyService orderProxyService;
 
     @Override
@@ -71,28 +65,29 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
         }
         if (erpHandler.eventSupported(OrderUpdateEvent.class)) {
-            MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
-            OrderUpdateEvent orderUpdateEvent = new OrderUpdateEvent();
-            orderUpdateEvent.setErpInfo(erpInfo);
-            orderUpdateEvent.setOrderInfo(orderInfo);
-            EventResult eventResult = erpHandler.handleEvent(orderUpdateEvent);
-            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                return ApiResult.resultWith(ResultCode.SUCCESS);
-            } else {
-                orderInfo.setErpInfo(JSON.toJSONString(erpInfo));
-                //如果不成功，保存本地数据，由相关处理器处理
-                MallOrderBean preOrder = orderService.findByOrderId(orderInfo.getOrderId());
-                if (preOrder == null) {
-                    orderService.save(orderInfo);
-                } else {
-                    preOrder.setLogiName(orderInfo.getLogiName());
-                    preOrder.setLogiNo(orderInfo.getLogiNo());
-//                    preOrder.setDeliverTime(orderInfo.getDeliverTime());
-                    preOrder.setWeight(orderInfo.getWeight());
-                    orderService.save(orderInfo);
-                }
-                return ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, "推送给erp时失败，将交给相关处理进行第二次尝试", null);
-            }
+//            MallOrderBean orderInfo = new ObjectMapper().readValue(orderInfoJson, MallOrderBean.class);
+//            OrderUpdateEvent orderUpdateEvent = new OrderUpdateEvent();
+//            orderUpdateEvent.setErpInfo(erpInfo);
+//            orderUpdateEvent.setOrderInfo(orderInfo);
+//            EventResult eventResult = erpHandler.handleEvent(orderUpdateEvent);
+//            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+//                return ApiResult.resultWith(ResultCode.SUCCESS);
+//            } else {
+//                orderInfo.setErpInfo(JSON.toJSONString(erpInfo));
+//                //如果不成功，保存本地数据，由相关处理器处理
+////                MallOrderBean preOrder = orderService.findByOrderId(orderInfo.getOrderId());
+////                if (preOrder == null) {
+////                    orderService.save(orderInfo);
+////                } else {
+////                    preOrder.setLogiName(orderInfo.getLogiName());
+////                    preOrder.setLogiNo(orderInfo.getLogiNo());
+//////                    preOrder.setDeliverTime(orderInfo.getDeliverTime());
+////                    preOrder.setWeight(orderInfo.getWeight());
+////                    orderService.save(orderInfo);
+////                }
+//                return ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, "推送给erp时失败，将交给相关处理进行第二次尝试", null);
+//            }
+            return null;
         } else {
             return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT);
         }

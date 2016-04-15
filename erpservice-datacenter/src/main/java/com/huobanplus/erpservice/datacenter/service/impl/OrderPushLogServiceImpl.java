@@ -12,7 +12,7 @@ package com.huobanplus.erpservice.datacenter.service.impl;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
-import com.huobanplus.erpservice.datacenter.entity.OrderPushLog;
+import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.repository.OrderPushLogRepository;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderPushSearch;
 import com.huobanplus.erpservice.datacenter.service.OrderPushLogService;
@@ -38,13 +38,13 @@ public class OrderPushLogServiceImpl implements OrderPushLogService {
     private OrderPushLogRepository orderPushLogRepository;
 
     @Override
-    public OrderPushLog save(OrderPushLog orderPushLog) {
-        return orderPushLogRepository.save(orderPushLog);
+    public OrderOperatorLog save(OrderOperatorLog orderOperatorLog) {
+        return orderPushLogRepository.save(orderOperatorLog);
     }
 
     @Override
-    public Page<OrderPushLog> findAll(int pageIndex, int pageSize, OrderPushSearch orderPushSearch, int customerId) {
-        Specification<OrderPushLog> specification = ((root, query, cb) -> {
+    public Page<OrderOperatorLog> findAll(int pageIndex, int pageSize, OrderPushSearch orderPushSearch, int customerId) {
+        Specification<OrderOperatorLog> specification = ((root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.equal(root.get("customerId").as(Integer.class), customerId));
             predicates.add(cb.equal(root.get("userType").as(ERPTypeEnum.UserType.class),
@@ -67,12 +67,12 @@ public class OrderPushLogServiceImpl implements OrderPushLogService {
     }
 
     @Override
-    public OrderPushLog findByOrderId(String orderId) {
+    public OrderOperatorLog findByOrderId(String orderId) {
         return orderPushLogRepository.findByOrderId(orderId);
     }
 
     @Override
-    public OrderPushLog findById(long id) {
+    public OrderOperatorLog findById(long id) {
         return orderPushLogRepository.findOne(id);
     }
 }

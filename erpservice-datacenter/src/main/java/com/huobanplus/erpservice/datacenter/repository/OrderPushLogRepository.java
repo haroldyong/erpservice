@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.repository;
 
-import com.huobanplus.erpservice.datacenter.entity.OrderPushLog;
+import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -18,6 +18,6 @@ import org.springframework.stereotype.Repository;
  * Created by allan on 4/13/16.
  */
 @Repository
-public interface OrderPushLogRepository extends JpaRepository<OrderPushLog, Long>, JpaSpecificationExecutor<OrderPushLog> {
-    OrderPushLog findByOrderId(String orderId);
+public interface OrderPushLogRepository extends JpaRepository<OrderOperatorLog, Long>, JpaSpecificationExecutor<OrderOperatorLog> {
+    OrderOperatorLog findByOrderId(String orderId);
 }

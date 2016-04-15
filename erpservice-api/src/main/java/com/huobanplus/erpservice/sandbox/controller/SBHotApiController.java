@@ -1,28 +1,29 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpservice.sandbox.controller;
 
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
-import com.huobanplus.erpservice.common.util.ClassUtil;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
-import com.huobanplus.erpservice.datacenter.service.MallOrderService;
 import com.huobanplus.erpservice.hotapi.common.HotApiConstant;
 import com.huobanplus.erpservice.hotapi.jsonmodel.OrderList;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,8 +32,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/erpService/sandbox/rest")
 public class SBHotApiController {
-    @Autowired
-    private MallOrderService orderService;
 
     @RequestMapping(value = "/order/index", method = RequestMethod.POST)
     @ResponseBody
@@ -68,27 +67,27 @@ public class SBHotApiController {
                 orderSearchInfo.setOrderBy(orderBy);
                 orderSearchInfo.setOrderType(orderType);
 
-                Page<MallOrderBean> orderBeans = orderService.findAll(orderSearchInfo, pageIndex, pageSize);
-                List<Order> orders = new ArrayList<>();
-                orderBeans.getContent().forEach(o -> {
-                    Order order = new Order();
-                    try {
-                        ClassUtil.cloneClass(o, order);
-                        order.setLastUpdateTime(StringUtil.DateFormat(o.getLastUpdateTime(), StringUtil.TIME_PATTERN));
-                        order.setCreateTime(StringUtil.DateFormat(o.getCreateTime(), StringUtil.TIME_PATTERN));
-                        order.setPayTime(StringUtil.DateFormat(o.getPayTime(), StringUtil.TIME_PATTERN));
-                    } catch (ReflectiveOperationException e) {
-                        e.printStackTrace();
-                    }
-                    orders.add(order);
-                });
+//                Page<MallOrderBean> orderBeans = orderService.findAll(orderSearchInfo, pageIndex, pageSize);
+//                List<Order> orders = new ArrayList<>();
+//                orderBeans.getContent().forEach(o -> {
+//                    Order order = new Order();
+//                    try {
+//                        ClassUtil.cloneClass(o, order);
+//                        order.setLastUpdateTime(StringUtil.DateFormat(o.getLastUpdateTime(), StringUtil.TIME_PATTERN));
+//                        order.setCreateTime(StringUtil.DateFormat(o.getCreateTime(), StringUtil.TIME_PATTERN));
+//                        order.setPayTime(StringUtil.DateFormat(o.getPayTime(), StringUtil.TIME_PATTERN));
+//                    } catch (ReflectiveOperationException e) {
+//                        e.printStackTrace();
+//                    }
+//                    orders.add(order);
+//                });
                 OrderList orderList = new OrderList();
-                orderList.setRecordCount(orders.size());
+//                orderList.setRecordCount(orders.size());
                 orderList.setPageIndex(pageIndex);
                 orderList.setPageSize(pageSize);
                 orderList.setOrderBy(orderBy);
                 orderList.setOrderType(orderType);
-                orderList.setOrders(orders);
+//                orderList.setOrders(orders);
                 responseData.put("requestData", requestMap);
                 responseData.put("responseData", ApiResult.resultWith(ResultCode.SUCCESS, orderList));
                 break;

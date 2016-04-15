@@ -4,20 +4,13 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.netshop.handler.impl;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.huobanplus.erpprovider.netshop.bean.NSOrderDetailResult;
-import com.huobanplus.erpprovider.netshop.bean.NSOrderItemResult;
-import com.huobanplus.erpprovider.netshop.bean.NSOrderListResult;
 import com.huobanplus.erpprovider.netshop.exceptionhandler.NSExceptionHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSOrderHandler;
-import com.huobanplus.erpprovider.netshop.util.Constant;
-import com.huobanplus.erpservice.common.util.StringUtil;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
@@ -30,9 +23,6 @@ import com.huobanplus.erpservice.eventhandler.model.OrderSearchInfo;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.List;
 
 /**
  * 订单信息处理实现类
@@ -62,25 +52,26 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, eventResult.getResultMsg());
             }
-            List<MallOrderBean> orderList = (List<MallOrderBean>) eventResult.getData();
-            List<String> orderIdList = new ArrayList<>();
-            orderList.forEach(order -> {
-                orderIdList.add(order.getOrderId());
-            });
-
-            NSOrderListResult orderListResult = new NSOrderListResult();
-            orderListResult.setOrderCount(String.valueOf(orderList.size()));
-            orderListResult.setPage(pageIndex.toString());
-            orderListResult.setResult("1");
-            orderListResult.setOrderNo(orderIdList);
-
-            String orderResultXml = new XmlMapper().writeValueAsString(orderListResult);
-            int firstIndex = orderResultXml.indexOf("<OrderNO>");
-            int lastIndex = orderResultXml.lastIndexOf("</OrderNO>");
-            String firstPanel = orderResultXml.substring(0, firstIndex);
-            String orderPanel = orderResultXml.substring(firstIndex + 9, lastIndex);
-            String lastPanel = orderResultXml.substring(lastIndex + 10);
-            String xmlResult = firstPanel + "<OrderList>" + orderPanel + "</OrderList>" + lastPanel;
+//            List<MallOrderBean> orderList = (List<MallOrderBean>) eventResult.getData();
+//            List<String> orderIdList = new ArrayList<>();
+//            orderList.forEach(order -> {
+//                orderIdList.add(order.getOrderId());
+//            });
+//
+//            NSOrderListResult orderListResult = new NSOrderListResult();
+//            orderListResult.setOrderCount(String.valueOf(orderList.size()));
+//            orderListResult.setPage(pageIndex.toString());
+//            orderListResult.setResult("1");
+//            orderListResult.setOrderNo(orderIdList);
+//
+//            String orderResultXml = new XmlMapper().writeValueAsString(orderListResult);
+//            int firstIndex = orderResultXml.indexOf("<OrderNO>");
+//            int lastIndex = orderResultXml.lastIndexOf("</OrderNO>");
+//            String firstPanel = orderResultXml.substring(0, firstIndex);
+//            String orderPanel = orderResultXml.substring(firstIndex + 9, lastIndex);
+//            String lastPanel = orderResultXml.substring(lastIndex + 10);
+//            String xmlResult = firstPanel + "<OrderList>" + orderPanel + "</OrderList>" + lastPanel;
+            String xmlResult = null;
             return EventResult.resultWith(EventResultEnum.SUCCESS, xmlResult);
         } catch (Exception e) {
             return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, "服务器错误--" + e.getMessage());
@@ -102,42 +93,42 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, eventResult.getResultMsg());
             }
             //todo 调用相关使用者获得订单详情
-            MallOrderBean orderBean = (MallOrderBean) eventResult.getData();
-
-            NSOrderDetailResult orderDetailResult = new NSOrderDetailResult();
-            orderDetailResult.setOrderNo(orderBean.getOrderId());
-            orderDetailResult.setResult(1);
-            orderDetailResult.setDateTime(StringUtil.DateFormat(orderBean.getPayTime(), Constant.TIME_FORMAT_ONE));
-//            orderDetailResult.setBuyerId(orderBean.getBuyerId());
-            orderDetailResult.setBuyerName(orderBean.getShipName());
-//            orderDetailResult.setProvince(orderBean.getProvince());
-//            orderDetailResult.setCity(orderBean.getCity());
-//            orderDetailResult.setTown(orderBean.getDistrict());
-            orderDetailResult.setAdr(orderBean.getShipAddr());
-            orderDetailResult.setZip(orderBean.getShipZip());
-            orderDetailResult.setEmail(orderBean.getShipEmail());
-            orderDetailResult.setPhone(orderBean.getShipMobile());
-            orderDetailResult.setTotal(orderBean.getFinalAmount());
-            orderDetailResult.setPostage(orderBean.getCostFreight());
-            orderDetailResult.setPayAccount(orderBean.getPaymentName());
-//            orderDetailResult.setPayID(orderBean);
-            orderDetailResult.setLogisticsName(orderBean.getLogiName());
-//            orderDetailResult.setChargetype(orderBean.getChargeType());
-            orderDetailResult.setCustomerRemark(orderBean.getMemo());
-//            orderDetailResult.setInvoiceTitle(orderBean.getInvoiceTitle());
-            orderDetailResult.setRemark(orderBean.getRemark());
-            List<NSOrderItemResult> orderItemResults = new ArrayList<>();
-            orderBean.getOrderItemBeans().forEach(item -> {
-                NSOrderItemResult orderItemResult = new NSOrderItemResult();
-                orderItemResult.setGoodsID(item.getBn());
-                orderItemResult.setGoodsName(item.getName());
-                orderItemResult.setGoodsSpec(item.getStandard());
-                orderItemResult.setCount(item.getNum());
-                orderItemResult.setPrice(item.getAmount());
-                orderItemResults.add(orderItemResult);
-            });
-            String resultXml = new XmlMapper().writeValueAsString(orderDetailResult);
-
+//            MallOrderBean orderBean = (MallOrderBean) eventResult.getData();
+//
+//            NSOrderDetailResult orderDetailResult = new NSOrderDetailResult();
+//            orderDetailResult.setOrderNo(orderBean.getOrderId());
+//            orderDetailResult.setResult(1);
+//            orderDetailResult.setDateTime(StringUtil.DateFormat(orderBean.getPayTime(), Constant.TIME_FORMAT_ONE));
+////            orderDetailResult.setBuyerId(orderBean.getBuyerId());
+//            orderDetailResult.setBuyerName(orderBean.getShipName());
+////            orderDetailResult.setProvince(orderBean.getProvince());
+////            orderDetailResult.setCity(orderBean.getCity());
+////            orderDetailResult.setTown(orderBean.getDistrict());
+//            orderDetailResult.setAdr(orderBean.getShipAddr());
+//            orderDetailResult.setZip(orderBean.getShipZip());
+//            orderDetailResult.setEmail(orderBean.getShipEmail());
+//            orderDetailResult.setPhone(orderBean.getShipMobile());
+//            orderDetailResult.setTotal(orderBean.getFinalAmount());
+//            orderDetailResult.setPostage(orderBean.getCostFreight());
+//            orderDetailResult.setPayAccount(orderBean.getPaymentName());
+////            orderDetailResult.setPayID(orderBean);
+//            orderDetailResult.setLogisticsName(orderBean.getLogiName());
+////            orderDetailResult.setChargetype(orderBean.getChargeType());
+//            orderDetailResult.setCustomerRemark(orderBean.getMemo());
+////            orderDetailResult.setInvoiceTitle(orderBean.getInvoiceTitle());
+//            orderDetailResult.setRemark(orderBean.getRemark());
+//            List<NSOrderItemResult> orderItemResults = new ArrayList<>();
+//            orderBean.getOrderItemBeans().forEach(item -> {
+//                NSOrderItemResult orderItemResult = new NSOrderItemResult();
+//                orderItemResult.setGoodsID(item.getBn());
+//                orderItemResult.setGoodsName(item.getName());
+//                orderItemResult.setGoodsSpec(item.getStandard());
+//                orderItemResult.setCount(item.getNum());
+//                orderItemResult.setPrice(item.getAmount());
+//                orderItemResults.add(orderItemResult);
+//            });
+//            String resultXml = new XmlMapper().writeValueAsString(orderDetailResult);
+            String resultXml = null;
             return EventResult.resultWith(EventResultEnum.SUCCESS, resultXml);
         } catch (Exception e) {
             return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, "服务器错误--" + e.getMessage());

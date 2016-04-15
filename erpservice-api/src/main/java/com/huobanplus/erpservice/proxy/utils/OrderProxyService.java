@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
-import com.huobanplus.erpservice.datacenter.entity.OrderPushLog;
+import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.datacenter.service.OrderPushLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
@@ -49,25 +49,25 @@ public class OrderProxyService {
             pushNewOrderEvent.setErpInfo(erpInfo);
             pushNewOrderEvent.setOrderInfo(order);
             EventResult eventResult = erpHandler.handleEvent(pushNewOrderEvent);
-            OrderPushLog orderPushLog = orderPushLogService.findByOrderId(order.getOrderId());
-            if (orderPushLog == null) {
-                orderPushLog = new OrderPushLog();
-                orderPushLog.setOrderId(order.getOrderId());
-                orderPushLog.setProviderType(erpInfo.getErpType());
+            OrderOperatorLog orderOperatorLog = orderPushLogService.findByOrderId(order.getOrderId());
+            if (orderOperatorLog == null) {
+                orderOperatorLog = new OrderOperatorLog();
+                orderOperatorLog.setOrderId(order.getOrderId());
+                orderOperatorLog.setProviderType(erpInfo.getErpType());
                 ERPTypeEnum.UserType userType = order.getSupplierId() > 0 ? ERPTypeEnum.UserType.HUOBAN_SUPPLIER : ERPTypeEnum.UserType.HUOBAN_MALL;
-                orderPushLog.setUserType(userType);
-                orderPushLog.setCustomerId(order.getSupplierId() > 0 ? order.getSupplierId() : order.getCustomerId());
-                orderPushLog.setCreateTime(new Date());
+                orderOperatorLog.setUserType(userType);
+                orderOperatorLog.setCustomerId(order.getSupplierId() > 0 ? order.getSupplierId() : order.getCustomerId());
+                orderOperatorLog.setCreateTime(new Date());
             }
 
             ApiResult apiResult;
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                orderPushLog.setResultStatus(1);
+                orderOperatorLog.setResultStatus(1);
                 apiResult = ApiResult.resultWith(ResultCode.SUCCESS);
             } else {
-                orderPushLog.setResultStatus(0);
-                orderPushLog.setOrderJsonData(orderInfoJson);
-                orderPushLog.setErpInfo(JSON.toJSONString(erpInfo));
+                orderOperatorLog.setResultStatus(0);
+                orderOperatorLog.setOrderJsonData(orderInfoJson);
+                orderOperatorLog.setErpInfo(JSON.toJSONString(erpInfo));
                 //如果未推送成功，则保存数据到erp数据服务平台，交由相关处理器处理
 
 //                ClassUtil.cloneClass(order, orderBean);
@@ -75,7 +75,7 @@ public class OrderProxyService {
 //                orderService.save(orderBean);
                 apiResult = ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, "推送给erp时失败", null);
             }
-            orderPushLogService.save(orderPushLog);
+            orderPushLogService.save(orderOperatorLog);
             return apiResult;
         } else {
             return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT);

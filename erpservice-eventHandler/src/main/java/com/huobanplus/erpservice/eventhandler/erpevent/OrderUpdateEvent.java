@@ -4,12 +4,11 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.eventhandler.erpevent;
 
-import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import lombok.Data;
 
 /**
@@ -18,5 +17,5 @@ import lombok.Data;
  */
 @Data
 public class OrderUpdateEvent extends ERPBaseEvent {
-    private MallOrderBean orderInfo;
+//    private MallOrderBean orderInfo;
 }

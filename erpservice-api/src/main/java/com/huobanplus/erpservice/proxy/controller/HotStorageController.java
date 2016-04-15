@@ -4,15 +4,12 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.proxy.controller;
 
-import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
-import com.huobanplus.erpservice.commons.bean.ApiResult;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * 库存信息操作接口
@@ -41,34 +38,34 @@ public interface HotStorageController {
      * @param sign         签名
      * @return 返回结果
      */
-    @RequestMapping(value = "/outStoreAdd", method = RequestMethod.POST)
-    ApiResult outStoreAdd(String outStoreJson, ERPInfo erpInfo, String sign);
-
-    /**
-     * <p>方法描述：</p>
-     * 根据出库单号，对出库单进行确认。出库单确认后系统库存会减少
-     * <p>包含参数：</p>
-     * <p>outStorageNo,freight,freightAvgWay</p>
-     * <p>sysDateJson定义参照方法createOrder</p>
-     *
-     * @param outStoreJson json格式，根据不同erp传递不同的必须参数(e.g. edb:outStorage_no,freight,freight_avgway)
-     * @param erpInfo      erp关联信息（参数为des加密后的参数）
-     * @param sign         签名
-     * @return 返回结果
-     */
-    @RequestMapping(value = "/outStoreConfirm", method = RequestMethod.POST)
-    ApiResult outStoreConfirm(String outStoreJson, ERPInfo erpInfo, String sign);
-
-    /**
-     * <p>方法描述：</p>
-     * 出库单回写
-     * <p>sysDateJson定义参照方法createOrder</p>
-     *
-     * @param proOutJson json格式，根据MallProductOutBean，所需参数（bar_code，outstorage_no，outstorage_num,edb为例）
-     * @param erpInfo    erp关联信息（参数为des加密后的参数）
-     * @param sign       签名
-     * @return 返回结果
-     */
-    @RequestMapping(value = "/outStoreWriteBack", method = RequestMethod.POST)
-    ApiResult outStoreWriteBack(String proOutJson, ERPInfo erpInfo, String sign);
+//    @RequestMapping(value = "/outStoreAdd", method = RequestMethod.POST)
+//    ApiResult outStoreAdd(String outStoreJson, ERPInfo erpInfo, String sign);
+//
+//    /**
+//     * <p>方法描述：</p>
+//     * 根据出库单号，对出库单进行确认。出库单确认后系统库存会减少
+//     * <p>包含参数：</p>
+//     * <p>outStorageNo,freight,freightAvgWay</p>
+//     * <p>sysDateJson定义参照方法createOrder</p>
+//     *
+//     * @param outStoreJson json格式，根据不同erp传递不同的必须参数(e.g. edb:outStorage_no,freight,freight_avgway)
+//     * @param erpInfo      erp关联信息（参数为des加密后的参数）
+//     * @param sign         签名
+//     * @return 返回结果
+//     */
+//    @RequestMapping(value = "/outStoreConfirm", method = RequestMethod.POST)
+//    ApiResult outStoreConfirm(String outStoreJson, ERPInfo erpInfo, String sign);
+//
+//    /**
+//     * <p>方法描述：</p>
+//     * 出库单回写
+//     * <p>sysDateJson定义参照方法createOrder</p>
+//     *
+//     * @param proOutJson json格式，根据MallProductOutBean，所需参数（bar_code，outstorage_no，outstorage_num,edb为例）
+//     * @param erpInfo    erp关联信息（参数为des加密后的参数）
+//     * @param sign       签名
+//     * @return 返回结果
+//     */
+//    @RequestMapping(value = "/outStoreWriteBack", method = RequestMethod.POST)
+//    ApiResult outStoreWriteBack(String proOutJson, ERPInfo erpInfo, String sign);
 }

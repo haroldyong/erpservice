@@ -13,7 +13,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.formatedb.EDBCreateOrderInfo;
 import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -64,7 +63,7 @@ public interface EDBOrderHandler {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    EventResult orderStatusUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException;
+//    EventResult orderStatusUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException;
 
     /**
      * 订单业务状态更新
@@ -74,7 +73,7 @@ public interface EDBOrderHandler {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    EventResult orderUpdate(MallOrderBean orderInfo, ERPInfo info);
+//    EventResult orderUpdate(MallOrderBean orderInfo, ERPInfo info);
 
     /**
      * 订单发货
@@ -84,7 +83,7 @@ public interface EDBOrderHandler {
      * @param expressNo
      * @param express
      * @param weight
-     * @param info
+     * @param
      * @return 请求结果
      * @throws IOException IO异常
      */

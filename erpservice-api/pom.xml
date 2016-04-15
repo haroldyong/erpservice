@@ -20,13 +20,6 @@
     <name>erpservice-api Maven Webapp</name>
     <url>http://maven.apache.org</url>
 
-    <repositories>
-        <repository>
-            <id>repo-huotu</id>
-            <name>Hot Repository</name>
-            <url>http://repo.51flashmall.com:8081/nexus/content/groups/public/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>

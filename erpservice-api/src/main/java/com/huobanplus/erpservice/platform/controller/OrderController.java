@@ -12,7 +12,7 @@ package com.huobanplus.erpservice.platform.controller;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
-import com.huobanplus.erpservice.datacenter.entity.OrderPushLog;
+import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderPushSearch;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.OrderPushLogService;
@@ -49,7 +49,7 @@ public class OrderController {
             Model model
     ) {
         orderPushSearch.setResultStatus(resultStatus);
-        Page<OrderPushLog> orderPushLogs = orderPushLogService.findAll(pageIndex, 20, orderPushSearch, customerId);
+        Page<OrderOperatorLog> orderPushLogs = orderPushLogService.findAll(pageIndex, 20, orderPushSearch, customerId);
         model.addAttribute("orderPushLogs", orderPushLogs);
         model.addAttribute("orderPushSearch", orderPushSearch);
         model.addAttribute("pageIndex", pageIndex);
@@ -61,8 +61,8 @@ public class OrderController {
     @RequestMapping(value = "/rePushOrder", method = RequestMethod.POST)
     @ResponseBody
     private ApiResult rePushOrder(long id) {
-        OrderPushLog orderPushLog = orderPushLogService.findById(id);
-        ERPInfo erpInfo = JSON.parseObject(orderPushLog.getErpInfo(), ERPInfo.class);
-        return orderProxyService.pushOrder(orderPushLog.getOrderJsonData(), erpInfo);
+        OrderOperatorLog orderOperatorLog = orderPushLogService.findById(id);
+        ERPInfo erpInfo = JSON.parseObject(orderOperatorLog.getErpInfo(), ERPInfo.class);
+        return orderProxyService.pushOrder(orderOperatorLog.getOrderJsonData(), erpInfo);
     }
 }

@@ -17,13 +17,14 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
+ * 订单操作记录日志
  * Created by allan on 4/13/16.
  */
 @Entity
-@Table(name = "ERP_OrderPushLog")
+@Table(name = "ERP_OrderOperatorLog")
 @Setter
 @Getter
-public class OrderPushLog {
+public class OrderOperatorLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

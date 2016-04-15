@@ -17,7 +17,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.common.EDBEnum;
-import com.huobanplus.erpprovider.edb.formatedb.*;
+import com.huobanplus.erpprovider.edb.formatedb.EDBCreateOrderInfo;
+import com.huobanplus.erpprovider.edb.formatedb.EDBOrderDeliver;
+import com.huobanplus.erpprovider.edb.formatedb.EDBOrderDetail;
+import com.huobanplus.erpprovider.edb.formatedb.EDBOrderItem;
 import com.huobanplus.erpprovider.edb.handler.BaseHandler;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
@@ -27,8 +30,6 @@ import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.httputil.HttpUtil;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.util.StringUtil;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderItemBean;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -203,90 +204,90 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
     }
 
-    @Override
-    public EventResult orderStatusUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException {
-        EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
-
-        Map<String, Object> requestData = getSysRequestData(EDBConstant.ORDER_STATUS_UPDATE, sysData);
-        requestData.put("num_id", orderInfo.getOrderId());
-//        requestData.put("tid_type", orderInfo.getOrderType());
-//        requestData.put("import_mark", orderInfo.getImportMark());
-        Map<String, Object> signMap = new TreeMap<>(requestData);
-
-        requestData.put("sign", getSign(signMap, sysData));
-
-        String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
-        if (responseData == null) {
-            return EventResult.resultWith(EventResultEnum.ERROR, responseData);
-        }
-        return EventResult.resultWith(EventResultEnum.SUCCESS, responseData);
-    }
-
-    @Override
-    public EventResult orderUpdate(MallOrderBean orderInfo, ERPInfo info) {
-        try {
-            EDBOrderForUpdate orderForUpdate = new EDBOrderForUpdate();
-            EventResult eventResult = this.getOrderDetail(orderInfo.getOrderId(), info);
-            if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
-                return EventResult.resultWith(EventResultEnum.ERROR, "从edb获取数据失败--" + eventResult.getResultMsg(), null);
-            }
-            String tid = ((EDBOrderDetail) eventResult.getData()).getTid();
-
-            orderForUpdate.setTid(tid);
-            orderForUpdate.setOutTid(orderInfo.getOrderId());
-            orderForUpdate.setExpress(orderInfo.getLogiName());
-            orderForUpdate.setExpressNo(orderInfo.getLogiNo());
-//        orderForUpdate.setExpressCode(orderInfo.getExpressCoding());
-//        orderForUpdate.setPrinter(orderInfo.getPrinter());
-//        orderForUpdate.setCargoOperator(orderInfo.getDistributer());
-//        orderForUpdate.setCargoTime(StringUtil.DateFormat(orderInfo.getDistributTime(), StringUtil.TIME_PATTERN));
-//        orderForUpdate.setPrintTime(StringUtil.DateFormat(orderInfo.getPrintTime(), StringUtil.TIME_PATTERN));
-//        orderForUpdate.setInspecter(orderInfo.getInspecter());
-//        orderForUpdate.setInspectTime(StringUtil.DateFormat(orderInfo.getInspectTime(), StringUtil.TIME_PATTERN));
-            //orderForUpdate.setIsInspectDelivery(orderInfo.getIsInspectDelivery());
-//        orderForUpdate.setDeliveryOperator(orderInfo.getDeliveryOperator());
-//            orderForUpdate.setDeliveryTime(StringUtil.DateFormat(orderInfo.getDeliverTime(), StringUtil.TIME_PATTERN));
-            orderForUpdate.setGrossWeight(orderInfo.getWeight());
-//        orderForUpdate.setInternalNote(orderInfo.getInnerLable());
-//        orderForUpdate.setOriginCode(orderInfo.getOriginCode());
-//        orderForUpdate.setDestCode(orderInfo.getDestCode());
-            List<EDBProductForUpdate> productForUpdates = new ArrayList<>();
-            for (MallOrderItemBean orderItem : orderInfo.getOrderItemBeans()) {
-                EDBProductForUpdate productForUpdate = new EDBProductForUpdate();
-                productForUpdate.setTid(tid);
-                productForUpdate.setBarCode(orderItem.getBn());
-//            productForUpdate.setInspectionNum(orderItem.getInspectionNum());
-                productForUpdates.add(productForUpdate);
-            }
-            orderForUpdate.setProductForUpdates(productForUpdates);
-            EDBUpdateOrder updateOrder = new EDBUpdateOrder(orderForUpdate);
-
-            XmlMapper xmlMapper = new XmlMapper();
-            String xmlResult = xmlMapper.writeValueAsString(updateOrder);
-            int firstIndex = xmlResult.indexOf("<product_item>");
-            int lastIndex = xmlResult.lastIndexOf("</product_item>");
-            String firstPanel = xmlResult.substring(0, firstIndex);
-            String productPanel = xmlResult.substring(firstIndex + 14, lastIndex);
-            String xmlValues = firstPanel + "<product_info>" + productPanel + "</product_info></orderInfo></order>";
-
-            EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
-
-            Map<String, Object> requestData = getSysRequestData(EDBConstant.ORDER_UPDATE, sysData);
-            Map<String, Object> signMap = new TreeMap<>(requestData);
-            requestData.put("xmlValues", URLEncoder.encode(xmlValues, "utf-8"));
-            signMap.put("xmlValues", xmlValues);
-            requestData.put("sign", getSign(signMap, sysData));
-
-            String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
-
-            if (responseData == null) {
-                return EventResult.resultWith(EventResultEnum.ERROR, responseData);
-            }
-            return EventResult.resultWith(EventResultEnum.SUCCESS, responseData);
-        } catch (Exception e) {
-            return EventResult.resultWith(EventResultEnum.ERROR.getResultCode(), EventResultEnum.ERROR.getResultMsg() + "--" + e.getMessage(), null);
-        }
-    }
+//    @Override
+//    public EventResult orderStatusUpdate(MallOrderBean orderInfo, ERPInfo info) throws IOException {
+//        EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
+//
+//        Map<String, Object> requestData = getSysRequestData(EDBConstant.ORDER_STATUS_UPDATE, sysData);
+//        requestData.put("num_id", orderInfo.getOrderId());
+////        requestData.put("tid_type", orderInfo.getOrderType());
+////        requestData.put("import_mark", orderInfo.getImportMark());
+//        Map<String, Object> signMap = new TreeMap<>(requestData);
+//
+//        requestData.put("sign", getSign(signMap, sysData));
+//
+//        String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
+//        if (responseData == null) {
+//            return EventResult.resultWith(EventResultEnum.ERROR, responseData);
+//        }
+//        return EventResult.resultWith(EventResultEnum.SUCCESS, responseData);
+//    }
+//
+//    @Override
+//    public EventResult orderUpdate(MallOrderBean orderInfo, ERPInfo info) {
+//        try {
+//            EDBOrderForUpdate orderForUpdate = new EDBOrderForUpdate();
+//            EventResult eventResult = this.getOrderDetail(orderInfo.getOrderId(), info);
+//            if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
+//                return EventResult.resultWith(EventResultEnum.ERROR, "从edb获取数据失败--" + eventResult.getResultMsg(), null);
+//            }
+//            String tid = ((EDBOrderDetail) eventResult.getData()).getTid();
+//
+//            orderForUpdate.setTid(tid);
+//            orderForUpdate.setOutTid(orderInfo.getOrderId());
+//            orderForUpdate.setExpress(orderInfo.getLogiName());
+//            orderForUpdate.setExpressNo(orderInfo.getLogiNo());
+////        orderForUpdate.setExpressCode(orderInfo.getExpressCoding());
+////        orderForUpdate.setPrinter(orderInfo.getPrinter());
+////        orderForUpdate.setCargoOperator(orderInfo.getDistributer());
+////        orderForUpdate.setCargoTime(StringUtil.DateFormat(orderInfo.getDistributTime(), StringUtil.TIME_PATTERN));
+////        orderForUpdate.setPrintTime(StringUtil.DateFormat(orderInfo.getPrintTime(), StringUtil.TIME_PATTERN));
+////        orderForUpdate.setInspecter(orderInfo.getInspecter());
+////        orderForUpdate.setInspectTime(StringUtil.DateFormat(orderInfo.getInspectTime(), StringUtil.TIME_PATTERN));
+//            //orderForUpdate.setIsInspectDelivery(orderInfo.getIsInspectDelivery());
+////        orderForUpdate.setDeliveryOperator(orderInfo.getDeliveryOperator());
+////            orderForUpdate.setDeliveryTime(StringUtil.DateFormat(orderInfo.getDeliverTime(), StringUtil.TIME_PATTERN));
+//            orderForUpdate.setGrossWeight(orderInfo.getWeight());
+////        orderForUpdate.setInternalNote(orderInfo.getInnerLable());
+////        orderForUpdate.setOriginCode(orderInfo.getOriginCode());
+////        orderForUpdate.setDestCode(orderInfo.getDestCode());
+//            List<EDBProductForUpdate> productForUpdates = new ArrayList<>();
+//            for (MallOrderItemBean orderItem : orderInfo.getOrderItemBeans()) {
+//                EDBProductForUpdate productForUpdate = new EDBProductForUpdate();
+//                productForUpdate.setTid(tid);
+//                productForUpdate.setBarCode(orderItem.getBn());
+////            productForUpdate.setInspectionNum(orderItem.getInspectionNum());
+//                productForUpdates.add(productForUpdate);
+//            }
+//            orderForUpdate.setProductForUpdates(productForUpdates);
+//            EDBUpdateOrder updateOrder = new EDBUpdateOrder(orderForUpdate);
+//
+//            XmlMapper xmlMapper = new XmlMapper();
+//            String xmlResult = xmlMapper.writeValueAsString(updateOrder);
+//            int firstIndex = xmlResult.indexOf("<product_item>");
+//            int lastIndex = xmlResult.lastIndexOf("</product_item>");
+//            String firstPanel = xmlResult.substring(0, firstIndex);
+//            String productPanel = xmlResult.substring(firstIndex + 14, lastIndex);
+//            String xmlValues = firstPanel + "<product_info>" + productPanel + "</product_info></orderInfo></order>";
+//
+//            EDBSysData sysData = new ObjectMapper().readValue(info.getSysDataJson(), EDBSysData.class);
+//
+//            Map<String, Object> requestData = getSysRequestData(EDBConstant.ORDER_UPDATE, sysData);
+//            Map<String, Object> signMap = new TreeMap<>(requestData);
+//            requestData.put("xmlValues", URLEncoder.encode(xmlValues, "utf-8"));
+//            signMap.put("xmlValues", xmlValues);
+//            requestData.put("sign", getSign(signMap, sysData));
+//
+//            String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
+//
+//            if (responseData == null) {
+//                return EventResult.resultWith(EventResultEnum.ERROR, responseData);
+//            }
+//            return EventResult.resultWith(EventResultEnum.SUCCESS, responseData);
+//        } catch (Exception e) {
+//            return EventResult.resultWith(EventResultEnum.ERROR.getResultCode(), EventResultEnum.ERROR.getResultMsg() + "--" + e.getMessage(), null);
+//        }
+//    }
 
     @Override
     public EventResult orderDeliver(String orderId, Date deliverTime, String expressNo, String express, String weight, EDBSysData sysData) {

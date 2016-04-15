@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.service;
 
-import com.huobanplus.erpservice.datacenter.entity.OrderPushLog;
+import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderPushSearch;
 import org.springframework.data.domain.Page;
 
@@ -17,11 +17,11 @@ import org.springframework.data.domain.Page;
  * Created by allan on 4/13/16.
  */
 public interface OrderPushLogService {
-    OrderPushLog save(OrderPushLog orderPushLog);
+    OrderOperatorLog save(OrderOperatorLog orderOperatorLog);
 
-    Page<OrderPushLog> findAll(int pageIndex, int pageSize, OrderPushSearch orderPushSearch, int customerId);
+    Page<OrderOperatorLog> findAll(int pageIndex, int pageSize, OrderPushSearch orderPushSearch, int customerId);
 
-    OrderPushLog findByOrderId(String orderId);
+    OrderOperatorLog findByOrderId(String orderId);
 
-    OrderPushLog findById(long id);
+    OrderOperatorLog findById(long id);
 }

@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.providerapi.controller;
@@ -13,23 +13,20 @@ import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.config.ApplicationConfig;
 import com.huobanplus.erpservice.commons.config.WebConfig;
-import com.huobanplus.erpservice.datacenter.entity.MallGoodEntity;
-import com.huobanplus.erpservice.datacenter.entity.MallProductBean;
-import com.huobanplus.erpservice.datacenter.service.MallGoodService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 /**
  * Created by liual on 2015-08-26.
@@ -40,10 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @WebAppConfiguration
 @Transactional
 public class HotProductApiControllerTest extends SpringWebTest {
-    @Autowired
-    private MallGoodService goodService;
 
-    private MallGoodEntity mockGood;
+//    private MallGoodEntity mockGood;
 
     @Before
     public void setUp() throws Exception {

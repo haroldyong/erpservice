@@ -9,15 +9,6 @@
 
 package com.huobanplus.erpprovider.edb.handler;
 
-import com.huobanplus.erpservice.common.util.ClassUtil;
-import com.huobanplus.erpservice.datacenter.entity.MallOrderBean;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
-import org.junit.Test;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-
 /**
  * Created by allan on 12/24/15.
  */
@@ -25,23 +16,4 @@ import java.util.Date;
 //@ContextConfiguration(classes = {EDBTestBase.class, DataCenterConfig.class})
 //@RunWith(SpringJUnit4ClassRunner.class)
 public class ClassUtilTest {
-    @Test
-    public void testCloneClass() throws Exception {
-        MallOrderBean orderBean = new MallOrderBean();
-
-        System.out.println(orderBean.getClass() == MallOrderBean.class);
-
-        orderBean.setOrderId("12312321");
-        orderBean.setPayTime(new Date());
-        orderBean.setCreateTime(new Date());
-
-        Order order = new Order();
-        order.setPayTime(LocalDateTime.now().plusMonths(1).format(DateTimeFormatter.ISO_LOCAL_DATE));
-        ClassUtil.cloneClass(orderBean, order);
-
-        System.out.println(order.getOrderId());
-        System.out.println(order.getPayTime());
-        System.out.println(order.getCreateTime());
-
-    }
 }

@@ -4,29 +4,28 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.netshop.handler.impl;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.huobanplus.erpprovider.netshop.bean.NSGoodDetailResult;
-import com.huobanplus.erpprovider.netshop.bean.NSGoodItemResult;
-import com.huobanplus.erpprovider.netshop.bean.NSGoodResult;
 import com.huobanplus.erpprovider.netshop.exceptionhandler.NSExceptionHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSProductHandler;
 import com.huobanplus.erpservice.common.httputil.HttpUtil;
-import com.huobanplus.erpservice.datacenter.entity.MallGoodEntity;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.InventoryEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.ObtainGoodListEvent;
-import com.huobanplus.erpservice.eventhandler.model.*;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.InventoryInfo;
+import com.huobanplus.erpservice.eventhandler.model.ObtainGoodListInfo;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 商品事件实现类
@@ -57,44 +56,45 @@ public class NSProductHandlerImpl implements NSProductHandler {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, eventResult.getResultMsg());
             }
 
-            List<MallGoodEntity> goodList = (List<MallGoodEntity>) eventResult.getData();
-            NSGoodResult goodResult = new NSGoodResult();
-            goodResult.setResult(1);
-            goodResult.setTotalCount(goodList.size());
-            List<NSGoodDetailResult> detailResults = new ArrayList<>();
-            goodList.forEach(good -> {
-                NSGoodDetailResult goodDetailResult = new NSGoodDetailResult();
-                goodDetailResult.setItemID(good.getBn());
-                goodDetailResult.setItemName(good.getGoodName());
-                goodDetailResult.setOuterID(good.getBn());
-                goodDetailResult.setNum(good.getNum());
-                goodDetailResult.setPrice(good.getPrice());
-                goodDetailResult.setIsSku(good.getIsSku());
-                List<NSGoodItemResult> itemResults = new ArrayList<>();
-                good.getProductBeans().forEach(pro -> {
-                    NSGoodItemResult goodItemResult = new NSGoodItemResult();
-                    goodItemResult.setUnit(pro.getSkuName());
-                    goodItemResult.setSkuID(pro.getSkuId());
-                    goodItemResult.setNum(pro.getNum());
-                    goodItemResult.setSkuOuterID(pro.getSkuId());
-                    itemResults.add(goodItemResult);
-                });
-                goodDetailResult.setItemResults(itemResults);
-                detailResults.add(goodDetailResult);
-            });
-            goodResult.setDetailResults(detailResults);
-            String xmlResult = new XmlMapper().writeValueAsString(goodResult);
-            xmlResult = xmlResult.replaceFirst("<Ware>", "");
-            int wareIndex = xmlResult.lastIndexOf("</Ware>");
-            String a = xmlResult.substring(0, wareIndex);
-            String b = xmlResult.substring(wareIndex + 7);
-            xmlResult = a + b;
-            //fomat item
-            xmlResult = xmlResult.replaceFirst("<Item>", "<Items>");
-            int itemIndex = xmlResult.lastIndexOf("</Item>");
-            String a1 = xmlResult.substring(0, itemIndex);
-            String b1 = xmlResult.substring(itemIndex, xmlResult.length());
-            xmlResult = a1 + b1.replaceFirst("</Item>", "</Items>");
+//            List<MallGoodEntity> goodList = (List<MallGoodEntity>) eventResult.getData();
+//            NSGoodResult goodResult = new NSGoodResult();
+//            goodResult.setResult(1);
+//            goodResult.setTotalCount(goodList.size());
+//            List<NSGoodDetailResult> detailResults = new ArrayList<>();
+//            goodList.forEach(good -> {
+//                NSGoodDetailResult goodDetailResult = new NSGoodDetailResult();
+//                goodDetailResult.setItemID(good.getBn());
+//                goodDetailResult.setItemName(good.getGoodName());
+//                goodDetailResult.setOuterID(good.getBn());
+//                goodDetailResult.setNum(good.getNum());
+//                goodDetailResult.setPrice(good.getPrice());
+//                goodDetailResult.setIsSku(good.getIsSku());
+//                List<NSGoodItemResult> itemResults = new ArrayList<>();
+//                good.getProductBeans().forEach(pro -> {
+//                    NSGoodItemResult goodItemResult = new NSGoodItemResult();
+//                    goodItemResult.setUnit(pro.getSkuName());
+//                    goodItemResult.setSkuID(pro.getSkuId());
+//                    goodItemResult.setNum(pro.getNum());
+//                    goodItemResult.setSkuOuterID(pro.getSkuId());
+//                    itemResults.add(goodItemResult);
+//                });
+//                goodDetailResult.setItemResults(itemResults);
+//                detailResults.add(goodDetailResult);
+//            });
+//            goodResult.setDetailResults(detailResults);
+//            String xmlResult = new XmlMapper().writeValueAsString(goodResult);
+//            xmlResult = xmlResult.replaceFirst("<Ware>", "");
+//            int wareIndex = xmlResult.lastIndexOf("</Ware>");
+//            String a = xmlResult.substring(0, wareIndex);
+//            String b = xmlResult.substring(wareIndex + 7);
+//            xmlResult = a + b;
+//            //fomat item
+//            xmlResult = xmlResult.replaceFirst("<Item>", "<Items>");
+//            int itemIndex = xmlResult.lastIndexOf("</Item>");
+//            String a1 = xmlResult.substring(0, itemIndex);
+//            String b1 = xmlResult.substring(itemIndex, xmlResult.length());
+//            xmlResult = a1 + b1.replaceFirst("</Item>", "</Items>");
+            String xmlResult = null;
             return EventResult.resultWith(EventResultEnum.SUCCESS, xmlResult);
         } catch (Exception e) {
             return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, "服务器错误--" + e.getMessage());
