@@ -13,13 +13,17 @@ import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderPushSearch;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 /**
  * Created by allan on 4/13/16.
  */
-public interface OrderPushLogService {
+public interface OrderOperatorService {
     OrderOperatorLog save(OrderOperatorLog orderOperatorLog);
 
     Page<OrderOperatorLog> findAll(int pageIndex, int pageSize, OrderPushSearch orderPushSearch, int customerId);
+
+    List<OrderOperatorLog> findByCustomerIdAndOrderId(int customerId, String orderId);
 
     OrderOperatorLog findByOrderId(String orderId);
 

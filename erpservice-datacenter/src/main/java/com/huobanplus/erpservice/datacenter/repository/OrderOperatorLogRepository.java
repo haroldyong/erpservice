@@ -14,10 +14,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by allan on 4/13/16.
  */
 @Repository
-public interface OrderPushLogRepository extends JpaRepository<OrderOperatorLog, Long>, JpaSpecificationExecutor<OrderOperatorLog> {
+public interface OrderOperatorLogRepository extends JpaRepository<OrderOperatorLog, Long>, JpaSpecificationExecutor<OrderOperatorLog> {
     OrderOperatorLog findByOrderId(String orderId);
+
+    List<OrderOperatorLog> findByCustomerIdAndOrderId(int customerId, String orderId);
 }

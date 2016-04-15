@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.common.ienum;
@@ -15,10 +15,15 @@ package com.huobanplus.erpservice.common.ienum;
 public interface OrderEnum {
     enum OrderStatus implements ICommonEnum {
         ACTIVE(0, "活动"),
-        DEAD(-1, "作废"),
+        DEAD(-1, "已取消"),
         FINISH(1, "完成");
         private int code;
         private String name;
+
+        OrderStatus(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
 
         @Override
         public int getCode() {
@@ -35,11 +40,6 @@ public interface OrderEnum {
         }
 
         public void setName(String name) {
-            this.name = name;
-        }
-
-        OrderStatus(int code, String name) {
-            this.code = code;
             this.name = name;
         }
     }
@@ -95,6 +95,11 @@ public interface OrderEnum {
         private int code;
         private String name;
 
+        ShipStatus(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
         @Override
         public int getCode() {
             return code;
@@ -110,11 +115,6 @@ public interface OrderEnum {
         }
 
         public void setName(String name) {
-            this.name = name;
-        }
-
-        ShipStatus(int code, String name) {
-            this.code = code;
             this.name = name;
         }
     }

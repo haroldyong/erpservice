@@ -42,6 +42,7 @@ public class OrderOperatorLog {
     private int customerId;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
+
     private String orderId;
     /**
      * 备注
@@ -49,9 +50,10 @@ public class OrderOperatorLog {
     @Column(length = 2000)
     private String remark;
     /**
-     * 0表示失败,1表示成功
+     * 同步结果
      */
-    private int resultStatus;
+    private boolean resultStatus;
+
     @Lob
     private String orderJsonData;
     @Lob

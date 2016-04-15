@@ -13,9 +13,9 @@ import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
-import com.huobanplus.erpservice.datacenter.repository.OrderPushLogRepository;
+import com.huobanplus.erpservice.datacenter.repository.OrderOperatorLogRepository;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderPushSearch;
-import com.huobanplus.erpservice.datacenter.service.OrderPushLogService;
+import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,13 +33,13 @@ import java.util.List;
  * Created by allan on 4/13/16.
  */
 @Service
-public class OrderPushLogServiceImpl implements OrderPushLogService {
+public class OrderOperatorServiceImpl implements OrderOperatorService {
     @Autowired
-    private OrderPushLogRepository orderPushLogRepository;
+    private OrderOperatorLogRepository orderOperatorLogRepository;
 
     @Override
     public OrderOperatorLog save(OrderOperatorLog orderOperatorLog) {
-        return orderPushLogRepository.save(orderOperatorLog);
+        return orderOperatorLogRepository.save(orderOperatorLog);
     }
 
     @Override
@@ -62,17 +62,22 @@ public class OrderPushLogServiceImpl implements OrderPushLogService {
             }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         });
-        return orderPushLogRepository.findAll(specification,
+        return orderOperatorLogRepository.findAll(specification,
                 new PageRequest(pageIndex - 1, pageSize, new Sort(Sort.Direction.DESC, "id")));
     }
 
     @Override
+    public List<OrderOperatorLog> findByCustomerIdAndOrderId(int customerId, String orderId) {
+        return orderOperatorLogRepository.findByCustomerIdAndOrderId(customerId, orderId);
+    }
+
+    @Override
     public OrderOperatorLog findByOrderId(String orderId) {
-        return orderPushLogRepository.findByOrderId(orderId);
+        return orderOperatorLogRepository.findByOrderId(orderId);
     }
 
     @Override
     public OrderOperatorLog findById(long id) {
-        return orderPushLogRepository.findOne(id);
+        return orderOperatorLogRepository.findOne(id);
     }
 }

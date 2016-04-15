@@ -9,15 +9,20 @@
 
 package com.huobanplus.erpservice.proxy.controller.impl;
 
+import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
+import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.common.EventType;
 import com.huobanplus.erpservice.eventhandler.erpevent.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.OrderDeliverEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.OrderUpdateEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -45,13 +50,44 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     @Autowired
     private OrderProxyService orderProxyService;
 
+    @Autowired
+    private OrderSyncService orderSyncService;
+    @Autowired
+    private OrderOperatorService orderOperatorService;
+
     @Override
     @RequestMapping(value = "/createOrder")
     @ResponseBody
-    public ApiResult createOrder(String orderInfoJson, @RequestAttribute ERPInfo erpInfo) throws Exception {
+    public ApiResult createOrder(
+            String orderInfoJson,
+            @RequestAttribute ERPInfo erpInfo,
+            int eventType
+    ) throws Exception {
 
         //如果开通了erp，交由erp处理器推送到指定erp
-        return orderProxyService.pushOrder(orderInfoJson, erpInfo);
+        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
+        if (erpHandler == null) {
+            return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
+        }
+        if (erpHandler.eventSupported(PushNewOrderEvent.class)) {
+            EventType eventTypeEnum = EnumHelper.getEnumType(EventType.class, eventType);
+            PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
+            pushNewOrderEvent.setErpInfo(erpInfo);
+            pushNewOrderEvent.setOrderInfoJson(orderInfoJson);
+            pushNewOrderEvent.setEventType(eventTypeEnum);
+            //相关处理器处理时间推送订单至相应ERP系统
+            EventResult eventResult = erpHandler.handleEvent(pushNewOrderEvent);
+
+            ApiResult apiResult;
+            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                apiResult = ApiResult.resultWith(ResultCode.SUCCESS);
+            } else {
+                apiResult = ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, "推送给erp时失败", null);
+            }
+            return apiResult;
+        } else {
+            return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT);
+        }
     }
 
     @Override

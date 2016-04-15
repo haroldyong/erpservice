@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.formatedb.EDBCreateOrderInfo;
 import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
@@ -32,11 +32,11 @@ public interface EDBOrderHandler {
      * <p>返回字段：result(结果);status(状态)</p>
      *
      * @param orderInfo 订单信息实体
-     * @param sysData   E店宝基本信息
+     * @param pushNewOrderEvent   E店宝基本信息
      * @return 请求结果
      * @throws IOException IO异常
      */
-    EventResult pushOrder(Order orderInfo, EDBSysData sysData);
+    EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
 
     /**
      * 获取订单列表

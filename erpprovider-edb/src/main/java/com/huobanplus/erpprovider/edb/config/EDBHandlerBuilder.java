@@ -10,8 +10,6 @@
 package com.huobanplus.erpprovider.edb.config;
 
 
-import com.alibaba.fastjson.JSON;
-import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
@@ -79,8 +77,8 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                        EDBSysData sysData = JSON.parseObject(erpBaseEvent.getErpInfo().getSysDataJson(), EDBSysData.class);
-                        return edbOrderHandler.pushOrder(pushNewOrderEvent.getOrderInfo(), sysData);
+
+                        return edbOrderHandler.pushOrder(pushNewOrderEvent.getOrderInfo(), erpInfo);
                     }
 //                    if (erpBaseEvent instanceof CreateOrderEvent) {
 //                        CreateOrderEvent createOrderEvent = (CreateOrderEvent) erpBaseEvent;

@@ -13,7 +13,7 @@ package com.huobanplus.erpservice.common.ienum;
  * erp订单状态
  * Created by allan on 4/15/16.
  */
-public enum ERPOrderStatus implements ICommonEnum {
+public enum OrderSyncStatus implements ICommonEnum {
     WAITING_FOR_PUSHING(0, "待推送"),
     PUSHING_SUCCESS(1, "已推送待发货"),
     DELIVERYED(2, "发货已同步"),
@@ -21,7 +21,7 @@ public enum ERPOrderStatus implements ICommonEnum {
     private int code;
     private String name;
 
-    ERPOrderStatus(int code, String name) {
+    OrderSyncStatus(int code, String name) {
         this.code = code;
         this.name = name;
     }

@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.proxy.controller;
@@ -15,7 +15,6 @@ import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
 
@@ -36,7 +35,8 @@ public interface OrderProxyController {
     @RequestMapping(value = "/createOrder")
     ApiResult createOrder(
             String orderInfoJson,
-            @RequestAttribute ERPInfo erpInfo
+            @RequestAttribute ERPInfo erpInfo,
+            int eventType
     ) throws Exception;
 
     @RequestMapping(value = "/updateOrder")
