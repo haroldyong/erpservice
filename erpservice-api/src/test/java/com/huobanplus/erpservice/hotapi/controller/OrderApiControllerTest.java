@@ -126,14 +126,23 @@ public class OrderApiControllerTest extends SpringWebTest {
         JCoDestination destination = OrderApiControllerTest.connect();
         JCoFunction function = null;
         try {
-            function = destination.getRepository().getFunction("Z_SY_WM_MATNR");
-            JCoRecord record =function.getImportParameterList();
+            function = destination.getRepository().getFunction("ZWS_DATA_IMPORT");
+          //  JCoRecord record =function.getImportParameterList();
 
-            record.setValue("I_BUKRS", "sd");
+         //   record.setValue("I_BUKRS", "sd");
+
+            JCoTable jCoTable = null;
+            jCoTable = function.getTableParameterList().getTable("ZTABLE");
+            jCoTable.appendRow();
+            jCoTable.setValue("NAME", "sd");
+
+            System.out.println("hhhh");
+            function.execute(destination);
+            String resultMsg = function.getExportParameterList().getString("MESS");
 
             function.execute(destination);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 

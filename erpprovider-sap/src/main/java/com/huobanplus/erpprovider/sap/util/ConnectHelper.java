@@ -1,5 +1,6 @@
 package com.huobanplus.erpprovider.sap.util;
 
+import com.huobanplus.erpprovider.sap.common.SAPConstant;
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.sap.conn.jco.*;
@@ -19,32 +20,34 @@ public class ConnectHelper {
     private static final String ABAP_AS_POOLED = "ABAP_AS_WITH_POOL";
 
 
-    public static JCoFunction getRfcFunction(SAPSysData sysData, ERPUserInfo erpUserInfo,String rfcName,Map<String, Object> datamap) throws Exception {
+    public static JCoFunction getRfcFunction(SAPSysData sysData, ERPUserInfo erpUserInfo,String rfcName) throws Exception {
         JCoDestination destination = connect(sysData, erpUserInfo);
         //如果有数据则进行填充，没有直接返回JCoFunction
-        if(datamap!=null && datamap.size()>0){
-            JCoFunction function=fillData(destination.getRepository().getFunction(rfcName),datamap);
-            return function;
-        }
+    //    if(datamap!=null && datamap.size()>0){
+//            JCoFunction function=fillData(destination.getRepository().getFunction(rfcName),datamap);
+//            return function;
+//        }
         return destination.getRepository().getFunction(rfcName);
     }
-    /**
-     * 填充数据
-     */
-    public static JCoFunction fillData(JCoFunction jcoFunc,Map<String, Object> datamap){
-        JCoTable jCoTable = null;
-        jCoTable = jcoFunc.getTableParameterList().getTable("ZTABLE");
 
-        if(jCoTable==null){
-            return jcoFunc;
-        }
-//      填充传入值
-        for(String key:datamap.keySet()){
-            Object value=datamap.get(key);
-            jCoTable.setValue(key, value);
-        }
-        return jcoFunc;
-    }
+
+//    /**
+//     * 填充数据
+//     */
+//    public static JCoFunction fillData(JCoFunction jcoFunc,Map<String, Object> datamap){
+//        JCoTable jCoTable = null;
+//        jCoTable = jcoFunc.getTableParameterList().getTable("ZTABLE");
+//
+//        if(jCoTable==null){
+//            return jcoFunc;
+//        }
+////      填充传入值
+//        for(String key:datamap.keySet()){
+//            Object value=datamap.get(key);
+//            jCoTable.setValue(key, value);
+//        }
+//        return jcoFunc;
+//    }
 
     public static JCoDestination connect(SAPSysData sysData, ERPUserInfo erpUserInfo) {
         JCoDestination destination = null;
@@ -70,9 +73,9 @@ public class ConnectHelper {
         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, sysData.getClient());       //SAP集团
         connectProperties.setProperty(DestinationDataProvider.JCO_USER, sysData.getJcoUser());  //SAP用户名
         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, sysData.getJcoPass());     //密码
-        connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "zh");        //登录语言
-        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "3");  //最大连接数
-        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT, "10");     //最大连接线程
+        connectProperties.setProperty(DestinationDataProvider.JCO_LANG, SAPConstant.LANGUAGE);        //登录语言
+        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, SAPConstant.JCO_POOL_CAPACITY+"");  //最大连接线程
+        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT, SAPConstant.JCO_PEAK_LIMIT+"");     //最大连接数
         connectProperties.setProperty(DestinationDataProvider.JCO_SAPROUTER, sysData.getSapRouter()); //路由
         File cfg = new File(name + "." + suffix);
         if (cfg.exists()) {

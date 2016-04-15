@@ -10,16 +10,18 @@
 package com.huobanplus.erpprovider.sap.handler.impl;
 
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
+import com.huobanplus.erpprovider.sap.formatsap.SAPSaleOrderInfo;
 import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
+import com.huobanplus.erpprovider.sap.util.ConnectHelper;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import org.springframework.stereotype.Component;
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
-
-import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.sap.conn.jco.*;
+import com.sap.conn.jco.JCoFunction;
+import com.sap.conn.jco.JCoTable;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by liuzheng on 2016/4/14.
@@ -113,7 +115,6 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             } else {
                 return EventResult.resultWith(EventResultEnum.ERROR);
             }
-
         } catch (JCoException ex) {
             return EventResult.resultWith(EventResultEnum.ERROR);
         }
@@ -123,6 +124,8 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
     public static void main(String[] args) {
         SAPOrderHandlerImpl obj = new SAPOrderHandlerImpl();
         obj.orderPush(null, null, null);
+
+
     }
 
 }
