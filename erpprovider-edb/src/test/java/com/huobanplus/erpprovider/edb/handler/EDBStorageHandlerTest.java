@@ -19,6 +19,7 @@ import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -32,7 +33,7 @@ import java.util.Arrays;
 @ContextConfiguration(classes = {EDBConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class EDBStorageHandlerTest {
-//    @Autowired
+    @Autowired
     private EDBStorageHandler storageHandler;
 
     private ERPInfo mockERP;

@@ -93,9 +93,6 @@ public class OrderApiControllerTest extends SpringWebTest {
      * @param properties 属性文件内容
      */
     private static void createDataFile(String name, String suffix, Properties properties) {
-
-
-
         File cfg = new File(name + "." + suffix);
         if (cfg.exists()) {
             cfg.deleteOnExit();
@@ -129,15 +126,14 @@ public class OrderApiControllerTest extends SpringWebTest {
         JCoDestination destination = OrderApiControllerTest.connect();
         JCoFunction function = null;
         try {
-            function = destination.getRepository().getFunction("Z_SY_WM_MATNR");
+            function = destination.getRepository().getFunction("ZWS_DATA_IMPORT");
 
             function.execute(destination);
 
-
-
-
+//            function.getImportParameterList().setValue("name","wuxiongliu");
+//            function.execute(destination);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
