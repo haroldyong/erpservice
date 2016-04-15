@@ -2,13 +2,13 @@ package com.huobanplus.erpprovider.sap.util;
 
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
-import com.sap.conn.jco.JCoDestination;
-import com.sap.conn.jco.JCoDestinationManager;
-import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.*;
 import com.sap.conn.jco.ext.DestinationDataProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -18,12 +18,40 @@ public class ConnectHelper {
 
     private static final String ABAP_AS_POOLED = "ABAP_AS_WITH_POOL";
 
+
+    public static JCoFunction getRfcFunction(SAPSysData sysData, ERPUserInfo erpUserInfo,String rfcName,Map<String, Object> datamap) throws Exception {
+        JCoDestination destination = connect(sysData, erpUserInfo);
+        //如果有数据则进行填充，没有直接返回JCoFunction
+        if(datamap!=null && datamap.size()>0){
+            JCoFunction function=fillData(destination.getRepository().getFunction(rfcName),datamap);
+            return function;
+        }
+        return destination.getRepository().getFunction(rfcName);
+    }
+    /**
+     * 填充数据
+     */
+    public static JCoFunction fillData(JCoFunction jcoFunc,Map<String, Object> datamap){
+        JCoTable jCoTable = null;
+        jCoTable = jcoFunc.getTableParameterList().getTable("ZTABLE");
+
+        if(jCoTable==null){
+            return jcoFunc;
+        }
+//      填充传入值
+        for(String key:datamap.keySet()){
+            Object value=datamap.get(key);
+            jCoTable.setValue(key, value);
+        }
+        return jcoFunc;
+    }
+
     public static JCoDestination connect(SAPSysData sysData, ERPUserInfo erpUserInfo) {
         JCoDestination destination = null;
         String fileBaseName = ABAP_AS_POOLED+erpUserInfo.getCustomerId();
         createDataFile(fileBaseName, "jcoDestination", sysData);
         try {
-            destination = JCoDestinationManager.getDestination(ABAP_AS_POOLED);
+            destination = JCoDestinationManager.getDestination(fileBaseName);
         } catch (JCoException e) {
 //            log.error("Connect SAP fault, error msg: " + e.toString());
         }

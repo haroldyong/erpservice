@@ -20,10 +20,7 @@ import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
 import com.huobanplus.erpservice.hotapi.common.HotApiConstant;
-import com.sap.conn.jco.JCoDestination;
-import com.sap.conn.jco.JCoDestinationManager;
-import com.sap.conn.jco.JCoException;
-import com.sap.conn.jco.JCoFunction;
+import com.sap.conn.jco.*;
 import com.sap.conn.jco.ext.DestinationDataProvider;
 import org.junit.Before;
 import org.junit.Test;
@@ -130,12 +127,11 @@ public class OrderApiControllerTest extends SpringWebTest {
         JCoFunction function = null;
         try {
             function = destination.getRepository().getFunction("Z_SY_WM_MATNR");
+            JCoRecord record =function.getImportParameterList();
+
+            record.setValue("I_BUKRS", "sd");
 
             function.execute(destination);
-
-
-
-
         } catch (Exception e) {
 
         }

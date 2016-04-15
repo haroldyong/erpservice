@@ -94,6 +94,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             jCoTable.setValue("ZFP", sapSaleOrderInfo.isInvoiceIsopen());
             jCoTable.setValue("ZTITLE", sapSaleOrderInfo.getInvoiceTitle());
             jCoTable.setValue("ZWMORDER", sapSaleOrderInfo.getLogiNo());
+
             jCoFunction.execute(jCoDestination);
             String resultMsg = jCoFunction.getExportParameterList().getString("MESS");
             if (resultMsg.equals("")) {
