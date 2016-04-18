@@ -52,9 +52,7 @@ public class SAPHandlerBuilder implements ERPHandlerBuilder {
 
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                        SAPSysData sysData = JSON.parseObject(erpBaseEvent.getErpInfo().getSysDataJson(), SAPSysData.class);
-                        Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-                        return sapOrderHandler.pushOrder(order, sysData, pushNewOrderEvent.getErpUserInfo());
+                        return sapOrderHandler.pushOrder(pushNewOrderEvent);
                     }
                     return null;
                 }

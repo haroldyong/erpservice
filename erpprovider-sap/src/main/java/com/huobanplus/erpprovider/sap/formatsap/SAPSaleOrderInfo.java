@@ -26,6 +26,11 @@ public class SAPSaleOrderInfo {
     private String numId;
 
     /**
+     * 订单行项目号
+     */
+    private String posNr;
+
+    /**
      * 顾客名称 来自微商城
      */
     private String customName;
@@ -73,7 +78,7 @@ public class SAPSaleOrderInfo {
     /**
      * 订单数量
      */
-    private String orderNum;
+    private int orderNum;
 
     /**
      * 单位
@@ -104,6 +109,11 @@ public class SAPSaleOrderInfo {
      * 发票抬头  个人或公司
      */
     private String invoiceTitle;
+
+    /**
+     * 发票内容
+     */
+    private String invoiceMsg;
 
     /**
      * SAP销售订单号 微商城需要按单记录对应SAP销售订单号
