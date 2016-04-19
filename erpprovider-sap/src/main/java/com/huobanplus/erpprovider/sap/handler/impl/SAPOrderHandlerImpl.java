@@ -9,18 +9,32 @@
 
 package com.huobanplus.erpprovider.sap.handler.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
 import com.huobanplus.erpprovider.sap.formatsap.SAPSaleOrderInfo;
 import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpprovider.sap.util.ConnectHelper;
+import com.huobanplus.erpservice.common.ienum.EnumHelper;
+import com.huobanplus.erpservice.common.ienum.OrderEnum;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
+import com.huobanplus.erpservice.datacenter.entity.OrderSync;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
+import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
+import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.sap.conn.jco.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 /**
  * Created by liuzheng on 2016/4/14.
@@ -30,15 +44,26 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(SAPOrderHandlerImpl.class);
 
+    @Autowired
+    private OrderSyncService orderSyncService;
+    @Autowired
+    private OrderOperatorService orderOperatorService;
+
     /**
      * 推送订单
      *
-     * @param orderInfo 订单信息实体
-     * @param sysData   SAP的系统数据
+     * @param pushNewOrderEvent 订单信息实体
      * @return EventResult
      */
     @Override
-    public EventResult pushOrder(Order orderInfo, SAPSysData sysData, ERPUserInfo erpUserInfo) {
+    public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
+
+
+        SAPSysData sysData = JSON.parseObject(pushNewOrderEvent.getErpInfo().getSysDataJson(), SAPSysData.class);
+        Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+        ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
+        ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
+
 
         SAPSaleOrderInfo sapSaleOrderInfo = new SAPSaleOrderInfo();
         if (orderInfo.getPayStatus() == 1) {//正常订单
@@ -56,17 +81,66 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setShipZip(orderInfo.getShipZip());
         sapSaleOrderInfo.setShipAddr(orderInfo.getShipAddr());
         //sapSaleOrderInfo.setGoodsInfo("产品组");
-        //sapSaleOrderInfo.setMaterialCode("物料编码");
-        sapSaleOrderInfo.setOrderNum("订单数量");
-        sapSaleOrderInfo.setOrganization("单位");
-        sapSaleOrderInfo.setDiscount("折扣金额");
+        sapSaleOrderInfo.setMaterialCode("物料编码");
+        sapSaleOrderInfo.setOrderNum(orderInfo.getOrderItems().size());
+        sapSaleOrderInfo.setOrganization("PC");
+        sapSaleOrderInfo.setDiscount("20");
         sapSaleOrderInfo.setInvoiceIsopen(false);
-        sapSaleOrderInfo.setInvoiceTitle("发票抬头");
+        sapSaleOrderInfo.setInvoiceTitle("火图科技股份有限公司");
         //sapSaleOrderInfo.setSapSallId("销售订单号");
         sapSaleOrderInfo.setLogiNo(orderInfo.getLogiNo());
         //sapSaleOrderInfo.setGoodsOrg("产品组");
-        return this.orderPush(sysData, erpUserInfo, sapSaleOrderInfo);
 
+
+
+
+        Date now = new Date();
+        //订单同步日志
+        OrderOperatorLog orderOperatorLog = new OrderOperatorLog();
+        orderOperatorLog.setProviderType(erpInfo.getErpType());
+        orderOperatorLog.setUserType(erpUserInfo.getErpUserType());
+        orderOperatorLog.setCustomerId(erpUserInfo.getCustomerId());
+        orderOperatorLog.setCreateTime(now);
+        orderOperatorLog.setOrderId(orderInfo.getOrderId());
+        orderOperatorLog.setOrderJsonData(pushNewOrderEvent.getOrderInfoJson());
+        orderOperatorLog.setErpInfo(JSON.toJSONString(erpInfo));
+
+        //订单同步记录
+        OrderSync orderSync = orderSyncService.getOrderSync(orderInfo.getOrderId(), erpUserInfo.getCustomerId());
+        orderSync.setOrderStatus(EnumHelper.getEnumType(OrderEnum.OrderStatus.class, orderInfo.getOrderStatus()));
+        orderSync.setPayStatus(EnumHelper.getEnumType(OrderEnum.PayStatus.class, orderInfo.getPayStatus()));
+        orderSync.setShipStatus(EnumHelper.getEnumType(OrderEnum.ShipStatus.class, orderInfo.getShipStatus()));
+        orderSync.setProviderType(ERPTypeEnum.ProviderType.SAP);
+        orderSync.setUserType(erpUserInfo.getErpUserType());
+        orderSync.setRemark(orderOperatorLog.getRemark());
+
+        EventResult eventResult = this.orderPush(sysData, erpUserInfo, sapSaleOrderInfo);
+
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            orderOperatorLog.setResultStatus(true);
+            orderOperatorLog.setRemark(pushNewOrderEvent.getEventType().getName() + "成功");
+            switch (pushNewOrderEvent.getEventType()) {
+                case PUSH_NEW_ORDER:
+                    orderSync.setOutPayStatus("已付款");
+                    orderSync.setOutShipStatus("未发货");
+                    orderSync.setOrderSyncStatus(OrderSyncStatus.PUSHING_SUCCESS);
+                    break;
+            }
+        } else {
+            orderOperatorLog.setResultStatus(false);
+            switch (pushNewOrderEvent.getEventType()) {
+                case PUSH_NEW_ORDER:
+                    orderSync.setOrderSyncStatus(OrderSyncStatus.WAITING_FOR_PUSHING);
+                    break;
+            }
+            orderOperatorLog.setRemark(pushNewOrderEvent.getEventType().getName() + "失败");
+        }
+        orderSync.setResultStatus(orderOperatorLog.isResultStatus());
+        orderSync.setRemark(orderOperatorLog.getRemark());
+
+        orderSyncService.save(orderSync);
+        orderOperatorService.save(orderOperatorLog);
+        return eventResult;
     }
 
     private EventResult orderPush(SAPSysData sysData, ERPUserInfo erpUserInfo, SAPSaleOrderInfo sapSaleOrderInfo) {
@@ -98,13 +172,16 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             //jCoTable.setValue("VKORG", sapSaleOrderInfo.getSellOrg());
             //jCoTable.setValue("VTWEG", sapSaleOrderInfo.getDistributWay());
             //jCoTable.setValue("SPART", sapSaleOrderInfo.getGoodsOrg());
-            jCoTable.setValue("MATNR", sapSaleOrderInfo.getMaterialCode());
+            jCoTable.setValue("MATNR", "000000000010000668");
             jCoTable.setValue("KWMENG", sapSaleOrderInfo.getOrderNum());
             jCoTable.setValue("VRKME", sapSaleOrderInfo.getOrganization());
             //jCoTable.setValue("WERKS", sapSaleOrderInfo.getProvederFactory());
             //jCoTable.setValue("LGORT", sapSaleOrderInfo.getGoodsAddr());
             jCoTable.setValue("NETPR", sapSaleOrderInfo.getDiscount());
-            jCoTable.setValue("ZFP", String.valueOf(sapSaleOrderInfo.isInvoiceIsopen()));
+
+            //到时order 中需传递发票相关信息
+            jCoTable.setValue("ZFP", sapSaleOrderInfo.isInvoiceIsopen()?"X":null);
+
             jCoTable.setValue("ZTITLE", sapSaleOrderInfo.getInvoiceTitle());
             //jCoTable.setValue("ZWMORDER", sapSaleOrderInfo.getLogiNo());
 
