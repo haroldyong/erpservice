@@ -7,7 +7,9 @@ import com.sap.conn.jco.*;
 import com.sap.conn.jco.ext.DestinationDataProvider;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -49,15 +51,11 @@ public class ConnectHelper {
 //        return jcoFunc;
 //    }
 
-    public static JCoDestination connect(SAPSysData sysData, ERPUserInfo erpUserInfo) {
+    public static JCoDestination connect(SAPSysData sysData, ERPUserInfo erpUserInfo) throws JCoException, IOException {
         JCoDestination destination = null;
         String fileBaseName = ABAP_AS_POOLED+erpUserInfo.getCustomerId();
         createDataFile(fileBaseName, "jcoDestination", sysData);
-        try {
-            destination = JCoDestinationManager.getDestination(fileBaseName);
-        } catch (JCoException e) {
-//            log.error("Connect SAP fault, error msg: " + e.toString());
-        }
+        destination = JCoDestinationManager.getDestination(fileBaseName);
         return destination;
     }
 
@@ -66,7 +64,7 @@ public class ConnectHelper {
      * @param suffix
      * @param sysData
      */
-    private static void createDataFile(String name, String suffix, SAPSysData sysData) {
+    private static void createDataFile(String name, String suffix, SAPSysData sysData) throws IOException {
         Properties connectProperties = new Properties();
         connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, sysData.getHost());//服务器
         connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, sysData.getSysNo());        //系统编号
@@ -81,13 +79,9 @@ public class ConnectHelper {
         if (cfg.exists()) {
             cfg.deleteOnExit();
         }
-        try {
-            FileOutputStream fos = new FileOutputStream(cfg, false);
-            connectProperties.store(fos, "for sap !");
-            fos.close();
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to create the destination file " + cfg.getName(), e);
-        }
+        FileOutputStream fos = new FileOutputStream(cfg, false);
+        connectProperties.store(fos, "for sap !");
+        fos.close();
     }
 
 }

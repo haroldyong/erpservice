@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -102,8 +103,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         orderOperatorLog.setCustomerId(erpUserInfo.getCustomerId());
         orderOperatorLog.setCreateTime(now);
         orderOperatorLog.setOrderId(orderInfo.getOrderId());
-        orderOperatorLog.setOrderJsonData(pushNewOrderEvent.getOrderInfoJson());
-        orderOperatorLog.setErpInfo(JSON.toJSONString(erpInfo));
+        orderOperatorLog.setEventInfo(JSON.toJSONString(pushNewOrderEvent));
 
         //订单同步记录
         OrderSync orderSync = orderSyncService.getOrderSync(orderInfo.getOrderId(), erpUserInfo.getCustomerId());
@@ -114,7 +114,8 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         orderSync.setUserType(erpUserInfo.getErpUserType());
         orderSync.setRemark(orderOperatorLog.getRemark());
 
-        EventResult eventResult = this.orderPush(sysData, erpUserInfo, sapSaleOrderInfo);
+        EventResult eventResult = null;
+        eventResult = this.orderPush(sysData, erpUserInfo, sapSaleOrderInfo);
 
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             orderOperatorLog.setResultStatus(true);
@@ -143,14 +144,12 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         return eventResult;
     }
 
-    private EventResult orderPush(SAPSysData sysData, ERPUserInfo erpUserInfo, SAPSaleOrderInfo sapSaleOrderInfo) {
-
-        JCoDestination jCoDestination = ConnectHelper.connect(sysData, erpUserInfo);
-
+    private EventResult orderPush(SAPSysData sysData, ERPUserInfo erpUserInfo, SAPSaleOrderInfo sapSaleOrderInfo)  {
         JCoFunction jCoFunction = null;
         JCoTable jCoTable = null;
         try {
 
+            JCoDestination jCoDestination = ConnectHelper.connect(sysData, erpUserInfo);
             jCoFunction = jCoDestination.getRepository().getFunction("ZWS_DATA_IMPORT");
             if (jCoFunction == null) {
                 logger.error("SAP中没有ZWS_DATA_IMPORT方法");
@@ -192,13 +191,15 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             return EventResult.resultWith(EventResultEnum.SUCCESS);
 
         } catch (JCoException ex) {
-            logger.error("请求失败", ex);
-            return EventResult.resultWith(EventResultEnum.ERROR);
-        } catch (JCoRuntimeException ex) {
             logger.error(ex.toString());
             return EventResult.resultWith(EventResultEnum.ERROR);
+        } catch (JCoRuntimeException ex) {
+            logger.error("JCO运行时异常",ex.toString());
+            return EventResult.resultWith(EventResultEnum.ERROR);
+        } catch (IOException ex){
+            logger.error("IO 异常",ex.toString());
+            return EventResult.resultWith(EventResultEnum.ERROR);
         }
-
     }
 
 }
