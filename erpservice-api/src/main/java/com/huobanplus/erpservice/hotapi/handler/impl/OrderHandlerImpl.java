@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.hotapi.handler.impl;
@@ -12,7 +12,6 @@ package com.huobanplus.erpservice.hotapi.handler.impl;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
@@ -22,13 +21,11 @@ import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.*;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import com.huobanplus.erpservice.hotapi.handler.OrderHandler;
-import com.huobanplus.erpservice.hotapi.jsonmodel.OrderList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * Created by liual on 2015-11-05.
@@ -121,7 +118,7 @@ public class OrderHandlerImpl implements OrderHandler {
     @Override
     public ApiResult obtainOrderList(HttpServletRequest request, ERPUserInfo erpUserInfo) {
         Integer pageIndex = StringUtil.getWithDefault(request.getParameter("pageIndex"), 1);
-        Integer pageSize = StringUtil.getWithDefault(request.getParameter("pageSize"), 10);
+        Integer pageSize = StringUtil.getWithDefault(request.getParameter("pageSize"), 50);
         Integer orderStatus = StringUtil.getWithDefault(request.getParameter("orderStatus"), (Integer) null);
         Integer shipStatus = StringUtil.getWithDefault(request.getParameter("shipStatus"), -1);
         Integer payStatus = StringUtil.getWithDefault(request.getParameter("payStatus"), -1);
@@ -158,15 +155,7 @@ public class OrderHandlerImpl implements OrderHandler {
         getOrderDetailListEvent.setOrderSearchInfo(orderSearchInfo);
         EventResult eventResult = erpUserHandler.handleEvent(getOrderDetailListEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-            OrderList orderList = new OrderList();
-            List<Order> orders = (List<Order>) eventResult.getData();
-            orderList.setRecordCount(orders.size());
-            orderList.setPageIndex(pageIndex);
-            orderList.setPageSize(pageSize);
-            orderList.setOrderBy(orderBy);
-            orderList.setOrderType(orderType);
-            orderList.setOrders(orders);
-            return ApiResult.resultWith(ResultCode.SUCCESS, orderList);
+            return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
         }
 
         return ApiResult.resultWith(ResultCode.ERPUSER_BAD_REQUEST, eventResult.getResultMsg(), null);

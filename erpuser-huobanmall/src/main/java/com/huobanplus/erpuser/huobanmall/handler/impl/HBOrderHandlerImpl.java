@@ -15,6 +15,7 @@ import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
+import com.huobanplus.erpservice.datacenter.jsonmodel.OrderListInfo;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.*;
 import com.huobanplus.erpuser.huobanmall.common.ApiResult;
@@ -25,7 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by liual on 2015-10-19.
@@ -108,7 +112,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             requestMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderList", requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                ApiResult<List<Order>> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<List<Order>>>() {
+                ApiResult<OrderListInfo> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<OrderListInfo>>() {
                 });
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());

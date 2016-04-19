@@ -41,26 +41,7 @@
             font-family: 微软雅黑;
         }
     </style>
-    <script type="text/javascript">
-        var ajaxUrl = "<c:url value="/erpService/platform/rePushOrder" />";
-        function rePush(id, userType) {
-            J.jboxConfirm("确定要推送吗?", function () {
-                $.jBox.tip("正在推送", "loading");
-                J.GetJsonRespons(ajaxUrl, {
-                    id: id,
-                    erpUserType: userType
-                }, function (json) {
-                    if (json.resultCode == 2000) {
-                        $.jBox.tip("推送成功", "success");
-                    } else {
-                        $.jBox.tip("推送失败", "error");
-                        window.location.reload();
-                    }
-                }, function () {
-                }, J.PostMethod)
-            });
-        }
-    </script>
+
 </head>
 <body>
 <div class="container">

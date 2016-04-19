@@ -79,6 +79,7 @@
                 if (erpType == "-1") {
                     $("#erpDetailConfigDiv").hide();
                 } else {
+                    $("#erpDetailConfigDiv").show();
                     $("#erpDetailConfigDiv div").hide();
                     $("#detailConfig_" + erpType).show();
                 }

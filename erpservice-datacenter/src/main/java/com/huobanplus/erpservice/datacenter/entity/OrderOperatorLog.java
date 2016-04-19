@@ -57,5 +57,5 @@ public class OrderOperatorLog {
     @Lob
     private String orderJsonData;
     @Lob
-    private String erpInfo;
+    private String eventInfo;
 }

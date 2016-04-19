@@ -9,15 +9,16 @@
 
 package com.huobanplus.erpservice.platform.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpservice.common.SysConstant;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.entity.OrderSync;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderSyncSearch;
-import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
 import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.proxy.utils.OrderProxyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,8 +41,6 @@ public class OrderController {
     private OrderOperatorService orderOperatorService;
     @Autowired
     private OrderSyncService orderSyncService;
-    @Autowired
-    private ERPDetailConfigService detailConfigService;
     @Autowired
     private OrderProxyService orderProxyService;
 
@@ -73,9 +72,8 @@ public class OrderController {
     @RequestMapping(value = "/rePushOrder", method = RequestMethod.POST)
     @ResponseBody
     private ApiResult rePushOrder(long id) {
-//        OrderOperatorLog orderOperatorLog = orderOperatorService.findById(id);
-//        ERPInfo erpInfo = JSON.parseObject(orderOperatorLog.getErpInfo(), ERPInfo.class);
-//        return orderProxyService.pushOrder(orderOperatorLog.getOrderJsonData(), erpInfo);
-        return null;
+        OrderOperatorLog orderOperatorLog = orderOperatorService.findById(id);
+        PushNewOrderEvent pushNewOrderEvent = JSON.parseObject(orderOperatorLog.getEventInfo(), PushNewOrderEvent.class);
+        return orderProxyService.pushOrder(pushNewOrderEvent);
     }
 }

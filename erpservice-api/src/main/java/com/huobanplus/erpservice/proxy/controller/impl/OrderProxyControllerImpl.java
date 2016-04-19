@@ -58,32 +58,14 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
             @RequestAttribute ERPUserInfo erpUserInfo,
             int eventType
     ) throws Exception {
+        EventType eventTypeEnum = EnumHelper.getEnumType(EventType.class, eventType);
+        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
+        pushNewOrderEvent.setErpInfo(erpInfo);
+        pushNewOrderEvent.setOrderInfoJson(orderInfoJson);
+        pushNewOrderEvent.setEventType(eventTypeEnum);
+        pushNewOrderEvent.setErpUserInfo(erpUserInfo);
 
-        //如果开通了erp，交由erp处理器推送到指定erp
-        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
-        if (erpHandler == null) {
-            return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
-        }
-        if (erpHandler.eventSupported(PushNewOrderEvent.class)) {
-            EventType eventTypeEnum = EnumHelper.getEnumType(EventType.class, eventType);
-            PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
-            pushNewOrderEvent.setErpInfo(erpInfo);
-            pushNewOrderEvent.setOrderInfoJson(orderInfoJson);
-            pushNewOrderEvent.setEventType(eventTypeEnum);
-            pushNewOrderEvent.setErpUserInfo(erpUserInfo);
-            //相关处理器处理时间推送订单至相应ERP系统
-            EventResult eventResult = erpHandler.handleEvent(pushNewOrderEvent);
-
-            ApiResult apiResult;
-            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                apiResult = ApiResult.resultWith(ResultCode.SUCCESS);
-            } else {
-                apiResult = ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, "推送给erp时失败", null);
-            }
-            return apiResult;
-        } else {
-            return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT);
-        }
+        return orderProxyService.pushOrder(pushNewOrderEvent);
     }
 
     @Override

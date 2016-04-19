@@ -50,7 +50,7 @@ public class PlatformInterceptor extends HandlerInterceptorAdapter {
             customerId = CookieHelper.getCookieValInteger(request, "supplierId");
 
             if (environment.acceptsProfiles("development")) {
-                customerId = 19757;
+                customerId = 23367;
             }
 
             if (customerId == null || customerId == 0) {

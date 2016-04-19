@@ -90,8 +90,12 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             if (!StringUtils.isEmpty(shipArea)) {
                 String[] shipAreaArray = shipArea.split("/");
                 edbCreateOrderInfo.setProvince(shipAreaArray[0]);
-                edbCreateOrderInfo.setCity(shipAreaArray[1]);
-                edbCreateOrderInfo.setArea(shipAreaArray[2]);
+                if (shipAreaArray.length > 1) {
+                    edbCreateOrderInfo.setCity(shipAreaArray[1]);
+                    if (shipAreaArray.length > 2) {
+                        edbCreateOrderInfo.setArea(shipAreaArray[2]);
+                    }
+                }
             }
             edbCreateOrderInfo.setActualFreightGet(orderInfo.getCostFreight());
             edbCreateOrderInfo.setActual_RP(orderInfo.getFinalAmount());
@@ -138,8 +142,8 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             orderOperatorLog.setCustomerId(erpUserInfo.getCustomerId());
             orderOperatorLog.setCreateTime(now);
             orderOperatorLog.setOrderId(orderInfo.getOrderId());
-            orderOperatorLog.setOrderJsonData(pushNewOrderEvent.getOrderInfoJson());
-            orderOperatorLog.setErpInfo(JSON.toJSONString(erpInfo));
+//            orderOperatorLog.setOrderJsonData(pushNewOrderEvent.getOrderInfoJson());
+            orderOperatorLog.setEventInfo(JSON.toJSONString(pushNewOrderEvent));
 
             //订单同步记录
             OrderSync orderSync = orderSyncService.getOrderSync(orderInfo.getOrderId(), erpUserInfo.getCustomerId());

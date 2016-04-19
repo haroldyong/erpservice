@@ -42,10 +42,6 @@
         }
     </style>
     <script type="text/javascript">
-        var resultStatus = ${resultStatus};
-        $(function () {
-            $("#resultStatus").val(resultStatus);
-        });
         var ajaxUrl = "<c:url value="/erpService/platform/rePushOrder" />";
         function rePush(id, userType) {
             J.jboxConfirm("确定要推送吗?", function () {
@@ -56,9 +52,9 @@
                 }, function (json) {
                     if (json.resultCode == 2000) {
                         $.jBox.tip("推送成功", "success");
+                        window.location.reload();
                     } else {
                         $.jBox.tip("推送失败", "error");
-                        window.location.reload();
                     }
                 }, function () {
                 }, J.PostMethod)
