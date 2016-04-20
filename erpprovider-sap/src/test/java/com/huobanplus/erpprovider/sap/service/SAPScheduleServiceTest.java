@@ -1,8 +1,8 @@
 package com.huobanplus.erpprovider.sap.service;
 
+import com.huobanplus.erpprovider.sap.SAPTestBase;
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
 import com.huobanplus.erpprovider.sap.formatsap.LogiInfo;
-import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpprovider.sap.util.ConnectHelper;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
@@ -11,6 +11,7 @@ import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoTable;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,12 @@ import java.util.List;
 /**
  * Created by admin on 2016/4/20.
  */
-public class ScheduleTest {
+public class SAPScheduleServiceTest extends SAPTestBase {
+//    @Autowired
+//    private SAPOrderHandler sapOrderHandler;
+
     @Autowired
-    private SAPOrderHandler sapOrderHandler;
+    private ScheduledService scheduledService;
 
 
     private Order mockOrder;
@@ -66,21 +70,28 @@ public class ScheduleTest {
     }
 
     @Test
-    public void testPushOrder() throws Exception {
-
-        //EventResult eventResult = sapOrderHandler.pushOrder(mockOrder,mockSysData,mockErpUserInfo);
-        //System.out.println("-----------------"+eventResult.getResultCode());
+    public void assertNotNull() {
+        Assert.assertNotNull(scheduledService);
     }
 
     @Test
-    public void testSchedule() {
+    public void testSyncOrderShip() {
+        scheduledService.syncOrderShip();
+    }
+
+
+    @Test
+    public void testScheduledService() {
         //获取订单信息
         JCoFunction jCoFunction = null;
         JCoTable jCoTable = null;
         JCoDestination jCoDestination = null;
+        JCoFunction jCoFunctionIn = null;
+        List<LogiInfo> results = new ArrayList<LogiInfo>();
         try {
             jCoDestination = ConnectHelper.connect(mockSysData, mockErpUserInfo);
             jCoFunction = jCoDestination.getRepository().getFunction("ZWS_DATA_OUTPUT");
+            jCoFunctionIn = jCoDestination.getRepository().getFunction("ZWS_DATA_OUTPUT_IN");
             if (jCoFunction == null) {
                 //log.error("SAP中没有ZWS_DATA_IMPORT方法");
                 //return EventResult.resultWith(EventResultEnum.ERROR);
@@ -98,8 +109,25 @@ public class ScheduleTest {
                 logiInfo.setZOrder(jCoTable.getString("ZORDER"));
                 logiInfo.setZType(jCoTable.getString("ZTYPE"));
                 logiInfo.setZWMOrder(jCoTable.getString("ZWMORDER"));
+                System.out.println("******");
+                results.add(logiInfo);
             }
             String resultMsg = jCoFunction.getExportParameterList().getString("MESS");
+
+
+            JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
+            for (LogiInfo logiInfo1 : results) {
+                ztable.appendRow();
+                ztable.setValue("ZVBELN", logiInfo1.getZVBELN());
+                ztable.setValue("YVBELN", logiInfo1.getYVBELN());
+                ztable.setValue("ZORDER", logiInfo1.getZOrder());
+                ztable.setValue("ZTYPE", logiInfo1.getZType());
+                ztable.setValue("ZWMORDER", logiInfo1.getZWMOrder());
+            }
+            jCoFunctionIn.execute(jCoDestination);
+            resultMsg = jCoFunction.getExportParameterList().getString("MESS");
+
+
         } catch (JCoException e) {
             e.printStackTrace();
         } catch (IOException e) {
