@@ -66,6 +66,7 @@ public class EDBScheduledService {
      */
     @Scheduled(cron = "0 0 */2 * * ?")
     public void syncOrderShip() {
+
         Date now = new Date();
         log.info("E店宝获取订单开始:" + StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
         //得到所有配置过edb信息的商家,准备获取数据
@@ -125,6 +126,7 @@ public class EDBScheduledService {
                                     if (nextPushResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                                         successList.addAll(JSON.parseArray(String.valueOf(nextPushResult.getData()), Order.class));
                                     }
+
                                 }
                             }
                         }

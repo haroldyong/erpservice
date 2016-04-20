@@ -1,12 +1,18 @@
 package com.huobanplus.erpprovider.sap.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.sap.SAPTestBase;
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.common.EventType;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +32,10 @@ public class SAPOrderHandlerTest extends SAPTestBase {
 
     private Order mockOrder;
     private ERPUserInfo mockErpUserInfo;
+    private ERPInfo mockERP;
     private SAPSysData mockSysData;
+    private PushNewOrderEvent mockPushNewOrderEvent;
+
 
     @Before
     public void setUp() throws Exception {
@@ -57,18 +66,25 @@ public class SAPOrderHandlerTest extends SAPTestBase {
         mockSysData.setSapRouter("/H/202.107.243.45/H/");
 
 
+        mockERP = new ERPInfo();
+        mockERP.setErpType(ERPTypeEnum.ProviderType.SAP);
+        mockERP.setSysDataJson(JSON.toJSONString(mockSysData));
+
         mockErpUserInfo = new ERPUserInfo();
         mockErpUserInfo.setCustomerId(12);
+
+        mockPushNewOrderEvent = new PushNewOrderEvent();
+        mockPushNewOrderEvent.setErpInfo(mockERP);
+        mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
+        mockPushNewOrderEvent.setEventType(EventType.PUSH_NEW_ORDER);
+        mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
 
     }
 
     @Test
     public void testPushOrder() throws Exception {
 
-        //EventResult eventResult = sapOrderHandler.pushOrder(mockOrder,mockSysData,mockErpUserInfo);
-        //System.out.println("-----------------"+eventResult.getResultCode());
+        EventResult eventResult = sapOrderHandler.pushOrder(mockPushNewOrderEvent);
+        Assert.assertTrue(eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode());
     }
-
-
-
 }
