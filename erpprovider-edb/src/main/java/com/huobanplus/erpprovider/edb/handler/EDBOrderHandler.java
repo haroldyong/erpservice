@@ -13,13 +13,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.formatedb.EDBCreateOrderInfo;
 import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
 
 /**
  * 订单相关
@@ -32,7 +32,7 @@ public interface EDBOrderHandler {
      * <p>返回字段：result(结果);status(状态)</p>
      *
      * @param pushNewOrderEvent 订单信息实体
-     * @param pushNewOrderEvent   E店宝基本信息
+     * @param pushNewOrderEvent E店宝基本信息
      * @return 请求结果
      * @throws IOException IO异常
      */
@@ -78,16 +78,11 @@ public interface EDBOrderHandler {
     /**
      * 订单发货
      *
-     * @param orderId
-     * @param deliverTime
-     * @param expressNo
-     * @param express
-     * @param weight
-     * @param
+     * @param pushDeliveryInfoEvent 推送物流信息（发货）事件 {@link PushDeliveryInfoEvent}
      * @return 请求结果
      * @throws IOException IO异常
      */
-    EventResult orderDeliver(String orderId, Date deliverTime, String expressNo, String express, String weight, EDBSysData sysData);
+    EventResult orderDeliver(PushDeliveryInfoEvent pushDeliveryInfoEvent);
 
     /**
      * 根据外部订单编号获取订单详情

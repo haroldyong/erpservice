@@ -28,6 +28,7 @@
         <module>erpuser-huobanmall</module>
         <module>erpuser-hotsupplier</module>
         <module>erpprovider-sap</module>
+        <module>erpprovider-iscs</module>
     </modules>
 
     <properties>

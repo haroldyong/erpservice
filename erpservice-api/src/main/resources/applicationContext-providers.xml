@@ -21,6 +21,7 @@
     <context:component-scan base-package="com.huobanplus.erpprovider.edb"/>
     <context:component-scan base-package="com.huobanplus.erpprovider.netshop"/>
     <context:component-scan base-package="com.huobanplus.erpprovider.sap"/>
+    <context:component-scan base-package="com.huobanplus.erpprovider.iscs"/>
     <!--erp-user-->
     <context:component-scan base-package="com.huobanplus.erpuser.huobanmall"/>
     <context:component-scan base-package="com.huobanplus.erpuser.hotsupplier"/>

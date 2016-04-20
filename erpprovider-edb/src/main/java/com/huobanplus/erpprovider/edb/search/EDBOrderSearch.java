@@ -13,8 +13,6 @@ import com.huobanplus.erpprovider.edb.common.EDBEnum;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
-
 /**
  * Created by allan on 12/25/15.
  */
@@ -22,8 +20,8 @@ import java.util.Date;
 @Getter
 public class EDBOrderSearch {
     private String dateType;
-    private Date beginTime;
-    private Date endTime;
+    private String beginTime;
+    private String endTime;
     private EDBEnum.PayStatusEnum payStatus;
     private EDBEnum.ShipStatusEnum shipStatus;
     private EDBEnum.PlatformStatus platformStatus;

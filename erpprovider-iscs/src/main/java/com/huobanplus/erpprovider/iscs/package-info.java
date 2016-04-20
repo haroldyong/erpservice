@@ -7,12 +7,8 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpservice.common;
-
 /**
- * Created by allan on 4/15/16.
+ * 网仓ERP对接模块
+ * Created by allan on 4/19/16.
  */
-public class SysConstant {
-    public static final int DEFALUT_PAGE_SIZE = 20;
-    public static final String ENCODING = "UTF-8";
-}
+package com.huobanplus.erpprovider.iscs;

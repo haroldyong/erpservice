@@ -55,6 +55,9 @@ public class Order {
      * 手机
      */
     private String shipMobile;
+    /**
+     * 产品总金额
+     */
     private double costItem;
     /**
      * 运费

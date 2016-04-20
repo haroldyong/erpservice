@@ -13,6 +13,7 @@ package com.huobanplus.erpprovider.edb.config;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
@@ -38,6 +39,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
      * @param erpInfo
      * @return 无法处理返回空，可以处理返回该erp事件处理器
      */
+    @SuppressWarnings("Duplcates")
     public ERPHandler buildHandler(ERPInfo erpInfo) {
         if (erpInfo.getErpType() == ERPTypeEnum.ProviderType.EDB) {
             return new ERPHandler() {
@@ -46,30 +48,10 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                     if (baseEventClass == PushNewOrderEvent.class) {
                         return true;
                     }
+                    if (baseEventClass == PushDeliveryInfoEvent.class) {
+                        return true;
+                    }
                     //todo 判断事件是否可以处理
-//                    if (baseEventClass == CreateOrderEvent.class) {
-//                        return true;
-//                    } else if (baseEventClass == InventoryEvent.class) {
-//                        return true;
-//                    } else if (baseEventClass == DeliveryInfoEvent.class) {
-//                        return true;
-//                    } else if (baseEventClass == OrderStatusInfoEvent.class) {
-//                        return true;
-//                    } else if (baseEventClass == ObtainOrderListEvent.class) {
-//                        return true;
-//                    } else if (baseEventClass == OrderDeliverEvent.class) {
-//                        return true;
-//                    } else if (baseEventClass == OrderStatusUpdateEvent.class) {
-//                        return true;
-//                    } else if (baseEventClass == OrderUpdateEvent.class) {
-//                        return true;
-//                    } else if (baseEventClass == AddOutStoreEvent.class) {
-//                        return true;
-//                    } else if (baseEventClass == ConfirmOutStoreEvent.class) {
-//                        return true;
-//                    } else if (baseEventClass == OutStoreWriteBackEvent.class) {
-//                        return true;
-//                    }
                     return false;
                 }
 
@@ -80,27 +62,10 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
 
                         return edbOrderHandler.pushOrder(pushNewOrderEvent);
                     }
-//                    if (erpBaseEvent instanceof CreateOrderEvent) {
-//                        CreateOrderEvent createOrderEvent = (CreateOrderEvent) erpBaseEvent;
-//                        return edbOrderHandler.pushOrder(createOrderEvent.getOrderInfo(), erpBaseEvent.getErpInfo());
-//                    }
-//                    if (erpBaseEvent instanceof OrderUpdateEvent) {
-//                        OrderUpdateEvent orderUpdateEvent = (OrderUpdateEvent) erpBaseEvent;
-//                        return edbOrderHandler.orderUpdate(orderUpdateEvent.getOrderInfo(), erpBaseEvent.getErpInfo());
-//                    }
-//                    if (erpBaseEvent instanceof OrderDeliverEvent) {
-//                        OrderDeliverEvent orderDeliverEvent = (OrderDeliverEvent) erpBaseEvent;
-//                        OrderDeliverInfo orderDeliverInfo = orderDeliverEvent.getOrderDeliverInfo();
-//                        return edbOrderHandler.orderDeliver(orderDeliverInfo.getOrderId(), orderDeliverInfo.getDeliverTime(), orderDeliverInfo.getLogiNo(), orderDeliverInfo.getLogiName(), orderDeliverInfo.getWeight(), erpBaseEvent.getErpInfo());
-//                    }
-//                    if (erpBaseEvent instanceof ObtainOrderDetailEvent) {
-//                        ObtainOrderDetailEvent orderDetailEvent = (ObtainOrderDetailEvent) erpBaseEvent;
-//                        return edbOrderHandler.getOrderDetail(orderDetailEvent.getOrderId(), erpBaseEvent.getErpInfo());
-//                    }
-//                    if (erpBaseEvent instanceof CancelOrderEvent) {
-//                        CancelOrderEvent cancelOrderEvent = (CancelOrderEvent) erpBaseEvent;
-//                        return edbOrderHandler.cancelOrder(cancelOrderEvent.getOrderId(), erpBaseEvent.getErpInfo());
-//                    }
+                    if (erpBaseEvent instanceof PushDeliveryInfoEvent) {
+                        PushDeliveryInfoEvent pushDeliveryInfoEvent = (PushDeliveryInfoEvent) erpBaseEvent;
+                        return edbOrderHandler.orderDeliver(pushDeliveryInfoEvent);
+                    }
                     return null;
                 }
 

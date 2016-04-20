@@ -13,8 +13,6 @@ package com.huobanplus.erpprovider.edb.bean;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
-
 /**
  * EDB的系统数据
  * Created by allan on 2015/8/4.
@@ -34,5 +32,5 @@ public class EDBSysData {
     private String shopId;
     private String storageId;
     private String express;
-    private Date beginTime;
+    private String beginTime;
 }

@@ -103,7 +103,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         orderOperatorLog.setCreateTime(now);
         orderOperatorLog.setOrderId(orderInfo.getOrderId());
         orderOperatorLog.setOrderJsonData(pushNewOrderEvent.getOrderInfoJson());
-        orderOperatorLog.setErpInfo(JSON.toJSONString(erpInfo));
+//        orderOperatorLog(JSON.toJSONString(erpInfo));
 
         //订单同步记录
         OrderSync orderSync = orderSyncService.getOrderSync(orderInfo.getOrderId(), erpUserInfo.getCustomerId());

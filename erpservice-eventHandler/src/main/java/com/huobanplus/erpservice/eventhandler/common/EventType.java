@@ -16,8 +16,10 @@ import com.huobanplus.erpservice.common.ienum.ICommonEnum;
  */
 public enum EventType implements ICommonEnum {
     PUSH_NEW_ORDER(0, "推送新订单"),
-    CANCEL_ORDER(1, "取消订单"),
-    RETURN(2, "退货推送");
+    DELIVERY_SYNC(1, "发货状态同步"),
+    CANCEL_ORDER(2, "取消订单"),
+    PUSH_DELIVERY_INFO(3, "发货信息推送"),
+    RETURN(4, "退货推送");
 
     private int code;
     private String name;

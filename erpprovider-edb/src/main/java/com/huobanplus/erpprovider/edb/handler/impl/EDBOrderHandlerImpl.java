@@ -40,7 +40,9 @@ import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
 import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -162,7 +164,11 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
                     case PUSH_NEW_ORDER:
                         orderSync.setOutPayStatus("已付款");
                         orderSync.setOutShipStatus("未发货");
-                        orderSync.setOrderSyncStatus(OrderSyncStatus.PUSHING_SUCCESS);
+                        orderSync.setOrderSyncStatus(OrderSyncStatus.DELIVERYED);
+                        break;
+                    case DELIVERY_SYNC:
+                        orderSync.setOutPayStatus("已付款");
+                        orderSync.setOutShipStatus("已发货");
                         break;
                 }
             } else {
@@ -185,52 +191,6 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         }
     }
 
-    /**
-     * 订单搜索轮询
-     * fixedRate 轮询间隔 单位毫秒   60 000 = 60秒 也就是1分钟
-     * initialDelay web容器启动后延迟多久才调用该轮询方法。单位毫秒   60 000 = 60秒 也就是1分钟。建议fixedRate 和 initialDelay 两个值设置成一样
-     *
-     * @return
-     * @throws IOException
-     */
-//    @Scheduled(fixedRate = 60000, initialDelay = 60000)
-//    @Override
-//    public void obtainOrderList() throws IOException {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        //objectMapper.readValue(info.getSysDataJson(), EDBSysData.class);
-//        System.out.println("正在轮询...");
-//        //取出需要轮询的数据
-//        List<MallOrderBean> orderList = orderService.findByRotaryStatus(1);
-//        for (MallOrderBean order : orderList) {
-//            EDBSysData sysData = objectMapper.readValue(order.getSysDataJson(), EDBSysData.class);
-//            Map<String, String> requestData = getSysRequestData(EDBConstant.GET_ORDER_INFO, sysData);
-//            requestData.put("begin_time", URLEncoder.encode(StringUtil.DateFormat(new Date(0), StringUtil.DATE_PATTERN), "utf-8"));
-//            requestData.put("end_time", URLEncoder.encode(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN), "utf-8"));
-//            requestData.put("out_tid", order.getOrderId());
-//            Map<String, String> signMap = new TreeMap<>(requestData);
-//            requestData.put("sign", getSign(signMap, sysData));
-//
-//            String responseData = HttpUtil.getInstance().doPost(sysData.getRequestUrl(), requestData);
-//
-//            Map formatM = objectMapper.readValue(responseData, Map.class);
-//
-////            if (responseData == null) {
-////                return new SimpleMonitor<>(new EventResult(0, responseData));
-////            }
-//            if (formatM.keySet().iterator().next().equals("Success")) {
-//                //数据处理
-//                List<Map> list = (List<Map>) ((Map) ((Map) formatM.get("Success")).get("items")).get("item");
-//                MallOrderBean responseOrder = wrapMapToBean(list.get(0));
-//                if (!responseOrder.getDeliveryStatus().equals(order.getDeliveryStatus())) {
-//                    //todo 讲物流信息等必要数据推送给伙伴商城
-//
-//                    //todo 推送成功后，轮询状态设置为完成
-//                    order.setRotaryStatus(2);
-//                    orderService.save(order);
-//                }
-//            }
-//        }
-//    }
     public EventResult obtainOrderList(int pageIndex, EDBSysData sysData, EDBOrderSearch edbOrderSearch) {
         try {
             Map<String, Object> requestData = getSysRequestData(EDBConstant.GET_ORDER_INFO, sysData);
@@ -239,8 +199,8 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             requestData.put("shopid", sysData.getShopId());
 
 //            requestData.put("date_type", EDBEnum.OrderDateType.DELIVERY_TIME.getName());
-            requestData.put("begin_time", StringUtil.DateFormat(edbOrderSearch.getBeginTime(), StringUtil.TIME_PATTERN));
-            requestData.put("end_time", StringUtil.DateFormat(edbOrderSearch.getEndTime(), StringUtil.TIME_PATTERN));
+            requestData.put("begin_time", edbOrderSearch.getBeginTime());
+            requestData.put("end_time", edbOrderSearch.getEndTime());
 //            requestData.put("begin_time", "2016-03-07");
 //            requestData.put("end_time", "2016-03-10");
             requestData.put("page_no", pageIndex);
@@ -357,22 +317,21 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 //    }
 
     @Override
-    public EventResult orderDeliver(String orderId, Date deliverTime, String expressNo, String express, String weight, EDBSysData sysData) {
+    public EventResult orderDeliver(PushDeliveryInfoEvent pushDeliveryInfoEvent) {
         try {
+            EDBSysData sysData = JSON.parseObject(pushDeliveryInfoEvent.getErpInfo().getSysDataJson(), EDBSysData.class);
+            DeliveryInfo deliveryInfo = pushDeliveryInfoEvent.getDeliveryInfo();
             EDBOrderDeliver orderDeliver = new EDBOrderDeliver();
-            orderDeliver.setOrderId(orderId);
-            orderDeliver.setDeliveryTime(StringUtil.DateFormat(deliverTime, StringUtil.TIME_PATTERN));
-            orderDeliver.setExpress(express);
-            orderDeliver.setExpressNo(expressNo);
-            orderDeliver.setWeight(weight);
+            orderDeliver.setOrderId(deliveryInfo.getOrderId());
+//            orderDeliver.setDeliveryTime(StringUtil.DateFormat(deliverTime, StringUtil.TIME_PATTERN));
+            orderDeliver.setExpress(deliveryInfo.getLogiName());
+            orderDeliver.setExpressNo(deliveryInfo.getLogiNo());
 
             String xmlValues = "<order>" + new XmlMapper().writeValueAsString(orderDeliver) + "</order>";
 
             Map<String, Object> requestData = getSysRequestData(EDBConstant.ORDER_DELIVER, sysData);
             requestData.put("xmlValues", xmlValues);
-            Map<String, Object> signMap = new TreeMap<>(requestData);
-
-            requestData.put("sign", getSign(signMap, sysData));
+            requestData.put("sign", getSign(requestData, sysData));
 
             HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), requestData);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {

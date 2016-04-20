@@ -77,7 +77,7 @@ public class EDBScheduledService {
 
             EDBOrderSearch edbOrderSearch = new EDBOrderSearch();
             edbOrderSearch.setBeginTime(sysData.getBeginTime());
-            edbOrderSearch.setEndTime(now);
+            edbOrderSearch.setEndTime(StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
             edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
             edbOrderSearch.setPlatformStatus(EDBEnum.PlatformStatus.PAYED);
             edbOrderSearch.setProceStatus(EDBEnum.OrderStatusEnum.ACTIVE);
@@ -130,7 +130,7 @@ public class EDBScheduledService {
                         }
                         //回写EDB,修改EDB的外部平台订单状态
                         PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
-                        pushNewOrderEvent.setEventType(EventType.RETURN);
+                        pushNewOrderEvent.setEventType(EventType.DELIVERY_SYNC);
                         ERPInfo erpInfo = new ERPInfo(ERPTypeEnum.ProviderType.EDB, detailConfig.getErpSysData());
                         pushNewOrderEvent.setErpInfo(erpInfo);
                         pushNewOrderEvent.setErpUserInfo(erpUserInfo);

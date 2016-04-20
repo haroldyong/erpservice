@@ -18,25 +18,22 @@ import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.common.EventType;
 import com.huobanplus.erpservice.eventhandler.erpevent.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderDetailEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.OrderDeliverEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.OrderUpdateEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
+import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.OrderDeliverInfo;
 import com.huobanplus.erpservice.proxy.common.ProxyBaseController;
 import com.huobanplus.erpservice.proxy.controller.OrderProxyController;
 import com.huobanplus.erpservice.proxy.utils.OrderProxyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.Date;
 
 /**
  * Created by liual on 2015-10-19.
@@ -111,28 +108,22 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     @RequestMapping("/orderDeliver")
     @ResponseBody
     public ApiResult orderDeliver(
-            String orderId,
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date deliverTime,
-            String logiName,
-            String logiNo,
-            String weight,
-            @RequestAttribute ERPInfo erpInfo
+            @RequestAttribute ERPInfo erpInfo,
+            @RequestAttribute ERPUserInfo erpUserInfo,
+            DeliveryInfo deliveryInfo
     ) throws Exception {
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
         if (erpHandler == null) {
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
         }
-        if (erpHandler.eventSupported(OrderDeliverEvent.class)) {
-            OrderDeliverInfo orderDeliverInfo = new OrderDeliverInfo();
-            orderDeliverInfo.setOrderId(orderId);
-            orderDeliverInfo.setLogiName(logiName);
-            orderDeliverInfo.setLogiNo(logiNo);
-            orderDeliverInfo.setDeliverTime(deliverTime);
-            orderDeliverInfo.setWeight(weight);
-            OrderDeliverEvent orderDeliverEvent = new OrderDeliverEvent();
-            orderDeliverEvent.setErpInfo(erpInfo);
-            orderDeliverEvent.setOrderDeliverInfo(orderDeliverInfo);
-            EventResult eventResult = erpHandler.handleEvent(orderDeliverEvent);
+        if (erpHandler.eventSupported(PushNewOrderEvent.class)) {
+            PushDeliveryInfoEvent pushDeliveryInfoEvent = new PushDeliveryInfoEvent();
+            pushDeliveryInfoEvent.setErpUserInfo(erpUserInfo);
+            pushDeliveryInfoEvent.setErpInfo(erpInfo);
+            pushDeliveryInfoEvent.setDeliveryInfo(deliveryInfo);
+            pushDeliveryInfoEvent.setEventType(EventType.PUSH_DELIVERY_INFO);
+            EventResult eventResult = erpHandler.handleEvent(pushDeliveryInfoEvent);
+
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 return ApiResult.resultWith(ResultCode.SUCCESS);
             } else {
