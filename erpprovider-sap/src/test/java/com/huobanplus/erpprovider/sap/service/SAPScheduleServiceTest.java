@@ -116,16 +116,16 @@ public class SAPScheduleServiceTest extends SAPTestBase {
             String resultMsg = jCoFunction.getExportParameterList().getString("MESS");
 
 
-            JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
-            for (LogiInfo logiInfo1 : results) {
-                ztable.appendRow();
-                ztable.setValue("ZVBELN", logiInfo1.getZVBELN());
-                ztable.setValue("YVBELN", logiInfo1.getYVBELN());
-                ztable.setValue("ZORDER", logiInfo1.getZOrder());
-                ztable.setValue("ZTYPE", "X");
-                ztable.setValue("ZWMORDER", logiInfo1.getZWMOrder());
-            }
-            jCoFunctionIn.execute(jCoDestination);
+//            JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
+//            for (LogiInfo logiInfo1 : results) {
+//                ztable.appendRow();
+//                ztable.setValue("ZVBELN", logiInfo1.getZVBELN());
+//                ztable.setValue("YVBELN", logiInfo1.getYVBELN());
+//                ztable.setValue("ZORDER", logiInfo1.getZOrder());
+//                ztable.setValue("ZTYPE", "X");
+//                ztable.setValue("ZWMORDER", logiInfo1.getZWMOrder());
+//            }
+//            jCoFunctionIn.execute(jCoDestination);
             resultMsg = jCoFunctionIn.getExportParameterList().getString("MESS");
         } catch (JCoException e) {
             e.printStackTrace();
