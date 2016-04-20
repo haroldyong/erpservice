@@ -10,7 +10,6 @@
 package com.huobanplus.erpprovider.sap.service;
 
 import com.alibaba.fastjson.JSON;
-import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.sap.common.SAPEnum;
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
 import com.huobanplus.erpprovider.sap.formatsap.LogiInfo;
@@ -30,7 +29,6 @@ import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import com.sap.conn.jco.JCoDestination;
-import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoTable;
 import org.apache.commons.logging.Log;
@@ -39,7 +37,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,8 +54,6 @@ public class ScheduledService {
     private OrderScheduledLogService scheduledLogService;
     @Autowired
     private ERPRegister erpRegister;
-    @Autowired
-    private EDBOrderHandler edbOrderHandler;
 
     /*
      * 同步订单发货状态轮训服务
@@ -81,6 +76,7 @@ public class ScheduledService {
 
             //获取订单信息
             JCoFunction jCoFunction = null;
+            JCoFunction jCoFunctionIn = null;
             JCoTable jCoTable = null;
             List<LogiInfo> results = new ArrayList<LogiInfo>();
             ERPUserInfo erpUserInfo = new ERPUserInfo();
@@ -88,14 +84,17 @@ public class ScheduledService {
             try {
                 JCoDestination jCoDestination = ConnectHelper.connect(sysData, erpUserInfo);
                 jCoFunction = jCoDestination.getRepository().getFunction("ZWS_DATA_OUTPUT");
+                jCoFunctionIn = jCoDestination.getRepository().getFunction("ZWS_DATA_OUTPUT_IN");
                 if (jCoFunction == null) {
                     log.error("SAP中没有ZWS_DATA_IMPORT方法");
+                    return;
                 }
                 jCoFunction.execute(jCoDestination);
+
                 jCoTable = jCoFunction.getTableParameterList().getTable("ZTABLE");
-                LogiInfo logiInfo = new LogiInfo();
 
                 for (int i = 0; i < jCoTable.getNumRows(); i++) {
+                    LogiInfo logiInfo = new LogiInfo();
                     jCoTable.setRow(i);
                     logiInfo.setZVBELN(jCoTable.getString("ZVBELN"));
                     logiInfo.setYVBELN(jCoTable.getString("YVBELN"));
@@ -104,37 +103,46 @@ public class ScheduledService {
                     logiInfo.setZWMOrder(jCoTable.getString("ZWMORDER"));
                     results.add(logiInfo);
                 }
-                String resultMsg = jCoFunction.getExportParameterList().getString("MESS");
-            } catch (JCoException e) {
-                log.error(e.toString());
-            } catch (IOException e) {
-                log.error(e.toString());
-            }
-            log.info("本次获取" + results.size() + "条订单数据");
+           //     String resultMsg = jCoFunction.getExportParameterList().getString("MESS");
 
-
-            //推送物流信息
-            if (results.size() > 0) {
-                int totalResult = results.size();//本次获取的总数据量
-                int successCount = 0;//成功走完流程的数量
-                //推送给相应的erp使用商户
-                List<Order> orders = getLogiInfo(results);
-                erpUserInfo.setErpUserType(detailConfig.getErpUserType());
-                //得到相应使用者处理器
-                ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-                PushOrderListInfoEvent pushOrderListInfoEvent = new PushOrderListInfoEvent(JSON.toJSONString(orders));
-                //处理事件,此处为推送订单列表信息到使用者
-                EventResult firstPushResult = erpUserHandler.handleEvent(pushOrderListInfoEvent);
-                if (firstPushResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                    List<Order> successList = JSON.parseArray(String.valueOf(firstPushResult.getData()), Order.class);
+                log.info("本次获取" + results.size() + "条订单数据");
+                //推送物流信息
+                if (results.size() > 0) {
+                    int totalResult = results.size();//本次获取的总数据量
+                    int successCount = 0;//成功走完流程的数量
+                    //推送给相应的erp使用商户
+                    List<Order> orders = getLogiInfo(results);
+                    erpUserInfo.setErpUserType(detailConfig.getErpUserType());
+                    //得到相应使用者处理器
+                    ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+                    PushOrderListInfoEvent pushOrderListInfoEvent = new PushOrderListInfoEvent(JSON.toJSONString(orders));
+                    //处理事件,此处为推送订单列表信息到使用者
+                    EventResult firstPushResult = erpUserHandler.handleEvent(pushOrderListInfoEvent);
+                    if (firstPushResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        List<Order> successList = JSON.parseArray(String.valueOf(firstPushResult.getData()), Order.class);
+                    }
+                    //存入轮训记录表
+                    OrderScheduledLog orderScheduledLog = new OrderScheduledLog();
+                    orderScheduledLog.setCustomerId(detailConfig.getCustomerId());
+                    orderScheduledLog.setNum(totalResult);
+                    orderScheduledLog.setSuccessNum(successCount);
+                    orderScheduledLog.setCreateTime(now);
+                    scheduledLogService.save(orderScheduledLog);
                 }
-                //存入轮训记录表
-                OrderScheduledLog orderScheduledLog = new OrderScheduledLog();
-                orderScheduledLog.setCustomerId(detailConfig.getCustomerId());
-                orderScheduledLog.setNum(totalResult);
-                orderScheduledLog.setSuccessNum(successCount);
-                orderScheduledLog.setCreateTime(now);
-                scheduledLogService.save(orderScheduledLog);
+                log.info("修改珀莱雅物流状态");
+                JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
+                for (LogiInfo info : results) {
+                    ztable.appendRow();
+                    ztable.setValue("ZVBELN", info.getZVBELN());
+                    ztable.setValue("YVBELN", info.getYVBELN());
+                    ztable.setValue("ZORDER", info.getZOrder());
+                    ztable.setValue("ZTYPE", "X");
+                    ztable.setValue("ZWMORDER", info.getZWMOrder());
+                }
+                jCoFunctionIn.execute(jCoDestination);
+             //   resultMsg = jCoFunctionIn.getExportParameterList().getString("MESS");
+            } catch (Exception e) {
+                log.error(e.toString());
             }
         }
     }
