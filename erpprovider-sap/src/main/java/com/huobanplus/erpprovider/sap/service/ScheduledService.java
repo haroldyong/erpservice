@@ -66,7 +66,6 @@ public class ScheduledService {
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.SAP);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
             log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "开始获取订单数据进行同步");
-            int currentPageIndex = 1;
             SAPSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), SAPSysData.class);
             SAPOrderSearch sapOrderSearch = new SAPOrderSearch();
             sapOrderSearch.setEndTime(now);
@@ -129,17 +128,17 @@ public class ScheduledService {
                     orderScheduledLog.setCreateTime(now);
                     scheduledLogService.save(orderScheduledLog);
                 }
-                log.info("修改珀莱雅物流状态");
-                JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
-                for (LogiInfo info : results) {
-                    ztable.appendRow();
-                    ztable.setValue("ZVBELN", info.getZVBELN());
-                    ztable.setValue("YVBELN", info.getYVBELN());
-                    ztable.setValue("ZORDER", info.getZOrder());
-                    ztable.setValue("ZTYPE", "X");
-                    ztable.setValue("ZWMORDER", info.getZWMOrder());
-                }
-                jCoFunctionIn.execute(jCoDestination);
+//                log.info("修改物流状态");
+//                JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
+//                for (LogiInfo info : results) {
+//                    ztable.appendRow();
+//                    ztable.setValue("ZVBELN", info.getZVBELN());
+//                    ztable.setValue("YVBELN", info.getYVBELN());
+//                    ztable.setValue("ZORDER", info.getZOrder());
+//                    ztable.setValue("ZTYPE", "X");
+//                    ztable.setValue("ZWMORDER", info.getZWMOrder());
+//                }
+//                jCoFunctionIn.execute(jCoDestination);
              //   resultMsg = jCoFunctionIn.getExportParameterList().getString("MESS");
             } catch (Exception e) {
                 log.error(e.toString());

@@ -19,5 +19,4 @@ import org.springframework.test.context.ActiveProfiles;
 })
 @Import({DataCenterConfig.class})
 public class SAPTestConfig {
-
 }
