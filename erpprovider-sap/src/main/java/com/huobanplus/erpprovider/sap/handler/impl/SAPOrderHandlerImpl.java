@@ -11,6 +11,7 @@ package com.huobanplus.erpprovider.sap.handler.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
+import com.huobanplus.erpprovider.sap.formatsap.SAPOrderItem;
 import com.huobanplus.erpprovider.sap.formatsap.SAPSaleOrderInfo;
 import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpprovider.sap.util.ConnectHelper;
@@ -21,6 +22,7 @@ import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.entity.OrderSync;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
+import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
 import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -35,7 +37,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by liuzheng on 2016/4/14.
@@ -59,12 +63,20 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
 
-
         SAPSysData sysData = JSON.parseObject(pushNewOrderEvent.getErpInfo().getSysDataJson(), SAPSysData.class);
         Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+        List<OrderItem> orderItemList = orderInfo.getOrderItems();
+        List<SAPOrderItem> sapOrderItemList = new ArrayList<SAPOrderItem>();
+
         ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
         ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
 
+        orderItemList.forEach(orderItem -> {
+            SAPOrderItem sapOrderItem = new SAPOrderItem();
+            sapOrderItem.setName(orderItem.getName());
+            sapOrderItem.setNum(orderItem.getNum());
+            sapOrderItemList.add(sapOrderItem);
+        });
 
         SAPSaleOrderInfo sapSaleOrderInfo = new SAPSaleOrderInfo();
         if (orderInfo.getPayStatus() == 1) {//正常订单
@@ -83,7 +95,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setShipAddr(orderInfo.getShipAddr());
         //sapSaleOrderInfo.setGoodsInfo("产品组");
         sapSaleOrderInfo.setMaterialCode("物料编码");
-        sapSaleOrderInfo.setOrderNum(orderInfo.getOrderItems().size());
+        sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
         sapSaleOrderInfo.setOrganization("PC");
         sapSaleOrderInfo.setDiscount("20");
         sapSaleOrderInfo.setInvoiceIsopen(false);
@@ -91,6 +103,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         //sapSaleOrderInfo.setSapSallId("销售订单号");
         sapSaleOrderInfo.setLogiNo(orderInfo.getLogiNo());
         //sapSaleOrderInfo.setGoodsOrg("产品组");
+        sapSaleOrderInfo.setSapOrderItems(sapOrderItemList);
 
 
 
@@ -156,33 +169,36 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                 return EventResult.resultWith(EventResultEnum.ERROR);
             }
             jCoTable = jCoFunction.getTableParameterList().getTable("ZTABLE");
+            List<SAPOrderItem> sapOrderItemList = sapSaleOrderInfo.getSapOrderItems();
+            for (SAPOrderItem sapOrderItem : sapOrderItemList) {
+                jCoTable.appendRow();
+                jCoTable.setValue("ZKONDM", "01");
+                jCoTable.setValue("ZTYPE", sapSaleOrderInfo.getOrderType());
+                //jCoTable.setValue("KUNNR",sapSaleOrderInfo.getOrderSaleFrom());
+                jCoTable.setValue("ZORDER", sapSaleOrderInfo.getNumId());
+                //jCoTable.setValue("VBELN","");
+                jCoTable.setValue("NAME", sapSaleOrderInfo.getCustomName());
+                jCoTable.setValue("TELF", sapSaleOrderInfo.getCustomTel());
+                jCoTable.setValue("ORT01", sapSaleOrderInfo.getCity());
+                jCoTable.setValue("PSTLZ", sapSaleOrderInfo.getShipZip());
+                jCoTable.setValue("STRAS", sapSaleOrderInfo.getShipAddr());
+                //jCoTable.setValue("VKORG", sapSaleOrderInfo.getSellOrg());
+                //jCoTable.setValue("VTWEG", sapSaleOrderInfo.getDistributWay());
+                //jCoTable.setValue("SPART", sapSaleOrderInfo.getGoodsOrg());
+                //jCoTable.setValue("MATNR", "000000000010000668");
+                jCoTable.setValue("MATNR", sapOrderItem.getName());
+                jCoTable.setValue("KWMENG", sapOrderItem.getNum());
+                jCoTable.setValue("VRKME", sapSaleOrderInfo.getOrganization());
+                //jCoTable.setValue("WERKS", sapSaleOrderInfo.getProvederFactory());
+                //jCoTable.setValue("LGORT", sapSaleOrderInfo.getGoodsAddr());
+                jCoTable.setValue("NETPR", sapSaleOrderInfo.getDiscount());
 
-            jCoTable.appendRow();
-            jCoTable.setValue("ZKONDM", "01");
-            jCoTable.setValue("ZTYPE", sapSaleOrderInfo.getOrderType());
-            //jCoTable.setValue("KUNNR",sapSaleOrderInfo.getOrderSaleFrom());
-            jCoTable.setValue("ZORDER", sapSaleOrderInfo.getNumId());
-            //jCoTable.setValue("VBELN","");
-            jCoTable.setValue("NAME", sapSaleOrderInfo.getCustomName());
-            jCoTable.setValue("TELF", sapSaleOrderInfo.getCustomTel());
-            jCoTable.setValue("ORT01", sapSaleOrderInfo.getCity());
-            jCoTable.setValue("PSTLZ", sapSaleOrderInfo.getShipZip());
-            jCoTable.setValue("STRAS", sapSaleOrderInfo.getShipAddr());
-            //jCoTable.setValue("VKORG", sapSaleOrderInfo.getSellOrg());
-            //jCoTable.setValue("VTWEG", sapSaleOrderInfo.getDistributWay());
-            //jCoTable.setValue("SPART", sapSaleOrderInfo.getGoodsOrg());
-            jCoTable.setValue("MATNR", "000000000010000668");
-            jCoTable.setValue("KWMENG", sapSaleOrderInfo.getOrderNum());
-            jCoTable.setValue("VRKME", sapSaleOrderInfo.getOrganization());
-            //jCoTable.setValue("WERKS", sapSaleOrderInfo.getProvederFactory());
-            //jCoTable.setValue("LGORT", sapSaleOrderInfo.getGoodsAddr());
-            jCoTable.setValue("NETPR", sapSaleOrderInfo.getDiscount());
+                //到时order 中需传递发票相关信息
+                jCoTable.setValue("ZFP", sapSaleOrderInfo.isInvoiceIsopen() ? "X" : null);
 
-            //到时order 中需传递发票相关信息
-            jCoTable.setValue("ZFP", sapSaleOrderInfo.isInvoiceIsopen()?"X":null);
-
-            jCoTable.setValue("ZTITLE", sapSaleOrderInfo.getInvoiceTitle());
-            //jCoTable.setValue("ZWMORDER", sapSaleOrderInfo.getLogiNo());
+                jCoTable.setValue("ZTITLE", sapSaleOrderInfo.getInvoiceTitle());
+                //jCoTable.setValue("ZWMORDER", sapSaleOrderInfo.getLogiNo());
+            }
 
             jCoFunction.execute(jCoDestination);
             String resultMsg = jCoFunction.getExportParameterList().getString("MESS");

@@ -3,6 +3,8 @@ package com.huobanplus.erpprovider.sap.formatsap;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
  * Created by liuzheng on 2016/4/14.
  */
@@ -129,6 +131,8 @@ public class SAPSaleOrderInfo {
      * 产品组 能录入微商城
      */
     private String goodsOrg;
+
+    private List<SAPOrderItem> sapOrderItems;
 
 
 }
