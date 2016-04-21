@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by elvis on 2016/4/15.
@@ -35,10 +36,21 @@ public class SAPOrderHandlerTest extends SAPTestBase {
     private ERPInfo mockERP;
     private SAPSysData mockSysData;
     private PushNewOrderEvent mockPushNewOrderEvent;
+    private List<OrderItem> mockOrderItemList;
 
 
     @Before
     public void setUp() throws Exception {
+
+        mockOrderItemList = new ArrayList<OrderItem>();
+
+        for (int i = 0; i < 5; i++) {
+            OrderItem mockOrderItem = new OrderItem();
+            mockOrderItem.setName(UUID.randomUUID().toString());
+            mockOrderItem.setNum(i + 5);
+            mockOrderItemList.add(mockOrderItem);
+        }
+
 
         mockOrder = new Order();
         mockOrder.setOrderId("100");
@@ -55,6 +67,8 @@ public class SAPOrderHandlerTest extends SAPTestBase {
         mockOrder.setOrderItems(items);
         mockOrder.setItemNum(2);
         mockOrder.setLogiNo("125463");
+        mockOrder.setOrderItems(mockOrderItemList);
+
 
 
         mockSysData = new SAPSysData();
@@ -78,6 +92,7 @@ public class SAPOrderHandlerTest extends SAPTestBase {
         mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
         mockPushNewOrderEvent.setEventType(EventType.PUSH_NEW_ORDER);
         mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
+
 
     }
 
