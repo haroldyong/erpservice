@@ -10,7 +10,7 @@
 package com.huobanplus.erpservice.datacenter.entity;
 
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
-import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus1;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +31,7 @@ public class OrderSync {
     /**
      * 同步状态
      */
-    private OrderSyncStatus orderSyncStatus;
+    private OrderSyncStatus1 orderSyncStatus1;
     /**
      * 订单状态
      */

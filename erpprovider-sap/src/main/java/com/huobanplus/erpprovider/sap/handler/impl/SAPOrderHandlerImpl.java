@@ -16,7 +16,7 @@ import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpprovider.sap.util.ConnectHelper;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
-import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus1;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.entity.OrderSync;
@@ -124,14 +124,14 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                 case PUSH_NEW_ORDER:
                     orderSync.setOutPayStatus("已付款");
                     orderSync.setOutShipStatus("未发货");
-                    orderSync.setOrderSyncStatus(OrderSyncStatus.PUSHING_SUCCESS);
+                    orderSync.setOrderSyncStatus(OrderSyncStatus1.PUSHING_SUCCESS);
                     break;
             }
         } else {
             orderOperatorLog.setResultStatus(false);
             switch (pushNewOrderEvent.getEventType()) {
                 case PUSH_NEW_ORDER:
-                    orderSync.setOrderSyncStatus(OrderSyncStatus.WAITING_FOR_PUSHING);
+                    orderSync.setOrderSyncStatus(OrderSyncStatus1.WAITING_FOR_PUSHING);
                     break;
             }
             orderOperatorLog.setRemark(pushNewOrderEvent.getEventType().getName() + "失败");

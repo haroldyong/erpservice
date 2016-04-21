@@ -4,17 +4,17 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpservice.eventhandler.erpevent;
-
-import lombok.Data;
+package com.huobanplus.erpprovider.iscs.common;
 
 /**
- * Created by liual on 2015-10-26.
+ * Created by allan on 4/21/16.
  */
-@Data
-public class CancelOrderEvent extends ERPBaseEvent {
-    private String orderId;
+public class ISCSConstant {
+    /**
+     * 轮训的页码
+     */
+    public static final int PAGE_SIZE = 100;
 }

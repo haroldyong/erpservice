@@ -26,7 +26,5 @@ public interface EDBProductHandler {
      * @return 返回结果
      * @throws IOException IO 异常
      */
-    EventResult getProInventoryInfo(EDBSysData sysData, int pageIndex) throws IOException;
-
-//    EventResult getProBaseInfo(ERPInfo info)
+    EventResult getProInventoryInfo(EDBSysData sysData, String productNo) throws IOException;
 }

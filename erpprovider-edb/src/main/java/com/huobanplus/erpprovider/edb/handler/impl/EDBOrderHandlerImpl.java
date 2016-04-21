@@ -30,7 +30,7 @@ import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.httputil.HttpUtil;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
-import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus1;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
@@ -40,6 +40,7 @@ import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
 import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
@@ -164,7 +165,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
                     case PUSH_NEW_ORDER:
                         orderSync.setOutPayStatus("已付款");
                         orderSync.setOutShipStatus("未发货");
-                        orderSync.setOrderSyncStatus(OrderSyncStatus.DELIVERYED);
+                        orderSync.setOrderSyncStatus(OrderSyncStatus1.DELIVERYED);
                         break;
                     case DELIVERY_SYNC:
                         orderSync.setOutPayStatus("已付款");
@@ -175,7 +176,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
                 orderOperatorLog.setResultStatus(false);
                 switch (pushNewOrderEvent.getEventType()) {
                     case PUSH_NEW_ORDER:
-                        orderSync.setOrderSyncStatus(OrderSyncStatus.WAITING_FOR_PUSHING);
+                        orderSync.setOrderSyncStatus(OrderSyncStatus1.WAITING_FOR_PUSHING);
                         break;
                 }
                 orderOperatorLog.setRemark(pushNewOrderEvent.getEventType().getName() + "失败");
@@ -201,14 +202,12 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 //            requestData.put("date_type", EDBEnum.OrderDateType.DELIVERY_TIME.getName());
             requestData.put("begin_time", edbOrderSearch.getBeginTime());
             requestData.put("end_time", edbOrderSearch.getEndTime());
-//            requestData.put("begin_time", "2016-03-07");
-//            requestData.put("end_time", "2016-03-10");
             requestData.put("page_no", pageIndex);
             requestData.put("page_size", EDBConstant.PAGE_SIZE);
             requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
             requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
             requestData.put("proce_Status", edbOrderSearch.getProceStatus().getName());
-//            requestData.put("out_tid", "2016033087939569");
+//            requestData.put("out_tid", "2200041218128127");
 
             Map<String, Object> signMap = new TreeMap<>(requestData);
             String sign = getSign(signMap, sysData);
@@ -323,7 +322,6 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             DeliveryInfo deliveryInfo = pushDeliveryInfoEvent.getDeliveryInfo();
             EDBOrderDeliver orderDeliver = new EDBOrderDeliver();
             orderDeliver.setOrderId(deliveryInfo.getOrderId());
-//            orderDeliver.setDeliveryTime(StringUtil.DateFormat(deliverTime, StringUtil.TIME_PATTERN));
             orderDeliver.setExpress(deliveryInfo.getLogiName());
             orderDeliver.setExpressNo(deliveryInfo.getLogiNo());
 
@@ -386,10 +384,11 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
     }
 
     @Override
-    public EventResult cancelOrder(String orderId, ERPInfo erpInfo) {
+    public EventResult cancelOrder(CancelOrderEvent cancelOrderEvent) {
+        ERPInfo erpInfo = cancelOrderEvent.getErpInfo();
         try {
-            EDBSysData sysData = new ObjectMapper().readValue(erpInfo.getSysDataJson(), EDBSysData.class);
-            EventResult eventResult = this.getOrderDetail(orderId, erpInfo);
+            EDBSysData sysData = JSON.parseObject(erpInfo.getSysDataJson(), EDBSysData.class);
+            EventResult eventResult = this.getOrderDetail(cancelOrderEvent.getOrderId(), erpInfo);
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
                 return EventResult.resultWith(EventResultEnum.ERROR, "从edb获取数据失败--" + eventResult.getResultMsg(), null);
             }
@@ -422,8 +421,6 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         Map<String, Object> requestData = getSysRequestData(EDBConstant.CREATE_ORDER, sysData);
         requestData.put("xmlvalues", xmlValues);
         Map<String, Object> signMap = new TreeMap<>(requestData);
-//            requestData.put("xmlvalues", URLEncoder.encode(xmlValues, "utf-8"));
-//            signMap.put("xmlvalues", xmlValues);
 
         requestData.put("sign", getSign(signMap, sysData));
 
@@ -439,95 +436,4 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
         return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
     }
-
-
-//
-//    private MallOrderBean wrapMapToBean(Map map) {
-//        MallOrderBean orderBean = new MallOrderBean();
-//        orderBean.setStorageId((String) map.get("storage_id"));
-//        orderBean.setTid((String) map.get("tid"));
-//        orderBean.setTransactionId((String) map.get("transaction_id"));
-//        orderBean.setOutTid((String) map.get("out_tid"));
-//        orderBean.setOutPayTid((String) map.get("out_pay_tid"));
-//        orderBean.setShopId((String) map.get("shopid"));
-//        orderBean.setBuyerId((String) map.get("buyer_id"));
-//        orderBean.setBuyerName((String) map.get("buyer_name"));
-//        orderBean.setType((String) map.get("type"));
-//        orderBean.setStatus((String) map.get("status"));
-//        orderBean.setAbnormalStatus((String) map.get("abnormal_status"));
-//        orderBean.setReceiverName((String) map.get("receiver_name"));
-//        orderBean.setReceiverMobile((String) map.get("receiver_mobile"));
-//        orderBean.setPhone((String) map.get("phone"));
-//        orderBean.setProvince((String) map.get("province"));
-//        orderBean.setCity((String) map.get("city"));
-//        orderBean.setDistrict((String) map.get("district"));
-//        orderBean.setAddress((String) map.get("address"));
-//        orderBean.setPost((String) map.get("post"));
-//        orderBean.setEmail((String) map.get("email"));
-//        orderBean.setIsBill((Integer) map.get("is_bill"));
-//        orderBean.setInvoiceName((String) map.get("invoice_name"));
-//        orderBean.setInvoiceSituation(((Number) map.get("invoice_situation")).intValue());
-//        orderBean.setInvoiceTitle((String) map.get("invoice_title"));
-//        orderBean.setInvoiceType((String) map.get("invoice_type"));
-//        orderBean.setInvoiceContent((String) map.get("invoice_content"));
-//        orderBean.setProTotalFee(((Number) map.get("pro_totalfee")).doubleValue());
-//        orderBean.setOrderTotalFee(((Number) map.get("order_totalfee")).doubleValue());
-//        orderBean.setRefundTotalFee(String.valueOf(map.get("refund_totalfee")));
-//        orderBean.setExpressNo((String) map.get("express_no"));
-//        orderBean.setExpress((String) map.get("express"));
-//        orderBean.setExpressCoding((String) map.get("express_coding"));
-//        orderBean.setOnlineExpress((String) map.get("online_express"));
-//        orderBean.setSendingType((String) map.get("sending_type"));
-//        orderBean.setRealIncomefreight(((Number) map.get("real_income_freight")).doubleValue());
-//        orderBean.setRealPayFreight(((Number) map.get("real_pay_freight")).doubleValue());
-//        orderBean.setGrossWeight((String) map.get("gross_weight"));
-//        orderBean.setGrossWeightFreight(((Number) map.get("gross_weight_freight")).doubleValue());
-//        orderBean.setNetWeightWreight((String) map.get("net_weight_freight"));
-//        orderBean.setOrderCreater((String) map.get("order_creater"));
-//        orderBean.setBusinessMan((String) map.get("business_man"));
-//        orderBean.setReviewOrdersOperator((String) map.get("review_orders_operator"));
-////                orderBean.setReviewOrdersTime(map.get("review_orders_time"));
-//        orderBean.setAdvDistributer((String) map.get("adv_distributer"));
-//        orderBean.setAdvDistributTime(StringUtil.DateFormat((String) map.get("adv_distribut_time"), EDBConstant.TIME_PATTERN));
-//        orderBean.setInspecter((String) map.get("inspecter"));
-//        orderBean.setInspectTime(StringUtil.DateFormat((String) map.get("inspect_time"), EDBConstant.TIME_PATTERN));
-//        orderBean.setCancelOperator((String) map.get("cancel_operator"));
-//        orderBean.setCancelTime(StringUtil.DateFormat((String) map.get("cancel_time"), EDBConstant.TIME_PATTERN));
-//        orderBean.setBookDeliveryTime(StringUtil.DateFormat((String) map.get("book_delivery_time"), EDBConstant.TIME_PATTERN));
-//        orderBean.setDeliveryOperator((String) map.get("delivery_time"));
-//        orderBean.setLocker((String) map.get("locker"));
-//        orderBean.setLockTime(StringUtil.DateFormat((String) map.get("lock_time"), EDBConstant.TIME_PATTERN));
-//        orderBean.setBookFileTime(StringUtil.DateFormat((String) map.get("book_file_time"), EDBConstant.TIME_PATTERN));
-//        orderBean.setFileOperator((String) map.get("file_operator"));
-//        orderBean.setFileTime(StringUtil.DateFormat((String) map.get("file_time"), EDBConstant.TIME_PATTERN));
-//        orderBean.setFinishTime(StringUtil.DateFormat((String) map.get("finish_time"), EDBConstant.TIME_PATTERN));
-//        orderBean.setModityTime(StringUtil.DateFormat((String) map.get("modity_time"), EDBConstant.TIME_PATTERN));
-//        orderBean.setDeliveryStatus((String) map.get("delivery_status"));
-//        List<Map> proList = (List<Map>) map.get("tid_item");
-//        List<MallOrderItemBean> orderItems = new ArrayList<>();
-//        for (Map proMap : proList) {
-//            MallOrderItemBean orderItem = new MallOrderItemBean();
-//            orderItem.setStorageId((String) proMap.get("storage_id"));
-//            orderItem.setProDetailCode((String) proMap.get("pro_detail_code"));
-//            orderItem.setProName((String) proMap.get("pro_name"));
-//            orderItem.setBarcode((String) proMap.get("barcode"));
-//            orderItem.setIsCancel((String) proMap.get("iscancel"));
-//            orderItem.setStockSituation((String) proMap.get("stock_situation"));
-//            orderItem.setBookStorage(((Number) proMap.get("book_storage")).intValue());
-//            orderItem.setProNum(((Number) proMap.get("pro_num")).intValue());
-//            orderItem.setSendNum(((Number) proMap.get("send_num")).intValue());
-//            orderItem.setRefundNum(((Number) proMap.get("refund_num")).intValue());
-//            orderItem.setRefundReNum(((Number) proMap.get("refund_renum")).intValue());
-//            orderItem.setInspectionNum(((Number) proMap.get("inspection_num")).intValue());
-//            orderItem.setTimeInventory(((Number) proMap.get("timeinventory")).intValue());
-//            orderItem.setOutTid((String) proMap.get("out_tid"));
-//            orderItem.setOutProId((String) proMap.get("out_proid"));
-//            orderItem.setDistributer((String) proMap.get("distributer"));
-//            orderItem.setDistributTime(StringUtil.DateFormat((String) map.get("distribut_time"), EDBConstant.TIME_PATTERN));
-//            orderItem.setBookInventory(((Number) proMap.get("book_inventory")).intValue());
-//            orderItems.add(orderItem);
-//        }
-//
-//        return orderBean;
-//    }
 }

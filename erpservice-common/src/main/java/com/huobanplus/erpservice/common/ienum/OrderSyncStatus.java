@@ -10,37 +10,75 @@
 package com.huobanplus.erpservice.common.ienum;
 
 /**
- * erp订单状态
- * Created by allan on 4/15/16.
+ * 订单同步状态
+ * Created by allan on 4/21/16.
  */
-public enum OrderSyncStatus implements ICommonEnum {
-    WAITING_FOR_PUSHING(0, "待推送"),
-    PUSHING_SUCCESS(1, "已推送待发货"),
-    DELIVERYED(2, "发货已同步"),
-    CANCELD(3, "已取消");
-    private int code;
-    private String name;
+public interface OrderSyncStatus {
+    /**
+     * 订单信息同步状态
+     */
+    enum DetailSyncStatus implements ICommonEnum {
+        SYNC_SUCCESS(0, "同步成功"),
+        SYNC_FAILURE(1, "同步失败");
+        private int code;
+        private String name;
 
-    OrderSyncStatus(int code, String name) {
-        this.code = code;
-        this.name = name;
+        DetailSyncStatus(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
-    @Override
-    public int getCode() {
-        return code;
-    }
+    /**
+     * 订单发货同步
+     */
+    enum ShipSyncStatus implements ICommonEnum {
+        SYNC_SUCCESS(0, "同步成功"),
+        SYNC_PARTY_SUCCESS(1, "同步部分成功"),
+        SYNC_FAILURE(2, "同步失败");
 
-    public void setCode(int code) {
-        this.code = code;
-    }
+        private int code;
+        private String name;
 
-    @Override
-    public String getName() {
-        return name;
-    }
+        ShipSyncStatus(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
 
-    public void setName(String name) {
-        this.name = name;
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 }

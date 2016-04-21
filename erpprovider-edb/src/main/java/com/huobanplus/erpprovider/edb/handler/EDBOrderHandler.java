@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.formatedb.EDBCreateOrderInfo;
 import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -95,11 +96,10 @@ public interface EDBOrderHandler {
     /**
      * 订单作废
      *
-     * @param orderId
-     * @param erpInfo
+     * @param cancelOrderEvent 取消订单事件 {@link CancelOrderEvent}
      * @return
      */
-    EventResult cancelOrder(String orderId, ERPInfo erpInfo);
+    EventResult cancelOrder(CancelOrderEvent cancelOrderEvent);
 
 
     /**

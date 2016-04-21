@@ -17,6 +17,10 @@ import lombok.Data;
 @Data
 public class ISCSSysData {
     /**
+     * 网仓服务器地址
+     */
+    private String host;
+    /**
      * 用于标识接入网仓的客户id
      */
     private String appKey;
@@ -24,7 +28,20 @@ public class ISCSSysData {
      * 用于标识接入网仓的客户接口密钥，加密签名用，不需要提交
      */
     private String appSecret;
+    /**
+     * 货主id
+     */
     private int ownerId;
+    /**
+     * 店铺id
+     */
     private int shopId;
+    /**
+     * 仓库id
+     */
     private int stockId;
+    /**
+     * 开始同步时间（发货时间）
+     */
+    private String beginTime;
 }

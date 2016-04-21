@@ -10,12 +10,16 @@
 package com.huobanplus.erpprovider.iscs.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.iscs.common.ISCSSysData;
 import com.huobanplus.erpprovider.iscs.formatiscs.ISCSCreateOrder;
 import com.huobanplus.erpprovider.iscs.formatiscs.ISCSCreateOrderInfo;
 import com.huobanplus.erpprovider.iscs.formatiscs.ISCSCreateOrderItem;
 import com.huobanplus.erpprovider.iscs.handler.ISCSBaseHandler;
 import com.huobanplus.erpprovider.iscs.handler.ISCSOrderHandler;
+import com.huobanplus.erpprovider.iscs.search.ISCSOrderSearch;
+import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
+import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.util.StringUtil;
@@ -25,10 +29,12 @@ import com.huobanplus.erpservice.datacenter.entity.OrderSync;
 import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
 import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -103,7 +109,7 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
             String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
             Map<String, Object> requestData = getRequestData(sysData, nowStr, "pushTrades", JSON.toJSONString(createOrder));
 
-            //订单同步日志
+            //订单同步操作日志
             OrderOperatorLog orderOperatorLog = new OrderOperatorLog();
             orderOperatorLog.setProviderType(erpInfo.getErpType());
             orderOperatorLog.setUserType(erpUserInfo.getErpUserType());
@@ -127,5 +133,27 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
 
         }
         return null;
+    }
+
+    @Override
+    public EventResult getOrderDeliveryInfo(ISCSSysData sysData, ISCSOrderSearch orderSearch) {
+        try {
+            Date now = new Date();
+            String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
+            Map<String, Object> requestData = getRequestData(sysData, nowStr, "tradeDeliverQuery", JSON.toJSONString(orderSearch));
+
+            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getHost(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+                //如果有errorCode,说明失败了,返回失败信息
+                if (result.getJSONObject("errorCode") != null) {
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("subMessage"), null);
+                }
+                return EventResult.resultWith(EventResultEnum.SUCCESS, result);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR);
+        }
     }
 }

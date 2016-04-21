@@ -9,6 +9,8 @@
 
 package com.huobanplus.erpprovider.iscs.handler;
 
+import com.huobanplus.erpprovider.iscs.common.ISCSSysData;
+import com.huobanplus.erpprovider.iscs.search.ISCSOrderSearch;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
@@ -25,4 +27,6 @@ public interface ISCSOrderHandler {
      * @return 处理结果
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
+
+    EventResult getOrderDeliveryInfo(ISCSSysData sysData, ISCSOrderSearch orderSearch);
 }
