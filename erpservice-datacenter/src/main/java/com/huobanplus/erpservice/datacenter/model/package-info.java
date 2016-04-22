@@ -7,15 +7,8 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpservice.eventhandler.erpevent;
-
-import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
-import lombok.Data;
-
 /**
- * Created by liual on 2015-10-19.
+ * ERP数据服务平台标准数据传输格式
+ * Created by liual on 2015-12-07.
  */
-@Data
-public class ReturnInfoEvent extends ERPBaseEvent {
-    private ReturnInfo returnInfo;
-}
+package com.huobanplus.erpservice.datacenter.model;

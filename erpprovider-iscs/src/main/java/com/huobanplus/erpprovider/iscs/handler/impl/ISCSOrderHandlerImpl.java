@@ -26,7 +26,7 @@ import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.entity.OrderSync;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
+import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
 import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;

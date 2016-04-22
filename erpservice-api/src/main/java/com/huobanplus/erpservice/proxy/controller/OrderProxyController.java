@@ -11,6 +11,7 @@ package com.huobanplus.erpservice.proxy.controller;
 
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -37,7 +38,6 @@ public interface OrderProxyController {
      * @param orderInfoJson 订单json序列化
      * @param erpInfo       erp提供者信息 {@link ERPInfo}
      * @param erpUserInfo   erp使用者信息 {@link ERPUserInfo}
-     * @param eventType     事件类型 {@link com.huobanplus.erpservice.eventhandler.common.EventType}
      * @return
      * @throws Exception
      */
@@ -45,8 +45,7 @@ public interface OrderProxyController {
     ApiResult createOrder(
             String orderInfoJson,
             @RequestAttribute ERPInfo erpInfo,
-            @RequestAttribute ERPUserInfo erpUserInfo,
-            int eventType
+            @RequestAttribute ERPUserInfo erpUserInfo
     ) throws Exception;
 
     @RequestMapping(value = "/updateOrder")
@@ -65,7 +64,7 @@ public interface OrderProxyController {
     ApiResult orderDeliver(
             @RequestAttribute ERPInfo erpInfo,
             @RequestAttribute ERPUserInfo erpUserInfo,
-            DeliveryInfo deliveryInfo
+            OrderDeliveryInfo deliveryInfo
     ) throws Exception;
 
     @RequestMapping("/cancelOrder")

@@ -12,32 +12,20 @@ package com.huobanplus.erpprovider.edb.handler.impl;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.handler.BaseHandler;
 import com.huobanplus.erpprovider.edb.handler.EDBProductHandler;
-import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by allan on 2015/7/28.
  */
 @Component
 public class EDBProductHandlerImpl extends BaseHandler implements EDBProductHandler {
+
+
     @Override
-    public EventResult getProInventoryInfo(EDBSysData sysData, int pageIndex) throws IOException {
-        Map<String, Object> requestData = getSysRequestData(EDBConstant.GET_PRO_INFO, sysData);
-        requestData.put("page_size", EDBConstant.PAGE_SIZE);
-
-        Map<String, Object> signMap = new TreeMap<>(requestData);
-        requestData.put("sign", getSign(signMap, sysData));
-
-//        String responseData = HttpUtil.getInstance().doGet(EDBConstant.REQUEST_URI, requestData);
-//        if (responseData == null) {
-//            return EventResult.resultWith(EventResultEnum.ERROR, responseData);
-//        }
-//        return EventResult.resultWith(EventResultEnum.SUCCESS, responseData);
+    public EventResult getProInventoryInfo(EDBSysData sysData, String productNo) throws IOException {
         return null;
     }
 }

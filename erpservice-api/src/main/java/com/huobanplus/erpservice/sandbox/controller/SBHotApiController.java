@@ -14,7 +14,7 @@ import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
-import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
+import com.huobanplus.erpservice.datacenter.searchbean.OrderSearchInfo;
 import com.huobanplus.erpservice.hotapi.common.HotApiConstant;
 import com.huobanplus.erpservice.hotapi.jsonmodel.OrderList;
 import org.springframework.stereotype.Controller;

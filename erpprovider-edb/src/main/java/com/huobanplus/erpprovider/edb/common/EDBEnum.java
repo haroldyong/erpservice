@@ -219,4 +219,27 @@ public interface EDBEnum {
             this.name = name;
         }
     }
+
+    /**
+     * 订单查询支持的时间类型
+     */
+    enum DateType {
+        CREATE_TIME("订货日期"),
+        PAY_TIME("付款日期"),
+        DELIVER_TIME("发货日期");
+
+        private String dateType;
+
+        DateType(String dateType) {
+            this.dateType = dateType;
+        }
+
+        public String getDateType() {
+            return dateType;
+        }
+
+        public void setDateType(String dateType) {
+            this.dateType = dateType;
+        }
+    }
 }

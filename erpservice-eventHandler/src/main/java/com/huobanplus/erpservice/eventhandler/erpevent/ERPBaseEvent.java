@@ -9,7 +9,6 @@
 
 package com.huobanplus.erpservice.eventhandler.erpevent;
 
-import com.huobanplus.erpservice.eventhandler.common.EventType;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import lombok.AllArgsConstructor;
@@ -26,5 +25,4 @@ import lombok.NoArgsConstructor;
 public class ERPBaseEvent {
     private ERPInfo erpInfo;
     private ERPUserInfo erpUserInfo;
-    private EventType eventType;
 }

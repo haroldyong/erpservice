@@ -29,21 +29,18 @@ import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.httputil.HttpUtil;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
-import com.huobanplus.erpservice.common.ienum.OrderEnum;
-import com.huobanplus.erpservice.common.ienum.OrderSyncStatus1;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
-import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
-import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
-import com.huobanplus.erpservice.datacenter.entity.OrderSync;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
-import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
-import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
+import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
+import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
+import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
+import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
-import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -68,7 +65,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
     @Autowired
     private OrderSyncService orderSyncService;
     @Autowired
-    private OrderOperatorService orderOperatorService;
+    private OrderDetailSyncLogService orderDetailSyncLogService;
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
@@ -138,79 +135,53 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             edbCreateOrderInfo.setProductInfos(edbOrderItemList);
 
             Date now = new Date();
-            //订单同步日志
-            OrderOperatorLog orderOperatorLog = new OrderOperatorLog();
-            orderOperatorLog.setProviderType(erpInfo.getErpType());
-            orderOperatorLog.setUserType(erpUserInfo.getErpUserType());
-            orderOperatorLog.setCustomerId(erpUserInfo.getCustomerId());
-            orderOperatorLog.setCreateTime(now);
-            orderOperatorLog.setOrderId(orderInfo.getOrderId());
-//            orderOperatorLog.setOrderJsonData(pushNewOrderEvent.getOrderInfoJson());
-            orderOperatorLog.setEventInfo(JSON.toJSONString(pushNewOrderEvent));
-
-            //订单同步记录
-            OrderSync orderSync = orderSyncService.getOrderSync(orderInfo.getOrderId(), erpUserInfo.getCustomerId());
-            orderSync.setOrderStatus(EnumHelper.getEnumType(OrderEnum.OrderStatus.class, orderInfo.getOrderStatus()));
-            orderSync.setPayStatus(EnumHelper.getEnumType(OrderEnum.PayStatus.class, orderInfo.getPayStatus()));
-            orderSync.setShipStatus(EnumHelper.getEnumType(OrderEnum.ShipStatus.class, orderInfo.getShipStatus()));
-            orderSync.setProviderType(ERPTypeEnum.ProviderType.EDB);
-            orderSync.setUserType(erpUserInfo.getErpUserType());
-            orderSync.setRemark(orderOperatorLog.getRemark());
             EventResult eventResult = this.orderPush(edbCreateOrderInfo, sysData);
 
-            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                orderOperatorLog.setResultStatus(true);
-                orderOperatorLog.setRemark(pushNewOrderEvent.getEventType().getName() + "成功");
-                switch (pushNewOrderEvent.getEventType()) {
-                    case PUSH_NEW_ORDER:
-                        orderSync.setOutPayStatus("已付款");
-                        orderSync.setOutShipStatus("未发货");
-                        orderSync.setOrderSyncStatus(OrderSyncStatus1.DELIVERYED);
-                        break;
-                    case DELIVERY_SYNC:
-                        orderSync.setOutPayStatus("已付款");
-                        orderSync.setOutShipStatus("已发货");
-                        break;
-                }
-            } else {
-                orderOperatorLog.setResultStatus(false);
-                switch (pushNewOrderEvent.getEventType()) {
-                    case PUSH_NEW_ORDER:
-                        orderSync.setOrderSyncStatus(OrderSyncStatus1.WAITING_FOR_PUSHING);
-                        break;
-                }
-                orderOperatorLog.setRemark(pushNewOrderEvent.getEventType().getName() + "失败");
+            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
+            if (orderDetailSyncLog == null) {
+                orderDetailSyncLog = new OrderDetailSyncLog();
+                orderDetailSyncLog.setCreateTime(now);
             }
-            orderSync.setResultStatus(orderOperatorLog.isResultStatus());
-            orderSync.setRemark(orderOperatorLog.getRemark());
+            orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+            orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+            orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+            orderDetailSyncLog.setOrderId(orderInfo.getOrderId());
+            orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+            orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+            orderDetailSyncLog.setSyncTime(now);
 
-            orderSyncService.save(orderSync);
-            orderOperatorService.save(orderOperatorLog);
+            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+            } else {
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+            }
+
+            orderDetailSyncLogService.save(orderDetailSyncLog);
             return eventResult;
         } catch (IOException ex) {
             return EventResult.resultWith(EventResultEnum.ERROR, ex.getMessage(), null);
         }
     }
 
-    public EventResult obtainOrderList(int pageIndex, EDBSysData sysData, EDBOrderSearch edbOrderSearch) {
+    public EventResult obtainOrderList(EDBSysData sysData, EDBOrderSearch edbOrderSearch) {
         try {
             Map<String, Object> requestData = getSysRequestData(EDBConstant.GET_ORDER_INFO, sysData);
             //系统参数
-            requestData.put("storage_id", sysData.getStorageId());
-            requestData.put("shopid", sysData.getShopId());
-
-//            requestData.put("date_type", EDBEnum.OrderDateType.DELIVERY_TIME.getName());
+            requestData.put("storage_id", edbOrderSearch.getStorageId());
+            requestData.put("shopid", edbOrderSearch.getShopId());
+            requestData.put("date_type", edbOrderSearch.getDateType());
             requestData.put("begin_time", edbOrderSearch.getBeginTime());
             requestData.put("end_time", edbOrderSearch.getEndTime());
-            requestData.put("page_no", pageIndex);
+            requestData.put("page_no", edbOrderSearch.getPageIndex());
             requestData.put("page_size", EDBConstant.PAGE_SIZE);
-            requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
-            requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
-            requestData.put("proce_Status", edbOrderSearch.getProceStatus().getName());
-//            requestData.put("out_tid", "2200041218128127");
+//            requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
+//            requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
+//            requestData.put("proce_Status", edbOrderSearch.getProceStatus().getName());
+            if (!StringUtils.isEmpty(edbOrderSearch.getOrderId())) {
+                requestData.put("out_tid", edbOrderSearch.getOrderId());
+            }
 
-            Map<String, Object> signMap = new TreeMap<>(requestData);
-            String sign = getSign(signMap, sysData);
+            String sign = getSign(requestData, sysData);
             requestData.put("sign", sign);
 
             HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), requestData);
@@ -319,7 +290,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
     public EventResult orderDeliver(PushDeliveryInfoEvent pushDeliveryInfoEvent) {
         try {
             EDBSysData sysData = JSON.parseObject(pushDeliveryInfoEvent.getErpInfo().getSysDataJson(), EDBSysData.class);
-            DeliveryInfo deliveryInfo = pushDeliveryInfoEvent.getDeliveryInfo();
+            OrderDeliveryInfo deliveryInfo = pushDeliveryInfoEvent.getDeliveryInfo();
             EDBOrderDeliver orderDeliver = new EDBOrderDeliver();
             orderDeliver.setOrderId(deliveryInfo.getOrderId());
             orderDeliver.setExpress(deliveryInfo.getLogiName());

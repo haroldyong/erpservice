@@ -43,4 +43,8 @@ public class ShipSyncFailureOrder {
     private String logiNo;
     @ManyToOne
     private OrderShipSyncLog orderShipSyncLog;
+    /**
+     * 备注
+     */
+    private String remark;
 }

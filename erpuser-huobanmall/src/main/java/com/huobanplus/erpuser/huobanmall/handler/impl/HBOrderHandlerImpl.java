@@ -14,10 +14,10 @@ import com.alibaba.fastjson.TypeReference;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.util.SignBuilder;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
-import com.huobanplus.erpservice.datacenter.jsonmodel.OrderListInfo;
+import com.huobanplus.erpservice.datacenter.model.*;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.model.*;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpuser.huobanmall.common.ApiResult;
 import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
@@ -26,10 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by liual on 2015-10-19.
@@ -39,7 +36,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
 
     @Override
     @SuppressWarnings("Duplicates")
-    public EventResult deliverInfo(DeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo) {
+    public EventResult deliverInfo(OrderDeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo) {
         Map<String, Object> signMap = HBConstant.buildSignMap(deliveryInfo);
 //        signMap.put("orderId", deliveryInfo.getOrderId());
 //        signMap.put("logiName", deliveryInfo.getLogiName());
@@ -168,6 +165,29 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/BatchDeliver", requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult apiResult = JSON.parseObject(httpResult.getHttpContent(), ApiResult.class);
+                if (apiResult.getCode() == 200) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+        } catch (IOException e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public EventResult batchDeliver(List<OrderDeliveryInfo> orderDeliveryInfoList, ERPUserInfo erpUserInfo) {
+        Map<String, Object> requestMap = new TreeMap<>();
+        requestMap.put("lstDeliveryInfoJson", JSON.toJSONString(orderDeliveryInfoList));
+        requestMap.put("customerId", erpUserInfo.getCustomerId());
+        try {
+            String sign = SignBuilder.buildSignIgnoreEmpty(requestMap, null, HBConstant.SECRET_KEY);
+            requestMap.put("sign", sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/BatchDeliver", requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                ApiResult<BatchDeliverResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchDeliverResult>>() {
+                });
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }

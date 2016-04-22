@@ -7,15 +7,17 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpservice.eventhandler.erpevent;
+package com.huobanplus.erpservice.datacenter.searchbean;
 
-import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
 import lombok.Data;
 
 /**
- * Created by liual on 2015-10-19.
+ * Created by allan on 4/22/16.
  */
 @Data
-public class ReturnInfoEvent extends ERPBaseEvent {
-    private ReturnInfo returnInfo;
+public class OrderDetailSyncSearch {
+    private String orderId;
+    private String beginTime;
+    private String endTime;
+    private int syncStatus;
 }

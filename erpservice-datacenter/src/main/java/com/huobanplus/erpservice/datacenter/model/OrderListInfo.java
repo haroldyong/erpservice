@@ -7,20 +7,17 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpservice.hotapi.jsonmodel;
+package com.huobanplus.erpservice.datacenter.model;
 
-import com.huobanplus.erpservice.datacenter.model.Order;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.List;
 
 /**
- * Created by liual on 2015-12-07.
+ * Created by allan on 4/19/16.
  */
-@Setter
-@Getter
-public class OrderList {
+@Data
+public class OrderListInfo extends BaseInfo {
     private int recordCount;
     private int pageIndex;
     private int pageSize;

@@ -9,16 +9,20 @@
 
 package com.huobanplus.erpservice.platform.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpservice.common.SysConstant;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.entity.OrderSync;
+import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
+import com.huobanplus.erpservice.datacenter.searchbean.OrderDetailSyncSearch;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderSyncSearch;
 import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
 import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
+import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.proxy.utils.OrderProxyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,13 +40,34 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/erpService/platform")
-public class OrderController {
+public class OrderLogController {
     @Autowired
     private OrderOperatorService orderOperatorService;
     @Autowired
     private OrderSyncService orderSyncService;
     @Autowired
+    private OrderDetailSyncLogService orderDetailSyncLogService;
+    @Autowired
     private OrderProxyService orderProxyService;
+
+    @RequestMapping("/orderDetailSyncs")
+    private String orderDetailSyncs(
+            @RequestParam(required = false, defaultValue = "1") int pageIndex,
+            OrderDetailSyncSearch orderDetailSyncSearch,
+            @RequestAttribute int customerId,
+            int erpUserType,
+            @RequestParam(required = false, defaultValue = "-1") int syncStatus,
+            Model model
+    ) {
+        orderDetailSyncSearch.setSyncStatus(syncStatus);
+        Page<OrderDetailSyncLog> orderDetailSyncLogs = orderDetailSyncLogService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, customerId, orderDetailSyncSearch);
+        model.addAttribute("orderDetailSyncLogs", orderDetailSyncLogs);
+        model.addAttribute("orderDetailSyncSearch", orderDetailSyncSearch);
+        model.addAttribute("pageIndex", pageIndex);
+        model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);
+        model.addAttribute("erpUserType", erpUserType);
+        return "order_detail_sync_list";
+    }
 
     @RequestMapping("/orderSyncs")
     private String OrderSyncs(
@@ -72,8 +97,14 @@ public class OrderController {
     @RequestMapping(value = "/rePushOrder", method = RequestMethod.POST)
     @ResponseBody
     private ApiResult rePushOrder(long id) {
-        OrderOperatorLog orderOperatorLog = orderOperatorService.findById(id);
-        PushNewOrderEvent pushNewOrderEvent = JSON.parseObject(orderOperatorLog.getEventInfo(), PushNewOrderEvent.class);
+        OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findById(id);
+        ERPInfo erpInfo = new ERPInfo(orderDetailSyncLog.getProviderType(), orderDetailSyncLog.getErpSysData());
+        ERPUserInfo userInfo = new ERPUserInfo(orderDetailSyncLog.getUserType(), orderDetailSyncLog.getCustomerId());
+        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
+        pushNewOrderEvent.setErpInfo(erpInfo);
+        pushNewOrderEvent.setErpUserInfo(userInfo);
+        pushNewOrderEvent.setOrderInfoJson(orderDetailSyncLog.getOrderInfoJson());
+
         return orderProxyService.pushOrder(pushNewOrderEvent);
     }
 }

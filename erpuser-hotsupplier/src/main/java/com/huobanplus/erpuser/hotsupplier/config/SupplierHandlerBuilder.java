@@ -12,6 +12,7 @@ package com.huobanplus.erpuser.hotsupplier.config;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailListEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushOrderListInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
@@ -46,6 +47,9 @@ public class SupplierHandlerBuilder implements ERPUserHandlerBuilder {
                 } else if (erpBaseEvent instanceof PushOrderListInfoEvent) {
                     PushOrderListInfoEvent pushOrderListInfoEvent = (PushOrderListInfoEvent) erpBaseEvent;
                     return orderHandler.pushOrderDetailList(pushOrderListInfoEvent.getOrderListJson());
+                } else if (erpBaseEvent instanceof BatchDeliverEvent) {
+                    BatchDeliverEvent batchDeliverEvent = (BatchDeliverEvent) erpBaseEvent;
+                    return orderHandler.batchDeliver(batchDeliverEvent.getOrderDeliveryInfoList(), batchDeliverEvent.getErpUserInfo());
                 }
                 return null;
             };

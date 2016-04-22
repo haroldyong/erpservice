@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by allan on 4/21/16.
  */
@@ -27,6 +29,11 @@ public class ShipSyncFailureOrderServiceImpl implements ShipSyncFailureOrderServ
     @Override
     public ShipSyncFailureOrder save(ShipSyncFailureOrder shipSyncFailureOrder) {
         return shipSyncFailureOrderRepository.save(shipSyncFailureOrder);
+    }
+
+    @Override
+    public void batchSave(List<ShipSyncFailureOrder> shipSyncFailureOrders) {
+        shipSyncFailureOrderRepository.save(shipSyncFailureOrders);
     }
 
     @Override

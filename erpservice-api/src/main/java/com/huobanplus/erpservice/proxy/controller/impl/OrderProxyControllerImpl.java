@@ -9,20 +9,18 @@
 
 package com.huobanplus.erpservice.proxy.controller.impl;
 
-import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.common.EventType;
 import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.OrderUpdateEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
-import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -52,14 +50,11 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     public ApiResult createOrder(
             String orderInfoJson,
             @RequestAttribute ERPInfo erpInfo,
-            @RequestAttribute ERPUserInfo erpUserInfo,
-            int eventType
+            @RequestAttribute ERPUserInfo erpUserInfo
     ) throws Exception {
-        EventType eventTypeEnum = EnumHelper.getEnumType(EventType.class, eventType);
         PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
         pushNewOrderEvent.setErpInfo(erpInfo);
         pushNewOrderEvent.setOrderInfoJson(orderInfoJson);
-        pushNewOrderEvent.setEventType(eventTypeEnum);
         pushNewOrderEvent.setErpUserInfo(erpUserInfo);
 
         return orderProxyService.pushOrder(pushNewOrderEvent);
@@ -110,7 +105,7 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     public ApiResult orderDeliver(
             @RequestAttribute ERPInfo erpInfo,
             @RequestAttribute ERPUserInfo erpUserInfo,
-            DeliveryInfo deliveryInfo
+            OrderDeliveryInfo deliveryInfo
     ) throws Exception {
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
         if (erpHandler == null) {
@@ -121,7 +116,6 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
             pushDeliveryInfoEvent.setErpUserInfo(erpUserInfo);
             pushDeliveryInfoEvent.setErpInfo(erpInfo);
             pushDeliveryInfoEvent.setDeliveryInfo(deliveryInfo);
-            pushDeliveryInfoEvent.setEventType(EventType.PUSH_DELIVERY_INFO);
             EventResult eventResult = erpHandler.handleEvent(pushDeliveryInfoEvent);
 
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {

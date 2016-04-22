@@ -47,7 +47,7 @@ public interface EDBOrderHandler {
      * @throws IOException IO异常
      */
 //    @Scheduled(fixedRate = 60000, initialDelay = 60000)
-    EventResult obtainOrderList(int pageIndex, EDBSysData sysData, EDBOrderSearch edbOrderSearch);
+    EventResult obtainOrderList(EDBSysData sysData, EDBOrderSearch edbOrderSearch);
 
     /**
      * 更新订单导入标记为 已导入，可更新条件为

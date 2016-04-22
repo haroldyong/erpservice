@@ -7,7 +7,7 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpservice.datacenter.jsonmodel;
+package com.huobanplus.erpservice.datacenter.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +17,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class OrderItem {
+public class OrderItem extends BaseInfo {
     private Integer itemId;
     private String orderId;
     private String unionOrderId;

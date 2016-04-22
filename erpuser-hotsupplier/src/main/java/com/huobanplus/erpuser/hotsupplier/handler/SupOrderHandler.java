@@ -9,7 +9,13 @@
 
 package com.huobanplus.erpuser.hotsupplier.handler;
 
-import com.huobanplus.erpservice.eventhandler.model.*;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
+import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
+import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+
+import java.util.List;
 
 /**
  * Created by liual on 2015-12-08.
@@ -21,7 +27,7 @@ public interface SupOrderHandler {
      * @param deliveryInfo
      * @return
      */
-    EventResult deliverInfo(DeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo);
+    EventResult deliverInfo(OrderDeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo);
 
     /**
      * 退货通知
@@ -51,8 +57,16 @@ public interface SupOrderHandler {
      * 推送订单列表信息,到角色出保存
      *
      * @param orderListJson
-     * @param erpUserInfo
      * @return
      */
     EventResult pushOrderDetailList(String orderListJson);
+
+    /**
+     * 批量发货同步
+     *
+     * @param orderDeliveryInfoList 批量发货物流信息
+     * @param erpUserInfo           erp使用者信息
+     * @return
+     */
+    EventResult batchDeliver(List<OrderDeliveryInfo> orderDeliveryInfoList, ERPUserInfo erpUserInfo);
 }

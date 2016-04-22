@@ -18,8 +18,8 @@ public interface OrderSyncStatus {
      * 订单信息同步状态
      */
     enum DetailSyncStatus implements ICommonEnum {
-        SYNC_SUCCESS(0, "同步成功"),
-        SYNC_FAILURE(1, "同步失败");
+        SYNC_FAILURE(0, "同步失败"),
+        SYNC_SUCCESS(1, "同步成功");
         private int code;
         private String name;
 
@@ -53,7 +53,8 @@ public interface OrderSyncStatus {
     enum ShipSyncStatus implements ICommonEnum {
         SYNC_SUCCESS(0, "同步成功"),
         SYNC_PARTY_SUCCESS(1, "同步部分成功"),
-        SYNC_FAILURE(2, "同步失败");
+        SYNC_FAILURE(2, "同步失败"),
+        NO_DATA(3, "未获取到同步数据");
 
         private int code;
         private String name;

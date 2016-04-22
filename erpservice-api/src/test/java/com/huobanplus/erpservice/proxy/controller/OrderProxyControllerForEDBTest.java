@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.edb.service.EDBScheduledService;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
+import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.eventhandler.common.EventType;
 import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import org.junit.Before;

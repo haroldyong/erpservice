@@ -9,20 +9,16 @@
 
 package com.huobanplus.erpservice.eventhandler.erpevent.push;
 
-import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+
+import java.util.List;
 
 /**
- * Created by allan on 12/25/15.
+ * Created by allan on 4/22/16.
  */
-@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class PushReturnInfoEvent extends ERPBaseEvent {
-    private ReturnInfo returnInfo;
+@Data
+public class BatchDeliverEvent extends ERPBaseEvent {
+    private List<OrderDeliveryInfo> orderDeliveryInfoList;
 }

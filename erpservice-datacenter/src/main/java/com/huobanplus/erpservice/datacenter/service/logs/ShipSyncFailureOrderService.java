@@ -12,6 +12,8 @@ package com.huobanplus.erpservice.datacenter.service.logs;
 import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncFailureOrder;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 /**
  * Created by allan on 4/21/16.
  */
@@ -23,6 +25,13 @@ public interface ShipSyncFailureOrderService {
      * @return
      */
     ShipSyncFailureOrder save(ShipSyncFailureOrder shipSyncFailureOrder);
+
+    /**
+     * 批量保存
+     *
+     * @param shipSyncFailureOrders
+     */
+    void batchSave(List<ShipSyncFailureOrder> shipSyncFailureOrders);
 
     /**
      * 按条件搜索

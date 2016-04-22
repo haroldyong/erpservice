@@ -4,22 +4,23 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.datacenter.model;
 
-import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import lombok.Data;
 
 /**
- * Created by allan on 12/17/15.
+ * Created by liual on 2015-11-05.
  */
 @Data
-public class OrderSearchInfo {
-    private OrderEnum.OrderStatus orderStatus;
-    private OrderEnum.ShipStatus shipStatus;
-    private OrderEnum.PayStatus payStatus;
+public class OrderSearchInfo extends BaseInfo {
+    private Integer orderStatus;
+    private Integer pageIndex;
+    private Integer pageSize;
+    private Integer shipStatus;
+    private Integer payStatus;
     private String beginTime;
     private String endTime;
     private String beginPayTime;
@@ -28,5 +29,4 @@ public class OrderSearchInfo {
     private String endUpdateTime;
     private String orderBy;
     private String orderType;
-
 }

@@ -11,6 +11,7 @@ package com.huobanplus.erpprovider.netshop.handler.impl;
 
 import com.huobanplus.erpprovider.netshop.exceptionhandler.NSExceptionHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSOrderHandler;
+import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
@@ -19,7 +20,6 @@ import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderListEvent;
 import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.OrderSearchInfo;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

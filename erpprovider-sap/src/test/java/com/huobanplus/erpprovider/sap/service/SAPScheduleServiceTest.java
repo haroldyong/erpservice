@@ -1,11 +1,20 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.sap.service;
 
 import com.huobanplus.erpprovider.sap.SAPTestBase;
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
 import com.huobanplus.erpprovider.sap.formatsap.LogiInfo;
 import com.huobanplus.erpprovider.sap.util.ConnectHelper;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
-import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
+import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;

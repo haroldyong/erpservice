@@ -7,7 +7,7 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpservice.datacenter.jsonmodel;
+package com.huobanplus.erpservice.datacenter.model;
 
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by liual on 2015-12-07.
  */
-public class Order {
+public class Order extends BaseInfo {
     private String orderId;
     private int memberId;
     private int confirm;

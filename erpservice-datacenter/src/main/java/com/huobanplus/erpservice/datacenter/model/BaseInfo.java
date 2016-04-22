@@ -4,11 +4,13 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
+package com.huobanplus.erpservice.datacenter.model;
+
 /**
- * 主要用于json数据格式传输
- * Created by liual on 2015-12-07.
+ * Created by allan on 4/22/16.
  */
-package com.huobanplus.erpservice.datacenter.jsonmodel;
+public class BaseInfo {
+}

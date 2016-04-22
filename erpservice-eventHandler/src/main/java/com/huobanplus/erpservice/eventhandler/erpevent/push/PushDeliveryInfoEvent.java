@@ -4,13 +4,13 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.eventhandler.erpevent.push;
 
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
-import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,5 +24,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PushDeliveryInfoEvent extends ERPBaseEvent {
-    private DeliveryInfo deliveryInfo;
+    private OrderDeliveryInfo deliveryInfo;
 }

@@ -4,13 +4,13 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.eventhandler.erpevent.pull;
 
+import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
-import com.huobanplus.erpservice.eventhandler.model.OrderSearchInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -7,21 +7,17 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpservice.datacenter.jsonmodel;
+package com.huobanplus.erpservice.datacenter.model;
 
 import lombok.Data;
 
 import java.util.List;
 
 /**
- * Created by allan on 4/19/16.
+ * Created by allan on 4/22/16.
  */
 @Data
-public class OrderListInfo {
-    private int recordCount;
-    private int pageIndex;
-    private int pageSize;
-    private String orderBy;
-    private String orderType;
-    private List<Order> orders;
+public class BatchDeliverResult {
+    private int successCount;
+    private List<OrderDeliveryInfo> failedOrder;
 }

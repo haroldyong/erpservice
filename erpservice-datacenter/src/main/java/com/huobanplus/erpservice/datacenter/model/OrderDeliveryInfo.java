@@ -7,7 +7,7 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpservice.datacenter.jsonmodel;
+package com.huobanplus.erpservice.datacenter.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
@@ -17,7 +17,7 @@ import lombok.Data;
  * Created by allan on 4/21/16.
  */
 @Data
-public class OrderDeliveryInfo {
+public class OrderDeliveryInfo extends BaseInfo {
     @JSONField(name = "OrderNo")
     private String orderId;
     @JSONField(name = "LogiName")
@@ -30,4 +30,9 @@ public class OrderDeliveryInfo {
     private String logiCode;
     @JSONField(name = "Remark")
     private String remark;
+    /**
+     * 发货数量序列化字段（itemId,发货数量|itemid,发货数量，itemId为订单内容OrderItem的主键id
+     */
+    @JSONField(deserialize = false, serialize = false)
+    private String deliverItemsStr;
 }

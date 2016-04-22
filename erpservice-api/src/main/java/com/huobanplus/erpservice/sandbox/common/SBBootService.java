@@ -11,7 +11,7 @@ package com.huobanplus.erpservice.sandbox.common;
 
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
+import com.huobanplus.erpservice.datacenter.model.Order;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 

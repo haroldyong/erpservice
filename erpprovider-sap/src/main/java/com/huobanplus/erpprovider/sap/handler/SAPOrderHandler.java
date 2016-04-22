@@ -9,10 +9,7 @@
 
 package com.huobanplus.erpprovider.sap.handler;
 
-import com.huobanplus.erpprovider.sap.common.SAPSysData;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
-import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 /**

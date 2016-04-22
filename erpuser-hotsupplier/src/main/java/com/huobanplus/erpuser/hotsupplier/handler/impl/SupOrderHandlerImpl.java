@@ -9,11 +9,17 @@
 
 package com.huobanplus.erpuser.hotsupplier.handler.impl;
 
-import com.huobanplus.erpservice.eventhandler.model.*;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
+import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
+import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpuser.hotsupplier.handler.SupOrderHandler;
 import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by liual on 2015-12-08.
@@ -24,7 +30,7 @@ public class SupOrderHandlerImpl implements SupOrderHandler {
     private HBOrderHandler hbOrderHandler;
 
     @Override
-    public EventResult deliverInfo(DeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo) {
+    public EventResult deliverInfo(OrderDeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo) {
 //        Map<String, Object> signMap = SupConstant.buildSignMap(deliveryInfo);
 //        signMap.put("timestamp", String.valueOf(new Date().getTime()));
 //        try {
@@ -151,5 +157,10 @@ public class SupOrderHandlerImpl implements SupOrderHandler {
 //            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
 //        }
         return hbOrderHandler.pushOrderDetailList(orderListJson);
+    }
+
+    @Override
+    public EventResult batchDeliver(List<OrderDeliveryInfo> orderDeliveryInfoList, ERPUserInfo erpUserInfo) {
+        return hbOrderHandler.batchDeliver(orderDeliveryInfoList, erpUserInfo);
     }
 }

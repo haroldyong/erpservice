@@ -59,7 +59,9 @@ public class OrderDetailSyncLog {
      * 事件信息
      */
     @Lob
-    private String eventInfo;
+    private String erpSysData;
     @Temporal(TemporalType.TIMESTAMP)
     private Date syncTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createTime;
 }

@@ -9,11 +9,8 @@
 
 package com.huobanplus.erpprovider.sap.config;
 
-import com.alibaba.fastjson.JSON;
-import com.huobanplus.erpprovider.sap.common.SAPSysData;
 import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;

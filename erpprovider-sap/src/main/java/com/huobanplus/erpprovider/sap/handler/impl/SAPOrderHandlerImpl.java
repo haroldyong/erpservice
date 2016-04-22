@@ -17,14 +17,16 @@ import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpprovider.sap.util.ConnectHelper;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
-import com.huobanplus.erpservice.common.ienum.OrderSyncStatus1;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.entity.OrderSync;
-import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
-import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
+import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
+import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
 import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
+import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -53,6 +55,8 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
     private OrderSyncService orderSyncService;
     @Autowired
     private OrderOperatorService orderOperatorService;
+    @Autowired
+    private OrderDetailSyncLogService orderDetailSyncLogService;
 
     /**
      * 推送订单
@@ -106,8 +110,6 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setSapOrderItems(sapOrderItemList);
 
 
-
-
         Date now = new Date();
         //订单同步日志
         OrderOperatorLog orderOperatorLog = new OrderOperatorLog();
@@ -127,37 +129,31 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         orderSync.setUserType(erpUserInfo.getErpUserType());
         orderSync.setRemark(orderOperatorLog.getRemark());
 
-        EventResult eventResult = null;
-        eventResult = this.orderPush(sysData, erpUserInfo, sapSaleOrderInfo);
+        EventResult eventResult = this.orderPush(sysData, erpUserInfo, sapSaleOrderInfo);
+        OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
+
+        if (orderDetailSyncLog == null) {
+            orderDetailSyncLog = new OrderDetailSyncLog();
+        }
+        orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+        orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+        orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+        orderDetailSyncLog.setOrderId(orderInfo.getOrderId());
+        orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+        orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+        orderDetailSyncLog.setSyncTime(now);
 
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-            orderOperatorLog.setResultStatus(true);
-            orderOperatorLog.setRemark(pushNewOrderEvent.getEventType().getName() + "成功");
-            switch (pushNewOrderEvent.getEventType()) {
-                case PUSH_NEW_ORDER:
-                    orderSync.setOutPayStatus("已付款");
-                    orderSync.setOutShipStatus("未发货");
-                    orderSync.setOrderSyncStatus(OrderSyncStatus1.PUSHING_SUCCESS);
-                    break;
-            }
+            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
         } else {
-            orderOperatorLog.setResultStatus(false);
-            switch (pushNewOrderEvent.getEventType()) {
-                case PUSH_NEW_ORDER:
-                    orderSync.setOrderSyncStatus(OrderSyncStatus1.WAITING_FOR_PUSHING);
-                    break;
-            }
-            orderOperatorLog.setRemark(pushNewOrderEvent.getEventType().getName() + "失败");
+            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
         }
-        orderSync.setResultStatus(orderOperatorLog.isResultStatus());
-        orderSync.setRemark(orderOperatorLog.getRemark());
 
-        orderSyncService.save(orderSync);
-        orderOperatorService.save(orderOperatorLog);
+        orderDetailSyncLogService.save(orderDetailSyncLog);
         return eventResult;
     }
 
-    private EventResult orderPush(SAPSysData sysData, ERPUserInfo erpUserInfo, SAPSaleOrderInfo sapSaleOrderInfo)  {
+    private EventResult orderPush(SAPSysData sysData, ERPUserInfo erpUserInfo, SAPSaleOrderInfo sapSaleOrderInfo) {
         JCoFunction jCoFunction = null;
         JCoTable jCoTable = null;
         try {
@@ -210,10 +206,10 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             logger.error(ex.toString());
             return EventResult.resultWith(EventResultEnum.ERROR);
         } catch (JCoRuntimeException ex) {
-            logger.error("JCO运行时异常",ex.toString());
+            logger.error("JCO运行时异常", ex.toString());
             return EventResult.resultWith(EventResultEnum.ERROR);
-        } catch (IOException ex){
-            logger.error("IO 异常",ex.toString());
+        } catch (IOException ex) {
+            logger.error("IO 异常", ex.toString());
             return EventResult.resultWith(EventResultEnum.ERROR);
         }
     }
