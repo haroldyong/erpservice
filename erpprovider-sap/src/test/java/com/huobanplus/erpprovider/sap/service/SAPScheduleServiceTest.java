@@ -126,7 +126,7 @@ public class SAPScheduleServiceTest extends SAPTestBase {
 //                ztable.setValue("ZWMORDER", logiInfo1.getZWMOrder());
 //            }
 //            jCoFunctionIn.execute(jCoDestination);
-            resultMsg = jCoFunctionIn.getExportParameterList().getString("MESS");
+ //           resultMsg = jCoFunctionIn.getExportParameterList().getString("MESS");
         } catch (JCoException e) {
             e.printStackTrace();
         } catch (IOException e) {

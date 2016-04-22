@@ -128,6 +128,8 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
             orderSync.setUserType(erpUserInfo.getErpUserType());
             orderSync.setRemark(orderOperatorLog.getRemark());
 
+
+
             // TODO: 4/20/16
         } catch (Exception e) {
 

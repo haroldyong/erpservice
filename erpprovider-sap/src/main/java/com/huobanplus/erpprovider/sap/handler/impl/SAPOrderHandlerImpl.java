@@ -75,6 +75,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             SAPOrderItem sapOrderItem = new SAPOrderItem();
             sapOrderItem.setName(orderItem.getName());
             sapOrderItem.setNum(orderItem.getNum());
+            sapOrderItem.setAmount(orderItem.getAmount());
             sapOrderItemList.add(sapOrderItem);
         });
 
@@ -97,7 +98,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setMaterialCode("物料编码");
         sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
         sapSaleOrderInfo.setOrganization("PC");
-        sapSaleOrderInfo.setDiscount("20");
+     //   sapSaleOrderInfo.setDiscount("20");
         sapSaleOrderInfo.setInvoiceIsopen(false);
         sapSaleOrderInfo.setInvoiceTitle("火图科技股份有限公司");
         //sapSaleOrderInfo.setSapSallId("销售订单号");
@@ -137,14 +138,14 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                 case PUSH_NEW_ORDER:
                     orderSync.setOutPayStatus("已付款");
                     orderSync.setOutShipStatus("未发货");
-                    orderSync.setOrderSyncStatus(OrderSyncStatus1.PUSHING_SUCCESS);
+                    orderSync.setOrderSyncStatus1(OrderSyncStatus1.PUSHING_SUCCESS);
                     break;
             }
         } else {
             orderOperatorLog.setResultStatus(false);
             switch (pushNewOrderEvent.getEventType()) {
                 case PUSH_NEW_ORDER:
-                    orderSync.setOrderSyncStatus(OrderSyncStatus1.WAITING_FOR_PUSHING);
+                    orderSync.setOrderSyncStatus1(OrderSyncStatus1.WAITING_FOR_PUSHING);
                     break;
             }
             orderOperatorLog.setRemark(pushNewOrderEvent.getEventType().getName() + "失败");
@@ -191,7 +192,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                 jCoTable.setValue("VRKME", sapSaleOrderInfo.getOrganization());
                 //jCoTable.setValue("WERKS", sapSaleOrderInfo.getProvederFactory());
                 //jCoTable.setValue("LGORT", sapSaleOrderInfo.getGoodsAddr());
-                jCoTable.setValue("NETPR", sapSaleOrderInfo.getDiscount());
+                jCoTable.setValue("NETPR", sapOrderItem.getAmount());
 
                 //到时order 中需传递发票相关信息
                 jCoTable.setValue("ZFP", sapSaleOrderInfo.isInvoiceIsopen() ? "X" : null);
