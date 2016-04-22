@@ -17,16 +17,14 @@ import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpprovider.sap.util.ConnectHelper;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
-import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus1;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.entity.OrderSync;
-import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
-import com.huobanplus.erpservice.datacenter.model.Order;
-import com.huobanplus.erpservice.datacenter.model.OrderItem;
+import com.huobanplus.erpservice.datacenter.jsonmodel.Order;
+import com.huobanplus.erpservice.datacenter.jsonmodel.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
 import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
-import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -55,8 +53,6 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
     private OrderSyncService orderSyncService;
     @Autowired
     private OrderOperatorService orderOperatorService;
-    @Autowired
-    private OrderDetailSyncLogService orderDetailSyncLogService;
 
     /**
      * 推送订单
@@ -101,13 +97,15 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setMaterialCode("物料编码");
         sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
         sapSaleOrderInfo.setOrganization("PC");
-        sapSaleOrderInfo.setDiscount("20");
+     //   sapSaleOrderInfo.setDiscount("20");
         sapSaleOrderInfo.setInvoiceIsopen(false);
         sapSaleOrderInfo.setInvoiceTitle("火图科技股份有限公司");
         //sapSaleOrderInfo.setSapSallId("销售订单号");
         sapSaleOrderInfo.setLogiNo(orderInfo.getLogiNo());
         //sapSaleOrderInfo.setGoodsOrg("产品组");
         sapSaleOrderInfo.setSapOrderItems(sapOrderItemList);
+
+
 
 
         Date now = new Date();
@@ -148,6 +146,8 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         } else {
             orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
         }
+        orderSync.setResultStatus(orderOperatorLog.isResultStatus());
+        orderSync.setRemark(orderOperatorLog.getRemark());
 
         orderDetailSyncLogService.save(orderDetailSyncLog);
         return eventResult;
@@ -187,7 +187,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                 jCoTable.setValue("VRKME", sapSaleOrderInfo.getOrganization());
                 //jCoTable.setValue("WERKS", sapSaleOrderInfo.getProvederFactory());
                 //jCoTable.setValue("LGORT", sapSaleOrderInfo.getGoodsAddr());
-                jCoTable.setValue("NETPR", sapSaleOrderInfo.getDiscount());
+                jCoTable.setValue("NETPR", sapOrderItem.getAmount());
 
                 //到时order 中需传递发票相关信息
                 jCoTable.setValue("ZFP", sapSaleOrderInfo.isInvoiceIsopen() ? "X" : null);
