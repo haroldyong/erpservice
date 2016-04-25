@@ -31,7 +31,7 @@ public class OrderSync {
     /**
      * 同步状态
      */
-    private OrderSyncStatus1 orderSyncStatus1;
+    private OrderSyncStatus1 orderSyncStatus;
     /**
      * 订单状态
      */
