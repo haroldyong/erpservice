@@ -3,6 +3,7 @@ package com.huobanplus.erpprovider.iscs.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.iscs.ISCSTestBase;
 import com.huobanplus.erpprovider.iscs.common.ISCSSysData;
+import com.huobanplus.erpprovider.iscs.formatiscs.ISCSCancelOrder;
 import com.huobanplus.erpprovider.iscs.handler.ISCSOrderHandler;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
@@ -31,6 +32,8 @@ public class ISCSOrderHandlerImplTest extends ISCSTestBase {
 
     private CancelOrderEvent mockCancelOrderEvent;
 
+    private ISCSCancelOrder mockIscsCancelOrder;
+
     private ISCSSysData mockIscsSysData;
 
     @Autowired
@@ -44,9 +47,9 @@ public class ISCSOrderHandlerImplTest extends ISCSTestBase {
     @Before
     public void setUp(){
         mockIscsSysData = new ISCSSysData();
-        mockIscsSysData.setStockId(1);
-        mockIscsSysData.setOwnerId(1);
-        mockIscsSysData.setShopId(1);
+        mockIscsSysData.setStockId(220038);
+        mockIscsSysData.setOwnerId(260136);
+        mockIscsSysData.setShopId(250091);
         mockIscsSysData.setAppSecret("wangyingapp130705");
         mockIscsSysData.setAppKey("1900001");
         mockIscsSysData.setHost("http://testapi.iscs.com.cn/openapi/do");
@@ -69,7 +72,7 @@ public class ISCSOrderHandlerImplTest extends ISCSTestBase {
 
     @Test
     public void testCancelOrder(){
-        //iscsOrderHandler.cancelOrder(mockCancelOrderEvent);
+        iscsOrderHandler.cancelOrder(mockCancelOrderEvent);
     }
 
 }

@@ -12,12 +12,14 @@ package com.huobanplus.erpprovider.iscs.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.iscs.common.ISCSSysData;
+import com.huobanplus.erpprovider.iscs.formatiscs.ISCSCancelOrder;
 import com.huobanplus.erpprovider.iscs.formatiscs.ISCSCreateOrder;
 import com.huobanplus.erpprovider.iscs.formatiscs.ISCSCreateOrderInfo;
 import com.huobanplus.erpprovider.iscs.formatiscs.ISCSCreateOrderItem;
 import com.huobanplus.erpprovider.iscs.handler.ISCSBaseHandler;
 import com.huobanplus.erpprovider.iscs.handler.ISCSOrderHandler;
 import com.huobanplus.erpprovider.iscs.search.ISCSOrderSearch;
+import com.huobanplus.erpprovider.iscs.search.ISCSOrderStatusSearch;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
@@ -30,10 +32,13 @@ import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
 import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.OrderStatusInfoEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.OrderInfo;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -155,6 +160,83 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
             }
             return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
         } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR);
+        }
+    }
+
+    @Override
+    public EventResult cancelOrder(CancelOrderEvent cancelOrderEvent) {
+        try{
+            ERPInfo erpInfo = cancelOrderEvent.getErpInfo();
+            ERPUserInfo erpUserInfo = cancelOrderEvent.getErpUserInfo();
+            ISCSSysData iscsSysData = JSON.parseObject(erpInfo.getSysDataJson(), ISCSSysData.class);
+            Date now = new Date();
+            String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
+
+            ISCSCancelOrder iscsCancelOrder = new ISCSCancelOrder();// TODO: 2016/4/25
+            iscsCancelOrder.setOrderNum(cancelOrderEvent.getOrderId());
+            iscsCancelOrder.setStockId(iscsSysData.getStockId());
+            iscsCancelOrder.setShopId(iscsSysData.getShopId());
+            iscsCancelOrder.setRemark("remark");
+
+            Map<String,Object> requestData = getRequestData(iscsSysData,nowStr,"cancelTrade",JSON.toJSONString(iscsCancelOrder));
+            HttpResult httpResult = HttpClientUtil.getInstance().post(iscsSysData.getHost(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+                int errorCode = result.getInteger("errorCode");
+                System.out.println("\n************************");
+                System.out.println(errorCode);
+                System.out.println("************************");
+                if(errorCode == 100){
+                    if(result.get("flag").toString().equals("true")){
+                        return EventResult.resultWith(EventResultEnum.SUCCESS, result);
+                    }else{
+                        return EventResult.resultWith(EventResultEnum.ERROR);
+                    }
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("subMessage"),null);
+                }
+
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return EventResult.resultWith(EventResultEnum.ERROR);
+        }
+    }
+
+    @Override
+    public EventResult orderStatusQuery(OrderStatusInfoEvent orderStatusInfoEvent) {
+        try{
+            ERPInfo erpInfo = orderStatusInfoEvent.getErpInfo();
+            //ERPUserInfo erpUserInfo = cancelOrderEvent.getErpUserInfo();
+            ISCSSysData iscsSysData = JSON.parseObject(erpInfo.getSysDataJson(), ISCSSysData.class);
+            Date now = new Date();
+            String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
+
+            ISCSOrderStatusSearch iscsOrderStatusSearch = new ISCSOrderStatusSearch();
+            OrderInfo orderInfo = orderStatusInfoEvent.getOrderInfo();
+            iscsOrderStatusSearch.setStockId(iscsSysData.getStockId());
+            iscsOrderStatusSearch.setShopId(iscsSysData.getShopId());
+            iscsOrderStatusSearch.setOrderNo(orderInfo.getOrderCode());// FIXME: 2016/4/25
+            //iscsOrderStatusSearch.setBeginTime(orderInfo.getBeginTime());// FIXME: 2016/4/25 
+            //iscsOrderStatusSearch.setEndTime(orderInfo.getEndTime());// FIXME: 2016/4/25
+            iscsOrderStatusSearch.setPageIndex(Integer.parseInt(orderInfo.getPageNo()));
+            iscsOrderStatusSearch.setPageSize(Integer.parseInt(orderInfo.getPageSize()));
+            iscsOrderStatusSearch.setStatus(Integer.parseInt(orderInfo.getStatus()));// FIXME: 2016/4/25
+            iscsOrderStatusSearch.setTimeType(orderInfo.getDateType());// FIXME: 2016/4/25
+
+            Map<String,Object> requestData = getRequestData(iscsSysData,nowStr,"tradeStatusQuery",JSON.toJSONString(orderStatusInfoEvent));
+            HttpResult httpResult = HttpClientUtil.getInstance().post(iscsSysData.getHost(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+                if(result.getJSONObject("errorCode") != null){
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("subMessage"),null);
+                }
+                return EventResult.resultWith(EventResultEnum.SUCCESS, result);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+        }catch (Exception e){
             return EventResult.resultWith(EventResultEnum.ERROR);
         }
     }
