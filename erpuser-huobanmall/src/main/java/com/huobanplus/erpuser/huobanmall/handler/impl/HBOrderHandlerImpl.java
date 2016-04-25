@@ -162,7 +162,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
             Map<String, Object> requestMap = new HashMap<>(signMap);
             requestMap.put("sign", sign);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/BatchDeliver", requestMap);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderUpdate", requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult apiResult = JSON.parseObject(httpResult.getHttpContent(), ApiResult.class);
                 if (apiResult.getCode() == 200) {

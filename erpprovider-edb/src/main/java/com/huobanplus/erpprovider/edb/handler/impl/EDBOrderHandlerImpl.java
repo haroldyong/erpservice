@@ -184,7 +184,8 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
                 requestData.put("out_tid", edbOrderSearch.getOrderId());
             }
 
-            String sign = getSign(requestData, sysData);
+            Map<String, Object> signMap = new TreeMap<>(requestData);
+            String sign = getSign(signMap, sysData);
             requestData.put("sign", sign);
 
             HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), requestData);
