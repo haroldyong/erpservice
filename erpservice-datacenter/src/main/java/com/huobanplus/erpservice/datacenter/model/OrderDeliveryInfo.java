@@ -25,7 +25,7 @@ public class OrderDeliveryInfo extends BaseInfo {
     @JSONField(name = "LogiNo")
     private String logiNo;
     @JSONField(name = "LogiMoney")
-    private double logiMoney;
+    private double freight;
     @JSONField(name = "LogiCode")
     private String logiCode;
     @JSONField(name = "Remark")

@@ -174,8 +174,8 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             requestData.put("end_time", edbOrderSearch.getEndTime());
             requestData.put("page_no", edbOrderSearch.getPageIndex());
             requestData.put("page_size", EDBConstant.PAGE_SIZE);
-//            requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
-//            requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
+            requestData.put("order_status", edbOrderSearch.getShipStatus().getName());
+            requestData.put("platform_status", edbOrderSearch.getPlatformStatus().getName());
 //            requestData.put("proce_Status", edbOrderSearch.getProceStatus().getName());
             if (!StringUtils.isEmpty(edbOrderSearch.getOrderId())) {
                 requestData.put("out_tid", edbOrderSearch.getOrderId());

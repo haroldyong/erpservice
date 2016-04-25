@@ -62,11 +62,11 @@ public class OrderDetailSyncLogServiceImpl implements OrderDetailSyncLogService 
             }
             if (!StringUtils.isEmpty(orderDetailSyncSearch.getBeginTime())) {
                 predicates.add(cb.greaterThanOrEqualTo(root.get("syncTime").as(Date.class),
-                        StringUtil.DateFormat(orderDetailSyncSearch.getBeginTime(), StringUtil.TIME_PATTERN)));
+                        StringUtil.DateFormat(orderDetailSyncSearch.getBeginTime(), StringUtil.DATE_PATTERN)));
             }
             if (!StringUtils.isEmpty(orderDetailSyncSearch.getEndTime())) {
                 predicates.add(cb.lessThanOrEqualTo(root.get("syncTime").as(Date.class),
-                        StringUtil.DateFormat(orderDetailSyncSearch.getEndTime(), StringUtil.TIME_PATTERN)));
+                        StringUtil.DateFormat(orderDetailSyncSearch.getEndTime(), StringUtil.DATE_PATTERN)));
             }
             if (orderDetailSyncSearch.getSyncStatus() != -1) {
                 predicates.add(cb.equal(root.get("detailSyncStatus").as(OrderSyncStatus.DetailSyncStatus.class),

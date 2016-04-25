@@ -93,7 +93,8 @@ public class ISCSScheduledService {
                 OrderShipSyncLog lastSyncLog = orderShipSyncLogService.findTop(detailConfig.getCustomerId(), ERPTypeEnum.ProviderType.ISCS);
                 Date beginTime = lastSyncLog == null ? StringUtil.DateFormat(sysData.getBeginTime(), StringUtil.DATE_PATTERN) : lastSyncLog.getSyncTime();
 
-                List<OrderDeliveryInfo> deliveryInfoList = new ArrayList<>(); //等待发货的订单物流信息列表
+                List<OrderDeliveryInfo> failureDeliverInfo = new ArrayList<>(); //失败的订单列表
+                int totalCount = 0, successCount = 0, failedCount = 0; //总的同步数量,成功数量,失败数量
 
                 ISCSOrderSearch orderSearch = new ISCSOrderSearch();
                 orderSearch.setStockId(sysData.getStockId());
@@ -110,7 +111,22 @@ public class ISCSScheduledService {
                     int totalResult = result.getInteger("total_count");
                     JSONArray resultArray = result.getJSONArray("trades");
 
-                    addDeliveryInfo(resultArray, deliveryInfoList);
+                    List<OrderDeliveryInfo> first = orderDeliveryInfoList(resultArray);
+                    totalCount += first.size();
+
+                    BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
+                    batchDeliverEvent.setErpUserInfo(erpUserInfo);
+                    batchDeliverEvent.setErpInfo(erpInfo);
+                    batchDeliverEvent.setOrderDeliveryInfoList(first);
+                    ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+                    EventResult firstSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
+                    if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
+                        failureDeliverInfo.addAll(firstBatchDeliverResult.getFailedOrder());
+                        successCount += firstBatchDeliverResult.getSuccessCount();
+                        failedCount += firstBatchDeliverResult.getFailedOrder().size();
+                    }
+
                     //进行后面几次的获取
                     int totalPage = totalResult / ISCSConstant.PAGE_SIZE;
                     if (totalResult % ISCSConstant.PAGE_SIZE != 0) {
@@ -125,7 +141,17 @@ public class ISCSScheduledService {
                             if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                                 JSONObject nextResult = (JSONObject) nextEventResult.getData();
                                 JSONArray nextResultArray = nextResult.getJSONArray("trades");
-                                addDeliveryInfo(nextResultArray, deliveryInfoList);
+                                List<OrderDeliveryInfo> next = orderDeliveryInfoList(nextResultArray);
+                                totalCount += next.size();
+
+                                EventResult nextSyncResult = erpUserHandler.handleEvent(batchDeliverEvent); //使用者同步
+
+                                if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                    BatchDeliverResult nextBatchDeliverResult = (BatchDeliverResult) nextSyncResult.getData();
+                                    failureDeliverInfo.addAll(nextBatchDeliverResult.getFailedOrder());
+                                    successCount += nextBatchDeliverResult.getSuccessCount();
+                                    failedCount += nextBatchDeliverResult.getFailedOrder().size();
+                                }
                             }
                         }
                     }
@@ -136,35 +162,22 @@ public class ISCSScheduledService {
                 orderShipSyncLog.setProviderType(erpInfo.getErpType());
                 orderShipSyncLog.setUserType(erpUserInfo.getErpUserType());
                 orderShipSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-                orderShipSyncLog.setTotalCount(deliveryInfoList.size());
+                orderShipSyncLog.setTotalCount(totalCount);
+                orderShipSyncLog.setSuccessCount(successCount);
+                orderShipSyncLog.setFailedCount(failedCount);
                 orderShipSyncLog.setSyncTime(now);
-                List<OrderDeliveryInfo> failureDeliverInfo = new ArrayList<>();
-
-                if (deliveryInfoList.size() > 0) {
-                    //推送给使用者,执行批量发货
-                    BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
-                    batchDeliverEvent.setErpUserInfo(erpUserInfo);
-                    batchDeliverEvent.setErpInfo(erpInfo);
-                    batchDeliverEvent.setOrderDeliveryInfoList(deliveryInfoList);
-                    ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-                    EventResult batchDeliverEventResult = erpUserHandler.handleEvent(batchDeliverEvent);
-                    if (batchDeliverEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                        BatchDeliverResult batchDeliverResult = (BatchDeliverResult) batchDeliverEventResult.getData();
-                        failureDeliverInfo = batchDeliverResult.getFailedOrder();
-                        orderShipSyncLog.setSuccessCount(batchDeliverResult.getSuccessCount());
-                        orderShipSyncLog.setFailedCount(failureDeliverInfo.size());
-                        if (batchDeliverResult.getFailedOrder().size() > 0) {
-                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
-                        } else {
-                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-                        }
+                if (totalCount > 0) {
+                    if (failedCount > 0) {
+                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
+                    } else {
+                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
                     }
                 } else {
                     orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.NO_DATA);
                 }
                 orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
 
-                //同步失败的订单记录
+                //记录推送失败的订单
                 List<ShipSyncFailureOrder> failureOrders = new ArrayList<>();
                 for (OrderDeliveryInfo deliveryInfo : failureDeliverInfo) {
                     ShipSyncFailureOrder shipSyncFailureOrder = new ShipSyncFailureOrder();
@@ -173,26 +186,27 @@ public class ISCSScheduledService {
                     shipSyncFailureOrder.setLogiCode(deliveryInfo.getLogiCode());
                     shipSyncFailureOrder.setLogiNo(deliveryInfo.getLogiNo());
                     shipSyncFailureOrder.setOrderShipSyncLog(orderShipSyncLog);
+                    shipSyncFailureOrder.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
                     failureOrders.add(shipSyncFailureOrder);
                 }
                 shipSyncFailureOrderService.batchSave(failureOrders);
+                log.info("网仓同步结束");
             }
         } catch (Exception e) {
-
+            log.error("网仓同步失败", e);
         }
     }
 
-    private void addDeliveryInfo(JSONArray resultArray, List<OrderDeliveryInfo> orderDeliveryInfoList) {
+    private List<OrderDeliveryInfo> orderDeliveryInfoList(JSONArray resultArray) {
+        List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
         for (Object o : resultArray) {
             JSONObject deliverJson = (JSONObject) o;
-            int flag = deliverJson.getInteger("flag");//是否全部发完,全部发完才需要推送到伙伴商城执行发货
-            if (flag == 1) {
-                OrderDeliveryInfo deliveryInfo = new OrderDeliveryInfo();
-                deliveryInfo.setOrderId(deliverJson.getString("order_no"));
-                deliveryInfo.setLogiName(deliverJson.getString("transporter_id"));
-                deliveryInfo.setLogiNo(deliverJson.getString("out_ids"));
-                orderDeliveryInfoList.add(deliveryInfo);
-            }
+            OrderDeliveryInfo deliveryInfo = new OrderDeliveryInfo();
+            deliveryInfo.setOrderId(deliverJson.getString("order_no"));
+            deliveryInfo.setLogiName(deliverJson.getString("transporter_id"));
+            deliveryInfo.setLogiNo(deliverJson.getString("out_ids"));
+            orderDeliveryInfoList.add(deliveryInfo);
         }
+        return orderDeliveryInfoList;
     }
 }

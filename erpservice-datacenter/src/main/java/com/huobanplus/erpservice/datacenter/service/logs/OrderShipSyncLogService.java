@@ -40,5 +40,5 @@ public interface OrderShipSyncLogService {
      *
      * @return
      */
-    Page<OrderShipSyncLog> findAll(int pageIndex, int pageSize);
+    Page<OrderShipSyncLog> findAll(int pageIndex, int pageSize, String beginTime, String endTime, int customerId);
 }
