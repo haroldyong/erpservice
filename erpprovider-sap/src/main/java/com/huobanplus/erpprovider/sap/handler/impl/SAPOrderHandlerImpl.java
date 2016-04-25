@@ -15,16 +15,11 @@ import com.huobanplus.erpprovider.sap.formatsap.SAPOrderItem;
 import com.huobanplus.erpprovider.sap.formatsap.SAPSaleOrderInfo;
 import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpprovider.sap.util.ConnectHelper;
-import com.huobanplus.erpservice.common.ienum.EnumHelper;
-import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
-import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
-import com.huobanplus.erpservice.datacenter.entity.OrderSync;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
-import com.huobanplus.erpservice.datacenter.service.OrderOperatorService;
 import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -42,7 +37,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 /**
  * Created by liuzheng on 2016/4/14.
  */
@@ -53,8 +47,6 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
 
     @Autowired
     private OrderSyncService orderSyncService;
-    @Autowired
-    private OrderOperatorService orderOperatorService;
     @Autowired
     private OrderDetailSyncLogService orderDetailSyncLogService;
 
@@ -101,13 +93,15 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setMaterialCode("物料编码");
         sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
         sapSaleOrderInfo.setOrganization("PC");
-        //   sapSaleOrderInfo.setDiscount("20");
+     //   sapSaleOrderInfo.setDiscount("20");
         sapSaleOrderInfo.setInvoiceIsopen(false);
         sapSaleOrderInfo.setInvoiceTitle("火图科技股份有限公司");
         //sapSaleOrderInfo.setSapSallId("销售订单号");
         sapSaleOrderInfo.setLogiNo(orderInfo.getLogiNo());
         //sapSaleOrderInfo.setGoodsOrg("产品组");
         sapSaleOrderInfo.setSapOrderItems(sapOrderItemList);
+
+
 
 
         Date now = new Date();
@@ -121,19 +115,20 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         orderOperatorLog.setEventInfo(JSON.toJSONString(pushNewOrderEvent));
 
         //订单同步记录
-        OrderSync orderSync = orderSyncService.getOrderSync(orderInfo.getOrderId(), erpUserInfo.getCustomerId());
-        orderSync.setOrderStatus(EnumHelper.getEnumType(OrderEnum.OrderStatus.class, orderInfo.getOrderStatus()));
-        orderSync.setPayStatus(EnumHelper.getEnumType(OrderEnum.PayStatus.class, orderInfo.getPayStatus()));
-        orderSync.setShipStatus(EnumHelper.getEnumType(OrderEnum.ShipStatus.class, orderInfo.getShipStatus()));
-        orderSync.setProviderType(ERPTypeEnum.ProviderType.SAP);
-        orderSync.setUserType(erpUserInfo.getErpUserType());
-        orderSync.setRemark(orderOperatorLog.getRemark());
+//        OrderSync orderSync = orderSyncService.getOrderSync(orderInfo.getOrderId(), erpUserInfo.getCustomerId());
+//        orderSync.setOrderStatus(EnumHelper.getEnumType(OrderEnum.OrderStatus.class, orderInfo.getOrderStatus()));
+//        orderSync.setPayStatus(EnumHelper.getEnumType(OrderEnum.PayStatus.class, orderInfo.getPayStatus()));
+//        orderSync.setShipStatus(EnumHelper.getEnumType(OrderEnum.ShipStatus.class, orderInfo.getShipStatus()));
+//        orderSync.setProviderType(ERPTypeEnum.ProviderType.SAP);
+//        orderSync.setUserType(erpUserInfo.getErpUserType());
+//        orderSync.setRemark(orderOperatorLog.getRemark());
 
         EventResult eventResult = this.orderPush(sysData, erpUserInfo, sapSaleOrderInfo);
         OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
 
         if (orderDetailSyncLog == null) {
             orderDetailSyncLog = new OrderDetailSyncLog();
+            orderDetailSyncLog.setCreateTime(now);
         }
         orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
         orderDetailSyncLog.setProviderType(erpInfo.getErpType());
@@ -148,8 +143,8 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         } else {
             orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
         }
-        orderSync.setResultStatus(orderOperatorLog.isResultStatus());
-        orderSync.setRemark(orderOperatorLog.getRemark());
+        //orderSync.setResultStatus(orderOperatorLog.isResultStatus());
+        //orderSync.setRemark(orderOperatorLog.getRemark());
 
         orderDetailSyncLogService.save(orderDetailSyncLog);
         return eventResult;
