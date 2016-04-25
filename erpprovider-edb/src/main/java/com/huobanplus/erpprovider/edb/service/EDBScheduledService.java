@@ -40,7 +40,6 @@ import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -172,7 +171,7 @@ public class EDBScheduledService {
      * <p>
      * 结束时间均为同步开始时间
      */
-    @Scheduled(cron = "0 0 */2 * * ?")
+//    @Scheduled(cron = "0 0 */2 * * ?")
     @Transactional
     @SuppressWarnings("Duplcates")
     public void syncOrderShip() {
@@ -204,6 +203,7 @@ public class EDBScheduledService {
             edbOrderSearch.setShopId(sysData.getShopId());
             edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
             edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
+            edbOrderSearch.setOrderId("2016042576478449");
 
             //first pull
             EventResult eventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
