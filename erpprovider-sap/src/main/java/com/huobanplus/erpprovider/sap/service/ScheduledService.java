@@ -10,10 +10,8 @@
 package com.huobanplus.erpprovider.sap.service;
 
 import com.alibaba.fastjson.JSON;
-import com.huobanplus.erpprovider.sap.common.SAPEnum;
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
 import com.huobanplus.erpprovider.sap.formatsap.LogiInfo;
-import com.huobanplus.erpprovider.sap.search.SAPOrderSearch;
 import com.huobanplus.erpprovider.sap.util.ConnectHelper;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
@@ -77,11 +75,6 @@ public class ScheduledService {
             log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "开始获取订单数据进行同步");
             SAPSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), SAPSysData.class);
             ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
-            SAPOrderSearch sapOrderSearch = new SAPOrderSearch();
-            sapOrderSearch.setEndTime(now);
-            sapOrderSearch.setShipStatus(SAPEnum.ShipStatusEnum.ALL_DELIVER);
-            sapOrderSearch.setPlatformStatus(SAPEnum.PlatformStatus.PAYED);
-            sapOrderSearch.setProceStatus(SAPEnum.OrderStatusEnum.ACTIVE);
 
             //获取订单信息
             JCoFunction jCoFunction = null;
