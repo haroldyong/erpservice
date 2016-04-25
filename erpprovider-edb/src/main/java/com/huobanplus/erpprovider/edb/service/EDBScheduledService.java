@@ -203,7 +203,7 @@ public class EDBScheduledService {
             edbOrderSearch.setShopId(sysData.getShopId());
             edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
             edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
-            edbOrderSearch.setOrderId("2016042576478449");
+//            edbOrderSearch.setOrderId("2016042576478449");
 
             //first pull
             EventResult eventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
