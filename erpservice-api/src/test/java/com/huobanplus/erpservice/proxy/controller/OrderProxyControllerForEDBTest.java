@@ -14,7 +14,6 @@ import com.huobanplus.erpprovider.edb.service.EDBScheduledService;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
-import com.huobanplus.erpservice.eventhandler.common.EventType;
 import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by liual on 2015-10-26.
  */
 public class OrderProxyControllerForEDBTest extends OrderProxyTest {
-    private final String mockOrderId = "2200041218128121";
     private final String mockProductBn = "CP12011GG1";
     @Autowired
     private EDBScheduledService edbScheduledService;
@@ -39,7 +37,7 @@ public class OrderProxyControllerForEDBTest extends OrderProxyTest {
 
     @Before
     public void setUp() throws Exception {
-        mockOrder = randomOrder(mockOrderId, mockProductBn);
+        mockOrder = randomOrder(randomOrderId(), mockProductBn);
     }
 
     @Test
@@ -50,15 +48,13 @@ public class OrderProxyControllerForEDBTest extends OrderProxyTest {
         signMap.put("orderInfoJson", orderInfoJson);
         signMap.put("customerId", String.valueOf(mockCustomerId));
         signMap.put("userType", String.valueOf(ERPTypeEnum.UserType.HUOBAN_MALL.getCode()));
-        signMap.put("eventType", String.valueOf(EventType.PUSH_NEW_ORDER.getCode()));
 
         String sign = buildSign(signMap, null, HBConstant.SECRET_KEY);
         mockMvc.perform(post("/hotProxy/order/createOrder")
                 .param("orderInfoJson", orderInfoJson)
                 .param("customerId", String.valueOf(mockCustomerId))
                 .param("sign", sign)
-                .param("userType", String.valueOf(ERPTypeEnum.UserType.HUOBAN_MALL.getCode()))
-                .param("eventType", String.valueOf(EventType.PUSH_NEW_ORDER.getCode())))
+                .param("userType", String.valueOf(ERPTypeEnum.UserType.HUOBAN_MALL.getCode())))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

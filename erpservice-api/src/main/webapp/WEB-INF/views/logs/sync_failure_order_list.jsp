@@ -7,17 +7,6 @@
   ~ 2013-2016. All rights reserved.
   --%>
 
-<jsp:useBean id="orderDetailSyncSearch" scope="request"
-             type="com.huobanplus.erpservice.datacenter.searchbean.OrderDetailSyncSearch"/>
-<%--
-  ~ 版权所有:杭州火图科技有限公司
-  ~ 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
-  ~
-  ~ (c) Copyright Hangzhou Hot Technology Co., Ltd.
-  ~ Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
-  ~ 2013-2016. All rights reserved.
-  --%>
-
 <%--
   Created by IntelliJ IDEA.
   User: allan
@@ -33,7 +22,7 @@
 <head id="Head1">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>
-        订单信息同步记录
+        订单发货同步日志
     </title>
     <link href="<c:url value="/resource/css/admin.global.css" />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/resource/css/admin.content.css" />" rel="stylesheet" type="text/css">
@@ -43,21 +32,6 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/resource/scripts/lib/jBox/Skins/Green/jbox.css"/>">
     <script src="<c:url value="/resource/scripts/lib/jquery.utils.js" />" type="text/javascript"></script>
     <script src="<c:url value="/resource/scripts/admin.js" />"></script>
-    <script src="<c:url value="/resource/scripts/lib/My97DatePicker/WdatePicker.js" />" type="text/javascript"></script>
-    <style type="text/css">
-        .spModuleTitle {
-            padding: 3px 10px 0px 10px;
-            font-size: 16px;
-            font-weight: bold;
-            font-family: 微软雅黑;
-        }
-    </style>
-    <script type="text/javascript">
-        $(function () {
-            var syncStatus = ${orderDetailSyncSearch.syncStatus};
-            $("#syncStatus").val(syncStatus);
-        })
-    </script>
 </head>
 <body>
 <div class="container">
@@ -84,32 +58,19 @@
                     <div class="search-bar">
                         <div>
                             <input type="hidden" name="erpUserType" value="${erpUserType}"/>
+                            <input type="hidden" name="shipSyncId" value="${shipSyncId}"/>
+
                             <label class="first ">订单编号：</label>
                             <input name="orderId" type="text"
-                                   class="input-normal" value="${orderDetailSyncSearch.orderId}"/>
-                            <label class="first ">同步结果：</label>
-                            <select name="syncStatus" id="syncStatus">
-                                <option value="-1">全部</option>
-                                <option value="0">同步失败</option>
-                                <option value="1">同步成功</option>
-                            </select>
-                            <br/><br/>
-                            <label class="first ">起始时间：</label>
-                            <input name="beginTime" type="text" id="txtCreateBeginTime" placeholder=" [开始时间]"
-                                   class="input-normal Wdate"
-                                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false})"
-                                   style="margin-left: 8px;" value="${orderDetailSyncSearch.beginTime}"/>
-                            <label class="first ">---</label>
-                            <input name="endTime" type="text" id="txtCreateEndTime" placeholder=" [结束时间]"
-                                   class="input-normal Wdate" value="${orderDetailSyncSearch.endTime}"
-                                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false,minDate:'#F{$dp.$D(\'txtCreateBeginTime\')}'})"/>
+                                   class="input-normal" value="${orderId}"/>
+
                             <label>
                                 <a class="btn-lit btn-middle" href="javascript:$('#searchForm').submit();"
                                    style="margin-bottom: 3px;">
                                     <span>查询</span>
                                 </a>
                                 <a class="btn-lit btn-middle"
-                                   href="<c:url value="/erpService/platform/orderDetailSyncs?erpUserType=${erpUserType}" />"
+                                   href="<c:url value="/erpService/platform/shipSyncFailureOrders?erpUserType=${erpUserType}&shipSyncId=${shipSyncId}" />"
                                    style="margin-bottom: 3px;">
                                     <span>显示全部</span>
                                 </a>
@@ -137,33 +98,28 @@
                     <table class="data-table even1" width="100%" border="0" cellspacing="0" cellpadding="0">
                         <thead>
                         <tr class="even">
-                            <th scope="col">订单号
+                            <th scope="col">订单编号
                             </th>
-                            <th scope="col">ERP
+                            <th scope="col">物流公司
+                            </th>
+                            <th scope="col">物流单号
                             </th>
                             <th scope="col">同步状态
-                            </th>
-                            <th scope="col">添加时间
-                            </th>
-                            <th scope="col">最后一次同步时间
                             </th>
                             <th scope="col">操作
                             </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="log" items="${orderDetailSyncLogs.getContent()}">
+                        <c:forEach var="log" items="${shipSyncFailureOrders.getContent()}">
                             <tr>
                                 <td class="txt40 c">${log.orderId}</td>
-                                <td class="txt40 c">${log.providerType.name}</td>
-                                <td class="txt40 c">${log.detailSyncStatus.name}</td>
-                                <td class="txt40 c"><fmt:formatDate value="${log.createTime}"
-                                                                    pattern="yyyy-MM-dd HH:mm:ss"/></td>
-                                <td class="txt40 c"><fmt:formatDate value="${log.syncTime}"
-                                                                    pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                                <td class="txt40 c">${log.logiName}</td>
+                                <td class="txt40 c">${log.logiNo}</td>
+                                <td class="txt40 c">${log.shipSyncStatus.name}</td>
                                 <td class="txt80 c">
-                                    <c:if test="${log.detailSyncStatus.code==0}">
-                                        <a href="javascript:rePush(${log.id},${log.userType.code})">重新推送</a> |
+                                    <c:if test="${log.shipSyncStatus.code!=0}">
+                                        <a href="#">重新同步</a>
                                     </c:if>
                                 </td>
                             </tr>
@@ -177,8 +133,8 @@
                 <script type="text/javascript">
                     var pageSize = ${pageSize};
                     var pageIndex = ${pageIndex};
-                    var pageCount = ${orderDetailSyncLogs.getTotalPages()};
-                    var recordCount = ${orderDetailSyncLogs.getTotalElements()};
+                    var pageCount = ${shipSyncFailureOrders.getTotalPages()};
+                    var recordCount = ${shipSyncFailureOrders.getTotalElements()};
                     var formName = 'searchForm';
                     Pager.Output(formName, 'pageIndex', pageSize, pageIndex, pageCount, recordCount);
                 </script>

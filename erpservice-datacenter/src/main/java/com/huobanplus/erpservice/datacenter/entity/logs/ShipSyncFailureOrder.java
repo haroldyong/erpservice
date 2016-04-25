@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.entity.logs;
 
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,6 +44,7 @@ public class ShipSyncFailureOrder {
     private String logiNo;
     @ManyToOne
     private OrderShipSyncLog orderShipSyncLog;
+    private OrderSyncStatus.ShipSyncStatus shipSyncStatus;
     /**
      * 备注
      */

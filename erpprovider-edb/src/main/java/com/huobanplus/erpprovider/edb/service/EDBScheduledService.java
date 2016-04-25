@@ -40,7 +40,6 @@ import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -172,7 +171,7 @@ public class EDBScheduledService {
      * <p>
      * 结束时间均为同步开始时间
      */
-    @Scheduled(cron = "0 0 */2 * * ?")
+//    @Scheduled(cron = "0 0 */2 * * ?")
     @Transactional
     @SuppressWarnings("Duplcates")
     public void syncOrderShip() {
@@ -191,7 +190,9 @@ public class EDBScheduledService {
             OrderShipSyncLog lastSyncLog = orderShipSyncLogService.findTop(erpUserInfo.getCustomerId(), ERPTypeEnum.ProviderType.EDB);
             Date beginTime = lastSyncLog == null ? StringUtil.DateFormat(sysData.getBeginTime(), StringUtil.DATE_PATTERN) : lastSyncLog.getSyncTime();
 
-            List<OrderDeliveryInfo> deliveryInfoList = new ArrayList<>(); //等待发货的订单物流信息列表
+            List<OrderDeliveryInfo> failureDeliverInfo = new ArrayList<>(); //失败的订单列表
+            int totalCount = 0, successCount = 0, failedCount = 0; //成功和失败的数量
+
             EDBOrderSearch edbOrderSearch = new EDBOrderSearch();
             edbOrderSearch.setDateType(EDBEnum.DateType.DELIVER_TIME.getDateType());
             edbOrderSearch.setBeginTime(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
@@ -200,6 +201,9 @@ public class EDBScheduledService {
             edbOrderSearch.setPageSize(EDBConstant.PAGE_SIZE);
             edbOrderSearch.setStorageId(sysData.getStorageId());
             edbOrderSearch.setShopId(sysData.getShopId());
+            edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
+            edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
+//            edbOrderSearch.setOrderId("2016042576478449");
 
             //first pull
             EventResult eventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
@@ -208,7 +212,21 @@ public class EDBScheduledService {
                 JSONArray resultArray = result.getJSONObject("items").getJSONArray("item");
                 if (resultArray.size() > 0) {
                     int totalResult = resultArray.getJSONObject(0).getIntValue("总数量");//本次获取的总数据量
-                    addDeliveryInfo(resultArray, deliveryInfoList);
+                    List<OrderDeliveryInfo> first = orderDeliveryInfoList(resultArray); //首次需要推送的物流信息
+                    totalCount += first.size();
+
+                    BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
+                    batchDeliverEvent.setErpUserInfo(erpUserInfo);
+                    batchDeliverEvent.setErpInfo(erpInfo);
+                    batchDeliverEvent.setOrderDeliveryInfoList(first);
+                    ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+                    EventResult firstSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
+                    if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
+                        failureDeliverInfo.addAll(firstBatchDeliverResult.getFailedOrder());
+                        successCount += firstBatchDeliverResult.getSuccessCount();
+                        failedCount += firstBatchDeliverResult.getFailedOrder().size();
+                    }
 
                     //next pull
                     int totalPage = totalResult / EDBConstant.PAGE_SIZE;
@@ -224,7 +242,19 @@ public class EDBScheduledService {
                             if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                                 JSONObject nextResult = (JSONObject) nextEventResult.getData();
                                 JSONArray nextResultArray = nextResult.getJSONObject("items").getJSONArray("item");
-                                addDeliveryInfo(nextResultArray, deliveryInfoList);
+                                List<OrderDeliveryInfo> next = orderDeliveryInfoList(nextResultArray); //下几次需要同步的物流信息
+                                batchDeliverEvent.setOrderDeliveryInfoList(next);
+
+                                totalCount += next.size();
+
+                                EventResult nextSyncResult = erpUserHandler.handleEvent(batchDeliverEvent); //使用者同步
+
+                                if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                    BatchDeliverResult nextBatchDeliverResult = (BatchDeliverResult) nextSyncResult.getData();
+                                    failureDeliverInfo.addAll(nextBatchDeliverResult.getFailedOrder());
+                                    successCount += nextBatchDeliverResult.getSuccessCount();
+                                    failedCount += nextBatchDeliverResult.getFailedOrder().size();
+                                }
                             }
                         }
                     }
@@ -236,34 +266,21 @@ public class EDBScheduledService {
             orderShipSyncLog.setProviderType(erpInfo.getErpType());
             orderShipSyncLog.setUserType(erpUserInfo.getErpUserType());
             orderShipSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-            orderShipSyncLog.setTotalCount(deliveryInfoList.size());
+            orderShipSyncLog.setTotalCount(totalCount);
+            orderShipSyncLog.setSuccessCount(successCount);
+            orderShipSyncLog.setFailedCount(failedCount);
             orderShipSyncLog.setSyncTime(now);
-            List<OrderDeliveryInfo> failureDeliverInfo = new ArrayList<>();
-
-            if (deliveryInfoList.size() > 0) {
-                //推送给使用者,执行批量发货
-                BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
-                batchDeliverEvent.setErpUserInfo(erpUserInfo);
-                batchDeliverEvent.setErpInfo(erpInfo);
-                batchDeliverEvent.setOrderDeliveryInfoList(deliveryInfoList);
-                ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-                EventResult batchDeliverEventResult = erpUserHandler.handleEvent(batchDeliverEvent);
-                if (batchDeliverEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                    BatchDeliverResult batchDeliverResult = (BatchDeliverResult) batchDeliverEventResult.getData();
-                    failureDeliverInfo = batchDeliverResult.getFailedOrder();
-                    orderShipSyncLog.setSuccessCount(batchDeliverResult.getSuccessCount());
-                    orderShipSyncLog.setFailedCount(failureDeliverInfo.size());
-                    if (batchDeliverResult.getFailedOrder().size() > 0) {
-                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
-                    } else {
-                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-                    }
+            if (totalCount > 0) {
+                if (failedCount > 0) {
+                    orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
+                } else {
+                    orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
                 }
             } else {
                 orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.NO_DATA);
             }
             orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
-            //同步失败的订单记录
+
             List<ShipSyncFailureOrder> failureOrders = new ArrayList<>();
             for (OrderDeliveryInfo deliveryInfo : failureDeliverInfo) {
                 ShipSyncFailureOrder shipSyncFailureOrder = new ShipSyncFailureOrder();
@@ -272,13 +289,15 @@ public class EDBScheduledService {
                 shipSyncFailureOrder.setLogiCode(deliveryInfo.getLogiCode());
                 shipSyncFailureOrder.setLogiNo(deliveryInfo.getLogiNo());
                 shipSyncFailureOrder.setOrderShipSyncLog(orderShipSyncLog);
+                shipSyncFailureOrder.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
                 failureOrders.add(shipSyncFailureOrder);
             }
             shipSyncFailureOrderService.batchSave(failureOrders);
         }
     }
 
-    private void addDeliveryInfo(JSONArray resultArray, List<OrderDeliveryInfo> orderDeliveryInfoList) {
+    private List<OrderDeliveryInfo> orderDeliveryInfoList(JSONArray resultArray) {
+        List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
         for (Object o : resultArray) {
             JSONObject deliverJson = (JSONObject) o;
             OrderDeliveryInfo deliveryInfo = new OrderDeliveryInfo();
@@ -287,6 +306,7 @@ public class EDBScheduledService {
             deliveryInfo.setLogiNo(deliverJson.getString("express_no"));
             orderDeliveryInfoList.add(deliveryInfo);
         }
+        return orderDeliveryInfoList;
     }
 
     /**

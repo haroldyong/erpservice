@@ -40,5 +40,7 @@ public interface ShipSyncFailureOrderService {
      * @param pageSize
      * @return
      */
-    Page<ShipSyncFailureOrder> findAll(int pageIndex, int pageSize);
+    Page<ShipSyncFailureOrder> findAll(int pageIndex, int pageSize, long shipSyncId, String orderId);
+
+    ShipSyncFailureOrder findById(long id);
 }
