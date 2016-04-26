@@ -24,4 +24,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PushNewOrderEvent extends ERPBaseEvent {
     private String orderInfoJson;
+
+    @Override
+    public String toString() {
+        return "PushNewOrderEvent{" +
+                "orderInfoJson='" + orderInfoJson + '\'' +
+                '}';
+    }
 }

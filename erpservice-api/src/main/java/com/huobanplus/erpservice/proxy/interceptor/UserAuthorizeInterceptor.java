@@ -23,6 +23,8 @@ import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.sandbox.common.SBConstant;
 import com.huobanplus.erpuser.huobanmall.common.HBConstant;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -37,6 +39,7 @@ import java.util.Map;
  */
 @Component
 public class UserAuthorizeInterceptor extends HandlerInterceptorAdapter {
+    private static final Log log = LogFactory.getLog(UserAuthorizeInterceptor.class);
     @Autowired
     private ERPDetailConfigService detailConfigService;
 

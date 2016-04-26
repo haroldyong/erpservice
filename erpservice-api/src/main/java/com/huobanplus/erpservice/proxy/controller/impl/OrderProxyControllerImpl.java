@@ -27,6 +27,8 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.proxy.common.ProxyBaseController;
 import com.huobanplus.erpservice.proxy.controller.OrderProxyController;
 import com.huobanplus.erpservice.proxy.utils.OrderProxyService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +41,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "/hotProxy/order", method = RequestMethod.POST)
 public class OrderProxyControllerImpl extends ProxyBaseController implements OrderProxyController {
+    private static final Log log = LogFactory.getLog(OrderProxyControllerImpl.class);
     @Autowired
     private ERPRegister erpRegister;
     @Autowired

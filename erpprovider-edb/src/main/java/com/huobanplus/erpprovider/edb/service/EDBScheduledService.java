@@ -173,14 +173,13 @@ public class EDBScheduledService {
      */
 //    @Scheduled(cron = "0 0 */2 * * ?")
     @Transactional
-    @SuppressWarnings("Duplcates")
     public void syncOrderShip() {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
-        log.info("E店宝发货同步开始");
+        log.info("order ship sync for edb start!");
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.EDB);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
-            log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "开始获取订单数据进行同步");
+            log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync order ship");
             ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
             ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
             EDBSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), EDBSysData.class);
@@ -203,7 +202,7 @@ public class EDBScheduledService {
             edbOrderSearch.setShopId(sysData.getShopId());
             edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
             edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
-//            edbOrderSearch.setOrderId("2016042525338253");
+//            edbOrderSearch.setOrderId("2016042626588157");
 
             //first pull
             EventResult eventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
@@ -297,16 +296,17 @@ public class EDBScheduledService {
             }
             shipSyncFailureOrderService.batchSave(failureOrders);
         }
+        log.info("edb ship sync end");
     }
 
     private List<OrderDeliveryInfo> orderDeliveryInfoList(JSONArray resultArray) {
         List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
         for (Object o : resultArray) {
-            JSONObject deliverJson = (JSONObject) o;
+            JSONObject orderInfoJson = (JSONObject) o;
             OrderDeliveryInfo deliveryInfo = new OrderDeliveryInfo();
-            deliveryInfo.setOrderId(deliverJson.getString("out_tid"));
-            deliveryInfo.setLogiName(deliverJson.getString("express"));
-            deliveryInfo.setLogiNo(deliverJson.getString("express_no"));
+            deliveryInfo.setOrderId(orderInfoJson.getString("out_tid"));
+            deliveryInfo.setLogiName(orderInfoJson.getString("express"));
+            deliveryInfo.setLogiNo(orderInfoJson.getString("express_no"));
             orderDeliveryInfoList.add(deliveryInfo);
         }
         return orderDeliveryInfoList;
