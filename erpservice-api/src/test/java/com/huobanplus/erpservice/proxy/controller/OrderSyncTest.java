@@ -42,17 +42,16 @@ public class OrderSyncTest extends SpringWebTest {
     @Test
     public void orderShipSyncForEdb() throws Exception {
         EDBSysData sysData = new EDBSysData();
-        sysData.setRequestUrl("");
-        sysData.setRequestUrl("http://qimen.6x86.net:10537/restxin/index.aspx");
-        sysData.setDbHost("edb_a99999");
-        sysData.setAppKey("c184567b");
-        sysData.setAppSecret("90353b57f17a4bf6a11263f0545ddbdc");
-        sysData.setToken("e6513e432b724720ae6b6ab4155e6ccb");
-        sysData.setIp("117.79.148.228");
-        sysData.setShopId("1");
-        sysData.setStorageId("1");
-        sysData.setExpress("申通");
-        sysData.setBeginTime("2015-12-12");
+        sysData.setRequestUrl("http://vip207.edb01.com/rest/index.aspx");
+        sysData.setDbHost("edb_a67707");
+        sysData.setAppKey("57dcd6e6");
+        sysData.setAppSecret("c0a96e25382a447382de0f255e0b3677");
+        sysData.setToken("6ae2a7b0ef8c43449434b561ee1cf1b7");
+        sysData.setIp("122.224.212.246");
+        sysData.setShopId("66");
+        sysData.setStorageId("2");
+        sysData.setExpress("韵达");
+        sysData.setBeginTime("2016-04-26");
 
         EDBOrderSearch edbOrderSearch = new EDBOrderSearch();
         edbOrderSearch.setDateType(EDBEnum.DateType.DELIVER_TIME.getDateType());
@@ -64,7 +63,7 @@ public class OrderSyncTest extends SpringWebTest {
         edbOrderSearch.setShopId(sysData.getShopId());
         edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
         edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
-        edbOrderSearch.setOrderId("2016042525338253");
+//        edbOrderSearch.setOrderId("2016042626588157");
         EventResult eventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
         System.out.println(111);
         edbScheduledService.syncOrderShip();

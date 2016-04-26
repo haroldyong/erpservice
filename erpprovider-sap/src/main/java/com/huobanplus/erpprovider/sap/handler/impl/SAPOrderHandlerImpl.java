@@ -37,14 +37,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 /**
  * Created by liuzheng on 2016/4/14.
  */
 @Component
 public class SAPOrderHandlerImpl implements SAPOrderHandler {
-
-    private static final Log logger = LogFactory.getLog(SAPOrderHandlerImpl.class);
-
+    private static final Log log = LogFactory.getLog(SAPOrderHandlerImpl.class);
     @Autowired
     private OrderSyncService orderSyncService;
     @Autowired
@@ -58,9 +57,10 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
      */
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
-
-        SAPSysData sysData = JSON.parseObject(pushNewOrderEvent.getErpInfo().getSysDataJson(), SAPSysData.class);
         Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+        log.info("sap start to order, orderId=" + orderInfo.getOrderId());
+        SAPSysData sysData = JSON.parseObject(pushNewOrderEvent.getErpInfo().getSysDataJson(), SAPSysData.class);
+
         List<OrderItem> orderItemList = orderInfo.getOrderItems();
         List<SAPOrderItem> sapOrderItemList = new ArrayList<SAPOrderItem>();
 
@@ -93,7 +93,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
 //        sapSaleOrderInfo.setMaterialCode("物料编码");
 //        sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
         sapSaleOrderInfo.setOrganization("PC");
-     //   sapSaleOrderInfo.setDiscount("20");
+        //   sapSaleOrderInfo.setDiscount("20");
         sapSaleOrderInfo.setInvoiceIsopen(false);
         sapSaleOrderInfo.setInvoiceTitle("火图科技股份有限公司");
         //sapSaleOrderInfo.setSapSallId("销售订单号");
@@ -154,11 +154,10 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         JCoFunction jCoFunction = null;
         JCoTable jCoTable = null;
         try {
-
             JCoDestination jCoDestination = ConnectHelper.connect(sysData, erpUserInfo);
             jCoFunction = jCoDestination.getRepository().getFunction("ZWS_DATA_IMPORT");
             if (jCoFunction == null) {
-                logger.error("SAP中没有ZWS_DATA_IMPORT方法");
+                log.info("SAP中没有ZWS_DATA_IMPORT方法");
                 return EventResult.resultWith(EventResultEnum.ERROR);
             }
             jCoTable = jCoFunction.getTableParameterList().getTable("ZTABLE");
@@ -195,18 +194,18 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
 
             jCoFunction.execute(jCoDestination);
             String resultMsg = jCoFunction.getExportParameterList().getString("MESS");
-            logger.info(resultMsg);
+            log.info(resultMsg);
 
             return EventResult.resultWith(EventResultEnum.SUCCESS);
 
         } catch (JCoException ex) {
-            logger.error(ex.toString());
+            log.info("JCO异常:" + ex.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR);
         } catch (JCoRuntimeException ex) {
-            logger.error("JCO运行时异常"+ex.toString());
+            log.info("JCO运行时异常:" + ex.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR);
         } catch (IOException ex) {
-            logger.error("IO 异常"+ex.toString());
+            log.info("IO 异常:" + ex.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR);
         }
     }

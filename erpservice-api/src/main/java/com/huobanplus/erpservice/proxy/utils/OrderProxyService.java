@@ -17,6 +17,8 @@ import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,11 +27,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class OrderProxyService {
+    private static final Log log = LogFactory.getLog(OrderProxyService.class);
     @Autowired
     private ERPRegister erpRegister;
     @Autowired
     private OrderOperatorService orderOperatorService;
-
 
     public ApiResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
         ERPHandler erpHandler = erpRegister.getERPHandler(pushNewOrderEvent.getErpInfo());
@@ -39,7 +41,6 @@ public class OrderProxyService {
         if (erpHandler.eventSupported(PushNewOrderEvent.class)) {
             //相关处理器处理时间推送订单至相应ERP系统
             EventResult eventResult = erpHandler.handleEvent(pushNewOrderEvent);
-
             ApiResult apiResult;
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 apiResult = ApiResult.resultWith(ResultCode.SUCCESS);

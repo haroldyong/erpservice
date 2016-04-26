@@ -80,10 +80,10 @@ public class ISCSScheduledService {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
         try {
-            log.info("网仓发货同步开始");
+            log.info("order ship for iscs start!");
             List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.ISCS);
             for (ERPDetailConfigEntity detailConfig : detailConfigs) {
-                log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "开始获取订单数据进行同步");
+                log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync order ship");
                 ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
                 ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
                 ISCSSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), ISCSSysData.class);
@@ -194,10 +194,10 @@ public class ISCSScheduledService {
                     failureOrders.add(shipSyncFailureOrder);
                 }
                 shipSyncFailureOrderService.batchSave(failureOrders);
-                log.info("网仓同步结束");
+                log.info("iscs ship sync end");
             }
         } catch (Exception e) {
-            log.error("网仓同步失败", e);
+            log.error("iscs ship sync error:", e);
         }
     }
 
@@ -205,11 +205,15 @@ public class ISCSScheduledService {
         List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
         for (Object o : resultArray) {
             JSONObject deliverJson = (JSONObject) o;
-            OrderDeliveryInfo deliveryInfo = new OrderDeliveryInfo();
-            deliveryInfo.setOrderId(deliverJson.getString("order_no"));
-            deliveryInfo.setLogiName(deliverJson.getString("transporter_id"));
-            deliveryInfo.setLogiNo(deliverJson.getString("out_ids"));
-            orderDeliveryInfoList.add(deliveryInfo);
+            int flag = deliverJson.getInteger("flag");//是否全部发完,全部发完才需要推送到伙伴商城执行发货
+            if (flag == 1) {
+                OrderDeliveryInfo deliveryInfo = new OrderDeliveryInfo();
+                deliveryInfo.setOrderId(deliverJson.getString("order_no"));
+                deliveryInfo.setLogiName(deliverJson.getString("transporter_id"));
+                deliveryInfo.setLogiNo(deliverJson.getString("out_ids"));
+                orderDeliveryInfoList.add(deliveryInfo);
+            }
+
         }
         return orderDeliveryInfoList;
     }

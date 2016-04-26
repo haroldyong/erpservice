@@ -59,7 +59,6 @@ public class PlatformInterceptor extends HandlerInterceptorAdapter {
             }
         }
         request.setAttribute("customerId", customerId);
-        log.info("currentCustomerId=" + customerId);
         return true;
     }
 }

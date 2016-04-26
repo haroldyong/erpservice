@@ -44,6 +44,8 @@ import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -62,6 +64,7 @@ import java.util.*;
  */
 @Component
 public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler {
+    private static final Log log = LogFactory.getLog(EDBOrderHandlerImpl.class);
     @Autowired
     private OrderSyncService orderSyncService;
     @Autowired
@@ -70,6 +73,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
         Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+
         ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
         EDBSysData sysData = JSON.parseObject(erpInfo.getSysDataJson(), EDBSysData.class);
         ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
