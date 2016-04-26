@@ -90,8 +90,8 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setShipZip(orderInfo.getShipZip());
         sapSaleOrderInfo.setShipAddr(orderInfo.getShipAddr());
         //sapSaleOrderInfo.setGoodsInfo("产品组");
-        sapSaleOrderInfo.setMaterialCode("物料编码");
-        sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
+//        sapSaleOrderInfo.setMaterialCode("物料编码");
+//        sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
         sapSaleOrderInfo.setOrganization("PC");
         //   sapSaleOrderInfo.setDiscount("20");
         sapSaleOrderInfo.setInvoiceIsopen(false);
@@ -100,6 +100,8 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setLogiNo(orderInfo.getLogiNo());
         //sapSaleOrderInfo.setGoodsOrg("产品组");
         sapSaleOrderInfo.setSapOrderItems(sapOrderItemList);
+
+
 
 
         Date now = new Date();
