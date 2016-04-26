@@ -167,10 +167,14 @@ public class ISCSScheduledService {
                 orderShipSyncLog.setFailedCount(failedCount);
                 orderShipSyncLog.setSyncTime(now);
                 if (totalCount > 0) {
-                    if (failedCount > 0) {
+                    if (successCount > 0 && failedCount > 0) {
                         orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
-                    } else {
+                    }
+                    if (successCount > 0 && failedCount == 0) {
                         orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+                    }
+                    if (successCount == 0) {
+                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
                     }
                 } else {
                     orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.NO_DATA);

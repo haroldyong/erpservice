@@ -203,7 +203,7 @@ public class EDBScheduledService {
             edbOrderSearch.setShopId(sysData.getShopId());
             edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
             edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
-//            edbOrderSearch.setOrderId("2016042576478449");
+//            edbOrderSearch.setOrderId("2016042525338253");
 
             //first pull
             EventResult eventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
@@ -260,7 +260,6 @@ public class EDBScheduledService {
                     }
                 }
             }
-
             //发货同步记录
             OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
             orderShipSyncLog.setProviderType(erpInfo.getErpType());
@@ -271,10 +270,14 @@ public class EDBScheduledService {
             orderShipSyncLog.setFailedCount(failedCount);
             orderShipSyncLog.setSyncTime(now);
             if (totalCount > 0) {
-                if (failedCount > 0) {
+                if (successCount > 0 && failedCount > 0) {
                     orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
-                } else {
+                }
+                if (successCount > 0 && failedCount == 0) {
                     orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+                }
+                if (successCount == 0) {
+                    orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
                 }
             } else {
                 orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.NO_DATA);

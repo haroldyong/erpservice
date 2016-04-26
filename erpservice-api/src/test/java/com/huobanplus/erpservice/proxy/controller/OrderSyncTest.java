@@ -17,6 +17,7 @@ import com.huobanplus.erpprovider.edb.service.EDBScheduledService;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.commons.config.WebConfig;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,9 +64,9 @@ public class OrderSyncTest extends SpringWebTest {
         edbOrderSearch.setShopId(sysData.getShopId());
         edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
         edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
-        edbOrderSearch.setOrderId("2016042576478449");
-        edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
-
-//        edbScheduledService.syncOrderShip();
+        edbOrderSearch.setOrderId("2016042525338253");
+        EventResult eventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
+        System.out.println(111);
+        edbScheduledService.syncOrderShip();
     }
 }
