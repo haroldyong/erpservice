@@ -11,9 +11,11 @@ package com.huobanplus.erpprovider.iscs.handler;
 
 import com.huobanplus.erpprovider.iscs.common.ISCSSysData;
 import com.huobanplus.erpprovider.iscs.search.ISCSOrderSearch;
-import com.huobanplus.erpservice.eventhandler.erpevent.OrderStatusInfoEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
+import com.huobanplus.erpservice.datacenter.searchbean.OrderSearchInfo;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 /**
@@ -37,13 +39,22 @@ public interface ISCSOrderHandler {
      * @param cancelOrderEvent 取消订单事件，包含订单id，相关提供者和使用者信息，事件信息
      * @return
      */
-    EventResult cancelOrder(CancelOrderEvent cancelOrderEvent);
+    //EventResult cancelOrder(CancelOrderEvent cancelOrderEvent);
 
     /**
      *  订单状态查询
      * @param orderStatusInfoEvent 订单状态信息事件，包含订单信息实体，相关提供者和使用者信息，事件信息
      * @return
      */
-    EventResult orderStatusQuery(OrderStatusInfoEvent orderStatusInfoEvent);
+    //EventResult orderStatusQuery(OrderStatusInfoEvent orderStatusInfoEvent);
+
+    /**
+     * 销售退货单导入
+     * @param pushReturnInfoEvent 推送退货单事件，包含退货单信息实体，相关提供者和使用者信息，事件信息
+     * @return
+     */
+    EventResult pushReturnOrder(PushReturnInfoEvent pushReturnInfoEvent);
+
+    EventResult orderQuery(OrderSearchInfo orderSearchInfo, ERPUserInfo erpUserInfo, ERPInfo erpInfo);
 
 }
