@@ -28,8 +28,8 @@ import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.sap.conn.jco.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +43,7 @@ import java.util.List;
 @Component
 public class SAPOrderHandlerImpl implements SAPOrderHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(SAPOrderHandlerImpl.class);
+    private static final Log logger = LogFactory.getLog(SAPOrderHandlerImpl.class);
 
     @Autowired
     private OrderSyncService orderSyncService;
@@ -90,8 +90,8 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setShipZip(orderInfo.getShipZip());
         sapSaleOrderInfo.setShipAddr(orderInfo.getShipAddr());
         //sapSaleOrderInfo.setGoodsInfo("产品组");
-        sapSaleOrderInfo.setMaterialCode("物料编码");
-        sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
+//        sapSaleOrderInfo.setMaterialCode("物料编码");
+//        sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
         sapSaleOrderInfo.setOrganization("PC");
      //   sapSaleOrderInfo.setDiscount("20");
         sapSaleOrderInfo.setInvoiceIsopen(false);
@@ -203,10 +203,10 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             logger.error(ex.toString());
             return EventResult.resultWith(EventResultEnum.ERROR);
         } catch (JCoRuntimeException ex) {
-            logger.error("JCO运行时异常", ex.toString());
+            logger.error("JCO运行时异常"+ex.toString());
             return EventResult.resultWith(EventResultEnum.ERROR);
         } catch (IOException ex) {
-            logger.error("IO 异常", ex.toString());
+            logger.error("IO 异常"+ex.toString());
             return EventResult.resultWith(EventResultEnum.ERROR);
         }
     }
