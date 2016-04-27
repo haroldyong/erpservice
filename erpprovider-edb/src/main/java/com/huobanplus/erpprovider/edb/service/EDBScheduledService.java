@@ -303,10 +303,21 @@ public class EDBScheduledService {
         List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
         for (Object o : resultArray) {
             JSONObject orderInfoJson = (JSONObject) o;
+
+            JSONArray orderItemJsonArray = orderInfoJson.getJSONArray("tid_item");
+            String deliverItemsStr = "";
+            for (Object itemObj : orderItemJsonArray) {
+                JSONObject orderItemJson = (JSONObject) itemObj;
+                String productBn = orderItemJson.getString("barcode");
+                int proNum = orderItemJson.getInteger("pro_num");
+                deliverItemsStr += productBn + "," + proNum + "|";
+            }
+
             OrderDeliveryInfo deliveryInfo = new OrderDeliveryInfo();
             deliveryInfo.setOrderId(orderInfoJson.getString("out_tid"));
             deliveryInfo.setLogiName(orderInfoJson.getString("express"));
             deliveryInfo.setLogiNo(orderInfoJson.getString("express_no"));
+            deliveryInfo.setDeliverItemsStr(deliverItemsStr.substring(0, deliverItemsStr.length() - 1));
             orderDeliveryInfoList.add(deliveryInfo);
         }
         return orderDeliveryInfoList;

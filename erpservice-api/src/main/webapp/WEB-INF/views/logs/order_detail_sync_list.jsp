@@ -154,7 +154,7 @@
                                                                     pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                 <td class="txt80 c">
                                     <c:if test="${log.detailSyncStatus.code==0}">
-                                        <a href="javascript:rePush(${log.id},${log.userType.code})">重新推送</a> |
+                                        <a href="javascript:rePush(${log.id},${log.userType.code})">重新推送</a>
                                     </c:if>
                                 </td>
                             </tr>

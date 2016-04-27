@@ -20,7 +20,6 @@ import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
-import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -44,8 +43,6 @@ import java.util.List;
 @Component
 public class SAPOrderHandlerImpl implements SAPOrderHandler {
     private static final Log log = LogFactory.getLog(SAPOrderHandlerImpl.class);
-    @Autowired
-    private OrderSyncService orderSyncService;
     @Autowired
     private OrderDetailSyncLogService orderDetailSyncLogService;
 
