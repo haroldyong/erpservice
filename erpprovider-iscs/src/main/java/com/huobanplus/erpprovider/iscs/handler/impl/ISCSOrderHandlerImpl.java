@@ -16,7 +16,6 @@ import com.huobanplus.erpprovider.iscs.formatiscs.*;
 import com.huobanplus.erpprovider.iscs.handler.ISCSBaseHandler;
 import com.huobanplus.erpprovider.iscs.handler.ISCSOrderHandler;
 import com.huobanplus.erpprovider.iscs.search.ISCSOrderSearch;
-import com.huobanplus.erpprovider.iscs.search.ISCSOrderSearchCp;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
@@ -24,22 +23,20 @@ import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
-import com.huobanplus.erpservice.datacenter.searchbean.OrderSearchInfo;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelReturnOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.apache.http.HttpStatus;
-import org.apache.http.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -330,55 +327,93 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
         return EventResult.resultWith(EventResultEnum.ERROR);
     }
 
+//    @Override
+//    public EventResult orderQuery(OrderSearchInfo orderSearchInfo, ERPUserInfo erpUserInfo, ERPInfo erpInfo) {
+//
+//        ISCSSysData iscsSysData = JSON.parseObject(erpInfo.getSysDataJson(), ISCSSysData.class);
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        Date begin = null;
+//        Date end = null;
+//        try {
+//            begin = sdf.parse("2016-01-10");
+//            end = sdf.parse("2016-04-20");
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        } catch (java.text.ParseException e) {
+//
+//        }
+//        Date now = new Date();
+//        String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
+//
+//
+//        String beginStr = StringUtil.DateFormat(begin, StringUtil.TIME_PATTERN);
+//        String endStr = StringUtil.DateFormat(end, StringUtil.TIME_PATTERN);
+//
+//        ISCSOrderSearchCp iscsOrderSearchCp = new ISCSOrderSearchCp();
+//        iscsOrderSearchCp.setShopId(iscsSysData.getShopId());
+//        iscsOrderSearchCp.setStockId(iscsSysData.getStockId());
+//        iscsOrderSearchCp.setBeginTime(beginStr);
+//        //iscsOrderSearchCp.setEndTime(endStr);
+//        //iscsOrderSearchCp.setOrderNo("234rd");
+//
+//        Map<String, Object> requestData = null;
+//
+//        try {
+//            requestData = getRequestData(iscsSysData, nowStr, "tradeQuery", JSON.toJSONString(iscsOrderSearchCp));
+//            String str = JSON.toJSONString(iscsOrderSearchCp);
+//            System.out.println("*********************");
+//            System.out.println(str);
+//            System.out.println("*********************");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//
+//        HttpResult httpResult = HttpClientUtil.getInstance().post(iscsSysData.getHost(),requestData);
+//        JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+//        String data = result.getString("data");
+//        System.out.println("***********Result****************");
+//        System.out.println(result.toJSONString());
+//        System.out.println("***********Result****************");
+//
+//        return null;
+//    }
+
+
     @Override
-    public EventResult orderQuery(OrderSearchInfo orderSearchInfo, ERPUserInfo erpUserInfo, ERPInfo erpInfo) {
-
+    public EventResult cancelReturnOrder(CancelReturnOrderEvent cancelReturnOrderEvent) {
+        ERPInfo erpInfo = cancelReturnOrderEvent.getErpInfo();
+        ERPUserInfo erpUserInfo = cancelReturnOrderEvent.getErpUserInfo();
         ISCSSysData iscsSysData = JSON.parseObject(erpInfo.getSysDataJson(), ISCSSysData.class);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date begin = null;
-        Date end = null;
-        try {
-            begin = sdf.parse("2016-01-10");
-            end = sdf.parse("2016-04-20");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (java.text.ParseException e) {
-
-        }
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
 
-
-        String beginStr = StringUtil.DateFormat(begin, StringUtil.TIME_PATTERN);
-        String endStr = StringUtil.DateFormat(end, StringUtil.TIME_PATTERN);
-
-        ISCSOrderSearchCp iscsOrderSearchCp = new ISCSOrderSearchCp();
-        iscsOrderSearchCp.setShopId(iscsSysData.getShopId());
-        iscsOrderSearchCp.setStockId(iscsSysData.getStockId());
-        iscsOrderSearchCp.setBeginTime(beginStr);
-        iscsOrderSearchCp.setEndTime(endStr);
-        //iscsOrderSearchCp.setOrderNo("234rd");
-
-        Map<String, Object> requestData = null;
+        ISCSCancelReturnOrder iscsCancelReturnOrder = new ISCSCancelReturnOrder();
+        iscsCancelReturnOrder.setStockId(iscsSysData.getStockId());
+        iscsCancelReturnOrder.setShopId(iscsSysData.getShopId());
+        iscsCancelReturnOrder.setOrderReturnNo(cancelReturnOrderEvent.getOrderReturnNo());
+//        iscsCancelReturnOrder.setIscsOrderReturnNo("");
+        //iscsCancelReturnOrder.setRemark("");
 
         try {
-            requestData = getRequestData(iscsSysData, nowStr, "tradeQuery", JSON.toJSONString(iscsOrderSearchCp));
-            String str = JSON.toJSONString(iscsOrderSearchCp);
-            System.out.println("*********************");
-            System.out.println(str);
-            System.out.println("*********************");
+            Map<String, Object> requestData = getRequestData(iscsSysData, nowStr, "cancelBackTrade", JSON.toJSONString(iscsCancelReturnOrder));
+            HttpResult httpResult = HttpClientUtil.getInstance().post(iscsSysData.getHost(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+                String errorCode = result.getString("errorCode");
+                if(errorCode.equals("100")){
+                    String data = result.getString("data");
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorText"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            return EventResult.resultWith(EventResultEnum.ERROR);
         }
-
-        HttpResult httpResult = HttpClientUtil.getInstance().post(iscsSysData.getHost(),requestData);
-        JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-        String data = result.getString("data");
-        System.out.println("***********Result****************");
-        System.out.println(result.toJSONString());
-        System.out.println("***********Result****************");
-
-        return null;
     }
-
 }
