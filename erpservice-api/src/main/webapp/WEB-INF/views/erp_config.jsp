@@ -16,6 +16,9 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="erpTypeList" scope="request"
+             type="com.huobanplus.erpservice.datacenter.common.ERPTypeEnum.ProviderType[]"/>
+<jsp:useBean id="baseConfig" scope="request" type="com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity"/>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1">
@@ -260,9 +263,9 @@
                                         <td>
                                             <select id="erpType" name="erpType">
                                                 <option value="-1">请选择</option>
-                                                <option value="0">E店宝</option>
-                                                <option value="1">网店管家</option>
-                                                <option value="2">SAP系统</option>
+                                                <c:forEach var="erpType" items="${erpTypeList}">
+                                                    <option value="${erpType.code}">${erpType.name}</option>
+                                                </c:forEach>
                                             </select>
                                         </td>
                                     </tr>

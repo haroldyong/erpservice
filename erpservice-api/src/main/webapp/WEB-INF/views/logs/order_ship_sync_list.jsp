@@ -129,7 +129,7 @@
                                                                     pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                 <td class="txt80 c">
                                     <c:if test="${failedCount>0}">
-                                        <a href="<c:url value="/erpService/platform/shipSyncFailureOrders?erpUserType=${erpUserType}&shipSyncId=${log.id}" />">查看失败订单</a>
+                                        <a href="<c:url value="/erpService/platform/shipSyncDeliverInfoses?erpUserType=${erpUserType}&shipSyncId=${log.id}" />">查看失败订单</a>
                                     </c:if>
                                 </td>
                             </tr>

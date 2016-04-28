@@ -70,7 +70,7 @@
                                     <span>查询</span>
                                 </a>
                                 <a class="btn-lit btn-middle"
-                                   href="<c:url value="/erpService/platform/shipSyncFailureOrders?erpUserType=${erpUserType}&shipSyncId=${shipSyncId}" />"
+                                   href="<c:url value="/erpService/platform/shipSyncDeliverInfoses?erpUserType=${erpUserType}&shipSyncId=${shipSyncId}" />"
                                    style="margin-bottom: 3px;">
                                     <span>显示全部</span>
                                 </a>
@@ -111,7 +111,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="log" items="${shipSyncFailureOrders.getContent()}">
+                        <c:forEach var="log" items="${shipSyncDeliverInfoses.getContent()}">
                             <tr>
                                 <td class="txt40 c">${log.orderId}</td>
                                 <td class="txt40 c">${log.logiName}</td>
@@ -133,8 +133,8 @@
                 <script type="text/javascript">
                     var pageSize = ${pageSize};
                     var pageIndex = ${pageIndex};
-                    var pageCount = ${shipSyncFailureOrders.getTotalPages()};
-                    var recordCount = ${shipSyncFailureOrders.getTotalElements()};
+                    var pageCount = ${shipSyncDeliverInfoses.getTotalPages()};
+                    var recordCount = ${shipSyncDeliverInfoses.getTotalElements()};
                     var formName = 'searchForm';
                     Pager.Output(formName, 'pageIndex', pageSize, pageIndex, pageCount, recordCount);
                 </script>

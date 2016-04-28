@@ -21,12 +21,12 @@ import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
-import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncFailureOrder;
+import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
 import com.huobanplus.erpservice.datacenter.model.BatchDeliverResult;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
-import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncFailureOrderService;
+import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
@@ -59,7 +59,7 @@ public class ISCSScheduledService {
     @Autowired
     private OrderShipSyncLogService orderShipSyncLogService;
     @Autowired
-    private ShipSyncFailureOrderService shipSyncFailureOrderService;
+    private ShipSyncDeliverInfoService shipSyncDeliverInfoService;
     @Autowired
     private ISCSOrderHandler orderHandler;
     @Autowired
@@ -73,17 +73,17 @@ public class ISCSScheduledService {
      * <p>
      * 结束时间均为同步开始时间
      */
-    @Scheduled(cron = "0 0 */2 * * ?")
+    @Scheduled(cron = "0 0 */1 * * ?")
     @SuppressWarnings("Duplcates")
     @Transactional
     public void syncOrderShip() {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
-        try {
-            log.info("order ship for iscs start!");
-            List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.ISCS);
-            for (ERPDetailConfigEntity detailConfig : detailConfigs) {
-                log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync order ship");
+        log.info("order ship for iscs start!");
+        List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.ISCS);
+        for (ERPDetailConfigEntity detailConfig : detailConfigs) {
+            log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync order ship");
+            try {
                 ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
                 ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
                 ISCSSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), ISCSSysData.class);
@@ -93,8 +93,9 @@ public class ISCSScheduledService {
                 OrderShipSyncLog lastSyncLog = orderShipSyncLogService.findTop(detailConfig.getCustomerId(), ERPTypeEnum.ProviderType.ISCS);
                 Date beginTime = lastSyncLog == null ? StringUtil.DateFormat(sysData.getBeginTime(), StringUtil.DATE_PATTERN) : lastSyncLog.getSyncTime();
 
-                List<OrderDeliveryInfo> failureDeliverInfo = new ArrayList<>(); //失败的订单列表
-                int totalCount = 0, successCount = 0, failedCount = 0; //总的同步数量,成功数量,失败数量
+                List<OrderDeliveryInfo> failedOrders = new ArrayList<>(); //失败的订单列表
+                List<OrderDeliveryInfo> successOrders = new ArrayList<>(); //成功的订单列表
+                int totalCount = 0; //总的同步数量
 
                 ISCSOrderSearch orderSearch = new ISCSOrderSearch();
                 orderSearch.setStockId(sysData.getStockId());
@@ -122,9 +123,8 @@ public class ISCSScheduledService {
                     EventResult firstSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
                     if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                         BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
-                        failureDeliverInfo.addAll(firstBatchDeliverResult.getFailedOrder());
-                        successCount += firstBatchDeliverResult.getSuccessCount();
-                        failedCount += firstBatchDeliverResult.getFailedOrder().size();
+                        failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
+                        successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
                     }
 
                     //进行后面几次的获取
@@ -147,16 +147,15 @@ public class ISCSScheduledService {
                                 EventResult nextSyncResult = erpUserHandler.handleEvent(batchDeliverEvent); //使用者同步
 
                                 if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                    BatchDeliverResult nextBatchDeliverResult = (BatchDeliverResult) nextSyncResult.getData();
-                                    failureDeliverInfo.addAll(nextBatchDeliverResult.getFailedOrder());
-                                    successCount += nextBatchDeliverResult.getSuccessCount();
-                                    failedCount += nextBatchDeliverResult.getFailedOrder().size();
+                                    BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
+                                    failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
+                                    successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
                                 }
                             }
                         }
                     }
                 }
-
+                int successCount = successOrders.size(), failedCount = failedOrders.size();
                 //发货同步记录
                 OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
                 orderShipSyncLog.setProviderType(erpInfo.getErpType());
@@ -182,23 +181,17 @@ public class ISCSScheduledService {
                 orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
 
                 //记录推送失败的订单
-                List<ShipSyncFailureOrder> failureOrders = new ArrayList<>();
-                for (OrderDeliveryInfo deliveryInfo : failureDeliverInfo) {
-                    ShipSyncFailureOrder shipSyncFailureOrder = new ShipSyncFailureOrder();
-                    shipSyncFailureOrder.setOrderId(deliveryInfo.getOrderId());
-                    shipSyncFailureOrder.setLogiName(deliveryInfo.getLogiName());
-                    shipSyncFailureOrder.setLogiCode(deliveryInfo.getLogiCode());
-                    shipSyncFailureOrder.setLogiNo(deliveryInfo.getLogiNo());
-                    shipSyncFailureOrder.setOrderShipSyncLog(orderShipSyncLog);
-                    shipSyncFailureOrder.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
-                    failureOrders.add(shipSyncFailureOrder);
-                }
-                shipSyncFailureOrderService.batchSave(failureOrders);
-                log.info("iscs ship sync end");
+                List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
+
+                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog);
+                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog);
+
+                shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
+            } catch (Exception e) {
+                log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
             }
-        } catch (Exception e) {
-            log.error("iscs ship sync error:", e);
         }
+        log.info("iscs ship sync end");
     }
 
     private List<OrderDeliveryInfo> orderDeliveryInfoList(JSONArray resultArray) {

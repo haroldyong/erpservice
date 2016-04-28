@@ -14,12 +14,12 @@ import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
-import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncFailureOrder;
+import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderDetailSyncSearch;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
-import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncFailureOrderService;
+import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -50,7 +50,7 @@ public class OrderLogController {
     @Autowired
     private OrderShipSyncLogService orderShipSyncLogService;
     @Autowired
-    private ShipSyncFailureOrderService shipSyncFailureOrderService;
+    private ShipSyncDeliverInfoService shipSyncDeliverInfoService;
     @Autowired
     private ERPRegister erpRegister;
 
@@ -100,7 +100,7 @@ public class OrderLogController {
             int erpUserType,
             Model model
     ) {
-        Page<ShipSyncFailureOrder> shipSyncFailureOrders = shipSyncFailureOrderService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, shipSyncId, orderId);
+        Page<ShipSyncDeliverInfo> shipSyncFailureOrders = shipSyncDeliverInfoService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, shipSyncId, orderId);
         model.addAttribute("shipSyncFailureOrders", shipSyncFailureOrders);
         model.addAttribute("pageIndex", pageIndex);
         model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);
@@ -110,31 +110,6 @@ public class OrderLogController {
 
         return "logs/sync_failure_order_list";
     }
-
-//    @RequestMapping("/orderSyncs")
-//    private String OrderSyncs(
-//            @RequestParam(required = false, defaultValue = "1") int pageIndex,
-//            OrderSyncSearch orderSyncSearch,
-//            @RequestAttribute int customerId,
-//            Model model
-//    ) {
-//        Page<OrderSync> orderSyncs = orderSyncService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, customerId, orderSyncSearch);
-//        model.addAttribute("orderSyncs", orderSyncs);
-//        model.addAttribute("orderSyncSearch", orderSyncSearch);
-//        model.addAttribute("pageIndex", pageIndex);
-//        model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);
-//        return "order_sync_list";
-//    }
-//
-//    @RequestMapping("/orderOperatorLogs")
-//    private String orderOperatorLogs(
-//            String orderId,
-//            Model model
-//    ) {
-//        List<OrderOperatorLog> orderOperatorLogs = orderOperatorService.findByOrderId(orderId);
-//        model.addAttribute("orderOperatorLogs", orderOperatorLogs);
-//        return "push_order_log";
-//    }
 
     @RequestMapping(value = "/rePushOrder", method = RequestMethod.POST)
     @ResponseBody
@@ -152,15 +127,12 @@ public class OrderLogController {
 
     @RequestMapping(value = "/syncOrderShip", method = RequestMethod.POST)
     private ApiResult syncOrderShip(long id) {
-        ShipSyncFailureOrder shipSyncFailureOrder = shipSyncFailureOrderService.findById(id);
-        ERPUserInfo erpUserInfo = new ERPUserInfo(shipSyncFailureOrder.getOrderShipSyncLog().getUserType(), shipSyncFailureOrder.getOrderShipSyncLog().getCustomerId());
+        ShipSyncDeliverInfo shipSyncDeliverInfo = shipSyncDeliverInfoService.findById(id);
+        ERPUserInfo erpUserInfo = new ERPUserInfo(shipSyncDeliverInfo.getOrderShipSyncLog().getUserType(), shipSyncDeliverInfo.getOrderShipSyncLog().getCustomerId());
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         PushDeliveryInfoEvent pushDeliveryInfoEvent = new PushDeliveryInfoEvent();
         pushDeliveryInfoEvent.setErpUserInfo(erpUserInfo);
-        OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
-        orderDeliveryInfo.setOrderId(shipSyncFailureOrder.getOrderId());
-        orderDeliveryInfo.setLogiName(shipSyncFailureOrder.getLogiName());
-        orderDeliveryInfo.setLogiNo(shipSyncFailureOrder.getLogiNo());
+        OrderDeliveryInfo orderDeliveryInfo = shipSyncDeliverInfo.getOrderDeliveryInfo();
         pushDeliveryInfoEvent.setDeliveryInfo(orderDeliveryInfo);
         EventResult eventResult = erpUserHandler.handleEvent(pushDeliveryInfoEvent);
 

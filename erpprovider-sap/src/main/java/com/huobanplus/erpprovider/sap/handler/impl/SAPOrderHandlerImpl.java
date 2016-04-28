@@ -17,7 +17,6 @@ import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpprovider.sap.util.ConnectHelper;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
-import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
@@ -103,23 +102,6 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
 
 
         Date now = new Date();
-        //订单同步日志
-        OrderOperatorLog orderOperatorLog = new OrderOperatorLog();
-        orderOperatorLog.setProviderType(erpInfo.getErpType());
-        orderOperatorLog.setUserType(erpUserInfo.getErpUserType());
-        orderOperatorLog.setCustomerId(erpUserInfo.getCustomerId());
-        orderOperatorLog.setCreateTime(now);
-        orderOperatorLog.setOrderId(orderInfo.getOrderId());
-        orderOperatorLog.setEventInfo(JSON.toJSONString(pushNewOrderEvent));
-
-        //订单同步记录
-//        OrderSync orderSync = orderSyncService.getOrderSync(orderInfo.getOrderId(), erpUserInfo.getCustomerId());
-//        orderSync.setOrderStatus(EnumHelper.getEnumType(OrderEnum.OrderStatus.class, orderInfo.getOrderStatus()));
-//        orderSync.setPayStatus(EnumHelper.getEnumType(OrderEnum.PayStatus.class, orderInfo.getPayStatus()));
-//        orderSync.setShipStatus(EnumHelper.getEnumType(OrderEnum.ShipStatus.class, orderInfo.getShipStatus()));
-//        orderSync.setProviderType(ERPTypeEnum.ProviderType.SAP);
-//        orderSync.setUserType(erpUserInfo.getErpUserType());
-//        orderSync.setRemark(orderOperatorLog.getRemark());
 
         EventResult eventResult = this.orderPush(sysData, erpUserInfo, sapSaleOrderInfo);
         OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());

@@ -10,6 +10,7 @@
 package com.huobanplus.erpservice.datacenter.entity.logs;
 
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,31 +23,17 @@ import javax.persistence.*;
 @Table(name = "ERP_ShipSyncFailureOrder")
 @Setter
 @Getter
-public class ShipSyncFailureOrder {
+public class ShipSyncDeliverInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    /**
-     * 订单号
-     */
-    private String orderId;
-    /**
-     * 物流公司名称
-     */
-    private String logiName;
-    /**
-     * 物流公司编号
-     */
-    private String logiCode;
-    /**
-     * 物流单号
-     */
-    private String logiNo;
     @ManyToOne
     private OrderShipSyncLog orderShipSyncLog;
     private OrderSyncStatus.ShipSyncStatus shipSyncStatus;
+
     /**
-     * 备注
+     * 物流信息
      */
-    private String remark;
+    @Embedded
+    private OrderDeliveryInfo orderDeliveryInfo;
 }

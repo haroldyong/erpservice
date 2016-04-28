@@ -18,6 +18,6 @@ import java.util.List;
  */
 @Data
 public class BatchDeliverResult {
-    private int successCount;
-    private List<OrderDeliveryInfo> failedOrder;
+    private List<OrderDeliveryInfo> failedOrders;
+    private List<OrderDeliveryInfo> successOrders;
 }
