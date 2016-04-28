@@ -18,7 +18,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script type="text/javascript">
     var edbConfigHandler = {
-        getEdbConfig: function () {
+        getConfig: function () {
             var requestUrl = $.trim($("#requestUrl").val());
             var dbhost = $.trim($("#dbhost").val());
             var edbAppKey = $.trim($("#edbAppKey").val());
@@ -28,7 +28,6 @@
             var shopId = $.trim($("#shopId").val());
             var storageId = $.trim($("#storageId").val());
             var express = $.trim($("#express").val());
-            var beginTime = $.trim($("#beginTime").val());
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入请求地址");
                 return null;
@@ -67,10 +66,6 @@
                 return null;
             }
 
-            if (beginTime.length == 0) {
-                $.jBox.tip("请选择开始同步时间");
-                return null;
-            }
 
             var edbConfig = {
                 requestUrl: requestUrl,
@@ -82,11 +77,10 @@
                 shopId: shopId,
                 storageId: storageId,
                 express: express,
-                beginTime: beginTime
             };
             return JSON.stringify(edbConfig);
         },
-        setEdbValues: function (jsonData) {
+        setValues: function (jsonData) {
             $("#requestUrl").val(jsonData.requestUrl);
             $("#dbhost").val(jsonData.dbHost);
             $("#edbAppKey").val(jsonData.appKey);
@@ -96,7 +90,6 @@
             $("#shopId").val(jsonData.shopId);
             $("#storageId").val(jsonData.storageId);
             $("#express").val(jsonData.express);
-            $("#beginTime").val(jsonData.beginTime);
 
         }
     };
@@ -163,17 +156,6 @@
         <td>
             <input name="express" type="text" value="" id="express" class="input-normal"/>
             （E店宝客户端档案管理→仓库档案→快递公司设置查看）
-        </td>
-    </tr>
-
-    <tr>
-        <th style="vertical-align: middle;">同步开始时间：</th>
-        <td>
-            <input name="beginTime" type="text" id="beginTime"
-                   class="input-normal Wdate"
-                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false})"
-                   style="margin-left: 8px;"/>
-            （何时开始同步订单数据,以E店宝中订单的审单时间为准,默认当前时间的前一个月）
         </td>
     </tr>
     </tbody>

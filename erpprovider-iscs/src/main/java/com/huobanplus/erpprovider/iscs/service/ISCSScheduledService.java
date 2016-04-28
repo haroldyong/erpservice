@@ -37,10 +37,12 @@ import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.convert.Jsr310Converters;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,7 +70,7 @@ public class ISCSScheduledService {
     /**
      * 同步发货状态
      * <p>
-     * 1.如果第一次是第一次同步,以配置的开始时间为发货时间的开始时间
+     * 1.如果第一次是第一次同步,以当前时间的前一天发货时间的开始时间
      * 2.如果同步过,则以上次同步记录的时间为开始时间
      * <p>
      * 结束时间均为同步开始时间
@@ -89,9 +91,11 @@ public class ISCSScheduledService {
                 ISCSSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), ISCSSysData.class);
                 //当前页索引
                 int currentPageIndex = 1;
-                //是否是第一次同步
+                //是否是第一次同步,第一次同步beginTime则为当前时间的前一天
                 OrderShipSyncLog lastSyncLog = orderShipSyncLogService.findTop(detailConfig.getCustomerId(), ERPTypeEnum.ProviderType.ISCS);
-                Date beginTime = lastSyncLog == null ? StringUtil.DateFormat(sysData.getBeginTime(), StringUtil.DATE_PATTERN) : lastSyncLog.getSyncTime();
+                Date beginTime = lastSyncLog == null
+                        ? Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusDays(1))
+                        : lastSyncLog.getSyncTime();
 
                 List<OrderDeliveryInfo> failedOrders = new ArrayList<>(); //失败的订单列表
                 List<OrderDeliveryInfo> successOrders = new ArrayList<>(); //成功的订单列表

@@ -17,55 +17,56 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script type="text/javascript">
-    var sapConfigHandler = {
-        getSapConfig: function () {
+    var iscsConfigHandler = {
+        getConfig: function () {
             var host = $.trim($("#host").val());
             var appKey = $.trim($("#appKey").val());
-            var client = $.trim($("#client").val());
-            var jcoUser = $.trim($("#jcoUser").val());
-            var jcoPass = $.trim($("#jcoPass").val());
-            var sapRouter = $.trim($("#sapRouter").val());
+            var appSecret = $.trim($("#appSecret").val());
+            var ownerId = $.trim($("#ownerId").val());
+            var shopId = $.trim($("#shopId").val());
+            var stockId = $.trim($("#stockId").val());
+
             if (host.length == 0) {
                 $.jBox.tip("请输入SAP服务器");
                 return null;
             }
-            if (sysNo.length == 0) {
-                $.jBox.tip("请输入系统编号s");
+            if (appKey.length == 0) {
+                $.jBox.tip("请输入网仓的客户id");
                 return null;
             }
-            if (client.length == 0) {
-                $.jBox.tip("请输入SAP集团编码");
+            if (appSecret.length == 0) {
+                $.jBox.tip("请输入客户接口密钥");
                 return null;
             }
-            if (jcoUser.length == 0) {
-                $.jBox.tip("请输入SAP用户名");
+            if (ownerId.length == 0) {
+                $.jBox.tip("请输入货主id");
                 return null;
             }
-            if (jcoPass.length == 0) {
-                $.jBox.tip("请输入SAP登录密码");
+            if (shopId.length == 0) {
+                $.jBox.tip("请输入店铺id");
                 return null;
             }
-            if (sapRouter.length == 0) {
-                $.jBox.tip("请输入SAP路由");
+            if (stockId.length == 0) {
+                $.jBox.tip("请输入仓库id");
                 return null;
             }
             var edbConfig = {
                 host: host,
-                sysNo: sysNo,
-                client: client,
-                jcoUser: jcoUser,
-                jcoPass: jcoPass,
-                sapRouter: sapRouter
+                appKey: appKey,
+                appSecret: appSecret,
+                ownerId: ownerId,
+                shopId: shopId,
+                stockId: stockId
             };
             return JSON.stringify(edbConfig);
         },
-        setSapValues: function (jsonData) {
+        setValues: function (jsonData) {
             $("#host").val(jsonData.host);
-            $("#sysNo").val(jsonData.sysNo);
-            $("#client").val(jsonData.client);
-            $("#jcoUser").val(jsonData.jcoUser);
-            $("#jcoPass").val(jsonData.jcoPass);
-            $("#sapRouter").val(jsonData.sapRouter);
+            $("#appKey").val(jsonData.appKey);
+            $("#appSecret").val(jsonData.appSecret);
+            $("#ownerId").val(jsonData.ownerId);
+            $("#shopId").val(jsonData.shopId);
+            $("#stockId").val(jsonData.stockId);
 
         }
     };
@@ -73,39 +74,39 @@
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
     <tbody>
     <tr>
-        <th style="vertical-align: middle;">服务器（JCO_ASHOST）：</th>
+        <th style="vertical-align: middle;">网仓服务器地址：</th>
         <td>
             <input name="host" type="text" value="" id="host" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">系统编号（JCO_SYSNR）：</th>
+        <th style="vertical-align: middle;">客户id：</th>
         <td>
-            <input name="sysNo" type="text" value="" id="sysNo" class="input-normal"/>
+            <input name="appKey" type="text" value="" id="appKey" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">SAP集团（JCO_CLIENT）：</th>
+        <th style="vertical-align: middle;">客户接口密钥：</th>
         <td>
-            <input name="client" type="text" value="" id="client" class="input-normal"/>
+            <input name="appSecret" type="text" value="" id="appSecret" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">SAP用户名（JCO_USER）：</th>
+        <th style="vertical-align: middle;">货主id：</th>
         <td>
-            <input name="jcoUser" type="text" value="" id="jcoUser" class="input-normal"/>
+            <input name="ownerId" type="text" value="" id="ownerId" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">SAP登录密码（JCO_PASSWD）：</th>
+        <th style="vertical-align: middle;">店铺id：</th>
         <td>
-            <input name="jcoPass" type="text" value="" id="jcoPass" class="input-normal"/>
+            <input name="shopId" type="text" value="" id="shopId" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">SAP路由（JCO_SAPROUTER）：</th>
+        <th style="vertical-align: middle;">仓库id：</th>
         <td>
-            <input name="sapRouter" type="text" value="" id="sapRouter" class="input-normal"/>
+            <input name="stockId" type="text" value="" id="stockId" class="input-normal"/>
         </td>
     </tr>
     </tbody>

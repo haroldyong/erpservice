@@ -4,7 +4,7 @@
   ~
   ~ (c) Copyright Hangzhou Hot Technology Co., Ltd.
   ~ Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
-  ~ 2013-2015. All rights reserved.
+  ~ 2013-2016. All rights reserved.
   --%>
 
 <%--
@@ -18,7 +18,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script type="text/javascript">
     var nsConfigHandler = {
-        getNSConfig: function () {
+        getConfig: function () {
             var nsUCode = $.trim($("#ns_uCode").val());
             var nsSecret = $.trim($("#ns_secret").val());
             if (nsUCode.length == 0) {
@@ -35,7 +35,7 @@
             };
             return JSON.stringify(nsConfig);
         },
-        setNSValue: function (jsonData) {
+        setValues: function (jsonData) {
             $("#ns_uCode").val(jsonData.uCode);
             $("#ns_secret").val(jsonData.secret);
         }

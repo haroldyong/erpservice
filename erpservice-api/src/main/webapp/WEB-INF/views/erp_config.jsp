@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.huobanplus.erpservice.datacenter.common.ERPTypeEnum" %><%--
   ~ 版权所有:杭州火图科技有限公司
   ~ 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
   ~
@@ -86,35 +86,6 @@
                     $("#erpDetailConfigDiv div").hide();
                     $("#detailConfig_" + erpType).show();
                 }
-//                switch (erpType) {
-//                    case "-1":
-//                        $("#erpDetailConfigDiv").hide();
-//                        break;
-//                    case "0":
-//                        $("#erpDetailConfigDiv").show();
-//                        $("#edbConfig").show();
-//                        $("#nsConfig").hide();
-//                        break;
-//                    case "1":
-//                        $("#erpDetailConfigDiv").show();
-//                        $("#nsConfig").show();
-//                        $("#edbConfig").hide();
-//                        break;
-//                    case "2":
-//                        $("#erpDetailConfigDiv").show();
-//                }
-            },
-            getErpConfig: function (erpType) {
-                switch (erpType) {
-                    case "-1":
-                        return "";
-                    case "0":
-                        return edbConfigHandler.getEdbConfig();
-                    case "1":
-                        return nsConfigHandler.getNSConfig();
-                    case "2":
-                        return sapConfigHandler.getSapConfig();
-                }
             },
             submitForm: function () {
                 var secretKey = $.trim($("#secretKey").val());
@@ -124,13 +95,31 @@
                 }
 
                 var erpType = $("#erpType").val();
-                var sysDataJson = this.getErpConfig(erpType);
+                var erpConfigHandler = this.getErpConfigHandler(parseInt(erpType));
+
+                var sysDataJson = erpConfigHandler.getConfig();
                 if (sysDataJson == null) {
                     return;
                 }
                 $("#sysDataJson").val(sysDataJson);
                 $.jBox.tip("正在保存...", "loading");
                 $("#submitForm").submit();
+            },
+            /**
+             * 得到一个erp配置处理器
+             * @param erpType
+             */
+            getErpConfigHandler: function (erpType) {
+                switch (erpType) {
+                    case <%=ERPTypeEnum.ProviderType.EDB.getCode()%>:
+                        return edbConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.NETSHOP.getCode()%>:
+                        return nsConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.SAP.getCode()%>:
+                        return sapConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.ISCS.getCode()%>:
+                        return iscsConfigHandler;
+                }
             }
         };
 
@@ -142,27 +131,20 @@
             if (result == "error") {
                 $.jBox.tip("保存失败", "error");
             }
-            var beginTime = "${beginTime}";
+
+            //设置保存的数据
+            var erpConfigHandler;
+            var erpSysData;
 
             <c:forEach items="${lstDetailConfig}" var="item">
-            var erpSysData = ${item.erpSysData};
-            switch (${item.erpType.getCode()}) {
-                case 0:
-                    if (erpSysData.beginTime == null || erpSysData.beginTime == "") {
-                        erpSysData.beginTime = beginTime;
-                    }
-                    edbConfigHandler.setEdbValues(erpSysData);
-                    break;
-                case 1:
-                    nsConfigHandler.setNSValue(erpSysData);
-                    break;
-                case 2:
-                    sapConfigHandler.setSapValues(erpSysData);
-            }
+            erpSysData = ${item.erpSysData};
+            erpConfigHandler = configHandler.getErpConfigHandler(${item.erpType.getCode()});
+            erpConfigHandler.setValues(erpSysData);
             </c:forEach>
 
             $("#erpType").val(erpType);
             configHandler.changeErpType();
+
             $("#erpType").change(function () {
                 configHandler.changeErpType();
             });
@@ -276,16 +258,20 @@
                             <div class="division" id="erpDetailConfigDiv">
                                 <input name="sysDataJson" id="sysDataJson" type="hidden"/>
 
-                                <div id="detailConfig_0">
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.EDB.getCode()%>">
                                     <%@include file="/detailConfig/edb_config.jsp" %>
                                 </div>
 
-                                <div id="detailConfig_1">
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.NETSHOP.getCode()%>">
                                     <%@include file="/detailConfig/ns_config.jsp" %>
                                 </div>
 
-                                <div id="detailConfig_2">
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.SAP.getCode()%>">
                                     <%@include file="/detailConfig/sap_config.jsp" %>
+                                </div>
+
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.ISCS.getCode()%>">
+
                                 </div>
                             </div>
                         </div>
