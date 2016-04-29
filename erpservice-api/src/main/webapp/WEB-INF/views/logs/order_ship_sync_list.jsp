@@ -128,9 +128,7 @@
                                 <td class="txt40 c"><fmt:formatDate value="${log.syncTime}"
                                                                     pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                 <td class="txt80 c">
-                                    <c:if test="${failedCount>0}">
-                                        <a href="<c:url value="/erpService/platform/shipSyncDeliverInfoses?erpUserType=${erpUserType}&shipSyncId=${log.id}" />">查看失败订单</a>
-                                    </c:if>
+                                    <a href="<c:url value="/erpService/platform/shipSyncInfoList?erpUserType=${erpUserType}&shipSyncId=${log.id}" />">查看同步日志</a>
                                 </td>
                             </tr>
                         </c:forEach>

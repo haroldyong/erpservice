@@ -32,6 +32,28 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/resource/scripts/lib/jBox/Skins/Green/jbox.css"/>">
     <script src="<c:url value="/resource/scripts/lib/jquery.utils.js" />" type="text/javascript"></script>
     <script src="<c:url value="/resource/scripts/admin.js" />"></script>
+
+    <script type="text/javascript">
+        var erpUserType = ${erpUserType};
+        var ajaxUrl = "<c:url value="/erpService/platform/reSyncOrderShip" />";
+        function reSyncShip(id) {
+            J.jboxConfirm("确定要同步吗?", function () {
+                $.jBox.tip("正在同步", "loading");
+                J.GetJsonRespons(ajaxUrl, {
+                    id: id,
+                    erpUserType: erpUserType
+                }, function (json) {
+                    if (json.resultCode == 2000) {
+                        $.jBox.tip("推送成功", "success");
+                        window.location.reload();
+                    } else {
+                        $.jBox.tip("推送失败", "error");
+                    }
+                }, function () {
+                }, J.PostMethod)
+            });
+        }
+    </script>
 </head>
 <body>
 <div class="container">
@@ -119,7 +141,7 @@
                                 <td class="txt40 c">${log.shipSyncStatus.name}</td>
                                 <td class="txt80 c">
                                     <c:if test="${log.shipSyncStatus.code!=0}">
-                                        <a href="#">重新同步</a>
+                                        <a href="javascript:reSyncShip(log.id)">重新同步</a>
                                     </c:if>
                                 </td>
                             </tr>

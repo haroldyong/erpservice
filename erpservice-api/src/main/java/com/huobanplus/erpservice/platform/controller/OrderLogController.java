@@ -12,6 +12,7 @@ package com.huobanplus.erpservice.platform.controller;
 import com.huobanplus.erpservice.common.SysConstant;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
+import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
@@ -21,6 +22,7 @@ import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogServi
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -93,7 +95,7 @@ public class OrderLogController {
         return "logs/order_ship_sync_list";
     }
 
-    @RequestMapping(value = "/shipSyncFailureOrders", method = RequestMethod.GET)
+    @RequestMapping(value = "/shipSyncInfoList", method = RequestMethod.GET)
     private String shipSyncFailureOrders(
             @RequestParam(required = false, defaultValue = "1") int pageIndex,
             String orderId, long shipSyncId,
@@ -108,7 +110,7 @@ public class OrderLogController {
         model.addAttribute("orderId", orderId);
         model.addAttribute("shipSyncId", shipSyncId);
 
-        return "logs/sync_failure_order_list";
+        return "logs/ship_sync_info_list";
     }
 
     @RequestMapping(value = "/rePushOrder", method = RequestMethod.POST)
@@ -125,7 +127,8 @@ public class OrderLogController {
         return orderProxyService.pushOrder(pushNewOrderEvent);
     }
 
-    @RequestMapping(value = "/syncOrderShip", method = RequestMethod.POST)
+    @RequestMapping(value = "/reSyncOrderShip", method = RequestMethod.POST)
+    @ResponseBody
     private ApiResult syncOrderShip(long id) {
         ShipSyncDeliverInfo shipSyncDeliverInfo = shipSyncDeliverInfoService.findById(id);
         ERPUserInfo erpUserInfo = new ERPUserInfo(shipSyncDeliverInfo.getOrderShipSyncLog().getUserType(), shipSyncDeliverInfo.getOrderShipSyncLog().getCustomerId());
@@ -136,6 +139,10 @@ public class OrderLogController {
         pushDeliveryInfoEvent.setDeliveryInfo(orderDeliveryInfo);
         EventResult eventResult = erpUserHandler.handleEvent(pushDeliveryInfoEvent);
 
-        return null;
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            return ApiResult.resultWith(ResultCode.SUCCESS);
+        } else {
+            return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, eventResult.getResultMsg(), null);
+        }
     }
 }
