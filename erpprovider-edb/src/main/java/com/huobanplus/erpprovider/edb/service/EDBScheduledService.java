@@ -41,6 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.Jsr310Converters;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -174,7 +175,7 @@ public class EDBScheduledService {
      * 结束时间均为同步开始时间
      * 每个一小时进行一次同步
      */
-//    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void syncOrderShip() {
         Date now = new Date();

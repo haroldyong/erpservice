@@ -39,6 +39,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,6 +66,7 @@ public class ScheduledService {
      * 同步订单发货状态轮训服务
      */
     @Scheduled(cron = "0 0 */1 * * ?")
+    @Transactional
     public void syncOrderShip() {
         Date now = new Date();
         log.info("order ship sync for sap start:" + StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
