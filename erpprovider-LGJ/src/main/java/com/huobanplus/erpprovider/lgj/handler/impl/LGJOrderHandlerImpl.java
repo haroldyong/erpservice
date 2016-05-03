@@ -7,30 +7,29 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpprovider.iscs.handler.impl;
+package com.huobanplus.erpprovider.lgj.handler.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.huobanplus.erpprovider.iscs.common.ISCSSysData;
-import com.huobanplus.erpprovider.iscs.formatiscs.*;
-import com.huobanplus.erpprovider.iscs.handler.ISCSBaseHandler;
-import com.huobanplus.erpprovider.iscs.handler.ISCSOrderHandler;
-import com.huobanplus.erpprovider.iscs.search.ISCSOrderSearch;
+import com.huobanplus.erpprovider.lgj.common.LGJConstant;
+import com.huobanplus.erpprovider.lgj.common.LGJSysData;
+import com.huobanplus.erpprovider.lgj.formatlgj.LGJCreateOrderInfo;
+import com.huobanplus.erpprovider.lgj.formatlgj.LGJCreateOrderItem;
+import com.huobanplus.erpprovider.lgj.handler.LGJBaseHandler;
+import com.huobanplus.erpprovider.lgj.handler.LGJOrderHandler;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
-import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
-import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
-import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
-import com.huobanplus.erpservice.datacenter.searchbean.OrderSearchInfo;
+import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,124 +39,164 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
- * Created by allan on 4/19/16.
+ * Created by elvis on 4/28/28.
  */
 @Component
-public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHandler {
+public class LGJOrderHandlerImpl extends LGJBaseHandler implements LGJOrderHandler {
 
     @Autowired
     private OrderDetailSyncLogService orderDetailSyncLogService;
 
-    @Override
+    private static final Log log = LogFactory.getLog(LGJOrderHandlerImpl.class);
+
+    private String getOrdersn(LGJSysData sysData, String orderId,String token) throws UnsupportedEncodingException {
+
+        if(token==null){
+            return null;
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("func",LGJConstant.GET_ORDERSN_FUN);
+        data.put("token",token);
+        data.put("thirdsn",orderId);
+        //转换成需要的形式
+        Map<String,Object> requestData = getParamMap(data);
+
+        HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getHost(), requestData);
+        if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+            JSONObject resultJson = JSON.parseObject(httpResult.getHttpContent());
+            if("0".equals(resultJson.getString("result").trim())){
+                return resultJson.getString("ordersn");
+            }
+            log.error("获得礼管家订单号："+resultJson.getString("msg")+":错误代码是"+resultJson.getString("result"));
+        }
+        return null;
+    }
+
+
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
         Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
         ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
-        ISCSSysData sysData = JSON.parseObject(erpInfo.getSysDataJson(), ISCSSysData.class);
+        LGJSysData sysData = JSON.parseObject(erpInfo.getSysDataJson(), LGJSysData.class);
         ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
         try {
-            ISCSCreateOrderInfo createOrderInfo = new ISCSCreateOrderInfo();
-            createOrderInfo.setOrderNo(order.getOrderId());
-            createOrderInfo.setStockId(sysData.getStockId());
-            createOrderInfo.setTransporterFlag(0);
-            createOrderInfo.setShopId(sysData.getShopId());
-            createOrderInfo.setCreateTime(order.getCreateTime());
-            createOrderInfo.setPayTime(order.getPayTime());
-            createOrderInfo.setBuyNick(order.getShipName());// FIXME: 2016/4/26
-            createOrderInfo.setCountry("中国");// FIXME: 2016/4/26
-            String shipArea = order.getShipArea();
-            if (!StringUtils.isEmpty(shipArea)) {
-                String[] shipAreaArray = shipArea.split("/");
-                createOrderInfo.setProvince(shipAreaArray[0]);
-                if (shipAreaArray.length > 1) {
-                    createOrderInfo.setCity(shipAreaArray[1]);
-                    if (shipAreaArray.length > 2) {
-                        createOrderInfo.setCounty(shipAreaArray[2]);
-                    }
-                }
-            }
-            createOrderInfo.setAddress(order.getShipAddr());
-            createOrderInfo.setZip(order.getShipZip());
-            createOrderInfo.setName(order.getShipName());
-            createOrderInfo.setMobile(order.getShipMobile());
-            createOrderInfo.setTel(order.getShipTel());
-//            createOrderInfo.setRequestShipDate();
-            createOrderInfo.setNeedInvoice(1);
-//            createOrderInfo.setInvoiceName();
-//            createOrderInfo.setInvoiceContent();
-            createOrderInfo.setPayment(order.getFinalAmount());
-            createOrderInfo.setTotalFee(order.getFinalAmount());
-            createOrderInfo.setDiscountFee(order.getPmtAmount());
-            createOrderInfo.setPostFee(order.getCostFreight());
-            createOrderInfo.setNeedCard(0);
-            List<ISCSCreateOrderItem> createOrderItems = new ArrayList<>();
-            order.getOrderItems().forEach(item -> {
-                ISCSCreateOrderItem createOrderItem = new ISCSCreateOrderItem();
-                createOrderItem.setProductCode(item.getProductBn());
-                createOrderItem.setNum(item.getNum());
-                createOrderItem.setPrice(item.getPrice());
-//                createOrderItem.setDiscountFee();
-                createOrderItem.setShopId(sysData.getShopId());
-                createOrderItem.setOwnerId(sysData.getOwnerId());
-                createOrderItem.setSellPrice(item.getCost());
-                createOrderItems.add(createOrderItem);
-            });
-            createOrderInfo.setCreateOrderItems(createOrderItems);
-
-            ISCSCreateOrder createOrder = new ISCSCreateOrder(1, Arrays.asList(createOrderInfo));
-
-            Date now = new Date();
-
-            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
-            if (orderDetailSyncLog == null) {
-                orderDetailSyncLog = new OrderDetailSyncLog();
-                orderDetailSyncLog.setCreateTime(now);
-            }
-            orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-            orderDetailSyncLog.setProviderType(erpInfo.getErpType());
-            orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
-            orderDetailSyncLog.setOrderId(order.getOrderId());
-            orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
-            orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
-            orderDetailSyncLog.setSyncTime(now);
-
-            String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
-            Map<String, Object> requestData = getRequestData(sysData, nowStr, "pushTrades", JSON.toJSONString(createOrder));
-
-            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getHost(), requestData);
-            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-                String errorCode = result.getString("errorCode");
-                if (errorCode.equals("100")) {
-                    String data = result.getString("data");
-                    JSONObject dataJson = JSON.parseObject(data);
-                    int successCount = dataJson.getInteger("success_count");
-                    if (successCount == 1) {
-                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-                        orderDetailSyncLogService.save(orderDetailSyncLog);
-                        return EventResult.resultWith(EventResultEnum.SUCCESS);
-                    } else {
-                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-                        orderDetailSyncLogService.save(orderDetailSyncLog);
-                        String reason = JSON.parseObject(JSON.parseArray(dataJson.getString("failed_list")).get(0).toString()).getString("reason");
-                        return EventResult.resultWith(EventResultEnum.ERROR, reason, null);
-                    }
-
-                } else {
-                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-                    orderDetailSyncLogService.save(orderDetailSyncLog);
-                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("subMessage"), null);
-                }
-            } else {
+            //获得Token
+            String Token = getToken(sysData);
+            //获得礼管家单号
+            String orderSn = getOrdersn(sysData, order.getOrderId(),Token);
+            if (orderSn == null && order.getOrderItems() == null) {
                 return EventResult.resultWith(EventResultEnum.ERROR);
             }
 
-        } catch (Exception e) {
-            return EventResult.resultWith(EventResultEnum.ERROR);
+            //发送订单
+            LGJCreateOrderInfo createOrder = new LGJCreateOrderInfo();
+
+            createOrder.setThirdsn(order.getOrderId());
+            createOrder.setOrdersn(orderSn);
+            createOrder.setName(order.getShipName());
+            createOrder.setMobile(order.getShipMobile());
+
+            String shipArea = order.getShipArea();
+            createOrder.setAddress(shipArea);
+            createOrder.setCountry(LGJConstant.COUNTY);//FIXME: 2016/4/29
+            if (!StringUtils.isEmpty(shipArea)) {
+                String[] shipAreaArray = shipArea.split("/");
+                createOrder.setProvince(shipAreaArray[0]);
+                if (shipAreaArray.length > 1) {
+                    createOrder.setCity(shipAreaArray[1]);
+                    if (shipAreaArray.length > 2) {
+                        createOrder.setTown(shipAreaArray[2]);
+                    }
+                }
+            }
+            List<LGJCreateOrderItem> items = new ArrayList<>();
+            if(order.getOrderItems()==null){
+                return EventResult.resultWith(EventResultEnum.ERROR);
+            }
+            for (OrderItem sourceItem : order.getOrderItems()) {
+                LGJCreateOrderItem item = new LGJCreateOrderItem();
+                item.setSkuId(sourceItem.getItemId() + "");
+                item.setNum(sourceItem.getNum() + "");
+                items.add(item);
+            }
+            createOrder.setCreateOrderItems(items);
+            //设定请求方法名
+            createOrder.setFunc(LGJConstant.ORDERSUBMIT_FUN);
+            //设定Token
+            createOrder.setToken(Token);
+
+            String JsonString = JSON.toJSONString(createOrder);
+            Map<String, Object> requestData = getParamMap(JsonString);
+
+            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getHost(), requestData);
+
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject resultJson = JSON.parseObject(httpResult.getHttpContent());
+                if("0".equals(resultJson.getString("result").trim())){
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }
+                log.error("推送订单失败,错误代买是："+resultJson.getString("result").trim());
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            log.error("推送失败"+e.toString());
+            return EventResult.resultWith(EventResultEnum.SUCCESS);
         }
+
+//
+//            Date now = new Date();
+//
+//            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
+//            if (orderDetailSyncLog == null) {
+//                orderDetailSyncLog = new OrderDetailSyncLog();
+//                orderDetailSyncLog.setCreateTime(now);
+//            }
+//            orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+//            orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+//            orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+//            orderDetailSyncLog.setOrderId(order.getOrderId());
+//            orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+//            orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+//            orderDetailSyncLog.setSyncTime(now);
+//
+//            String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
+        // Map<String, Object> requestData = getRequestData(sysData, nowStr, "pushTrades", JSON.toJSONString(createOrder));
+//
+//            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getHost(), requestData);
+//            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+//                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+//                String errorCode = result.getString("errorCode");
+//                if (errorCode.equals("100")) {
+//                    String data = result.getString("data");
+//                    JSONObject dataJson = JSON.parseObject(data);
+//                    int successCount = dataJson.getInteger("success_count");
+//                    if (successCount == 1) {
+//                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+//                        orderDetailSyncLogService.save(orderDetailSyncLog);
+//                        return EventResult.resultWith(EventResultEnum.SUCCESS);
+//                    } else {
+//                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+//                        orderDetailSyncLogService.save(orderDetailSyncLog);
+//                        String reason = JSON.parseObject(JSON.parseArray(dataJson.getString("failed_list")).get(0).toString()).getString("reason");
+//                        return EventResult.resultWith(EventResultEnum.ERROR, reason, null);
+//                    }
+//
+//                } else {
+//                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+//                    orderDetailSyncLogService.save(orderDetailSyncLog);
+//                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("subMessage"), null);
+//                }
+//            } else {
+//                return EventResult.resultWith(EventResultEnum.ERROR);
+//            }
+//
+//        } catch (Exception e) {
+//            return EventResult.resultWith(EventResultEnum.ERROR);
+//        }
+        return null;
     }
 
-    @Override
-    public EventResult getOrderDeliveryInfo(ISCSSysData sysData, ISCSOrderSearch orderSearch) {
+   /* @Override
+    public EventResult getOrderDeliveryInfo(LGJSysData sysData, ISCSOrderSearch orderSearch) {
         try {
             Date now = new Date();
             String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
@@ -270,11 +309,11 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
 
         ReturnInfo returnInfo = pushReturnInfoEvent.getReturnInfo();
         ISCSReturnOrder iscsReturnOrder = new ISCSReturnOrder();
-        iscsReturnOrder.setOrderReturnNo("");// TODO: 2016/4/26  
+        iscsReturnOrder.setOrderReturnNo("");// TODO: 2016/4/26
         iscsReturnOrder.setOrderNo(returnInfo.getOrderId());
         iscsReturnOrder.setStockId(iscsSysData.getStockId());
         iscsReturnOrder.setTransporterId(1);// TODO: 2016/4/26
-        iscsReturnOrder.setOutSid(returnInfo.getLogiNo());// TODO: 2016/4/26  
+        iscsReturnOrder.setOutSid(returnInfo.getLogiNo());// TODO: 2016/4/26
         //iscsReturnOrder.setBuyerNick("nickName");
         iscsReturnOrder.setReceiverName(returnInfo.getReturnName());
         iscsReturnOrder.setReceiverMobile(returnInfo.getReturnMobile());
@@ -299,7 +338,6 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
         // 请求网仓pushBackTrades接口
         HttpResult httpResult = null;
         try {
-            System.out.println(JSON.toJSONString(iscsReturnOrder));
             Map<String, Object> requestData = getRequestData(iscsSysData, nowStr, "cancelTrade", JSON.toJSONString(iscsReturnOrder));
             httpResult = HttpClientUtil.getInstance().post(iscsSysData.getHost(), requestData);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
@@ -331,7 +369,7 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
     @Override
     public EventResult orderQuery(OrderSearchInfo orderSearchInfo, ERPUserInfo erpUserInfo, ERPInfo erpInfo) {
 
-        /*ISCSSysData iscsSysData = JSON.parseObject(erpInfo.getSysDataJson(), ISCSSysData.class);
+        *//*ISCSSysData iscsSysData = JSON.parseObject(erpInfo.getSysDataJson(), ISCSSysData.class);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date begin = null;
         Date end = null;
@@ -374,8 +412,8 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
         String data = result.getString("data");
         System.out.println("***********Result****************");
         System.out.println(result.toJSONString());
-        System.out.println("***********Result****************");*/
+        System.out.println("***********Result****************");*//*
 
         return null;
-    }
+    }*/
 }

@@ -29,6 +29,8 @@
         <module>erpuser-hotsupplier</module>
         <module>erpprovider-sap</module>
         <module>erpprovider-iscs</module>
+        <module>erp-server</module>
+        <module>erpprovider-LGJ</module>
     </modules>
 
     <properties>
