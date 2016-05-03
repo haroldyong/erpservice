@@ -81,6 +81,7 @@ public class ERPConfigController {
         model.addAttribute("erpUserType", erpUserType);
         model.addAttribute("result", request.getSession().getAttribute("resultCode"));
         model.addAttribute("beginTime", LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        model.addAttribute("erpTypeList", ERPTypeEnum.ProviderType.values());
         request.getSession().removeAttribute("resultCode");
         return "erp_config";
     }

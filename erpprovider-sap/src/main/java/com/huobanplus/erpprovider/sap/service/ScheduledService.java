@@ -18,13 +18,12 @@ import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
-import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncFailureOrder;
+import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
 import com.huobanplus.erpservice.datacenter.model.BatchDeliverResult;
-import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
-import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncFailureOrderService;
+import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
@@ -38,8 +37,8 @@ import com.sap.conn.jco.JCoTable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,7 +56,7 @@ public class ScheduledService {
     @Autowired
     private OrderShipSyncLogService orderShipSyncLogService;
     @Autowired
-    private ShipSyncFailureOrderService shipSyncFailureOrderService;
+    private ShipSyncDeliverInfoService shipSyncDeliverInfoService;
 
     @Autowired
     private ERPRegister erpRegister;
@@ -65,7 +64,8 @@ public class ScheduledService {
     /*
      * 同步订单发货状态轮训服务
      */
-    @Scheduled(cron = "0 0 2 * * ?")
+//    @Scheduled(cron = "0 0 */1 * * ?")
+    @Transactional
     public void syncOrderShip() {
         Date now = new Date();
         log.info("order ship sync for sap start:" + StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
@@ -73,27 +73,24 @@ public class ScheduledService {
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.SAP);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
             log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync order ship");
-            SAPSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), SAPSysData.class);
-            ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
-
-            //获取订单信息
-            JCoFunction jCoFunction = null;
-            JCoFunction jCoFunctionIn = null;
-            JCoTable jCoTable = null;
-            List<LogiInfo> results = new ArrayList<LogiInfo>();
-            ERPUserInfo erpUserInfo = new ERPUserInfo();
-            erpUserInfo.setCustomerId(detailConfig.getCustomerId());
             try {
+                SAPSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), SAPSysData.class);
+                ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
+                ERPUserInfo erpUserInfo = new ERPUserInfo();
+                erpUserInfo.setCustomerId(detailConfig.getCustomerId());
+
+                List<LogiInfo> results = new ArrayList<>();
+                //获取订单信息]
                 JCoDestination jCoDestination = ConnectHelper.connect(sysData, erpUserInfo);
-                jCoFunction = jCoDestination.getRepository().getFunction("ZWS_DATA_OUTPUT");
-                jCoFunctionIn = jCoDestination.getRepository().getFunction("ZWS_DATA_OUTPUT_IN");
+                JCoFunction jCoFunction = jCoDestination.getRepository().getFunction("ZWS_DATA_OUTPUT");
+                JCoFunction jCoFunctionIn = jCoDestination.getRepository().getFunction("ZWS_DATA_OUTPUT_IN");
                 if (jCoFunction == null) {
                     log.error("SAP中没有ZWS_DATA_IMPORT方法");
                     return;
                 }
                 jCoFunction.execute(jCoDestination);
 
-                jCoTable = jCoFunction.getTableParameterList().getTable("ZTABLE");
+                JCoTable jCoTable = jCoFunction.getTableParameterList().getTable("ZTABLE");
 
                 for (int i = 0; i < jCoTable.getNumRows(); i++) {
                     LogiInfo logiInfo = new LogiInfo();
@@ -105,17 +102,18 @@ public class ScheduledService {
                     logiInfo.setZWMOrder(jCoTable.getString("ZWMORDER"));
                     results.add(logiInfo);
                 }
-           //     String resultMsg = jCoFunction.getExportParameterList().getString("MESS");
+                //     String resultMsg = jCoFunction.getExportParameterList().getString("MESS");
 
                 log.info("本次获取" + results.size() + "条订单数据");
                 //发货同步记录
                 OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
-                List<OrderDeliveryInfo> failureDeliverInfo = new ArrayList<>();
+                List<OrderDeliveryInfo> failedOrders = new ArrayList<>();
+                List<OrderDeliveryInfo> successOrders = new ArrayList<>();
                 //推送物流信息
                 if (results.size() > 0) {
                     List<OrderDeliveryInfo> deliveryInfoList = new ArrayList<>(); //等待发货的订单物流信息列表
                     addDeliveryInfo(results, deliveryInfoList);
-
+                    orderShipSyncLog.setTotalCount(results.size());
 
                     //推送给使用者,执行批量发货
                     BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
@@ -130,88 +128,54 @@ public class ScheduledService {
                     EventResult batchDeliverEventResult = erpUserHandler.handleEvent(batchDeliverEvent);
                     if (batchDeliverEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                         BatchDeliverResult batchDeliverResult = (BatchDeliverResult) batchDeliverEventResult.getData();
-                        failureDeliverInfo = batchDeliverResult.getFailedOrder();
-                        orderShipSyncLog.setSuccessCount(batchDeliverResult.getSuccessCount());
-                        orderShipSyncLog.setFailedCount(failureDeliverInfo.size());
-                        if (batchDeliverResult.getFailedOrder().size() > 0) {
+                        failedOrders = batchDeliverResult.getFailedOrders();
+                        successOrders = batchDeliverResult.getSuccessOrders();
+                        orderShipSyncLog.setSuccessCount(successOrders.size());
+                        orderShipSyncLog.setFailedCount(failedOrders.size());
+
+                        int successCount = successOrders.size(), failedCount = failedOrders.size();
+
+                        if (successCount > 0 && failedCount > 0) {
                             orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
-                        } else {
+                        }
+                        if (successCount > 0 && failedCount == 0) {
                             orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+                        }
+                        if (successCount == 0) {
+                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
                         }
                     }
                 } else {
                     orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.NO_DATA);
                 }
+
                 orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
 
                 //同步失败的订单记录
-                List<ShipSyncFailureOrder> failureOrders = new ArrayList<>();
-                for (OrderDeliveryInfo deliveryInfo : failureDeliverInfo) {
-                    ShipSyncFailureOrder shipSyncFailureOrder = new ShipSyncFailureOrder();
-                    shipSyncFailureOrder.setOrderId(deliveryInfo.getOrderId());
-                    shipSyncFailureOrder.setLogiName(deliveryInfo.getLogiName());
-                    shipSyncFailureOrder.setLogiCode(deliveryInfo.getLogiCode());
-                    shipSyncFailureOrder.setLogiNo(deliveryInfo.getLogiNo());
-                    shipSyncFailureOrder.setOrderShipSyncLog(orderShipSyncLog);
-                    failureOrders.add(shipSyncFailureOrder);
+                List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
+
+                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog);
+                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog);
+
+                shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
+
+                log.info("修改物流状态");
+                JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
+                for (LogiInfo info : results) {
+                    ztable.appendRow();
+                    ztable.setValue("ZVBELN", info.getZVBELN());
+                    ztable.setValue("YVBELN", info.getYVBELN());
+                    ztable.setValue("ZORDER", info.getZOrder());
+                    ztable.setValue("ZTYPE", "X");
+                    ztable.setValue("ZWMORDER", info.getZWMOrder());
                 }
-                shipSyncFailureOrderService.batchSave(failureOrders);
-
-
-//                log.info("修改物流状态");
-//                JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
-//                for (LogiInfo info : results) {
-//                    ztable.appendRow();
-//                    ztable.setValue("ZVBELN", info.getZVBELN());
-//                    ztable.setValue("YVBELN", info.getYVBELN());
-//                    ztable.setValue("ZORDER", info.getZOrder());
-//                    ztable.setValue("ZTYPE", "X");
-//                    ztable.setValue("ZWMORDER", info.getZWMOrder());
-//                }
-//                jCoFunctionIn.execute(jCoDestination);
-             //   resultMsg = jCoFunctionIn.getExportParameterList().getString("MESS");
+                jCoFunctionIn.execute(jCoDestination);
+                jCoFunctionIn.getExportParameterList().getString("MESS");
             } catch (Exception e) {
-                log.error(e.toString());
+                log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
             }
+            log.info("sap ship sync end");
         }
-    }
-
-
-    /**
-     * 用于发货
-     *
-     * @param resultOrders
-     * @return
-    */
-    private List<Order> getLogiInfo(List<LogiInfo> resultOrders) {
-        //推送给erp使用商户
-        List<Order> orders = new ArrayList<>();
-        for (LogiInfo loginInfo : resultOrders) {
-            Order order = new Order();
-            order.setOrderId(loginInfo.getZVBELN());
-            order.setLogiNo(loginInfo.getZOrder());
-
-            /*List<OrderItem> orderItems = new ArrayList<>();
-            JSONArray jsonOrderItem = jo.getJSONArray("tid_item");
-            for (Object ob : jsonOrderItem) {
-                JSONObject joItem = (JSONObject) ob;
-                OrderItem orderItem = new OrderItem();
-                orderItem.setProductBn(joItem.getString("barcode"));
-                String sendNum = joItem.getString("send_num");
-                if (!StringUtils.isEmpty(sendNum)) {
-                    orderItem.setSendNum(Integer.parseInt(sendNum));
-                }
-                orderItem.setSendNum(1);
-                String refundNum = joItem.getString("refund_num");
-                if (!StringUtils.isEmpty(refundNum)) {
-                    orderItem.setRefundNum(Integer.parseInt(refundNum));
-                }
-                orderItems.add(orderItem);
-            }
-            order.setOrderItems(orderItems);*/
-            orders.add(order);
-        }
-        return orders;
     }
 
     private void addDeliveryInfo(List<LogiInfo> orders, List<OrderDeliveryInfo> orderDeliveryInfoList) {

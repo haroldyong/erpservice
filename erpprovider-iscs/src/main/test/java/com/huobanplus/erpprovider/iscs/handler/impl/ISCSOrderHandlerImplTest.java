@@ -12,6 +12,7 @@ import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
 import com.huobanplus.erpservice.eventhandler.erpevent.OrderStatusInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelReturnOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -167,5 +168,14 @@ public class ISCSOrderHandlerImplTest extends ISCSTestBase {
 //
 //        iscsOrderHandler.orderQuery(orderSearchInfo,mockErpUserInfo,mockErpInfo);
 //    }
+
+    @Test
+    public void testCancelReturnOrder(){
+        CancelReturnOrderEvent cancelReturnOrderEvent = new CancelReturnOrderEvent();
+        cancelReturnOrderEvent.setErpUserInfo(mockErpUserInfo);
+        cancelReturnOrderEvent.setErpInfo(mockErpInfo);
+        cancelReturnOrderEvent.setOrderReturnNo("123456werwqre");
+        iscsOrderHandler.cancelReturnOrder(cancelReturnOrderEvent);
+    }
 
 }

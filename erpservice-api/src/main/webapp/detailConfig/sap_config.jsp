@@ -18,7 +18,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script type="text/javascript">
     var sapConfigHandler = {
-        getSapConfig: function () {
+        getConfig: function () {
             var host = $.trim($("#host").val());
             var sysNo = $.trim($("#sysNo").val());
             var client = $.trim($("#client").val());
@@ -59,7 +59,7 @@
             };
             return JSON.stringify(edbConfig);
         },
-        setSapValues: function (jsonData) {
+        setValues: function (jsonData) {
             $("#host").val(jsonData.host);
             $("#sysNo").val(jsonData.sysNo);
             $("#client").val(jsonData.client);

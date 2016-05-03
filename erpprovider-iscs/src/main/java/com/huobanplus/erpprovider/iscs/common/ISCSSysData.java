@@ -40,8 +40,4 @@ public class ISCSSysData {
      * 仓库id
      */
     private int stockId;
-    /**
-     * 开始同步时间（发货时间）
-     */
-    private String beginTime;
 }

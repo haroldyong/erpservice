@@ -9,13 +9,13 @@
 
 package com.huobanplus.erpservice.datacenter.repository.logs;
 
-import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncFailureOrder;
+import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 /**
  * Created by allan on 4/21/16.
  */
-public interface ShipSyncDetailRepository extends JpaRepository<ShipSyncFailureOrder, Long>, JpaSpecificationExecutor<ShipSyncFailureOrder> {
+public interface ShipSyncDetailRepository extends JpaRepository<ShipSyncDeliverInfo, Long>, JpaSpecificationExecutor<ShipSyncDeliverInfo> {
 
 }

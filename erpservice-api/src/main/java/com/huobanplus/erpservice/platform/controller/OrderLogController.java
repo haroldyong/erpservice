@@ -12,15 +12,17 @@ package com.huobanplus.erpservice.platform.controller;
 import com.huobanplus.erpservice.common.SysConstant;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
+import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
-import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncFailureOrder;
+import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderDetailSyncSearch;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
-import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncFailureOrderService;
+import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -50,7 +52,7 @@ public class OrderLogController {
     @Autowired
     private OrderShipSyncLogService orderShipSyncLogService;
     @Autowired
-    private ShipSyncFailureOrderService shipSyncFailureOrderService;
+    private ShipSyncDeliverInfoService shipSyncDeliverInfoService;
     @Autowired
     private ERPRegister erpRegister;
 
@@ -93,14 +95,14 @@ public class OrderLogController {
         return "logs/order_ship_sync_list";
     }
 
-    @RequestMapping(value = "/shipSyncFailureOrders", method = RequestMethod.GET)
+    @RequestMapping(value = "/shipSyncInfoList", method = RequestMethod.GET)
     private String shipSyncFailureOrders(
             @RequestParam(required = false, defaultValue = "1") int pageIndex,
             String orderId, long shipSyncId,
             int erpUserType,
             Model model
     ) {
-        Page<ShipSyncFailureOrder> shipSyncFailureOrders = shipSyncFailureOrderService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, shipSyncId, orderId);
+        Page<ShipSyncDeliverInfo> shipSyncFailureOrders = shipSyncDeliverInfoService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, shipSyncId, orderId);
         model.addAttribute("shipSyncFailureOrders", shipSyncFailureOrders);
         model.addAttribute("pageIndex", pageIndex);
         model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);
@@ -108,33 +110,8 @@ public class OrderLogController {
         model.addAttribute("orderId", orderId);
         model.addAttribute("shipSyncId", shipSyncId);
 
-        return "logs/sync_failure_order_list";
+        return "logs/ship_sync_info_list";
     }
-
-//    @RequestMapping("/orderSyncs")
-//    private String OrderSyncs(
-//            @RequestParam(required = false, defaultValue = "1") int pageIndex,
-//            OrderSyncSearch orderSyncSearch,
-//            @RequestAttribute int customerId,
-//            Model model
-//    ) {
-//        Page<OrderSync> orderSyncs = orderSyncService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, customerId, orderSyncSearch);
-//        model.addAttribute("orderSyncs", orderSyncs);
-//        model.addAttribute("orderSyncSearch", orderSyncSearch);
-//        model.addAttribute("pageIndex", pageIndex);
-//        model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);
-//        return "order_sync_list";
-//    }
-//
-//    @RequestMapping("/orderOperatorLogs")
-//    private String orderOperatorLogs(
-//            String orderId,
-//            Model model
-//    ) {
-//        List<OrderOperatorLog> orderOperatorLogs = orderOperatorService.findByOrderId(orderId);
-//        model.addAttribute("orderOperatorLogs", orderOperatorLogs);
-//        return "push_order_log";
-//    }
 
     @RequestMapping(value = "/rePushOrder", method = RequestMethod.POST)
     @ResponseBody
@@ -150,20 +127,22 @@ public class OrderLogController {
         return orderProxyService.pushOrder(pushNewOrderEvent);
     }
 
-    @RequestMapping(value = "/syncOrderShip", method = RequestMethod.POST)
+    @RequestMapping(value = "/reSyncOrderShip", method = RequestMethod.POST)
+    @ResponseBody
     private ApiResult syncOrderShip(long id) {
-        ShipSyncFailureOrder shipSyncFailureOrder = shipSyncFailureOrderService.findById(id);
-        ERPUserInfo erpUserInfo = new ERPUserInfo(shipSyncFailureOrder.getOrderShipSyncLog().getUserType(), shipSyncFailureOrder.getOrderShipSyncLog().getCustomerId());
+        ShipSyncDeliverInfo shipSyncDeliverInfo = shipSyncDeliverInfoService.findById(id);
+        ERPUserInfo erpUserInfo = new ERPUserInfo(shipSyncDeliverInfo.getOrderShipSyncLog().getUserType(), shipSyncDeliverInfo.getOrderShipSyncLog().getCustomerId());
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         PushDeliveryInfoEvent pushDeliveryInfoEvent = new PushDeliveryInfoEvent();
         pushDeliveryInfoEvent.setErpUserInfo(erpUserInfo);
-        OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
-        orderDeliveryInfo.setOrderId(shipSyncFailureOrder.getOrderId());
-        orderDeliveryInfo.setLogiName(shipSyncFailureOrder.getLogiName());
-        orderDeliveryInfo.setLogiNo(shipSyncFailureOrder.getLogiNo());
+        OrderDeliveryInfo orderDeliveryInfo = shipSyncDeliverInfo.getOrderDeliveryInfo();
         pushDeliveryInfoEvent.setDeliveryInfo(orderDeliveryInfo);
         EventResult eventResult = erpUserHandler.handleEvent(pushDeliveryInfoEvent);
 
-        return null;
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            return ApiResult.resultWith(ResultCode.SUCCESS);
+        } else {
+            return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, eventResult.getResultMsg(), null);
+        }
     }
 }

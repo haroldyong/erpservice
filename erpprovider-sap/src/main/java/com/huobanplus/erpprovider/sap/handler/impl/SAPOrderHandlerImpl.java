@@ -15,12 +15,11 @@ import com.huobanplus.erpprovider.sap.formatsap.SAPOrderItem;
 import com.huobanplus.erpprovider.sap.formatsap.SAPSaleOrderInfo;
 import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpprovider.sap.util.ConnectHelper;
+import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
-import com.huobanplus.erpservice.datacenter.entity.OrderOperatorLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
-import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -44,8 +43,6 @@ import java.util.List;
 @Component
 public class SAPOrderHandlerImpl implements SAPOrderHandler {
     private static final Log log = LogFactory.getLog(SAPOrderHandlerImpl.class);
-    @Autowired
-    private OrderSyncService orderSyncService;
     @Autowired
     private OrderDetailSyncLogService orderDetailSyncLogService;
 
@@ -75,10 +72,12 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         });
 
         SAPSaleOrderInfo sapSaleOrderInfo = new SAPSaleOrderInfo();
-        if (orderInfo.getPayStatus() == 1) {//正常订单
+        if (orderInfo.getPayStatus() == OrderEnum.PayStatus.PAYED.getCode()) {//正常订单
             sapSaleOrderInfo.setOrderType("ZWOR");
             sapSaleOrderInfo.setProvederFactory("8000");
-        } else {// 退货单
+        }
+        //退款
+        if (orderInfo.getPayStatus() == OrderEnum.PayStatus.REFUNDING.getCode()) {
             sapSaleOrderInfo.setOrderType("ZWRE");
             sapSaleOrderInfo.setProvederFactory("1000");
         }
@@ -102,26 +101,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setSapOrderItems(sapOrderItemList);
 
 
-
-
         Date now = new Date();
-        //订单同步日志
-        OrderOperatorLog orderOperatorLog = new OrderOperatorLog();
-        orderOperatorLog.setProviderType(erpInfo.getErpType());
-        orderOperatorLog.setUserType(erpUserInfo.getErpUserType());
-        orderOperatorLog.setCustomerId(erpUserInfo.getCustomerId());
-        orderOperatorLog.setCreateTime(now);
-        orderOperatorLog.setOrderId(orderInfo.getOrderId());
-        orderOperatorLog.setEventInfo(JSON.toJSONString(pushNewOrderEvent));
-
-        //订单同步记录
-//        OrderSync orderSync = orderSyncService.getOrderSync(orderInfo.getOrderId(), erpUserInfo.getCustomerId());
-//        orderSync.setOrderStatus(EnumHelper.getEnumType(OrderEnum.OrderStatus.class, orderInfo.getOrderStatus()));
-//        orderSync.setPayStatus(EnumHelper.getEnumType(OrderEnum.PayStatus.class, orderInfo.getPayStatus()));
-//        orderSync.setShipStatus(EnumHelper.getEnumType(OrderEnum.ShipStatus.class, orderInfo.getShipStatus()));
-//        orderSync.setProviderType(ERPTypeEnum.ProviderType.SAP);
-//        orderSync.setUserType(erpUserInfo.getErpUserType());
-//        orderSync.setRemark(orderOperatorLog.getRemark());
 
         EventResult eventResult = this.orderPush(sysData, erpUserInfo, sapSaleOrderInfo);
         OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());

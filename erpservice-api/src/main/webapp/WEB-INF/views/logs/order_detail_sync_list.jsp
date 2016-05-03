@@ -44,10 +44,30 @@
         }
     </style>
     <script type="text/javascript">
+        var erpUserType = ${erpUserType};
         $(function () {
             var syncStatus = ${orderDetailSyncSearch.syncStatus};
             $("#syncStatus").val(syncStatus);
-        })
+        });
+
+        var ajaxUrl = "<c:url value="/erpService/platform/rePushOrder" />";
+        function rePush(id) {
+            J.jboxConfirm("确定要推送吗?", function () {
+                $.jBox.tip("正在推送", "loading");
+                J.GetJsonRespons(ajaxUrl, {
+                    id: id,
+                    erpUserType: erpUserType
+                }, function (json) {
+                    if (json.resultCode == 2000) {
+                        $.jBox.tip("推送成功", "success");
+                        window.location.reload();
+                    } else {
+                        $.jBox.tip("推送失败", "error");
+                    }
+                }, function () {
+                }, J.PostMethod)
+            });
+        }
     </script>
 </head>
 <body>
@@ -154,7 +174,7 @@
                                                                     pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                 <td class="txt80 c">
                                     <c:if test="${log.detailSyncStatus.code==0}">
-                                        <a href="javascript:rePush(${log.id},${log.userType.code})">重新推送</a> |
+                                        <a href="javascript:rePush(${log.id})">重新推送</a>
                                     </c:if>
                                 </td>
                             </tr>

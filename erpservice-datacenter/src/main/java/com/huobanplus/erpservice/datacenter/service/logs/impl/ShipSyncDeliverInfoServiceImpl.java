@@ -9,9 +9,12 @@
 
 package com.huobanplus.erpservice.datacenter.service.logs.impl;
 
-import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncFailureOrder;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
+import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.repository.logs.ShipSyncDetailRepository;
-import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncFailureOrderService;
+import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,23 +30,23 @@ import java.util.List;
  * Created by allan on 4/21/16.
  */
 @Service
-public class ShipSyncFailureOrderServiceImpl implements ShipSyncFailureOrderService {
+public class ShipSyncDeliverInfoServiceImpl implements ShipSyncDeliverInfoService {
     @Autowired
     private ShipSyncDetailRepository shipSyncDetailRepository;
 
     @Override
-    public ShipSyncFailureOrder save(ShipSyncFailureOrder shipSyncFailureOrder) {
-        return shipSyncDetailRepository.save(shipSyncFailureOrder);
+    public ShipSyncDeliverInfo save(ShipSyncDeliverInfo shipSyncDeliverInfo) {
+        return shipSyncDetailRepository.save(shipSyncDeliverInfo);
     }
 
     @Override
-    public void batchSave(List<ShipSyncFailureOrder> shipSyncFailureOrders) {
-        shipSyncDetailRepository.save(shipSyncFailureOrders);
+    public void batchSave(List<ShipSyncDeliverInfo> shipSyncDeliverInfoses) {
+        shipSyncDetailRepository.save(shipSyncDeliverInfoses);
     }
 
     @Override
-    public Page<ShipSyncFailureOrder> findAll(int pageIndex, int pageSize, long shipSyncId, String orderId) {
-        Specification<ShipSyncFailureOrder> specification = (root, query, cb) -> {
+    public Page<ShipSyncDeliverInfo> findAll(int pageIndex, int pageSize, long shipSyncId, String orderId) {
+        Specification<ShipSyncDeliverInfo> specification = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.equal(root.get("orderShipSyncLog").get("id").as(Long.class), shipSyncId));
             if (!StringUtils.isEmpty(orderId)) {
@@ -55,7 +58,18 @@ public class ShipSyncFailureOrderServiceImpl implements ShipSyncFailureOrderServ
     }
 
     @Override
-    public ShipSyncFailureOrder findById(long id) {
+    public ShipSyncDeliverInfo findById(long id) {
         return shipSyncDetailRepository.findOne(id);
+    }
+
+    @Override
+    public void shipSyncDeliverInfoList(List<ShipSyncDeliverInfo> shipSyncDeliverInfoList, List<OrderDeliveryInfo> orderDeliveryInfoList, OrderShipSyncLog orderShipSyncLog) {
+        orderDeliveryInfoList.forEach(deliveryInfo -> {
+            ShipSyncDeliverInfo shipSyncDeliverInfo = new ShipSyncDeliverInfo();
+            shipSyncDeliverInfo.setOrderDeliveryInfo(deliveryInfo);
+            shipSyncDeliverInfo.setOrderShipSyncLog(orderShipSyncLog);
+            shipSyncDeliverInfo.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+            shipSyncDeliverInfoList.add(shipSyncDeliverInfo);
+        });
     }
 }
