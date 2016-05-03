@@ -10,6 +10,7 @@
 package com.huobanplus.erpservice.platform.controller;
 
 import com.huobanplus.erpservice.common.SysConstant;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
@@ -102,8 +103,8 @@ public class OrderLogController {
             int erpUserType,
             Model model
     ) {
-        Page<ShipSyncDeliverInfo> shipSyncFailureOrders = shipSyncDeliverInfoService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, shipSyncId, orderId);
-        model.addAttribute("shipSyncFailureOrders", shipSyncFailureOrders);
+        Page<ShipSyncDeliverInfo> shipSyncDeliverInfoList = shipSyncDeliverInfoService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, shipSyncId, orderId);
+        model.addAttribute("shipSyncDeliverInfoList", shipSyncDeliverInfoList);
         model.addAttribute("pageIndex", pageIndex);
         model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);
         model.addAttribute("erpUserType", erpUserType);
@@ -140,8 +141,12 @@ public class OrderLogController {
         EventResult eventResult = erpUserHandler.handleEvent(pushDeliveryInfoEvent);
 
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            shipSyncDeliverInfo.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+            shipSyncDeliverInfoService.save(shipSyncDeliverInfo);
             return ApiResult.resultWith(ResultCode.SUCCESS);
         } else {
+            shipSyncDeliverInfo.getOrderDeliveryInfo().setRemark(eventResult.getResultMsg());
+            shipSyncDeliverInfoService.save(shipSyncDeliverInfo);
             return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, eventResult.getResultMsg(), null);
         }
     }

@@ -37,6 +37,7 @@ import com.sap.conn.jco.JCoTable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,7 +65,7 @@ public class ScheduledService {
     /*
      * 同步订单发货状态轮训服务
      */
-//    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void syncOrderShip() {
         Date now = new Date();
@@ -154,8 +155,8 @@ public class ScheduledService {
                 //同步失败的订单记录
                 List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
 
-                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog);
-                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog);
+                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
 
                 shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
 

@@ -16,6 +16,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 /**
  * Created by allan on 4/21/16.
  */
-public interface ShipSyncDetailRepository extends JpaRepository<ShipSyncDeliverInfo, Long>, JpaSpecificationExecutor<ShipSyncDeliverInfo> {
+public interface ShipSyncDeliverInfoRepository extends JpaRepository<ShipSyncDeliverInfo, Long>, JpaSpecificationExecutor<ShipSyncDeliverInfo> {
 
 }

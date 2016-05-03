@@ -66,6 +66,15 @@
                 <span class="icon-sprite icon-magnifier"></span>
 
                 <h3>订单信息同步记录</h3>
+
+                <p style="float: right;margin-top: -26px;margin-right: 10px;">
+                    <a class="btn-lit btn-middle"
+                       href="<c:url value="/erpService/platform/orderShipSyncs?erpUserType=1" />"
+                       style="margin-bottom: 3px;">
+                        <span>返回</span>
+                    </a>
+                </p>
+
             </div>
             <div class="tl corner">
             </div>
@@ -128,20 +137,23 @@
                             </th>
                             <th scope="col">同步状态
                             </th>
+                            <th scope="col">备注
+                            </th>
                             <th scope="col">操作
                             </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="log" items="${shipSyncDeliverInfoses.getContent()}">
+                        <c:forEach var="log" items="${shipSyncDeliverInfoList.getContent()}">
                             <tr>
-                                <td class="txt40 c">${log.orderId}</td>
-                                <td class="txt40 c">${log.logiName}</td>
-                                <td class="txt40 c">${log.logiNo}</td>
+                                <td class="txt40 c">${log.orderDeliveryInfo.orderId}</td>
+                                <td class="txt40 c">${log.orderDeliveryInfo.logiName}</td>
+                                <td class="txt40 c">${log.orderDeliveryInfo.logiNo}</td>
                                 <td class="txt40 c">${log.shipSyncStatus.name}</td>
+                                <td class="txt40 c">${log.orderDeliveryInfo.remark}</td>
                                 <td class="txt80 c">
                                     <c:if test="${log.shipSyncStatus.code!=0}">
-                                        <a href="javascript:reSyncShip(log.id)">重新同步</a>
+                                        <a href="javascript:reSyncShip(${log.id})">重新同步</a>
                                     </c:if>
                                 </td>
                             </tr>
@@ -155,8 +167,8 @@
                 <script type="text/javascript">
                     var pageSize = ${pageSize};
                     var pageIndex = ${pageIndex};
-                    var pageCount = ${shipSyncDeliverInfoses.getTotalPages()};
-                    var recordCount = ${shipSyncDeliverInfoses.getTotalElements()};
+                    var pageCount = ${shipSyncDeliverInfoList.getTotalPages()};
+                    var recordCount = ${shipSyncDeliverInfoList.getTotalElements()};
                     var formName = 'searchForm';
                     Pager.Output(formName, 'pageIndex', pageSize, pageIndex, pageCount, recordCount);
                 </script>
