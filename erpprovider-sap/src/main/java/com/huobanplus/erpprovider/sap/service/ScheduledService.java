@@ -70,7 +70,7 @@ public class ScheduledService {
     public void syncOrderShip() {
         Date now = new Date();
         log.info("order ship sync for sap start:" + StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
-        //得到所有配置过edb信息的商家,准备获取数据
+        //得到所有配置过sap信息的商家,准备获取数据
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.SAP);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
             log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync order ship");
