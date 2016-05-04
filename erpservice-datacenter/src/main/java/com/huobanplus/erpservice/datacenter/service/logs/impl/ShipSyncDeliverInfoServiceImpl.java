@@ -50,7 +50,7 @@ public class ShipSyncDeliverInfoServiceImpl implements ShipSyncDeliverInfoServic
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.equal(root.get("orderShipSyncLog").get("id").as(Long.class), shipSyncId));
             if (!StringUtils.isEmpty(orderId)) {
-                predicates.add(cb.like(root.get("orderId").as(String.class), orderId));
+                predicates.add(cb.like(root.get("orderDeliveryInfo").get("orderId").as(String.class), orderId));
             }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };

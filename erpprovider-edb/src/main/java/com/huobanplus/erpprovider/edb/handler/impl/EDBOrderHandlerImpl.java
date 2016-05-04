@@ -82,7 +82,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
             edbCreateOrderInfo.setOutTid(orderInfo.getOrderId());
             edbCreateOrderInfo.setShopId(sysData.getShopId());
             edbCreateOrderInfo.setStorageId(Integer.parseInt(sysData.getStorageId()));
-//            edbCreateOrderInfo.setBuyerId();
+            edbCreateOrderInfo.setBuyerId(orderInfo.getUserLoginName());
             edbCreateOrderInfo.setBuyerMsg(orderInfo.getMemo());
             edbCreateOrderInfo.setSellerRemark(orderInfo.getRemark());
             edbCreateOrderInfo.setConsignee(orderInfo.getShipName());

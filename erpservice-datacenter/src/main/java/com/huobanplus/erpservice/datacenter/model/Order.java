@@ -23,6 +23,10 @@ import java.util.List;
 public class Order extends BaseInfo {
     private String orderId;
     private int memberId;
+    /**
+     * 下单用户账户名（手机号）
+     */
+    private String userLoginName;
     private int confirm;
     private int orderStatus;
     private int payStatus;
