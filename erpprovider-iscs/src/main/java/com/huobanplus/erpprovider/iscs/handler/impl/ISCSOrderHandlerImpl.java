@@ -81,7 +81,7 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
             createOrderInfo.setMobile(order.getShipMobile());
             createOrderInfo.setTel(order.getShipTel());
 //            createOrderInfo.setRequestShipDate();
-            createOrderInfo.setNeedInvoice(1);
+            createOrderInfo.setNeedInvoice(1);// FIXME: 2016/5/3
 //            createOrderInfo.setInvoiceName();
 //            createOrderInfo.setInvoiceContent();
             createOrderInfo.setPayment(order.getFinalAmount());
@@ -167,13 +167,16 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                 //如果有errorCode,说明失败了,返回失败信息
-                if (result.getJSONObject("errorCode") != null) {
-                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("subMessage"), null);
+                String errorCode = result.getString("errorCode");
+                if(errorCode.equals("100")){
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, result);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorText"), null);
                 }
-                return EventResult.resultWith(EventResultEnum.SUCCESS, result);
             }
             return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
         } catch (Exception e) {
+            e.printStackTrace();
             return EventResult.resultWith(EventResultEnum.ERROR);
         }
     }
@@ -270,7 +273,7 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
 
         ReturnInfo returnInfo = pushReturnInfoEvent.getReturnInfo();
         ISCSReturnOrder iscsReturnOrder = new ISCSReturnOrder();
-        iscsReturnOrder.setOrderReturnNo("");// TODO: 2016/4/26  
+        iscsReturnOrder.setOrderReturnNo("");// TODO: 2016/4/26
         iscsReturnOrder.setOrderNo(returnInfo.getOrderId());
         iscsReturnOrder.setStockId(iscsSysData.getStockId());
         iscsReturnOrder.setTransporterId(1);// TODO: 2016/4/26
