@@ -19,7 +19,9 @@ import com.huobanplus.erpprovider.lgj.handler.LGJBaseHandler;
 import com.huobanplus.erpprovider.lgj.handler.LGJOrderHandler;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
+import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
@@ -80,10 +82,11 @@ public class LGJOrderHandlerImpl extends LGJBaseHandler implements LGJOrderHandl
         ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
         try {
             //获得Token
-            String Token = getToken(sysData);
+            String token = getToken(sysData);
             //获得礼管家单号
-            String orderSn = getOrdersn(sysData, order.getOrderId(),Token);
+            String orderSn = getOrdersn(sysData, order.getOrderId(),token);
             if (orderSn == null && order.getOrderItems() == null) {
+                saveLog(order,erpUserInfo,erpInfo,pushNewOrderEvent,false);
                 return EventResult.resultWith(EventResultEnum.ERROR);
             }
 
@@ -109,9 +112,6 @@ public class LGJOrderHandlerImpl extends LGJBaseHandler implements LGJOrderHandl
                 }
             }
             List<LGJCreateOrderItem> items = new ArrayList<>();
-            if(order.getOrderItems()==null){
-                return EventResult.resultWith(EventResultEnum.ERROR);
-            }
             for (OrderItem sourceItem : order.getOrderItems()) {
                 LGJCreateOrderItem item = new LGJCreateOrderItem();
                 item.setSkuId(sourceItem.getItemId() + "");
@@ -122,7 +122,7 @@ public class LGJOrderHandlerImpl extends LGJBaseHandler implements LGJOrderHandl
             //设定请求方法名
             createOrder.setFunc(LGJConstant.ORDERSUBMIT_FUN);
             //设定Token
-            createOrder.setToken(Token);
+            createOrder.setToken(token);
 
             String JsonString = JSON.toJSONString(createOrder);
             Map<String, Object> requestData = getParamMap(JsonString);
@@ -132,67 +132,52 @@ public class LGJOrderHandlerImpl extends LGJBaseHandler implements LGJOrderHandl
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject resultJson = JSON.parseObject(httpResult.getHttpContent());
                 if("0".equals(resultJson.getString("result").trim())){
+                    //记录日志并返回
+                    saveLog(order,erpUserInfo,erpInfo,pushNewOrderEvent,true);
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }
+                saveLog(order,erpUserInfo,erpInfo,pushNewOrderEvent,false);
                 log.error("推送订单失败,错误代买是："+resultJson.getString("result").trim());
             }
 
         } catch (UnsupportedEncodingException e) {
+            saveLog(order,erpUserInfo,erpInfo,pushNewOrderEvent,false);
             log.error("推送失败"+e.toString());
             return EventResult.resultWith(EventResultEnum.SUCCESS);
         }
-
-//
-//            Date now = new Date();
-//
-//            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
-//            if (orderDetailSyncLog == null) {
-//                orderDetailSyncLog = new OrderDetailSyncLog();
-//                orderDetailSyncLog.setCreateTime(now);
-//            }
-//            orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-//            orderDetailSyncLog.setProviderType(erpInfo.getErpType());
-//            orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
-//            orderDetailSyncLog.setOrderId(order.getOrderId());
-//            orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
-//            orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
-//            orderDetailSyncLog.setSyncTime(now);
-//
-//            String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
-        // Map<String, Object> requestData = getRequestData(sysData, nowStr, "pushTrades", JSON.toJSONString(createOrder));
-//
-//            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getHost(), requestData);
-//            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-//                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-//                String errorCode = result.getString("errorCode");
-//                if (errorCode.equals("100")) {
-//                    String data = result.getString("data");
-//                    JSONObject dataJson = JSON.parseObject(data);
-//                    int successCount = dataJson.getInteger("success_count");
-//                    if (successCount == 1) {
-//                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-//                        orderDetailSyncLogService.save(orderDetailSyncLog);
-//                        return EventResult.resultWith(EventResultEnum.SUCCESS);
-//                    } else {
-//                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-//                        orderDetailSyncLogService.save(orderDetailSyncLog);
-//                        String reason = JSON.parseObject(JSON.parseArray(dataJson.getString("failed_list")).get(0).toString()).getString("reason");
-//                        return EventResult.resultWith(EventResultEnum.ERROR, reason, null);
-//                    }
-//
-//                } else {
-//                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-//                    orderDetailSyncLogService.save(orderDetailSyncLog);
-//                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("subMessage"), null);
-//                }
-//            } else {
-//                return EventResult.resultWith(EventResultEnum.ERROR);
-//            }
-//
-//        } catch (Exception e) {
-//            return EventResult.resultWith(EventResultEnum.ERROR);
-//        }
         return null;
+    }
+
+    /**
+     * 记录日志
+     * @param orderInfo
+     * @param erpUserInfo
+     * @param erpInfo
+     * @param pushNewOrderEvent
+     * @param isSuccess
+     */
+    private void saveLog(Order orderInfo,ERPUserInfo erpUserInfo,ERPInfo erpInfo,PushNewOrderEvent pushNewOrderEvent,boolean isSuccess ){
+        OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
+        Date now = new Date();
+        if (orderDetailSyncLog == null) {
+            orderDetailSyncLog = new OrderDetailSyncLog();
+            orderDetailSyncLog.setCreateTime(now);
+        }
+        orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+        orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+        orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+        orderDetailSyncLog.setOrderId(orderInfo.getOrderId());
+        orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+        orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+        orderDetailSyncLog.setSyncTime(now);
+
+        if (isSuccess) {
+            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+        } else {
+            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+        }
+
+        orderDetailSyncLogService.save(orderDetailSyncLog);
     }
 
    /* @Override
