@@ -41,6 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.Jsr310Converters;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -174,7 +175,7 @@ public class EDBScheduledService {
      * 结束时间均为同步开始时间
      * 每个一小时进行一次同步
      */
-//    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void syncOrderShip() {
         Date now = new Date();
@@ -209,7 +210,7 @@ public class EDBScheduledService {
                 edbOrderSearch.setShopId(sysData.getShopId());
                 edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
                 edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
-//            edbOrderSearch.setOrderId("2016042626588157");
+//            edbOrderSearch.setOrderId("2016050388984135");
 
                 //first pull
                 EventResult eventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
@@ -272,7 +273,7 @@ public class EDBScheduledService {
                 orderShipSyncLog.setCustomerId(erpUserInfo.getCustomerId());
                 orderShipSyncLog.setTotalCount(totalCount);
                 orderShipSyncLog.setSuccessCount(successCount);
-                orderShipSyncLog.setFailedCount(successCount);
+                orderShipSyncLog.setFailedCount(failedCount);
                 orderShipSyncLog.setSyncTime(now);
                 if (totalCount > 0) {
                     if (successCount > 0 && failedCount > 0) {
@@ -291,8 +292,8 @@ public class EDBScheduledService {
 
                 List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
 
-                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog);
-                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog);
+                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
 
                 shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
             } catch (Exception e) {

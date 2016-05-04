@@ -18,5 +18,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * Created by allan on 4/21/16.
  */
 public interface OrderShipSyncLogRepository extends JpaRepository<OrderShipSyncLog, Long>, JpaSpecificationExecutor<OrderShipSyncLog> {
-    OrderShipSyncLog findTopByCustomerIdAndProviderTypeOrderBySyncTime(int customerId, ERPTypeEnum.ProviderType providerType);
+    OrderShipSyncLog findTopByCustomerIdAndProviderTypeOrderByIdDesc(int customerId, ERPTypeEnum.ProviderType providerType);
 }

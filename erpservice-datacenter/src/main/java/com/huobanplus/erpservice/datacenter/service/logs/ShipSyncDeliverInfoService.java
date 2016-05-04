@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.service.logs;
 
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
@@ -52,5 +53,5 @@ public interface ShipSyncDeliverInfoService {
      * @param shipSyncDeliverInfoList
      * @param orderDeliveryInfoList
      */
-    void shipSyncDeliverInfoList(List<ShipSyncDeliverInfo> shipSyncDeliverInfoList, List<OrderDeliveryInfo> orderDeliveryInfoList, OrderShipSyncLog orderShipSyncLog);
+    void shipSyncDeliverInfoList(List<ShipSyncDeliverInfo> shipSyncDeliverInfoList, List<OrderDeliveryInfo> orderDeliveryInfoList, OrderShipSyncLog orderShipSyncLog, OrderSyncStatus.ShipSyncStatus shipSyncStatus);
 }

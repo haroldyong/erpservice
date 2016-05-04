@@ -20,7 +20,7 @@ import javax.persistence.*;
  * Created by allan on 4/21/16.
  */
 @Entity
-@Table(name = "ERP_ShipSyncFailureOrder")
+@Table(name = "ERP_ShipSyncDeliverInfo")
 @Setter
 @Getter
 public class ShipSyncDeliverInfo {

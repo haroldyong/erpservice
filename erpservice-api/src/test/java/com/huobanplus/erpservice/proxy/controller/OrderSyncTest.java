@@ -10,7 +10,6 @@
 package com.huobanplus.erpservice.proxy.controller;
 
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
-import com.huobanplus.erpprovider.edb.common.EDBEnum;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
 import com.huobanplus.erpprovider.edb.service.EDBScheduledService;
@@ -54,16 +53,16 @@ public class OrderSyncTest extends SpringWebTest {
         sysData.setBeginTime("2016-04-26");
 
         EDBOrderSearch edbOrderSearch = new EDBOrderSearch();
-        edbOrderSearch.setDateType(EDBEnum.DateType.DELIVER_TIME.getDateType());
+//        edbOrderSearch.setDateType(EDBEnum.DateType.getDateType());
         edbOrderSearch.setBeginTime(sysData.getBeginTime());
         edbOrderSearch.setEndTime("2016-12-12");
         edbOrderSearch.setPageIndex(1);
         edbOrderSearch.setPageSize(EDBConstant.PAGE_SIZE);
         edbOrderSearch.setStorageId(sysData.getStorageId());
         edbOrderSearch.setShopId(sysData.getShopId());
-        edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
-        edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
-//        edbOrderSearch.setOrderId("2016042626588157");
+//        edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
+//        edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
+        edbOrderSearch.setOrderId("2016050381142748");
         EventResult eventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
         System.out.println(111);
         edbScheduledService.syncOrderShip();

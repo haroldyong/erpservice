@@ -13,7 +13,7 @@ import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
-import com.huobanplus.erpservice.datacenter.repository.logs.ShipSyncDetailRepository;
+import com.huobanplus.erpservice.datacenter.repository.logs.ShipSyncDeliverInfoRepository;
 import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,16 +32,16 @@ import java.util.List;
 @Service
 public class ShipSyncDeliverInfoServiceImpl implements ShipSyncDeliverInfoService {
     @Autowired
-    private ShipSyncDetailRepository shipSyncDetailRepository;
+    private ShipSyncDeliverInfoRepository shipSyncDeliverInfoRepository;
 
     @Override
     public ShipSyncDeliverInfo save(ShipSyncDeliverInfo shipSyncDeliverInfo) {
-        return shipSyncDetailRepository.save(shipSyncDeliverInfo);
+        return shipSyncDeliverInfoRepository.save(shipSyncDeliverInfo);
     }
 
     @Override
     public void batchSave(List<ShipSyncDeliverInfo> shipSyncDeliverInfoses) {
-        shipSyncDetailRepository.save(shipSyncDeliverInfoses);
+        shipSyncDeliverInfoRepository.save(shipSyncDeliverInfoses);
     }
 
     @Override
@@ -54,21 +54,21 @@ public class ShipSyncDeliverInfoServiceImpl implements ShipSyncDeliverInfoServic
             }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
-        return shipSyncDetailRepository.findAll(specification, new PageRequest(pageIndex - 1, pageSize));
+        return shipSyncDeliverInfoRepository.findAll(specification, new PageRequest(pageIndex - 1, pageSize));
     }
 
     @Override
     public ShipSyncDeliverInfo findById(long id) {
-        return shipSyncDetailRepository.findOne(id);
+        return shipSyncDeliverInfoRepository.findOne(id);
     }
 
     @Override
-    public void shipSyncDeliverInfoList(List<ShipSyncDeliverInfo> shipSyncDeliverInfoList, List<OrderDeliveryInfo> orderDeliveryInfoList, OrderShipSyncLog orderShipSyncLog) {
+    public void shipSyncDeliverInfoList(List<ShipSyncDeliverInfo> shipSyncDeliverInfoList, List<OrderDeliveryInfo> orderDeliveryInfoList, OrderShipSyncLog orderShipSyncLog, OrderSyncStatus.ShipSyncStatus shipSyncStatus) {
         orderDeliveryInfoList.forEach(deliveryInfo -> {
             ShipSyncDeliverInfo shipSyncDeliverInfo = new ShipSyncDeliverInfo();
             shipSyncDeliverInfo.setOrderDeliveryInfo(deliveryInfo);
             shipSyncDeliverInfo.setOrderShipSyncLog(orderShipSyncLog);
-            shipSyncDeliverInfo.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+            shipSyncDeliverInfo.setShipSyncStatus(shipSyncStatus);
             shipSyncDeliverInfoList.add(shipSyncDeliverInfo);
         });
     }
