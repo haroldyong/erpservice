@@ -35,7 +35,6 @@ import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
-import com.huobanplus.erpservice.datacenter.service.OrderSyncService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
@@ -65,8 +64,6 @@ import java.util.*;
 @Component
 public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler {
     private static final Log log = LogFactory.getLog(EDBOrderHandlerImpl.class);
-    @Autowired
-    private OrderSyncService orderSyncService;
     @Autowired
     private OrderDetailSyncLogService orderDetailSyncLogService;
 
