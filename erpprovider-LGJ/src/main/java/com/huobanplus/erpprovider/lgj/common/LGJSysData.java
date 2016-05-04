@@ -9,12 +9,14 @@
 
 package com.huobanplus.erpprovider.lgj.common;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by elvis on 4/28/16.
  */
-@Data
+@Setter
+@Getter
 public class LGJSysData {
     /**
      * 登录用户名 (由礼管家提供)
