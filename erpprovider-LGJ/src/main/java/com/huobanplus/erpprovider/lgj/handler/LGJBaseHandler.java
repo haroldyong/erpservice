@@ -46,8 +46,8 @@ public class LGJBaseHandler {
         requestData.put("param", JSON.toJSONString(data));
 
 
-        System.out.println("-------------------------------");
-        System.out.println(requestData.get("param"));
+//        System.out.println("-------------------------------");
+//        System.out.println(requestData.get("param"));
 
 
         HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getHost(), requestData);
@@ -111,8 +111,8 @@ public class LGJBaseHandler {
         Map<String, Object> requestData = new HashMap<>();
         requestData.put("param", JsonString);
 
-        System.out.println();
-        System.out.println(requestData.get("param"));
+//        System.out.println();
+//        System.out.println(requestData.get("param"));
 
         return requestData;
     }
