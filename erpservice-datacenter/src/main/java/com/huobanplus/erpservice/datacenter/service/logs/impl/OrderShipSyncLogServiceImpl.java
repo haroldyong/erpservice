@@ -42,7 +42,7 @@ public class OrderShipSyncLogServiceImpl implements OrderShipSyncLogService {
 
     @Override
     public OrderShipSyncLog findTop(int customerId, ERPTypeEnum.ProviderType providerType) {
-        return orderShipSyncLogRepository.findTopByCustomerIdAndProviderTypeOrderBySyncTime(customerId, providerType);
+        return orderShipSyncLogRepository.findTopByCustomerIdAndProviderTypeOrderByIdDesc(customerId, providerType);
     }
 
     @Override
