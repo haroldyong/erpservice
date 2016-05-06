@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -177,7 +178,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                 jCoTable.setValue("VRKME", sapSaleOrderInfo.getOrganization());
                 //jCoTable.setValue("WERKS", sapSaleOrderInfo.getProvederFactory());
                 //jCoTable.setValue("LGORT", sapSaleOrderInfo.getGoodsAddr());
-                jCoTable.setValue("NETPR", netPrice);
+                jCoTable.setValue("NETPR", BigDecimal.valueOf(netPrice).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
 
                 //到时order 中需传递发票相关信息
                 jCoTable.setValue("ZFP", sapSaleOrderInfo.isInvoiceIsopen() ? "X" : null);
