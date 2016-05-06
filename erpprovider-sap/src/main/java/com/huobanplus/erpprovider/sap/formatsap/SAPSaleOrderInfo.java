@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.sap.formatsap;
 
 import lombok.Getter;
@@ -13,90 +22,73 @@ import java.util.List;
 public class SAPSaleOrderInfo {
 
     /**
-     * 订单类型
-     */
-    private String orderType;
-
-    /**
-     * 售达方
-     */
-    private String orderSaleFrom;
-
-    /**
-     * 订单号  来自微商城
-     */
-    private String numId;
-
-    /**
-     * 订单行项目号
-     */
-    private String posNr;
-
-    /**
-     * 顾客名称 来自微商城
-     */
-    private String customName;
-
-    /**
-     * 顾客联系方式 来自微商城
-     */
-    private String customTel;
-
-    /**
-     * 城市 来自微商城
-     */
-    private String city;
-
-    /**
-     * 邮政编码 来自微商城
-     */
-    private String shipZip;
-
-    /**
-     * 送货地址 来自微商城
-     */
-    private String shipAddr;
-
-    /**
      * 销售组织
      */
     private final String sellOrg = "1000";
-
     /**
      * 分销渠道
      */
     private final String distributWay = "15";
-
-    /**
-     * 产品组
-     */
-    private String goodsInfo;
-
-    /**
-     * 物料编码
-     */
-    private String materialCode;
-
-    /**
-     * 订单数量
-     */
-    private int orderNum;
-
-    /**
-     * 单位
-     */
-    private String organization;
-
-    /**
-     * 交货工厂 正常订单固定为：8000 退货订单固定为：1000
-     */
-    private String provederFactory;
-
     /**
      * 库存地点
      */
     private final String goodsAddr = "1017";
-
+    /**
+     * 订单类型
+     */
+    private String orderType;
+    /**
+     * 售达方
+     */
+    private String orderSaleFrom;
+    /**
+     * 订单号  来自微商城
+     */
+    private String numId;
+    /**
+     * 订单行项目号
+     */
+    private String posNr;
+    /**
+     * 顾客名称 来自微商城
+     */
+    private String customName;
+    /**
+     * 顾客联系方式 来自微商城
+     */
+    private String customTel;
+    /**
+     * 城市 来自微商城
+     */
+    private String city;
+    /**
+     * 邮政编码 来自微商城
+     */
+    private String shipZip;
+    /**
+     * 送货地址 来自微商城
+     */
+    private String shipAddr;
+    /**
+     * 产品组
+     */
+    private String goodsInfo;
+    /**
+     * 物料编码
+     */
+    private String materialCode;
+    /**
+     * 订单数量
+     */
+    private int orderNum;
+    /**
+     * 单位
+     */
+    private String organization;
+    /**
+     * 交货工厂 正常订单固定为：8000 退货订单固定为：1000
+     */
+    private String provederFactory;
     /**
      * 折扣金额  条件类型固定为：ZWTZ金额*-1
      */
@@ -131,6 +123,14 @@ public class SAPSaleOrderInfo {
      * 产品组 能录入微商城
      */
     private String goodsOrg;
+    /**
+     * 优惠金额
+     */
+    private double pmtAmount;
+    /**
+     * 产品总金额
+     */
+    private double costItem;
 
     private List<SAPOrderItem> sapOrderItems;
 

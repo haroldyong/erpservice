@@ -67,7 +67,11 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         orderItemList.forEach(orderItem -> {
             SAPOrderItem sapOrderItem = new SAPOrderItem();
             sapOrderItem.setName(orderItem.getName());
+            sapOrderItem.setProductBn(orderItem.getProductBn());
             sapOrderItem.setNum(orderItem.getNum());
+            sapOrderItem.setCost(orderItem.getCost());
+            sapOrderItem.setPrice(orderItem.getPrice());
+            sapOrderItem.setAmount(orderItem.getAmount());
             sapOrderItemList.add(sapOrderItem);
         });
 
@@ -88,6 +92,8 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setCity(orderInfo.getCity());
         sapSaleOrderInfo.setShipZip(orderInfo.getShipZip());
         sapSaleOrderInfo.setShipAddr(orderInfo.getShipAddr());
+        sapSaleOrderInfo.setPmtAmount(orderInfo.getPmtAmount());
+        sapSaleOrderInfo.setCostItem(orderInfo.getCostItem());
         //sapSaleOrderInfo.setGoodsInfo("产品组");
 //        sapSaleOrderInfo.setMaterialCode("物料编码");
 //        sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
@@ -141,8 +147,15 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                 return EventResult.resultWith(EventResultEnum.ERROR);
             }
             jCoTable = jCoFunction.getTableParameterList().getTable("ZTABLE");
+            double totalPmtAmount = 0; //已分配的优惠金额
+            int index = 0;
             List<SAPOrderItem> sapOrderItemList = sapSaleOrderInfo.getSapOrderItems();
             for (SAPOrderItem sapOrderItem : sapOrderItemList) {
+                double percent = sapOrderItem.getAmount() * sapOrderItem.getNum() / sapSaleOrderInfo.getCostItem();
+                double subPmtAmount = index == sapOrderItemList.size() - 1 ?
+                        sapSaleOrderInfo.getPmtAmount() - totalPmtAmount :
+                        sapSaleOrderInfo.getPmtAmount() * percent;
+                double netPrice = sapOrderItem.getPrice() - sapOrderItem.getAmount() - subPmtAmount; //净价 市场价-销售价-优惠金额
                 jCoTable.appendRow();
                 jCoTable.setValue("ZKONDM", "01");
                 jCoTable.setValue("ZTYPE", sapSaleOrderInfo.getOrderType());
@@ -158,18 +171,21 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                 //jCoTable.setValue("VTWEG", sapSaleOrderInfo.getDistributWay());
                 //jCoTable.setValue("SPART", sapSaleOrderInfo.getGoodsOrg());
                 //jCoTable.setValue("MATNR", "000000000010000668");
-                jCoTable.setValue("MATNR", sapOrderItem.getName());
+//                jCoTable.setValue("MATNR", sapOrderItem.getName());
+                jCoTable.setValue("MATNR", sapOrderItem.getProductBn());
                 jCoTable.setValue("KWMENG", sapOrderItem.getNum());
                 jCoTable.setValue("VRKME", sapSaleOrderInfo.getOrganization());
                 //jCoTable.setValue("WERKS", sapSaleOrderInfo.getProvederFactory());
                 //jCoTable.setValue("LGORT", sapSaleOrderInfo.getGoodsAddr());
-                jCoTable.setValue("NETPR", sapOrderItem.getAmount());
+                jCoTable.setValue("NETPR", netPrice);
 
                 //到时order 中需传递发票相关信息
                 jCoTable.setValue("ZFP", sapSaleOrderInfo.isInvoiceIsopen() ? "X" : null);
 
                 jCoTable.setValue("ZTITLE", sapSaleOrderInfo.getInvoiceTitle());
                 //jCoTable.setValue("ZWMORDER", sapSaleOrderInfo.getLogiNo());
+                index++;
+                totalPmtAmount += subPmtAmount;
             }
 
             jCoFunction.execute(jCoDestination);

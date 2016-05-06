@@ -19,15 +19,15 @@
 <script type="text/javascript">
     var edbConfigHandler = {
         getConfig: function () {
-            var requestUrl = $.trim($("#requestUrl").val());
-            var dbhost = $.trim($("#dbhost").val());
-            var edbAppKey = $.trim($("#edbAppKey").val());
-            var appSecret = $.trim($("#appSecret").val());
-            var edbToken = $.trim($("#edbToken").val());
-            var ip = $.trim($("#ip").val());
-            var shopId = $.trim($("#shopId").val());
-            var storageId = $.trim($("#storageId").val());
-            var express = $.trim($("#express").val());
+            var requestUrl = $.trim($("#edb_requestUrl").val());
+            var dbhost = $.trim($("#edb_dbhost").val());
+            var edbAppKey = $.trim($("#edb_appKey").val());
+            var appSecret = $.trim($("#edb_appSecret").val());
+            var edbToken = $.trim($("#edb_token").val());
+            var ip = $.trim($("#edb_ip").val());
+            var shopId = $.trim($("#edb_shopId").val());
+            var storageId = $.trim($("#edb_storageId").val());
+            var express = $.trim($("#edb_express").val());
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入请求地址");
                 return null;
@@ -81,15 +81,15 @@
             return JSON.stringify(edbConfig);
         },
         setValues: function (jsonData) {
-            $("#requestUrl").val(jsonData.requestUrl);
-            $("#dbhost").val(jsonData.dbHost);
-            $("#edbAppKey").val(jsonData.appKey);
-            $("#appSecret").val(jsonData.appSecret);
-            $("#edbToken").val(jsonData.token);
-            $("#ip").val(jsonData.ip);
-            $("#shopId").val(jsonData.shopId);
-            $("#storageId").val(jsonData.storageId);
-            $("#express").val(jsonData.express);
+            $("#edb_requestUrl").val(jsonData.requestUrl);
+            $("#edb_dbhost").val(jsonData.dbHost);
+            $("#edb_appKey").val(jsonData.appKey);
+            $("#edb_appSecret").val(jsonData.appSecret);
+            $("#edb_token").val(jsonData.token);
+            $("#edb_ip").val(jsonData.ip);
+            $("#edb_shopId").val(jsonData.shopId);
+            $("#edb_storageId").val(jsonData.storageId);
+            $("#edb_express").val(jsonData.express);
 
         }
     };
@@ -99,62 +99,62 @@
     <tr>
         <th style="vertical-align: middle;">请求地址：</th>
         <td>
-            <input name="requestUrl" type="text" value="" id="requestUrl" class="input-normal"/>
+            <input name="edb_requestUrl" type="text" value="" id="edb_requestUrl" class="input-normal"/>
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">dbhost：</th>
         <td>
-            <input name="dbhost" type="text" value="" id="dbhost" class="input-normal"/>
+            <input name="edb_dbhost" type="text" value="" id="edb_dbhost" class="input-normal"/>
             （软件注册用户，比如edb_aXXXXX（接口调用的唯一标识），用户的主帐号）
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">appKey：</th>
         <td>
-            <input name="edbAppKey" type="text" value="" id="edbAppKey" class="input-normal"/>
+            <input name="edb_appKey" type="text" value="" id="edb_appKey" class="input-normal"/>
             （公钥，你申请的appkey， 以标识来源）
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">appSecret：</th>
         <td>
-            <input name="appSecret" type="text" value="" id="appSecret" class="input-normal"/>
+            <input name="edb_appSecret" type="text" value="" id="edb_appSecret" class="input-normal"/>
             （可在edb开发者后台查看）
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">token：</th>
         <td>
-            <input name="edbToken" type="text" value="" id="edbToken" class="input-normal"/>
+            <input name="edb_token" type="text" value="" id="edb_token" class="input-normal"/>
             （可在edb开发者后台查看）
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">ip：</th>
         <td>
-            <input name="ip" type="text" value="" id="ip" class="input-normal"/>
+            <input name="edb_ip" type="text" value="" id="edb_ip" class="input-normal"/>
             （可在edb开发者后台查看）
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">店铺编号：</th>
         <td>
-            <input name="shopId" type="text" value="" id="shopId" class="input-normal"/>
+            <input name="edb_shopId" type="text" value="" id="edb_shopId" class="input-normal"/>
             （E店宝客户端档案管理→基本档案→店铺设置中查看）
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">仓库编号：</th>
         <td>
-            <input name="storageId" type="text" value="" id="storageId" class="input-normal"/>
+            <input name="edb_storageId" type="text" value="" id="edb_storageId" class="input-normal"/>
             （E店宝客户端档案管理→仓库档案→仓库设置中查看）
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">默认快递公司：</th>
         <td>
-            <input name="express" type="text" value="" id="express" class="input-normal"/>
+            <input name="edb_express" type="text" value="" id="edb_express" class="input-normal"/>
             （E店宝客户端档案管理→仓库档案→快递公司设置查看）
         </td>
     </tr>

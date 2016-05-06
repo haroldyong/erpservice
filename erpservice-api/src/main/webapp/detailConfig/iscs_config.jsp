@@ -19,12 +19,12 @@
 <script type="text/javascript">
     var iscsConfigHandler = {
         getConfig: function () {
-            var host = $.trim($("#host").val());
-            var appKey = $.trim($("#appKey").val());
-            var appSecret = $.trim($("#appSecret").val());
-            var ownerId = $.trim($("#ownerId").val());
-            var shopId = $.trim($("#shopId").val());
-            var stockId = $.trim($("#stockId").val());
+            var host = $.trim($("#iscs_host").val());
+            var appKey = $.trim($("#iscs_appKey").val());
+            var appSecret = $.trim($("#iscs_appSecret").val());
+            var ownerId = $.trim($("#iscs_ownerId").val());
+            var shopId = $.trim($("#iscs_shopId").val());
+            var stockId = $.trim($("#iscs_stockId").val());
 
             if (host.length == 0) {
                 $.jBox.tip("请输入SAP服务器");
@@ -50,7 +50,7 @@
                 $.jBox.tip("请输入仓库id");
                 return null;
             }
-            var edbConfig = {
+            var iscsConfig = {
                 host: host,
                 appKey: appKey,
                 appSecret: appSecret,
@@ -58,15 +58,15 @@
                 shopId: shopId,
                 stockId: stockId
             };
-            return JSON.stringify(edbConfig);
+            return JSON.stringify(iscsConfig);
         },
         setValues: function (jsonData) {
-            $("#host").val(jsonData.host);
-            $("#appKey").val(jsonData.appKey);
-            $("#appSecret").val(jsonData.appSecret);
-            $("#ownerId").val(jsonData.ownerId);
-            $("#shopId").val(jsonData.shopId);
-            $("#stockId").val(jsonData.stockId);
+            $("#iscs_host").val(jsonData.host);
+            $("#iscs_appKey").val(jsonData.appKey);
+            $("#iscs_appSecret").val(jsonData.appSecret);
+            $("#iscs_ownerId").val(jsonData.ownerId);
+            $("#iscs_shopId").val(jsonData.shopId);
+            $("#iscs_stockId").val(jsonData.stockId);
 
         }
     };
@@ -76,37 +76,37 @@
     <tr>
         <th style="vertical-align: middle;">网仓服务器地址：</th>
         <td>
-            <input name="host" type="text" value="" id="host" class="input-normal"/>
+            <input name="host" type="text" value="" id="iscs_host" class="input-normal"/>
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">客户id：</th>
         <td>
-            <input name="appKey" type="text" value="" id="appKey" class="input-normal"/>
+            <input name="appKey" type="text" value="" id="iscs_appKey" class="input-normal"/>
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">客户接口密钥：</th>
         <td>
-            <input name="appSecret" type="text" value="" id="appSecret" class="input-normal"/>
+            <input name="appSecret" type="text" value="" id="iscs_appSecret" class="input-normal"/>
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">货主id：</th>
         <td>
-            <input name="ownerId" type="text" value="" id="ownerId" class="input-normal"/>
+            <input name="ownerId" type="text" value="" id="iscs_ownerId" class="input-normal"/>
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">店铺id：</th>
         <td>
-            <input name="shopId" type="text" value="" id="shopId" class="input-normal"/>
+            <input name="shopId" type="text" value="" id="iscs_shopId" class="input-normal"/>
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">仓库id：</th>
         <td>
-            <input name="stockId" type="text" value="" id="stockId" class="input-normal"/>
+            <input name="stockId" type="text" value="" id="iscs_stockId" class="input-normal"/>
         </td>
     </tr>
     </tbody>

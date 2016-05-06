@@ -19,12 +19,12 @@
 <script type="text/javascript">
     var sapConfigHandler = {
         getConfig: function () {
-            var host = $.trim($("#host").val());
-            var sysNo = $.trim($("#sysNo").val());
-            var client = $.trim($("#client").val());
-            var jcoUser = $.trim($("#jcoUser").val());
-            var jcoPass = $.trim($("#jcoPass").val());
-            var sapRouter = $.trim($("#sapRouter").val());
+            var host = $.trim($("#sap_host").val());
+            var sysNo = $.trim($("#sap_sysNo").val());
+            var client = $.trim($("#sap_client").val());
+            var jcoUser = $.trim($("#sap_jcoUser").val());
+            var jcoPass = $.trim($("#sap_jcoPass").val());
+            var sapRouter = $.trim($("#sap_sapRouter").val());
             if (host.length == 0) {
                 $.jBox.tip("请输入SAP服务器");
                 return null;
@@ -60,12 +60,12 @@
             return JSON.stringify(edbConfig);
         },
         setValues: function (jsonData) {
-            $("#host").val(jsonData.host);
-            $("#sysNo").val(jsonData.sysNo);
-            $("#client").val(jsonData.client);
-            $("#jcoUser").val(jsonData.jcoUser);
-            $("#jcoPass").val(jsonData.jcoPass);
-            $("#sapRouter").val(jsonData.sapRouter);
+            $("#sap_host").val(jsonData.host);
+            $("#sap_sysNo").val(jsonData.sysNo);
+            $("#sap_client").val(jsonData.client);
+            $("#sap_jcoUser").val(jsonData.jcoUser);
+            $("#sap_jcoPass").val(jsonData.jcoPass);
+            $("#sap_sapRouter").val(jsonData.sapRouter);
 
         }
     };
@@ -75,37 +75,37 @@
     <tr>
         <th style="vertical-align: middle;">服务器（JCO_ASHOST）：</th>
         <td>
-            <input name="host" type="text" value="" id="host" class="input-normal"/>
+            <input name="host" type="text" value="" id="sap_host" class="input-normal"/>
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">系统编号（JCO_SYSNR）：</th>
         <td>
-            <input name="sysNo" type="text" value="" id="sysNo" class="input-normal"/>
+            <input name="sysNo" type="text" value="" id="sap_sysNo" class="input-normal"/>
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">SAP集团（JCO_CLIENT）：</th>
         <td>
-            <input name="client" type="text" value="" id="client" class="input-normal"/>
+            <input name="client" type="text" value="" id="sap_client" class="input-normal"/>
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">SAP用户名（JCO_USER）：</th>
         <td>
-            <input name="jcoUser" type="text" value="" id="jcoUser" class="input-normal"/>
+            <input name="jcoUser" type="text" value="" id="sap_jcoUser" class="input-normal"/>
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">SAP登录密码（JCO_PASSWD）：</th>
         <td>
-            <input name="jcoPass" type="text" value="" id="jcoPass" class="input-normal"/>
+            <input name="jcoPass" type="text" value="" id="sap_jcoPass" class="input-normal"/>
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">SAP路由（JCO_SAPROUTER）：</th>
         <td>
-            <input name="sapRouter" type="text" value="" id="sapRouter" class="input-normal"/>
+            <input name="sapRouter" type="text" value="" id="sap_sapRouter" class="input-normal"/>
         </td>
     </tr>
     </tbody>

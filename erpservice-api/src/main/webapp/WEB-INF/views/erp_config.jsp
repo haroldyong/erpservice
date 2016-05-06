@@ -119,6 +119,8 @@
                         return sapConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.ISCS.getCode()%>:
                         return iscsConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.LGJ.getCode()%>:
+                        return lgjConfigHandler;
                 }
             }
         };
@@ -271,7 +273,10 @@
                                 </div>
 
                                 <div id="detailConfig_<%=ERPTypeEnum.ProviderType.ISCS.getCode()%>">
-
+                                    <%@include file="/detailConfig/iscs_config.jsp" %>
+                                </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.LGJ.getCode()%>">
+                                    <%@include file="/detailConfig/lgj_config.jsp" %>
                                 </div>
                             </div>
                         </div>
