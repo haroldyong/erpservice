@@ -65,7 +65,8 @@ public class OrderProxyControllerForEDBTest extends OrderProxyTest {
     }
 
     @Test
-    public void testUpdateOrder() throws Exception {
+    public void testObtainOrder() throws Exception {
+
     }
 
     @Test
