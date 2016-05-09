@@ -9,6 +9,8 @@
 
 package com.huobanplus.erpservice.proxy.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
@@ -16,6 +18,7 @@ import com.huobanplus.erpprovider.edb.service.EDBScheduledService;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.commons.config.WebConfig;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +27,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by allan on 4/25/16.
@@ -62,9 +68,37 @@ public class OrderSyncTest extends SpringWebTest {
         edbOrderSearch.setShopId(sysData.getShopId());
 //        edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
 //        edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
-        edbOrderSearch.setOrderId("2016050381142748");
+        edbOrderSearch.setOrderId("2016050742913374");
         EventResult eventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
+        JSONObject result = (JSONObject) eventResult.getData();
+        JSONArray resultArray = result.getJSONObject("items").getJSONArray("item");
+        JSONObject orderInfoJson = resultArray.getJSONObject(0);
+//        JSONArray orderItemJsonArray = orderInfoJson.getJSONArray("tid_item");
+
+        //E店宝会将两笔相同信息的订单合并成一笔订单,所以需要进行一次拆分
+        List<String> splitOrderId = new ArrayList<>();
+        List<OrderDeliveryInfo> splitOrderDelivers = new ArrayList<>(); //已拆分的订单物流信息
+//            String deliverItemsStr = "";
+
+        //模拟拆分物流信息
+        JSONObject orderItem1 = new JSONObject();
+        orderItem1.put("out_tid", "123");
+        orderItem1.put("barcode", "89403");
+        orderItem1.put("pro_num", 1);
+        JSONObject orderItem2 = new JSONObject();
+        orderItem2.put("out_tid", "123");
+        orderItem2.put("barcode", "123123");
+        orderItem2.put("pro_num", 2);
+        JSONObject orderItem3 = new JSONObject();
+        orderItem3.put("out_tid", "1234");
+        orderItem3.put("barcode", "12993");
+        orderItem3.put("pro_num", 1);
+        JSONArray orderItemJsonArray = new JSONArray();
+        orderItemJsonArray.add(orderItem1);
+        orderItemJsonArray.add(orderItem2);
+        orderItemJsonArray.add(orderItem3);
+
         System.out.println(111);
-        edbScheduledService.syncOrderShip();
+//        edbScheduledService.syncOrderShip();
     }
 }

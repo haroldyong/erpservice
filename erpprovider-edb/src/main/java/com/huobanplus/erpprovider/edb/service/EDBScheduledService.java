@@ -307,22 +307,34 @@ public class EDBScheduledService {
         List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
         for (Object o : resultArray) {
             JSONObject orderInfoJson = (JSONObject) o;
-
             JSONArray orderItemJsonArray = orderInfoJson.getJSONArray("tid_item");
-            String deliverItemsStr = "";
+
+            //E店宝会将两笔相同信息的订单合并成一笔订单,所以需要进行一次拆分
+            List<String> splitOrderIdList = new ArrayList<>(); //已分配的订单号
+            List<OrderDeliveryInfo> splitOrderDelivers = new ArrayList<>(); //已拆分的订单物流信息
             for (Object itemObj : orderItemJsonArray) {
                 JSONObject orderItemJson = (JSONObject) itemObj;
-                String productBn = orderItemJson.getString("barcode");
-                int proNum = orderItemJson.getInteger("pro_num");
-                deliverItemsStr += productBn + "," + proNum + "|";
-            }
 
-            OrderDeliveryInfo deliveryInfo = new OrderDeliveryInfo();
-            deliveryInfo.setOrderId(orderInfoJson.getString("out_tid"));
-            deliveryInfo.setLogiName(orderInfoJson.getString("express"));
-            deliveryInfo.setLogiNo(orderInfoJson.getString("express_no"));
-            deliveryInfo.setDeliverItemsStr(deliverItemsStr.substring(0, deliverItemsStr.length() - 1));
-            orderDeliveryInfoList.add(deliveryInfo);
+                String originOrderId = orderItemJson.getString("out_tid"); //原始订单号
+                String productBn = orderItemJson.getString("barcode"); //货号
+                int proNum = orderItemJson.getInteger("pro_num"); //货品数量
+
+                if (splitOrderIdList.indexOf(originOrderId) == -1) {
+                    //未分配的订单
+                    OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
+                    orderDeliveryInfo.setOrderId(originOrderId);
+                    orderDeliveryInfo.setLogiName(orderInfoJson.getString("express"));
+                    orderDeliveryInfo.setLogiNo(orderInfoJson.getString("express_no"));
+                    orderDeliveryInfo.setDeliverItemsStr(productBn + "," + proNum);
+                    splitOrderDelivers.add(orderDeliveryInfo);
+                    splitOrderIdList.add(originOrderId);//加入到已分配订单号列表中
+                } else {
+                    //已分配的订单
+                    OrderDeliveryInfo orderDeliveryInfo = splitOrderDelivers.stream().filter(p -> p.getOrderId().equals(originOrderId)).findFirst().get();
+                    orderDeliveryInfo.setDeliverItemsStr(orderDeliveryInfo.getDeliverItemsStr() + "|" + productBn + "," + proNum);
+                }
+            }
+            orderDeliveryInfoList.addAll(splitOrderDelivers);
         }
         return orderDeliveryInfoList;
     }
