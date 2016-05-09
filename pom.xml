@@ -30,6 +30,7 @@
         <module>erpprovider-sap</module>
         <module>erpprovider-iscs</module>
         <module>erpprovider-LGJ</module>
+        <module>erpprovider-gy</module>
     </modules>
 
     <properties>
