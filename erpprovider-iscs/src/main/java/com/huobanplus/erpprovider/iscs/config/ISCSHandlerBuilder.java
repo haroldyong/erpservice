@@ -9,13 +9,16 @@
 
 package com.huobanplus.erpprovider.iscs.config;
 
+import com.huobanplus.erpprovider.iscs.handler.ISCSOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +28,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component
 public class ISCSHandlerBuilder implements ERPHandlerBuilder {
+
+    @Autowired
+    private ISCSOrderHandler iscsOrderHandler;
+
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
         return new ERPHandler() {
@@ -40,8 +47,11 @@ public class ISCSHandlerBuilder implements ERPHandlerBuilder {
             public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                 if (erpBaseEvent instanceof PushNewOrderEvent) {
                     PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-
-
+                    return iscsOrderHandler.pushOrder(pushNewOrderEvent);
+                }
+                if (erpBaseEvent instanceof PushReturnInfoEvent){
+                    PushReturnInfoEvent pushReturnInfoEvent = (PushReturnInfoEvent) erpBaseEvent;
+                    return iscsOrderHandler.pushReturnOrder(pushReturnInfoEvent);
                 }
                 return null;
             }
