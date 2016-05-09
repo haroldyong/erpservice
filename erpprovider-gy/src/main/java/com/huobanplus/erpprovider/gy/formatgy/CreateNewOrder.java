@@ -206,15 +206,15 @@ public class CreateNewOrder {
     /*
      *invoices[] 	List 	是 			发票信息数组
      */
-    private List invoices;
+    private List<Invoice> invoices;
 
     /*
      *details[] 	List 				商品信息数组
      */
-    private List details;
+    private List<OrderItem> details;
 
     /*
      *payments[] 	List 	是 			支付信息数组
      */
-    private List payments;
+    private List<Payment> payments;
 }

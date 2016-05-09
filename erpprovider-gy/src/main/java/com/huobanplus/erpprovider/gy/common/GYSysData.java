@@ -40,6 +40,7 @@ public class GYSysData {
     /*
      *签名信息
      */
-    private String sign;
+    private String secret;
+
 
 }
