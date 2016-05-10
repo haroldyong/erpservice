@@ -16,9 +16,6 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:useBean id="erpTypeList" scope="request"
-             type="com.huobanplus.erpservice.datacenter.common.ERPTypeEnum.ProviderType[]"/>
-<jsp:useBean id="baseConfig" scope="request" type="com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity"/>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1">
