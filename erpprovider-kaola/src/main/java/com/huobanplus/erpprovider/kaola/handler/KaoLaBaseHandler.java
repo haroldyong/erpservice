@@ -1,10 +1,9 @@
 package com.huobanplus.erpprovider.kaola.handler;
 
 import com.huobanplus.erpprovider.kaola.common.KaoLaSysData;
-import org.apache.commons.codec.digest.DigestUtils;
+import com.huobanplus.erpservice.common.util.SignBuilder;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -20,20 +19,21 @@ public class KaoLaBaseHandler {
      * @return
      * @throws UnsupportedEncodingException
      */
-    protected String buildSign(KaoLaSysData sysData, Map<String,Object> parameterMap) throws UnsupportedEncodingException {
-        StringBuilder signStr = new StringBuilder();
-        String parStr = "";
-        Iterator iterator = parameterMap.entrySet().iterator();
+//    protected String buildSign(KaoLaSysData sysData, Map<String,Object> parameterMap) throws UnsupportedEncodingException {
+//        StringBuilder signStr = new StringBuilder();
+//        String parStr = "";
+//        Iterator iterator = parameterMap.entrySet().iterator();
+//
+//        while (iterator.hasNext()){
+//            Map.Entry ent=(Map.Entry )iterator.next();
+//            String key=ent.getKey().toString();
+//            String value=ent.getValue().toString();
+//            parStr += key+value;
+//        }
+//        signStr.append(sysData.getAppSecret()).append(parStr).append(sysData.getAppSecret());
+//        return DigestUtils.md5Hex(signStr.toString().getBytes("utf-8")).toUpperCase();
+//    }
 
-        while (iterator.hasNext()){
-            Map.Entry ent=(Map.Entry )iterator.next();
-            String key=ent.getKey().toString();
-            String value=ent.getValue().toString();
-            parStr += key+value;
-        }
-        signStr.append(sysData.getAppSecret()).append(parStr).append(sysData.getAppSecret());
-        return DigestUtils.md5Hex(signStr.toString().getBytes("utf-8")).toUpperCase();
-    }
 
     /**
      * 得到一个请求参数map
@@ -44,7 +44,7 @@ public class KaoLaBaseHandler {
      * @throws UnsupportedEncodingException
      */
     protected Map<String, Object> getRequestData(KaoLaSysData sysData,Map<String,Object> parameterMap) throws UnsupportedEncodingException {
-        parameterMap.put("sign",buildSign(sysData,parameterMap));
+        parameterMap.put("sign",SignBuilder.buildSign(parameterMap,sysData.getAppSecret(),sysData.getAppSecret()));
         return parameterMap;
     }
 }

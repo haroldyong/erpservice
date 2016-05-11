@@ -9,10 +9,28 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
  */
 public interface KaoLaGoodsInfoHandler {
 
-    EventResult queryAllGoodsInfo(KaoLaSysData sysData,KaoLaGoodsInfoSearch kaoLaGoodsInfoSearch);
+    /**
+     *  查询所有商品信息
+     * @param kaoLaSysData 考拉系统参数
+     * @param kaoLaGoodsInfoSearch
+     * @return
+     */
+    EventResult queryAllGoodsInfo(KaoLaSysData kaoLaSysData,KaoLaGoodsInfoSearch kaoLaGoodsInfoSearch);
 
-    EventResult queryAllGoodsId();
+    /**
+     *  查询所有商品的ID
+     * @param kaoLaSysData
+     * @param kaoLaGoodsInfoSearch
+     * @return
+     */
+    EventResult queryAllGoodsId(KaoLaSysData kaoLaSysData,KaoLaGoodsInfoSearch kaoLaGoodsInfoSearch);
 
-    EventResult queryGoodsInfoById();
+    /**
+     * 根据id查询商品信息
+     * @param kaoLaSysData
+     * @param kaoLaGoodsInfoSearch
+     * @return
+     */
+    EventResult queryGoodsInfoById(KaoLaSysData kaoLaSysData,KaoLaGoodsInfoSearch kaoLaGoodsInfoSearch);
 
 }
