@@ -26,8 +26,8 @@ public class KaoLaGoodsInfoHandlerTest extends KaoLaTestBase {
     @Before
     public void setUp(){
         mockKaoLaSysData = new KaoLaSysData();
-        mockKaoLaSysData.setAppKey("0dd1a2b29d6e4bfebce479450889b4b2");
-        mockKaoLaSysData.setAppSecret("3cf1a3ed8556444bbd1fbd8b9381c8bb");
+        mockKaoLaSysData.setAppKey("bb0b3ad64c9e5eb06c2fb6f163bf179e79051bd5c9b652fc45dc68a2b5dd23c6");
+        mockKaoLaSysData.setAppSecret("4ed8b056c32939b9fd66987470b3e9fb720bdded02197e678e516bdcdf810833");
         mockKaoLaSysData.setHost("http://223.252.220.85/api");//http://thirdpart.kaola.com/api,http://223.252.220.85/api
         mockKaoLaSysData.setV("1.0");
 
@@ -35,11 +35,25 @@ public class KaoLaGoodsInfoHandlerTest extends KaoLaTestBase {
         mockKaoLaGoodsInfoSearch.setChannelId(1L);
         String timeStr = StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN);
         mockKaoLaGoodsInfoSearch.setTimeStamp(timeStr);
+        mockKaoLaGoodsInfoSearch.setSkuId("1");
+        mockKaoLaGoodsInfoSearch.setQueryType(0);
     }
 
     @Test
     public void testQueryAllGoodsInfo(){
-        EventResult eventResult   = kaoLaGoodsInfoHandler.queryAllGoodsInfo(mockKaoLaSysData, mockKaoLaGoodsInfoSearch);
+        EventResult eventResult = kaoLaGoodsInfoHandler.queryAllGoodsInfo(mockKaoLaSysData, mockKaoLaGoodsInfoSearch);
+        System.out.println(eventResult.getResultMsg());
+    }
+
+    @Test
+    public void testQueryAllGoodsId(){
+        EventResult eventResult = kaoLaGoodsInfoHandler.queryAllGoodsId(mockKaoLaSysData, mockKaoLaGoodsInfoSearch);
+        System.out.println(eventResult.getResultMsg());
+    }
+
+    @Test
+    public void testQueryGoodsInfoById(){
+        EventResult eventResult  = kaoLaGoodsInfoHandler.queryGoodsInfoById(mockKaoLaSysData, mockKaoLaGoodsInfoSearch);
         System.out.println(eventResult.getResultMsg());
     }
 
