@@ -31,6 +31,7 @@
         <module>erpprovider-iscs</module>
         <module>erpprovider-LGJ</module>
         <module>erpprovider-gy</module>
+        <module>erpprovider-kaola</module>
     </modules>
 
     <properties>
