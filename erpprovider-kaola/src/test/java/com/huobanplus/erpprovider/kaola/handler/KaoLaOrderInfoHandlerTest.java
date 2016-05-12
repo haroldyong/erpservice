@@ -71,7 +71,7 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
         }
 
         mockOrder = new Order();
-        mockOrder.setOrderId("123");
+        mockOrder.setOrderId("25874125852656s565d");
         mockOrder.setMemberId(1);
         mockOrder.setShipName("wuxiongliu");
         mockOrder.setShipMobile("18705153967");

@@ -1,6 +1,7 @@
 package com.huobanplus.erpprovider.kaola.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.kaola.common.KaoLaSysData;
 import com.huobanplus.erpprovider.kaola.formatkaola.KaoLaOrderItem;
@@ -57,7 +58,37 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                 if(result.getString("recCode").equals("200")){
                     // TODO: 2016/5/9
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+
+                    List<Order> orderList = new ArrayList<>();
+                    JSONArray jsonArray = result.getJSONArray("result");
+
+                    jsonArray.forEach(order ->{
+
+                        List<OrderItem> orderItemList = new ArrayList<>();
+                        Order resultOrder = new Order();
+                        JSONObject jsonObject = JSON.parseObject(order.toString());
+                        resultOrder.setOrderId(jsonObject.getString("orderId"));
+                        resultOrder.setOrderStatus(jsonObject.getInteger("status"));
+//                        String desc = jsonObject.getString("desc");
+                        resultOrder.setLogiName(jsonObject.getString("deliverName"));
+
+                        JSONArray orderItems = jsonObject.getJSONArray("skuList");
+                        if(orderItems != null){
+                            orderItems.forEach(item->{
+                                OrderItem orderItem = new OrderItem();
+                                JSONObject itemJson = JSON.parseObject(item.toString());
+                                orderItem.setItemId(Integer.parseInt(itemJson.getString("skuid")));
+                                orderItem.setNum(itemJson.getInteger("buyCnt"));
+                                orderItemList.add(orderItem);
+                            });
+                        }
+
+                        resultOrder.setOrderItems(orderItemList);
+                        orderList.add(resultOrder);
+                    });
+
+                    // 返回订单list
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,orderList);
                 }else{
                     return EventResult.resultWith(EventResultEnum.ERROR,result.get("recMeg").toString(),null);
                 }
@@ -85,7 +116,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
         orderItems.forEach(item->{
             KaoLaOrderItem kaoLaOrderItem = new KaoLaOrderItem();
-            kaoLaOrderItem.setGoodsId("123");
+            kaoLaOrderItem.setGoodsId(String.valueOf(item.getItemId()));
             kaoLaOrderItem.setSkuId("123");
             kaoLaOrderItem.setBuyAmount(item.getNum());
             kaoLaOrderItems.add(kaoLaOrderItem);
@@ -147,7 +178,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
                 System.out.println("****************************");
                 if(result.getString("recCode").equals("200")){
                     // TODO: 2016/5/9
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,result.getString("gorder"));
                 }else{
                     return EventResult.resultWith(EventResultEnum.ERROR,result.get("recMeg").toString(),null);
                 }
