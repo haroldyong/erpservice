@@ -265,37 +265,39 @@ public class EDBScheduledService {
                         }
                     }
                 }
-                int successCount = successOrders.size(), failedCount = failedOrders.size();
-                //发货同步记录
-                OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
-                orderShipSyncLog.setProviderType(erpInfo.getErpType());
-                orderShipSyncLog.setUserType(erpUserInfo.getErpUserType());
-                orderShipSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-                orderShipSyncLog.setTotalCount(totalCount);
-                orderShipSyncLog.setSuccessCount(successCount);
-                orderShipSyncLog.setFailedCount(failedCount);
-                orderShipSyncLog.setSyncTime(now);
                 if (totalCount > 0) {
-                    if (successCount > 0 && failedCount > 0) {
-                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
+                    int successCount = successOrders.size(), failedCount = failedOrders.size();
+                    //发货同步记录
+                    OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
+                    orderShipSyncLog.setProviderType(erpInfo.getErpType());
+                    orderShipSyncLog.setUserType(erpUserInfo.getErpUserType());
+                    orderShipSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+                    orderShipSyncLog.setTotalCount(totalCount);
+                    orderShipSyncLog.setSuccessCount(successCount);
+                    orderShipSyncLog.setFailedCount(failedCount);
+                    orderShipSyncLog.setSyncTime(now);
+                    if (totalCount > 0) {
+                        if (successCount > 0 && failedCount > 0) {
+                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
+                        }
+                        if (successCount > 0 && failedCount == 0) {
+                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+                        }
+                        if (successCount == 0) {
+                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                        }
+                    } else {
+                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.NO_DATA);
                     }
-                    if (successCount > 0 && failedCount == 0) {
-                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-                    }
-                    if (successCount == 0) {
-                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
-                    }
-                } else {
-                    orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.NO_DATA);
+                    orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
+
+                    List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
+
+                    shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                    shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+
+                    shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
                 }
-                orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
-
-                List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
-
-                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
-                shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-
-                shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
             } catch (Exception e) {
                 log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
             }
