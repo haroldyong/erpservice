@@ -3,8 +3,8 @@ package com.huobanplus.erpprovider.iscs.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.iscs.ISCSTestBase;
 import com.huobanplus.erpprovider.iscs.common.ISCSSysData;
-import com.huobanplus.erpprovider.iscs.formatiscs.ISCSCancelOrder;
 import com.huobanplus.erpprovider.iscs.handler.ISCSOrderHandler;
+import com.huobanplus.erpprovider.iscs.search.ISCSOrderSearch;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
@@ -47,8 +47,6 @@ public class ISCSOrderHandlerImplTest extends ISCSTestBase {
 
     private PushNewOrderEvent pushNewOrderEvent;
 
-    private ISCSCancelOrder mockIscsCancelOrder;
-
     private ISCSSysData mockIscsSysData;
 
     private OrderInfo mockOrderInfo;
@@ -86,7 +84,7 @@ public class ISCSOrderHandlerImplTest extends ISCSTestBase {
         mockIscsSysData.setAppKey("1900001");
         mockIscsSysData.setHost("http://testapi.iscs.com.cn/openapi/do");// http://ecmapi.iscs.com.cn/openapi/do
         Date now = new Date();
-        mockIscsSysData.setBeginTime(StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
+        //mockIscsSysData.setBeginTime(StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
 
         mockErpInfo = new ERPInfo();
         mockErpInfo.setErpType(ERPTypeEnum.ProviderType.ISCS);
@@ -176,6 +174,18 @@ public class ISCSOrderHandlerImplTest extends ISCSTestBase {
         cancelReturnOrderEvent.setErpInfo(mockErpInfo);
         cancelReturnOrderEvent.setOrderReturnNo("123456werwqre");
         iscsOrderHandler.cancelReturnOrder(cancelReturnOrderEvent);
+    }
+
+    @Test
+    public void testGetOrderDeliveryInfo(){
+        ISCSOrderSearch iscsOrderSearch = new ISCSOrderSearch();
+        iscsOrderSearch.setShopId(mockIscsSysData.getShopId());
+        iscsOrderSearch.setOrderNo(mockOrderNo);
+        iscsOrderSearch.setStockId(mockIscsSysData.getStockId());
+        iscsOrderSearch.setPageIndex(1);
+        iscsOrderSearch.setPageSize(10);
+
+        iscsOrderHandler.getOrderDeliveryInfo(mockIscsSysData,iscsOrderSearch);
     }
 
 }
