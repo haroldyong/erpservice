@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.kaola.KaoLaTestBase;
 import com.huobanplus.erpprovider.kaola.common.KaoLaSysData;
 import com.huobanplus.erpservice.common.util.StringUtil;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.erpevent.OrderStatusInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.model.OrderInfo;
 import org.junit.Before;
@@ -37,6 +39,8 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
     private List<OrderItem> mockOrderItems;
 
     private ERPInfo mockErpInfo;
+
+    private ERPUserInfo mockErpUserInfo;
 
     @Autowired
     private KaoLaOrderInfoHandler kaoLaOrderInfoHandler;
@@ -89,6 +93,10 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
         mockErpInfo.setSysDataJson(JSON.toJSONString(mockKaoLaSysData));
 
 
+        mockErpUserInfo = new ERPUserInfo();
+        mockErpUserInfo.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);
+        mockErpUserInfo.setCustomerId(23347);
+
 
     }
 
@@ -109,6 +117,7 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
         mockPushNewOrderEvent = new PushNewOrderEvent();
         mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
         mockPushNewOrderEvent.setErpInfo(mockErpInfo);
+        mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
 
         EventResult eventResult = kaoLaOrderInfoHandler.pushOrder(mockPushNewOrderEvent);
         System.out.println(eventResult.getResultMsg());

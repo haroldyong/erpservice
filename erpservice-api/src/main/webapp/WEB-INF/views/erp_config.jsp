@@ -118,6 +118,8 @@
                         return iscsConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.LGJ.getCode()%>:
                         return lgjConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.KAOLA.getCode()%>:
+                        return kaoLaConfigHandler;
                 }
             }
         };
@@ -275,6 +277,11 @@
                                 <div id="detailConfig_<%=ERPTypeEnum.ProviderType.LGJ.getCode()%>">
                                     <%@include file="/detailConfig/lgj_config.jsp" %>
                                 </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.KAOLA.getCode()%>">
+                                    <%@include file="/detailConfig/kaola_config.jsp" %>
+                                </div>
+                            </div>
+
                             </div>
                         </div>
                         <div style="text-align: center;">

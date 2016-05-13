@@ -20,7 +20,8 @@ public interface ERPTypeEnum {
         NETSHOP(1, "网店管家"),
         SAP(2, "SAP系统"),
         ISCS(3, "网仓"),
-        LGJ(4,"礼管家");
+        LGJ(4,"礼管家"),
+        KAOLA(5,"考拉");
 
         private int code;
         private String name;

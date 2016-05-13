@@ -10,7 +10,17 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 public interface KaoLaOrderInfoHandler {
 
+    /**
+     *  订单状态查询
+     * @param orderStatusInfoEvent
+     * @return
+     */
     EventResult queryOrderStatusInfo(OrderStatusInfoEvent orderStatusInfoEvent);
 
+    /**
+     *  代下单代支付
+     * @param pushNewOrderEvent
+     * @return
+     */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
 }
