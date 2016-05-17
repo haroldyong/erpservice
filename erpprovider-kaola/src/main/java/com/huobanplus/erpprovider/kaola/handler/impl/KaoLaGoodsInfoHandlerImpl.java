@@ -40,7 +40,7 @@ public class KaoLaGoodsInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
         try {
             Map<String,Object> requestData = getRequestData(kaoLaSysData,parameterMap);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getHost()+"/queryAllGoodsInfo",requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl()+"/queryAllGoodsInfo",requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                 if(result.getString("recCode").equals("200")){
@@ -82,7 +82,7 @@ public class KaoLaGoodsInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
         try {
             Map<String,Object> requestData = getRequestData(kaoLaSysData,parameterMap);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getHost()+"/queryAllGoodsId",requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl()+"/queryAllGoodsId",requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                 if(result.getString("recCode").equals("200")){
@@ -114,7 +114,7 @@ public class KaoLaGoodsInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
         try {
             Map<String,Object> requestData = getRequestData(kaoLaSysData,parameterMap);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getHost()+"/queryGoodsInfoById",requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl()+"/queryGoodsInfoById",requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                 if(result.getString("recCode").equals("200")){

@@ -57,8 +57,9 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
         mockKaoLaSysData = new KaoLaSysData();
         mockKaoLaSysData.setAppKey("0dd1a2b29d6e4bfebce479450889b4b2");
         mockKaoLaSysData.setAppSecret("3cf1a3ed8556444bbd1fbd8b9381c8bb");
-        mockKaoLaSysData.setHost("http://223.252.220.85/api");//http://thirdpart.kaola.com/api,http://223.252.220.85/api
+        mockKaoLaSysData.setRequestUrl("http://223.252.220.85/api");//http://thirdpart.kaola.com/api,http://223.252.220.85/api
         mockKaoLaSysData.setV("1.0");
+        mockKaoLaSysData.setChannelId(1200L);
 
 
         mockOrderInfo = new OrderInfo();

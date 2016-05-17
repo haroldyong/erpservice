@@ -49,7 +49,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
 
         Map<String,Object> parameterMap = new TreeMap<String,Object>();
-        parameterMap.put("channelId", orderInfo.getOrderChannel());
+        parameterMap.put("channelId", kaoLaSysData.getChannelId());
         parameterMap.put("thirdPartOrderId",orderInfo.getOrderCode());
         parameterMap.put("timestamp", StringUtil.DateFormat(orderInfo.getPayTime(),StringUtil.TIME_PATTERN));
         parameterMap.put("v",kaoLaSysData.getV());
@@ -59,7 +59,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
         try {
             Map<String,Object> requestData = getRequestData(kaoLaSysData,parameterMap);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getHost()+"/queryOrderStatus",requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl()+"/queryOrderStatus",requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                 if(result.getString("recCode").equals("200")){
@@ -162,7 +162,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
         Map<String,Object> parameterMap = new TreeMap<String,Object>();
 
-        parameterMap.put("source", 1200L);// FIXME: 2016/5/13
+        parameterMap.put("source", kaoLaSysData.getChannelId());// FIXME: 2016/5/13
         parameterMap.put("thirdPartOrderId",orderInfo.getOrderId());
         parameterMap.put("timestamp", orderInfo.getPayTime());
         parameterMap.put("v",kaoLaSysData.getV());
@@ -179,7 +179,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
         try{
             Map<String,Object> requestData = getRequestData(kaoLaSysData,parameterMap);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getHost()+"/bookpayorder",requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl()+"/bookpayorder",requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
 
 

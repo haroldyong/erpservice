@@ -11,7 +11,12 @@ public class KaoLaSysData {
     /**
      * 考拉服务器地址
      */
-    private String host;
+    private String requestUrl;
+
+    /**
+     *  渠道商ID
+     */
+    private Long channelId;
 
     /**
      * 分配给应用的AppKey ，创建应用时可获得
