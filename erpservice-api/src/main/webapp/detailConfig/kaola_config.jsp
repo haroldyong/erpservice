@@ -20,6 +20,7 @@
     var kaoLaConfigHandler = {
         getConfig: function () {
             var requestUrl = $.trim($("#kaola_requestUrl").val());
+            var channelId = $.trim($("#kaola_channelId").val());
             var kaolaAppKey = $.trim($("#kaola_appKey").val());
             var appSecret = $.trim($("#kaola_appSecret").val());
 
@@ -37,17 +38,20 @@
                 return null;
             }
 
-            var edbConfig = {
+            var kaolaConfig = {
                 requestUrl: requestUrl,
+                channelId: channelId,
                 appKey: kaolaAppKey,
                 appSecret: appSecret
             };
-            return JSON.stringify(edbConfig);
+            return JSON.stringify(kaolaConfig);
         },
         setValues: function (jsonData) {
             $("#kaola_requestUrl").val(jsonData.requestUrl);
+            $("#kaola_channelId").val(jsonData.channelId);
             $("#kaola_appKey").val(jsonData.appKey);
             $("#kaola_appSecret").val(jsonData.appSecret);
+
         }
     };
 </script>
@@ -56,21 +60,28 @@
     <tr>
         <th style="vertical-align: middle;">请求地址：</th>
         <td>
-            <input name="edb_requestUrl" type="text" value="" id="kaola_requestUrl" class="input-normal"/>
+            <input name="kaola_requestUrl" type="text" value="" id="kaola_requestUrl" class="input-normal"/>
+        </td>
+    </tr>
+
+    <tr>
+        <th style="vertical-align: middle;">渠道商ID：</th>
+        <td>
+            <input name="kaola_channelId" type="text" value="" id="kaola_channelId" class="input-normal"/>
         </td>
     </tr>
 
     <tr>
         <th style="vertical-align: middle;">appKey：</th>
         <td>
-            <input name="edb_appKey" type="text" value="" id="kaola_appKey" class="input-normal"/>
+            <input name="kaola_appKey" type="text" value="" id="kaola_appKey" class="input-normal"/>
             （公钥，你申请的appkey， 以标识来源）
         </td>
     </tr>
     <tr>
         <th style="vertical-align: middle;">appSecret：</th>
         <td>
-            <input name="edb_appSecret" type="text" value="" id="kaola_appSecret" class="input-normal"/>
+            <input name="kaola_appSecret" type="text" value="" id="kaola_appSecret" class="input-normal"/>
             （可在kaola开发者后台查看）
         </td>
     </tr>
