@@ -68,20 +68,11 @@ public class OrderSyncTest extends SpringWebTest {
         edbOrderSearch.setShopId(sysData.getShopId());
 //        edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
 //        edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
-        edbOrderSearch.setOrderId("2016050742913374");
+        edbOrderSearch.setOrderId("2016051383558943");
         EventResult eventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
         JSONObject result = (JSONObject) eventResult.getData();
         JSONArray resultArray = result.getJSONObject("items").getJSONArray("item");
-        JSONObject orderInfoJson = resultArray.getJSONObject(0);
-//        JSONArray orderItemJsonArray = orderInfoJson.getJSONArray("tid_item");
-
-        //E店宝会将两笔相同信息的订单合并成一笔订单,所以需要进行一次拆分
-        List<String> splitOrderId = new ArrayList<>();
-        List<OrderDeliveryInfo> splitOrderDelivers = new ArrayList<>(); //已拆分的订单物流信息
-//            String deliverItemsStr = "";
-
-        System.out.println(111);
-//        edbScheduledService.syncOrderShip();
+        List<OrderDeliveryInfo> list = edbScheduledService.orderDeliveryInfoList(resultArray);
     }
 
     @Test

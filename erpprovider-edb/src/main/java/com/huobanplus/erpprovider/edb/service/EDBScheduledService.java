@@ -305,7 +305,7 @@ public class EDBScheduledService {
         log.info("edb ship sync end");
     }
 
-    private List<OrderDeliveryInfo> orderDeliveryInfoList(JSONArray resultArray) {
+    public List<OrderDeliveryInfo> orderDeliveryInfoList(JSONArray resultArray) {
         List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
         for (Object o : resultArray) {
             JSONObject orderInfoJson = (JSONObject) o;
