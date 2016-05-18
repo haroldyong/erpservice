@@ -23,8 +23,11 @@ public class ISCSConfig {
     @Autowired
     private ERPRegister erpRegister;
 
+    @Autowired
+    private ISCSHandlerBuilder iscsHandlerBuilder;
+
     @PostConstruct
     public void init() {
-        erpRegister.addBuilders(null);
+        erpRegister.addBuilders(iscsHandlerBuilder);
     }
 }
