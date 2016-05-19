@@ -14,8 +14,11 @@ public class KaoLaConfig {
     @Autowired
     private ERPRegister erpRegister;
 
+    @Autowired
+    private KaoLaHandlerBuilder kaoLaHandlerBuilder;
+
     @PostConstruct
     public void init() {
-        erpRegister.addBuilders(null);
+        erpRegister.addBuilders(kaoLaHandlerBuilder);
     }
 }
