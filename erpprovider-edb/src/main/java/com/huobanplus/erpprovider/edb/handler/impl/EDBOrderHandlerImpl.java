@@ -155,6 +155,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
             } else {
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
             }
 
             orderDetailSyncLogService.save(orderDetailSyncLog);

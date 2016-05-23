@@ -79,15 +79,15 @@ public class OrderProxyTest extends SpringWebTest {
         edbConfig.setIsDefault(1);
         edbConfig.setCustomerId(baseConfig.getCustomerId());
         mockSysDataEdb = new EDBSysData();
-        mockSysDataEdb.setRequestUrl("http://qimen.6x86.net:10537/restxin/index.aspx");
-        mockSysDataEdb.setDbHost("edb_a99999");
-        mockSysDataEdb.setAppKey("c184567b");
-        mockSysDataEdb.setAppSecret("90353b57f17a4bf6a11263f0545ddbdc");
-        mockSysDataEdb.setToken("e6513e432b724720ae6b6ab4155e6ccb");
-        mockSysDataEdb.setIp("117.79.148.228");
-        mockSysDataEdb.setShopId("1");
+        mockSysDataEdb.setRequestUrl("http://vip545.edb05.com/rest/index.aspx");
+        mockSysDataEdb.setDbHost("edb_a84130");
+        mockSysDataEdb.setAppKey("43f7db02");
+        mockSysDataEdb.setAppSecret("1bf2a0bc51dc4eef8c188cc7e09572a7");
+        mockSysDataEdb.setToken("4d81a78f97d04b39b72407b8ada9b9e3");
+        mockSysDataEdb.setIp("183.131.19.145");
+        mockSysDataEdb.setShopId("10");
         mockSysDataEdb.setStorageId("1");
-        mockSysDataEdb.setExpress("申通");
+        mockSysDataEdb.setExpress("申通快递");
         mockSysDataEdb.setBeginTime(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN));
         String sysDataJson = JSON.toJSONString(mockSysDataEdb);
 
@@ -102,7 +102,7 @@ public class OrderProxyTest extends SpringWebTest {
         baseConfigForIscs.setAppKey(StringUtil.createRandomStr(8));
         baseConfigForIscs.setToken(StringUtil.createRandomStr32());
         baseConfigForIscs.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);
-        baseConfigForIscs = baseConfigRepository.saveAndFlush(baseConfig);
+        baseConfigForIscs = baseConfigRepository.saveAndFlush(baseConfigForIscs);
 
         iscsConfig = new ERPDetailConfigEntity();
         iscsConfig.setErpType(ERPTypeEnum.ProviderType.ISCS);

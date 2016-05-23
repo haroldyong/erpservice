@@ -144,6 +144,7 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
 
                 } else {
                     orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                    orderDetailSyncLog.setErrorMsg(httpResult.getHttpContent());
                     orderDetailSyncLogService.save(orderDetailSyncLog);
                     return EventResult.resultWith(EventResultEnum.ERROR, result.getString("subMessage"), null);
                 }
@@ -168,9 +169,9 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                 //如果有errorCode,说明失败了,返回失败信息
                 String errorCode = result.getString("errorCode");
-                if(errorCode.equals("100")){
+                if (errorCode.equals("100")) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, result);
-                }else{
+                } else {
                     return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorText"), null);
                 }
             }
@@ -399,19 +400,19 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
 
         try {
             Map<String, Object> requestData = getRequestData(iscsSysData, nowStr, "cancelBackTrade", JSON.toJSONString(iscsCancelReturnOrder));
-            HttpResult httpResult = HttpClientUtil.getInstance().post(iscsSysData.getHost(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            HttpResult httpResult = HttpClientUtil.getInstance().post(iscsSysData.getHost(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                 String errorCode = result.getString("errorCode");
-                if(errorCode.equals("100")){
+                if (errorCode.equals("100")) {
                     String data = result.getString("data");
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
 
-                }else{
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorText"),null);
+                } else {
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorText"), null);
                 }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
 
         } catch (UnsupportedEncodingException e) {

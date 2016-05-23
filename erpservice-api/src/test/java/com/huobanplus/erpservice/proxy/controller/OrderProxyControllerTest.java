@@ -34,7 +34,7 @@ public class OrderProxyControllerTest extends OrderProxyTest {
     @Test
     public void testCreateOrder() throws Exception {
         //创建EDB订单
-        String mockEdbProductBn = "CP12011GG1";
+        String mockEdbProductBn = "M6318CLM";
         Order mockEdbOrder = randomOrder(randomOrderId(), mockEdbProductBn, mockEdbCustomerId);
         String orderInfoJson = JSON.toJSONString(mockEdbOrder);
         Map<String, String> signMap = new TreeMap<>();
@@ -51,22 +51,22 @@ public class OrderProxyControllerTest extends OrderProxyTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        //创建网仓订单
-        String mockIscsProductBn = "";
-        Order mockIscsOrder = randomOrder(randomOrderId(), mockIscsProductBn, mockIscsCustomerId);
-        String iscsOrderInfoJson = JSON.toJSONString(mockIscsOrder);
-        Map<String, String> iscsSignMap = new TreeMap<>();
-        iscsSignMap.put("orderInfoJson", iscsOrderInfoJson);
-        iscsSignMap.put("customerId", String.valueOf(mockIscsCustomerId));
-        iscsSignMap.put("userType", String.valueOf(ERPTypeEnum.UserType.HUOBAN_MALL.getCode()));
-        sign = buildSign(iscsSignMap, null, HBConstant.SECRET_KEY);
-        mockMvc.perform(post("/hotProxy/order/createOrder")
-                .param("orderInfoJson", iscsOrderInfoJson)
-                .param("customerId", String.valueOf(mockIscsCustomerId))
-                .param("sign", sign)
-                .param("userType", String.valueOf(ERPTypeEnum.UserType.HUOBAN_MALL.getCode())))
-                .andDo(print())
-                .andExpect(status().isOk());
+//        //创建网仓订单
+//        String mockIscsProductBn = "";
+//        Order mockIscsOrder = randomOrder(randomOrderId(), mockIscsProductBn, mockIscsCustomerId);
+//        String iscsOrderInfoJson = JSON.toJSONString(mockIscsOrder);
+//        Map<String, String> iscsSignMap = new TreeMap<>();
+//        iscsSignMap.put("orderInfoJson", iscsOrderInfoJson);
+//        iscsSignMap.put("customerId", String.valueOf(mockIscsCustomerId));
+//        iscsSignMap.put("userType", String.valueOf(ERPTypeEnum.UserType.HUOBAN_MALL.getCode()));
+//        sign = buildSign(iscsSignMap, null, HBConstant.SECRET_KEY);
+//        mockMvc.perform(post("/hotProxy/order/createOrder")
+//                .param("orderInfoJson", iscsOrderInfoJson)
+//                .param("customerId", String.valueOf(mockIscsCustomerId))
+//                .param("sign", sign)
+//                .param("userType", String.valueOf(ERPTypeEnum.UserType.HUOBAN_MALL.getCode())))
+//                .andDo(print())
+//                .andExpect(status().isOk());
     }
 
     @Test

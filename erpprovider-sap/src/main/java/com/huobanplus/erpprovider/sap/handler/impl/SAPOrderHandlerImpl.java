@@ -129,6 +129,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
         } else {
             orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+            orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
         }
         //orderSync.setResultStatus(orderOperatorLog.isResultStatus());
         //orderSync.setRemark(orderOperatorLog.getRemark());

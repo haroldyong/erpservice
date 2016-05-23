@@ -64,4 +64,10 @@ public class OrderDetailSyncLog {
     private Date syncTime;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
+
+    /**
+     * 错误信息（不在页面显示,只作为一个记录）
+     */
+    @Lob
+    private String errorMsg;
 }
