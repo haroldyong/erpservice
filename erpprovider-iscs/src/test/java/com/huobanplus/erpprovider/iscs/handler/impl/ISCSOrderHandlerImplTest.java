@@ -17,6 +17,7 @@ import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.model.OrderInfo;
 import org.junit.Assert;
 import org.junit.Before;
@@ -143,7 +144,8 @@ public class ISCSOrderHandlerImplTest extends ISCSTestBase {
         pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
         pushNewOrderEvent.setErpInfo(mockErpInfo);
         pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
-        iscsOrderHandler.pushOrder(pushNewOrderEvent);
+        EventResult eventResult = iscsOrderHandler.pushOrder(pushNewOrderEvent);
+        System.out.println(eventResult.getResultCode());
     }
 
     @Test
@@ -157,7 +159,9 @@ public class ISCSOrderHandlerImplTest extends ISCSTestBase {
 
         pushReturnInfoEvent.setReturnInfo(returnInfo);
 
-        iscsOrderHandler.pushReturnOrder(pushReturnInfoEvent);
+        EventResult eventResult = iscsOrderHandler.pushReturnOrder(pushReturnInfoEvent);
+        System.out.println(eventResult.getResultCode());
+
     }
 
 //    @Test
@@ -173,7 +177,8 @@ public class ISCSOrderHandlerImplTest extends ISCSTestBase {
         cancelReturnOrderEvent.setErpUserInfo(mockErpUserInfo);
         cancelReturnOrderEvent.setErpInfo(mockErpInfo);
         cancelReturnOrderEvent.setOrderReturnNo("123456werwqre");
-        iscsOrderHandler.cancelReturnOrder(cancelReturnOrderEvent);
+        EventResult eventResult = iscsOrderHandler.cancelReturnOrder(cancelReturnOrderEvent);
+        System.out.println(eventResult.getResultCode());
     }
 
     @Test
@@ -185,7 +190,8 @@ public class ISCSOrderHandlerImplTest extends ISCSTestBase {
         iscsOrderSearch.setPageIndex(1);
         iscsOrderSearch.setPageSize(10);
 
-        iscsOrderHandler.getOrderDeliveryInfo(mockIscsSysData,iscsOrderSearch);
+        EventResult eventResult = iscsOrderHandler.getOrderDeliveryInfo(mockIscsSysData,iscsOrderSearch);
+        System.out.println(eventResult.getResultCode());
     }
 
 }

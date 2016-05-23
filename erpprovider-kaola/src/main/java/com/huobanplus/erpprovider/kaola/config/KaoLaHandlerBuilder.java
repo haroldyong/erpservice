@@ -7,12 +7,14 @@ import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by wuxiongliu on 2016/5/9.
  */
+@Component
 public class KaoLaHandlerBuilder implements ERPHandlerBuilder {
 
     @Override
