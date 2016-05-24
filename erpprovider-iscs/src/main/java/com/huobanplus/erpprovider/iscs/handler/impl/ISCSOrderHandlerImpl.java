@@ -121,39 +121,43 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
             orderDetailSyncLog.setSyncTime(now);
 
             String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
-            Map<String, Object> requestData = getRequestData(sysData, nowStr, "pushTrades", JSON.toJSONString(createOrder));
 
-            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getHost(), requestData);
-            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-                String errorCode = result.getString("errorCode");
-                if (errorCode.equals("100")) {
-                    String data = result.getString("data");
-                    JSONObject dataJson = JSON.parseObject(data);
-                    int successCount = dataJson.getInteger("success_count");
-                    if (successCount == 1) {
-                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-                        orderDetailSyncLogService.save(orderDetailSyncLog);
-                        return EventResult.resultWith(EventResultEnum.SUCCESS);
-                    } else {
-                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-                        orderDetailSyncLogService.save(orderDetailSyncLog);
-                        String reason = JSON.parseObject(JSON.parseArray(dataJson.getString("failed_list")).get(0).toString()).getString("reason");
-                        return EventResult.resultWith(EventResultEnum.ERROR, reason, null);
-                    }
-
-                } else {
-                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-                    orderDetailSyncLog.setErrorMsg(httpResult.getHttpContent());
-                    orderDetailSyncLogService.save(orderDetailSyncLog);
-                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("subMessage"), null);
-                }
+            EventResult eventResult = orderPush(createOrder, sysData, nowStr);
+            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
             } else {
-                return EventResult.resultWith(EventResultEnum.ERROR);
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
             }
-
+            orderDetailSyncLogService.save(orderDetailSyncLog);
+            return eventResult;
         } catch (Exception e) {
             return EventResult.resultWith(EventResultEnum.ERROR);
+        }
+    }
+
+    private EventResult orderPush(ISCSCreateOrder createOrder, ISCSSysData sysData, String timestamp) throws UnsupportedEncodingException {
+        Map<String, Object> requestData = getRequestData(sysData, timestamp, "pushTrades", JSON.toJSONString(createOrder));
+
+        HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getHost(), requestData);
+        if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+            JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+            String errorCode = result.getString("errorCode");
+            if (errorCode.equals("100")) {
+                String data = result.getString("data");
+                JSONObject dataJson = JSON.parseObject(data);
+                int successCount = dataJson.getInteger("success_count");
+                if (successCount == 1) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                } else {
+                    String reason = JSON.parseObject(JSON.parseArray(dataJson.getString("failed_list")).get(0).toString()).getString("reason");
+                    return EventResult.resultWith(EventResultEnum.ERROR, reason, null);
+                }
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, result.getString("subMessage"), null);
+            }
+        } else {
+            return EventResult.resultWith(EventResultEnum.ERROR, "服务器请求失败", null);
         }
     }
 
