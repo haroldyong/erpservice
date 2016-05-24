@@ -11,4 +11,6 @@ public class KjygSysData {
     private String requestUrl;
 
     private String clientKey;
+
+    private String clientCode;
 }

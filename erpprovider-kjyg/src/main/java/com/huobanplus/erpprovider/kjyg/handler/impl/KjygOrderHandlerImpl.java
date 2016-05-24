@@ -54,26 +54,26 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
 
         KjygCreateOrderInfo createOrderInfo = new KjygCreateOrderInfo();
 
-        createOrderInfo.setClientcode("J001");
-        createOrderInfo.setShipName("黄荣");
-        createOrderInfo.setShipMobile("13211112222");
-        createOrderInfo.setWebAccountNo("5555@qq.com");
-        createOrderInfo.setWebTradeNo("JD0000001");
-        createOrderInfo.setWebPayNo("P0000001");
-        createOrderInfo.setPayWay("01");
-        createOrderInfo.setBuyerPid("360782199009090099");
-        createOrderInfo.setBuyerName("黄荣");
-        createOrderInfo.setBuyerTel("13211112222");
-        createOrderInfo.setPayment("100.00");
-        createOrderInfo.setWebsite("01");
-        createOrderInfo.setProvince("01");
-        createOrderInfo.setCity("0101");
-        createOrderInfo.setArea("010105");
-        createOrderInfo.setPostCode("341401");
-        createOrderInfo.setShipAddr("浙江省杭州市西湖区XXX栋2303室");
-        createOrderInfo.setRemark("订单备注内容");
-        createOrderInfo.setFharea("日本");
-        createOrderInfo.setOrderNo("XD0000001");
+        createOrderInfo.setClientcode(kjygSysData.getClientCode());
+        createOrderInfo.setShipName(orderInfo.getShipName());
+        createOrderInfo.setShipMobile(orderInfo.getShipMobile());
+        createOrderInfo.setWebAccountNo("5555@qq.com");// TODO: 2016/5/24  
+        createOrderInfo.setWebTradeNo("JD0000002");// TODO: 2016/5/24  
+        createOrderInfo.setWebPayNo("P0000001");// TODO: 2016/5/24  
+        createOrderInfo.setPayWay("01");// TODO: 2016/5/24  
+        createOrderInfo.setBuyerPid("360782199009090099");// TODO: 2016/5/24
+        createOrderInfo.setBuyerName(orderInfo.getShipName());// FIXME: 2016/5/24
+        createOrderInfo.setBuyerTel("13211112222");// TODO: 2016/5/24  
+        createOrderInfo.setPayment("100.00");// TODO: 2016/5/24  
+        createOrderInfo.setWebsite("01");// TODO: 2016/5/24  
+        createOrderInfo.setProvince("01");orderInfo.getProvince();
+        createOrderInfo.setCity("0101");orderInfo.getCity();
+        createOrderInfo.setArea("010105");orderInfo.getShipArea();
+        createOrderInfo.setPostCode("341401");orderInfo.getShipZip();
+        createOrderInfo.setShipAddr("浙江省杭州市西湖区XXX栋2303室");orderInfo.getShipAddr();
+        createOrderInfo.setRemark("订单备注内容");orderInfo.getRemark();
+        createOrderInfo.setFharea("日本");// TODO: 2016/5/24
+        createOrderInfo.setOrderNo("XE0000003");orderInfo.getOrderId();
         createOrderInfo.setOrderItems(kjygOrderItems);
 
         JSONArray jsonArray = new JSONArray();
@@ -90,6 +90,7 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
             JSONObject result = JSON.parseObject(httpResult.getHttpContent());
             if(result.getString("sts").equals("Y")){
                 saveLog(orderInfo,erpUserInfo,erpInfo,pushNewOrderEvent,true,null);
+                System.out.println(result.getString("res"));
                 return EventResult.resultWith(EventResultEnum.SUCCESS);
             }else{
                 System.out.println(result.getString("res"));

@@ -41,6 +41,7 @@ public class KjygOrderHandlerTest extends KjygTestBase {
         kjygSysData = new KjygSysData();
         kjygSysData.setRequestUrl("http://www.kjygb2c.com/api/service.aspx");
         kjygSysData.setClientKey("daa48d8a2a77c13ad11a6a4cf7e25531");
+        kjygSysData.setClientCode("K-0008");
 
         mockOrderItems = new ArrayList<>();
         for(int i=0;i<5;i++){
