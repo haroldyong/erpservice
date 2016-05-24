@@ -57,42 +57,42 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
         KaoLaSysData kaoLaSysData = JSON.parseObject(erpInfo.getSysDataJson(), KaoLaSysData.class);
 
 
-        Map<String,Object> parameterMap = new TreeMap<String,Object>();
+        Map<String, Object> parameterMap = new TreeMap<String, Object>();
         parameterMap.put("channelId", kaoLaSysData.getChannelId());
-        parameterMap.put("thirdPartOrderId",orderInfo.getOrderCode());
-        parameterMap.put("timestamp", StringUtil.DateFormat(orderInfo.getPayTime(),StringUtil.TIME_PATTERN));
-        parameterMap.put("v",kaoLaSysData.getV());
-        parameterMap.put("sign_method","md5");
-        parameterMap.put("app_key",kaoLaSysData.getAppKey());
+        parameterMap.put("thirdPartOrderId", orderInfo.getOrderCode());
+        parameterMap.put("timestamp", StringUtil.DateFormat(orderInfo.getPayTime(), StringUtil.TIME_PATTERN));
+        parameterMap.put("v", kaoLaSysData.getV());
+        parameterMap.put("sign_method", "md5");
+        parameterMap.put("app_key", kaoLaSysData.getAppKey());
 
 
         try {
-            Map<String,Object> requestData = getRequestData(kaoLaSysData,parameterMap);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl()+"/queryOrderStatus",requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            Map<String, Object> requestData = getRequestData(kaoLaSysData, parameterMap);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl() + "/queryOrderStatus", requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-                if(result.getString("recCode").equals("200")){
+                if (result.getString("recCode").equals("200")) {
                     // TODO: 2016/5/9
 
                     List<Order> orderList = new ArrayList<>();
                     JSONArray jsonArray = result.getJSONArray("result");
 
-                    jsonArray.forEach(order ->{
+                    jsonArray.forEach(order -> {
 
                         List<OrderItem> orderItemList = new ArrayList<>();
                         Order resultOrder = new Order();
                         JSONObject jsonObject = JSON.parseObject(order.toString());
                         resultOrder.setOrderId(jsonObject.getString("orderId"));
                         Integer status = jsonObject.getInteger("status");
-                        if(status == 0 || status == 1){
+                        if (status == 0 || status == 1) {
                             resultOrder.setOrderStatus(status);
-                        } else if(status == 2){
+                        } else if (status == 2) {
                             resultOrder.setPayStatus(OrderEnum.PayStatus.PAYED.getCode());
-                        } else if(status == 3){
+                        } else if (status == 3) {
                             resultOrder.setPayStatus(OrderEnum.PayStatus.NOT_PAYED.getCode());
-                        } else if(status == 4){
+                        } else if (status == 4) {
                             resultOrder.setShipStatus(OrderEnum.ShipStatus.DELIVERED.getCode());
-                        } else if(status == 5){
+                        } else if (status == 5) {
                             resultOrder.setShipStatus(OrderEnum.ShipStatus.NOT_DELIVER.getCode());
                         }
 
@@ -100,8 +100,8 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
                         resultOrder.setLogiName(jsonObject.getString("deliverName"));
 
                         JSONArray orderItems = jsonObject.getJSONArray("skuList");
-                        if(orderItems != null){
-                            orderItems.forEach(item->{
+                        if (orderItems != null) {
+                            orderItems.forEach(item -> {
                                 OrderItem orderItem = new OrderItem();
                                 JSONObject itemJson = JSON.parseObject(item.toString());
                                 orderItem.setItemId(Integer.parseInt(itemJson.getString("skuid")));
@@ -115,13 +115,13 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
                     });
 
                     // 返回订单list
-                    return EventResult.resultWith(EventResultEnum.SUCCESS,orderList);
-                }else{
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.get("recMeg").toString(),null);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, orderList);
+                } else {
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.get("recMeg").toString(), null);
                 }
 
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -141,7 +141,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
         List<OrderItem> orderItems = orderInfo.getOrderItems();
         List<KaoLaOrderItem> kaoLaOrderItems = new ArrayList<KaoLaOrderItem>();
 
-        orderItems.forEach(item->{
+        orderItems.forEach(item -> {
             KaoLaOrderItem kaoLaOrderItem = new KaoLaOrderItem();
             kaoLaOrderItem.setGoodsId(String.valueOf(item.getItemId()));
             kaoLaOrderItem.setSkuId(item.getProductBn());
@@ -168,59 +168,79 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
         userInfo.setIdentityId("362322199411050053");// TODO: 2016/5/11
 
 
-
-        Map<String,Object> parameterMap = new TreeMap<String,Object>();
+        Map<String, Object> parameterMap = new TreeMap<String, Object>();
 
         parameterMap.put("source", kaoLaSysData.getChannelId());
-        parameterMap.put("thirdPartOrderId",orderInfo.getOrderId());
+        parameterMap.put("thirdPartOrderId", orderInfo.getOrderId());
         parameterMap.put("timestamp", orderInfo.getPayTime());
-        parameterMap.put("v",kaoLaSysData.getV());
-        parameterMap.put("sign_method","md5");
-        parameterMap.put("app_key",kaoLaSysData.getAppKey());
+        parameterMap.put("v", kaoLaSysData.getV());
+        parameterMap.put("sign_method", "md5");
+        parameterMap.put("app_key", kaoLaSysData.getAppKey());
         JSONObject orderItemsJson = new JSONObject();
-        orderItemsJson.put("orderItemList",kaoLaOrderItems);
-        parameterMap.put("orderItemList",orderItemsJson.toJSONString());
+        orderItemsJson.put("orderItemList", kaoLaOrderItems);
+        parameterMap.put("orderItemList", orderItemsJson.toJSONString());
 
 
         JSONObject userInfoJson = new JSONObject();
-        userInfoJson.put("userInfo",userInfo);
-        parameterMap.put("userInfo",userInfoJson.toJSONString());
+        userInfoJson.put("userInfo", userInfo);
+        parameterMap.put("userInfo", userInfoJson.toJSONString());
 
-        try{
-            Map<String,Object> requestData = getRequestData(kaoLaSysData,parameterMap);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl()+"/bookpayorder",requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+        Date now = new Date();
+        OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
+        if (orderDetailSyncLog == null) {
+            orderDetailSyncLog = new OrderDetailSyncLog();
+            orderDetailSyncLog.setCreateTime(now);
+        }
+        orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+        orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+        orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+        orderDetailSyncLog.setOrderId(orderInfo.getOrderId());
+        orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+        orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+        orderDetailSyncLog.setSyncTime(now);
 
+        EventResult eventResult = orderPush(parameterMap, kaoLaSysData);
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+        } else {
+            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+            orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
+        }
+        orderDetailSyncLogService.save(orderDetailSyncLog);
+        return eventResult;
+    }
 
+    private EventResult orderPush(Map<String, Object> parameterMap, KaoLaSysData kaoLaSysData) {
+        try {
+            Map<String, Object> requestData = getRequestData(kaoLaSysData, parameterMap);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl() + "/bookpayorder", requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-                if(result.getString("recCode").equals("200")){
+                if (result.getString("recCode").equals("200")) {
                     // TODO: 2016/5/9
-                    saveLog(orderInfo,erpUserInfo,erpInfo,pushNewOrderEvent,true);
-                    return EventResult.resultWith(EventResultEnum.SUCCESS,result.getString("gorder"));
-                }else{
-                    saveLog(orderInfo,erpUserInfo,erpInfo,pushNewOrderEvent,false);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.get("recMeg").toString(),null);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, result.getString("gorder"));
+                } else {
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.get("recMeg").toString(), null);
                 }
 
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, "服务器请求失败", null);
             }
-
-        } catch (UnsupportedEncodingException e) {
-            return EventResult.resultWith(EventResultEnum.ERROR);
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
-
     }
 
     /**
      * 记录日志
+     *
      * @param orderInfo
      * @param erpUserInfo
      * @param erpInfo
      * @param pushNewOrderEvent
      * @param isSuccess
      */
-    private void saveLog(Order orderInfo,ERPUserInfo erpUserInfo,ERPInfo erpInfo,PushNewOrderEvent pushNewOrderEvent,boolean isSuccess ){
+    private void saveLog(Order orderInfo, ERPUserInfo erpUserInfo, ERPInfo erpInfo, PushNewOrderEvent pushNewOrderEvent, boolean isSuccess) {
         OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
         Date now = new Date();
         if (orderDetailSyncLog == null) {

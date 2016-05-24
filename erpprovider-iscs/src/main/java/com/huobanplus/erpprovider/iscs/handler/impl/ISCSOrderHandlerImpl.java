@@ -54,111 +54,112 @@ public class ISCSOrderHandlerImpl extends ISCSBaseHandler implements ISCSOrderHa
         ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
         ISCSSysData sysData = JSON.parseObject(erpInfo.getSysDataJson(), ISCSSysData.class);
         ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
-        try {
-            ISCSCreateOrderInfo createOrderInfo = new ISCSCreateOrderInfo();
-            createOrderInfo.setOrderNo(order.getOrderId());
-            createOrderInfo.setStockId(sysData.getStockId());
-            createOrderInfo.setTransporterFlag(0);
-            createOrderInfo.setShopId(sysData.getShopId());
-            createOrderInfo.setCreateTime(order.getCreateTime());
-            createOrderInfo.setPayTime(order.getPayTime());
-            createOrderInfo.setBuyNick(order.getShipName());// FIXME: 2016/4/26
-            createOrderInfo.setCountry("中国");// FIXME: 2016/4/26
-            String shipArea = order.getShipArea();
-            if (!StringUtils.isEmpty(shipArea)) {
-                String[] shipAreaArray = shipArea.split("/");
-                createOrderInfo.setProvince(shipAreaArray[0]);
-                if (shipAreaArray.length > 1) {
-                    createOrderInfo.setCity(shipAreaArray[1]);
-                    if (shipAreaArray.length > 2) {
-                        createOrderInfo.setCounty(shipAreaArray[2]);
-                    }
+        ISCSCreateOrderInfo createOrderInfo = new ISCSCreateOrderInfo();
+        createOrderInfo.setOrderNo(order.getOrderId());
+        createOrderInfo.setStockId(sysData.getStockId());
+        createOrderInfo.setTransporterFlag(0);
+        createOrderInfo.setShopId(sysData.getShopId());
+        createOrderInfo.setCreateTime(order.getCreateTime());
+        createOrderInfo.setPayTime(order.getPayTime());
+        createOrderInfo.setBuyNick(order.getShipName());// FIXME: 2016/4/26
+        createOrderInfo.setCountry("中国");// FIXME: 2016/4/26
+        String shipArea = order.getShipArea();
+        if (!StringUtils.isEmpty(shipArea)) {
+            String[] shipAreaArray = shipArea.split("/");
+            createOrderInfo.setProvince(shipAreaArray[0]);
+            if (shipAreaArray.length > 1) {
+                createOrderInfo.setCity(shipAreaArray[1]);
+                if (shipAreaArray.length > 2) {
+                    createOrderInfo.setCounty(shipAreaArray[2]);
                 }
             }
-            createOrderInfo.setAddress(order.getShipAddr());
-            createOrderInfo.setZip(order.getShipZip());
-            createOrderInfo.setName(order.getShipName());
-            createOrderInfo.setMobile(order.getShipMobile());
-            createOrderInfo.setTel(order.getShipTel());
+        }
+        createOrderInfo.setAddress(order.getShipAddr());
+        createOrderInfo.setZip(order.getShipZip());
+        createOrderInfo.setName(order.getShipName());
+        createOrderInfo.setMobile(order.getShipMobile());
+        createOrderInfo.setTel(order.getShipTel());
 //            createOrderInfo.setRequestShipDate();
-            createOrderInfo.setNeedInvoice(1);// FIXME: 2016/5/3
+        createOrderInfo.setNeedInvoice(1);// FIXME: 2016/5/3
 //            createOrderInfo.setInvoiceName();
 //            createOrderInfo.setInvoiceContent();
-            createOrderInfo.setPayment(order.getFinalAmount());
-            createOrderInfo.setTotalFee(order.getFinalAmount());
-            createOrderInfo.setDiscountFee(order.getPmtAmount());
-            createOrderInfo.setPostFee(order.getCostFreight());
-            createOrderInfo.setNeedCard(0);
-            List<ISCSCreateOrderItem> createOrderItems = new ArrayList<>();
-            order.getOrderItems().forEach(item -> {
-                ISCSCreateOrderItem createOrderItem = new ISCSCreateOrderItem();
-                createOrderItem.setProductCode(item.getProductBn());
-                createOrderItem.setNum(item.getNum());
-                createOrderItem.setPrice(item.getPrice());
+        createOrderInfo.setPayment(order.getFinalAmount());
+        createOrderInfo.setTotalFee(order.getFinalAmount());
+        createOrderInfo.setDiscountFee(order.getPmtAmount());
+        createOrderInfo.setPostFee(order.getCostFreight());
+        createOrderInfo.setNeedCard(0);
+        List<ISCSCreateOrderItem> createOrderItems = new ArrayList<>();
+        order.getOrderItems().forEach(item -> {
+            ISCSCreateOrderItem createOrderItem = new ISCSCreateOrderItem();
+            createOrderItem.setProductCode(item.getProductBn());
+            createOrderItem.setNum(item.getNum());
+            createOrderItem.setPrice(item.getPrice());
 //                createOrderItem.setDiscountFee();
-                createOrderItem.setShopId(sysData.getShopId());
-                createOrderItem.setOwnerId(sysData.getOwnerId());
-                createOrderItem.setSellPrice(item.getCost());
-                createOrderItems.add(createOrderItem);
-            });
-            createOrderInfo.setCreateOrderItems(createOrderItems);
+            createOrderItem.setShopId(sysData.getShopId());
+            createOrderItem.setOwnerId(sysData.getOwnerId());
+            createOrderItem.setSellPrice(item.getCost());
+            createOrderItems.add(createOrderItem);
+        });
+        createOrderInfo.setCreateOrderItems(createOrderItems);
 
-            ISCSCreateOrder createOrder = new ISCSCreateOrder(1, Arrays.asList(createOrderInfo));
+        ISCSCreateOrder createOrder = new ISCSCreateOrder(1, Arrays.asList(createOrderInfo));
 
-            Date now = new Date();
+        Date now = new Date();
 
-            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
-            if (orderDetailSyncLog == null) {
-                orderDetailSyncLog = new OrderDetailSyncLog();
-                orderDetailSyncLog.setCreateTime(now);
-            }
-            orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-            orderDetailSyncLog.setProviderType(erpInfo.getErpType());
-            orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
-            orderDetailSyncLog.setOrderId(order.getOrderId());
-            orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
-            orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
-            orderDetailSyncLog.setSyncTime(now);
-
-            String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
-
-            EventResult eventResult = orderPush(createOrder, sysData, nowStr);
-            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-            } else {
-                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
-            }
-            orderDetailSyncLogService.save(orderDetailSyncLog);
-            return eventResult;
-        } catch (Exception e) {
-            return EventResult.resultWith(EventResultEnum.ERROR);
+        OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
+        if (orderDetailSyncLog == null) {
+            orderDetailSyncLog = new OrderDetailSyncLog();
+            orderDetailSyncLog.setCreateTime(now);
         }
+        orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+        orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+        orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+        orderDetailSyncLog.setOrderId(order.getOrderId());
+        orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+        orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+        orderDetailSyncLog.setSyncTime(now);
+
+        String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
+
+        EventResult eventResult = orderPush(createOrder, sysData, nowStr);
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+        } else {
+            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+            orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
+        }
+        orderDetailSyncLogService.save(orderDetailSyncLog);
+        return eventResult;
     }
 
-    private EventResult orderPush(ISCSCreateOrder createOrder, ISCSSysData sysData, String timestamp) throws UnsupportedEncodingException {
-        Map<String, Object> requestData = getRequestData(sysData, timestamp, "pushTrades", JSON.toJSONString(createOrder));
+    private EventResult orderPush(ISCSCreateOrder createOrder, ISCSSysData sysData, String timestamp) {
+        try {
+            Map<String, Object> requestData = getRequestData(sysData, timestamp, "pushTrades", JSON.toJSONString(createOrder));
 
-        HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getHost(), requestData);
-        if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-            JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-            String errorCode = result.getString("errorCode");
-            if (errorCode.equals("100")) {
-                String data = result.getString("data");
-                JSONObject dataJson = JSON.parseObject(data);
-                int successCount = dataJson.getInteger("success_count");
-                if (successCount == 1) {
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getHost(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+                String errorCode = result.getString("errorCode");
+                if (errorCode.equals("100")) {
+                    String data = result.getString("data");
+                    JSONObject dataJson = JSON.parseObject(data);
+                    int successCount = dataJson.getInteger("success_count");
+                    if (successCount == 1) {
+                        return EventResult.resultWith(EventResultEnum.SUCCESS);
+                    } else {
+                        String reason = JSON.parseObject(JSON.parseArray(dataJson.getString("failed_list")).get(0).toString()).getString("reason");
+                        return EventResult.resultWith(EventResultEnum.ERROR, reason, null);
+                    }
                 } else {
-                    String reason = JSON.parseObject(JSON.parseArray(dataJson.getString("failed_list")).get(0).toString()).getString("reason");
-                    return EventResult.resultWith(EventResultEnum.ERROR, reason, null);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("subMessage"), null);
                 }
             } else {
-                return EventResult.resultWith(EventResultEnum.ERROR, result.getString("subMessage"), null);
+                return EventResult.resultWith(EventResultEnum.ERROR, "服务器请求失败", null);
             }
-        } else {
-            return EventResult.resultWith(EventResultEnum.ERROR, "服务器请求失败", null);
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
+
     }
 
     @Override
