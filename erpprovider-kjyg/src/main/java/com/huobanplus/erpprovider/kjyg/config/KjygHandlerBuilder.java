@@ -1,5 +1,6 @@
 package com.huobanplus.erpprovider.kjyg.config;
 
+import com.huobanplus.erpprovider.kjyg.handler.KjygOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -7,6 +8,7 @@ import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component
 public class KjygHandlerBuilder implements ERPHandlerBuilder {
+
+    @Autowired
+    private KjygOrderHandler kjygOrderHandler;
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
@@ -32,6 +37,7 @@ public class KjygHandlerBuilder implements ERPHandlerBuilder {
             public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                 if (erpBaseEvent instanceof PushNewOrderEvent) {
                     PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
+                    return kjygOrderHandler.pushOrder(pushNewOrderEvent);
                 }
                 return null;
             }

@@ -8,9 +8,18 @@ import lombok.Data;
 @Data
 public class KjygSysData {
 
+    /**
+     *  请求地址
+     */
     private String requestUrl;
 
+    /**
+     *  client key
+     */
     private String clientKey;
 
+    /**
+     *  销售商代码
+     */
     private String clientCode;
 }

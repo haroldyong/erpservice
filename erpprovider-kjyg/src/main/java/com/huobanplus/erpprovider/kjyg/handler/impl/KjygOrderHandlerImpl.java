@@ -3,6 +3,7 @@ package com.huobanplus.erpprovider.kjyg.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.huobanplus.erpprovider.kjyg.KjygOrderSearch;
 import com.huobanplus.erpprovider.kjyg.common.KjygSysData;
 import com.huobanplus.erpprovider.kjyg.formatkjyg.KjygCreateOrderInfo;
 import com.huobanplus.erpprovider.kjyg.formatkjyg.KjygOrderItem;
@@ -136,5 +137,91 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         }
 
         orderDetailSyncLogService.save(orderDetailSyncLog);
+    }
+
+    @Override
+    public EventResult queryOrder(PushNewOrderEvent pushNewOrderEvent) {
+
+        Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+
+        ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
+        KjygSysData kjygSysData = JSON.parseObject(erpInfo.getSysDataJson(), KjygSysData.class);
+        ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
+
+        KjygOrderSearch kjygOrderSearch = new KjygOrderSearch();
+        kjygOrderSearch.setOrderNo("XE0000003");
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(kjygOrderSearch);
+
+        Map<String,Object> requestData = new HashMap<>();
+        requestData.put("clientkey",kjygSysData.getClientKey());
+        requestData.put("mtype","awb");
+        requestData.put("clientcode",kjygSysData.getClientCode());
+        requestData.put("ordernos",jsonArray.toJSONString());
+        System.out.println(jsonArray.toJSONString());
+
+        HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(),requestData);
+        if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+            if(result.getString("sts").equals("Y")){
+                JSONArray resultArray = result.getJSONArray("res");
+                if(resultArray.size()==0){
+                    return EventResult.resultWith(EventResultEnum.ERROR,"无订单数据",null);
+                }else{
+
+                    JSONObject jsonObject = JSON.parseObject(resultArray.get(0).toString());
+
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }
+            }else{
+                System.out.println(result.getString("res"));
+                return EventResult.resultWith(EventResultEnum.ERROR);
+            }
+        }else{
+            return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+        }
+    }
+
+    @Override
+    public EventResult queryOrderStat(PushNewOrderEvent pushNewOrderEvent) {
+        Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+
+        ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
+        KjygSysData kjygSysData = JSON.parseObject(erpInfo.getSysDataJson(), KjygSysData.class);
+        ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
+
+        KjygOrderSearch kjygOrderSearch = new KjygOrderSearch();
+        kjygOrderSearch.setOrderNo("XE0000003");
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(kjygOrderSearch);
+
+        Map<String,Object> requestData = new HashMap<>();
+        requestData.put("clientkey",kjygSysData.getClientKey());
+        requestData.put("mtype","orderstat");
+        requestData.put("clientcode",kjygSysData.getClientCode());
+        requestData.put("ordernos",jsonArray.toJSONString());
+        System.out.println(jsonArray.toJSONString());
+
+        HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(),requestData);
+        if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+            if(result.getString("sts").equals("Y")){
+                JSONArray resultArray = result.getJSONArray("res");
+                if(resultArray.size()==0){
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,"无订单数据",null);
+                }else{
+                    Order order = new Order();
+
+                }
+                return EventResult.resultWith(EventResultEnum.SUCCESS);
+            }else{
+                System.out.println(result.getString("res"));
+                return EventResult.resultWith(EventResultEnum.ERROR,result.getString("res"),null);
+            }
+        }else{
+            return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+        }
     }
 }

@@ -14,4 +14,8 @@ public interface KjygOrderHandler {
      * @return
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
+
+    EventResult queryOrder(PushNewOrderEvent pushNewOrderEvent);
+
+    EventResult queryOrderStat(PushNewOrderEvent pushNewOrderEvent);
 }

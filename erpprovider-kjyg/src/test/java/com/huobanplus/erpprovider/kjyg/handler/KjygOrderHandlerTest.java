@@ -85,4 +85,26 @@ public class KjygOrderHandlerTest extends KjygTestBase {
         EventResult eventResult = kjygOrderHandler.pushOrder(pushNewOrderEvent);
         System.out.println(eventResult.getResultMsg());
     }
+
+    @Test
+    public void testQueryOrder(){
+        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
+        pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
+        pushNewOrderEvent.setErpInfo(mockErpInfo);
+        pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
+
+        EventResult eventResult = kjygOrderHandler.queryOrder(pushNewOrderEvent);
+        System.out.println(eventResult.getResultMsg());
+    }
+
+    @Test
+    public void testQueryOrderStat(){
+        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
+        pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
+        pushNewOrderEvent.setErpInfo(mockErpInfo);
+        pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
+
+        EventResult eventResult = kjygOrderHandler.queryOrderStat(pushNewOrderEvent);
+        System.out.println(eventResult.getResultMsg());
+    }
 }
