@@ -32,6 +32,7 @@
         <module>erpprovider-LGJ</module>
         <module>erpprovider-gy</module>
         <module>erpprovider-kaola</module>
+        <module>erpprovider-kjyg</module>
     </modules>
 
     <properties>
