@@ -134,5 +134,13 @@ public class Order extends BaseInfo {
      * 签收状态
      */
     private int receiveStatus;
+    /**
+     * 是否需要开票
+     */
+    private int isTax;
+    /**
+     * 开票公司抬头
+     */
+    private String taxCompany;
     private List<OrderItem> orderItems;
 }
