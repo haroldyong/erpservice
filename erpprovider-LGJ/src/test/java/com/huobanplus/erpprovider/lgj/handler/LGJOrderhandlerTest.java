@@ -54,12 +54,12 @@ public class LGJOrderhandlerTest extends LGJTestBase {
 
 
         mockOrder = new Order();
-        mockOrder.setOrderId("1016");
+        mockOrder.setOrderId("1019");
         mockOrder.setShipName("小李");
         mockOrder.setShipMobile("15623235656");
         mockOrder.setCity("杭州");
         mockOrder.setShipZip("254565");
-        mockOrder.setShipArea("杭州市/滨江区/明月江南三栋1号");
+        mockOrder.setShipArea("15/854/2430");
         mockOrder.setShipAddr("杭州市滨江区明月江南三栋1号");
 
         mockOrderItemList = new ArrayList<OrderItem>();
@@ -83,6 +83,7 @@ public class LGJOrderhandlerTest extends LGJTestBase {
     @Test
     public void TestpushOrder(){
         EventResult eventResult = lgjOrderHandler.pushOrder(mockPushNewOrderEvent);
+        System.out.println(eventResult);
         Assert.assertTrue(eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode());
     }
 
@@ -117,8 +118,6 @@ public class LGJOrderhandlerTest extends LGJTestBase {
 
         }
   //      System.out.println(httpResult);
-
-
 
     }
 }

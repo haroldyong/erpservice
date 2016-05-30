@@ -56,7 +56,7 @@ public class LGJBaseHandler {
             if("0".equals(resultJson.getString("result").trim())){
                 return resultJson.getString("safecode");
             }
-            log.error(resultJson.getString("msg")+":错误代码是"+resultJson.getString("result"));
+            log.error(resultJson.getString("msg")+":错误代码是 "+resultJson.getString("result"));
         }
         return null;
     }

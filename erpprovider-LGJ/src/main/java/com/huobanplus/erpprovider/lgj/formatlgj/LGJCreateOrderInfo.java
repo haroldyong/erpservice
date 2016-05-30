@@ -57,7 +57,7 @@ public class LGJCreateOrderInfo {
     /**
      * 收货人国家 三级地址
      */
-    private String country;
+    private String county;
     /**
      * 四级地址(如果该地区有四级地址，则必须传递四级地址)
      */

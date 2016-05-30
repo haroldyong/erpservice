@@ -56,14 +56,16 @@ public class LGJHandlerBuilder implements ERPHandlerBuilder {
 
             @Override
             public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
-                String method = request.getParameter("mType");
-                switch (method){
-                    case LGJConstant.ORDER_MAKESURE_METHOD:
-                        return EventResult.resultWith(EventResultEnum.SUCCESS,"success");
-                    default:break;
-                }
-                return null;
+//                String method = request.getParameter("mType");
+//                switch (method){
+//                    case LGJConstant.ORDER_MAKESURE_METHOD:
+                return EventResult.resultWith(EventResultEnum.SUCCESS, "success");
+//                    default:break;
+//                }
+//                return null;
+//            }
             }
         };
     }
+
 }
