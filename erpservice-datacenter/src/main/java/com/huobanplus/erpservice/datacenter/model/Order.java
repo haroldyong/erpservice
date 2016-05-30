@@ -134,5 +134,36 @@ public class Order extends BaseInfo {
      * 签收状态
      */
     private int receiveStatus;
+    /**
+     * 是否需要开票
+     */
+    private int isTax;
+    /**
+     * 开票公司抬头
+     */
+    private String taxCompany;
+
+
+    /**
+     * 买家身份证
+     */
+    private String buyerPid;
+
+    /**
+     * 跨境易购： 买家真实姓名
+     */
+    private String buyerName;
+
+    /**
+     * 跨境易购： 支付方式
+     */
+    private int payWay;
+
+
+    /**
+     * 跨境易购：发货区域（可选：美西、美东、韩国首尔、日本、澳洲悉尼、德国汉堡、荷兰阿姆、意大利米兰）
+     */
+    private String fhArea;
+
     private List<OrderItem> orderItems;
 }

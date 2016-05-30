@@ -10,15 +10,14 @@
 package com.huobanplus.erpservice.proxy.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
+import com.huobanplus.erpprovider.iscs.common.ISCSSysData;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
-import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.repository.ERPBaseConfigRepository;
@@ -33,7 +32,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * Created by allan on 4/20/16.
@@ -46,9 +48,13 @@ import java.util.*;
 public class OrderProxyTest extends SpringWebTest {
     protected final Random random = new Random();
     protected ERPDetailConfigEntity edbConfig;
+    protected ERPDetailConfigEntity iscsConfig;
     protected EDBSysData mockSysDataEdb;
-    protected String mockOrderId = "2117041821939321";
-    protected int mockCustomerId = 666666;
+    protected ISCSSysData mockIscsSysData;
+    protected int mockEdbCustomerId = 666666; //模拟的使用E店宝的用户
+    protected int mockIscsCustomerId = 777777; //模拟的使用网仓的用户
+
+
     @Autowired
     private ERPBaseConfigRepository baseConfigRepository;
     @Autowired
@@ -60,7 +66,7 @@ public class OrderProxyTest extends SpringWebTest {
     public void initConfig() throws Exception {
         //E店宝配置信息
         ERPBaseConfigEntity baseConfig = new ERPBaseConfigEntity();
-        baseConfig.setCustomerId(mockCustomerId);
+        baseConfig.setCustomerId(mockEdbCustomerId);
         baseConfig.setIsOpen(1);
         baseConfig.setAppKey(StringUtil.createRandomStr(8));
         baseConfig.setToken(StringUtil.createRandomStr32());
@@ -73,36 +79,47 @@ public class OrderProxyTest extends SpringWebTest {
         edbConfig.setIsDefault(1);
         edbConfig.setCustomerId(baseConfig.getCustomerId());
         mockSysDataEdb = new EDBSysData();
-        mockSysDataEdb.setRequestUrl("http://qimen.6x86.net:10537/restxin/index.aspx");
-        mockSysDataEdb.setDbHost("edb_a99999");
-        mockSysDataEdb.setAppKey("c184567b");
-        mockSysDataEdb.setAppSecret("90353b57f17a4bf6a11263f0545ddbdc");
-        mockSysDataEdb.setToken("e6513e432b724720ae6b6ab4155e6ccb");
-        mockSysDataEdb.setIp("117.79.148.228");
-        mockSysDataEdb.setShopId("1");
+        mockSysDataEdb.setRequestUrl("http://vip545.edb05.com/rest/index.aspx");
+        mockSysDataEdb.setDbHost("edb_a84130");
+        mockSysDataEdb.setAppKey("43f7db02");
+        mockSysDataEdb.setAppSecret("1bf2a0bc51dc4eef8c188cc7e09572a7");
+        mockSysDataEdb.setToken("4d81a78f97d04b39b72407b8ada9b9e3");
+        mockSysDataEdb.setIp("183.131.19.145");
+        mockSysDataEdb.setShopId("10");
         mockSysDataEdb.setStorageId("1");
-        mockSysDataEdb.setExpress("申通");
+        mockSysDataEdb.setExpress("申通快递");
         mockSysDataEdb.setBeginTime(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN));
         String sysDataJson = JSON.toJSONString(mockSysDataEdb);
-        int index = 0;
-        Class configClass = edbConfig.getClass();
 
-        JSONObject jsonObject = JSON.parseObject(sysDataJson);
-        for (Map.Entry<String, Object> item : jsonObject.entrySet()) {
-            configClass.getDeclaredMethod("setP" + index, String.class).invoke(edbConfig, item.getValue());
-            ERPSysDataInfo erpSysDataInfo = new ERPSysDataInfo();
-            erpSysDataInfo.setErpType(ERPTypeEnum.ProviderType.EDB);
-            erpSysDataInfo.setParamName(item.getKey());
-            erpSysDataInfo.setCustomerId(baseConfig.getCustomerId());
-            erpSysDataInfo.setColumnName("P" + index);
-            erpSysDataInfo.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);
-            erpSysDataInfo.setParamValue((String) item.getValue());
-            sysDataInfoRepository.saveAndFlush(erpSysDataInfo);
-            index++;
-        }
         edbConfig.setErpBaseConfig(baseConfig);
         edbConfig.setErpSysData(sysDataJson);
         edbConfig = detailConfigRepository.saveAndFlush(edbConfig);
+
+        //网仓配置信息
+        ERPBaseConfigEntity baseConfigForIscs = new ERPBaseConfigEntity();
+        baseConfigForIscs.setCustomerId(mockIscsCustomerId);
+        baseConfigForIscs.setIsOpen(1);
+        baseConfigForIscs.setAppKey(StringUtil.createRandomStr(8));
+        baseConfigForIscs.setToken(StringUtil.createRandomStr32());
+        baseConfigForIscs.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);
+        baseConfigForIscs = baseConfigRepository.saveAndFlush(baseConfigForIscs);
+
+        iscsConfig = new ERPDetailConfigEntity();
+        iscsConfig.setErpType(ERPTypeEnum.ProviderType.ISCS);
+        iscsConfig.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);
+        iscsConfig.setIsDefault(1);
+        iscsConfig.setCustomerId(baseConfigForIscs.getCustomerId());
+        mockIscsSysData = new ISCSSysData();
+        mockIscsSysData.setHost("");
+        mockIscsSysData.setAppKey("");
+        mockIscsSysData.setAppSecret("");
+        mockIscsSysData.setOwnerId(1);
+        mockIscsSysData.setShopId(1);
+        mockIscsSysData.setStockId(1);
+        String iscsSysDataJson = JSON.toJSONString(mockIscsSysData);
+        iscsConfig.setErpBaseConfig(baseConfigForIscs);
+        iscsConfig.setErpSysData(iscsSysDataJson);
+        iscsConfig = detailConfigRepository.saveAndFlush(iscsConfig);
     }
 
     /**
@@ -112,7 +129,7 @@ public class OrderProxyTest extends SpringWebTest {
      * @param productBn
      * @return
      */
-    protected Order randomOrder(String orderId, String productBn) {
+    protected Order randomOrder(String orderId, String productBn, int customerId) {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
         Order order = new Order();
@@ -136,7 +153,7 @@ public class OrderProxyTest extends SpringWebTest {
         order.setCostItem(100);
         order.setFinalAmount(100);
         order.setPaymentName("微信支付");
-        order.setCustomerId(mockCustomerId);
+        order.setCustomerId(customerId);
         order.setPayTime(nowStr);
         OrderItem orderItem = new OrderItem();
         orderItem.setOrderId(orderId);
@@ -146,7 +163,7 @@ public class OrderProxyTest extends SpringWebTest {
         orderItem.setPrice(100);
         orderItem.setAmount(100);
         orderItem.setNum(1);
-        orderItem.setCustomerId(mockCustomerId);
+        orderItem.setCustomerId(customerId);
         orderItem.setGoodBn(productBn);
         orderItem.setStandard(UUID.randomUUID().toString());
         orderItem.setBrief(UUID.randomUUID().toString());

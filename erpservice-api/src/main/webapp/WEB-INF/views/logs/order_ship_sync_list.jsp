@@ -58,6 +58,7 @@
                 <div class="cnt">
                     <div class="search-bar">
                         <div>
+                            <input type="hidden" name="erpUserType" value="${erpUserType}"/>
                             <label class="first ">起始时间：</label>
                             <input name="beginTime" type="text" id="txtCreateBeginTime" placeholder=" [开始时间]"
                                    class="input-normal Wdate"

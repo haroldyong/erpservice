@@ -16,9 +16,6 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:useBean id="erpTypeList" scope="request"
-             type="com.huobanplus.erpservice.datacenter.common.ERPTypeEnum.ProviderType[]"/>
-<jsp:useBean id="baseConfig" scope="request" type="com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity"/>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1">
@@ -98,6 +95,9 @@
                 var erpConfigHandler = this.getErpConfigHandler(parseInt(erpType));
 
                 var sysDataJson = erpConfigHandler.getConfig();
+                console.log("*********");
+                console.log(sysDataJson);
+                console.log("*********");
                 if (sysDataJson == null) {
                     return;
                 }
@@ -121,6 +121,10 @@
                         return iscsConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.LGJ.getCode()%>:
                         return lgjConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.KAOLA.getCode()%>:
+                        return kaoLaConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.KJYG.getCode()%>:
+                        return kjygConfigHandler;
                 }
             }
         };
@@ -278,6 +282,14 @@
                                 <div id="detailConfig_<%=ERPTypeEnum.ProviderType.LGJ.getCode()%>">
                                     <%@include file="/detailConfig/lgj_config.jsp" %>
                                 </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.KAOLA.getCode()%>">
+                                    <%@include file="/detailConfig/kaola_config.jsp" %>
+                                </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.KJYG.getCode()%>">
+                                    <%@include file="/detailConfig/kjyg_config.jsp" %>
+                                </div>
+                            </div>
+
                             </div>
                         </div>
                         <div style="text-align: center;">

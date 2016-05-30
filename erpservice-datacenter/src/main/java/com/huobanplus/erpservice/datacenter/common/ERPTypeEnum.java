@@ -17,10 +17,12 @@ import com.huobanplus.erpservice.common.ienum.ICommonEnum;
 public interface ERPTypeEnum {
     enum ProviderType implements ICommonEnum {
         EDB(0, "E店宝"),
-        NETSHOP(1, "网店管家"),
+        NETSHOP(1, "网店管家（尽请期待）"),
         SAP(2, "SAP系统"),
         ISCS(3, "网仓"),
-        LGJ(4,"礼管家");
+        LGJ(4, "礼管家（尽请期待）"),
+        KAOLA(5, "考拉"),
+        KJYG(6,"跨境易购");
 
         private int code;
         private String name;

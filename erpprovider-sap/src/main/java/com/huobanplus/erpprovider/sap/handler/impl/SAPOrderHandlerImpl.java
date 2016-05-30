@@ -100,8 +100,8 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
 //        sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
         sapSaleOrderInfo.setOrganization("PC");
         //   sapSaleOrderInfo.setDiscount("20");
-        sapSaleOrderInfo.setInvoiceIsopen(false);
-        sapSaleOrderInfo.setInvoiceTitle("火图科技股份有限公司");
+        sapSaleOrderInfo.setInvoiceIsopen(orderInfo.getIsTax() == 1);
+        sapSaleOrderInfo.setInvoiceTitle(orderInfo.getTaxCompany());
         //sapSaleOrderInfo.setSapSallId("销售订单号");
         sapSaleOrderInfo.setLogiNo(orderInfo.getLogiNo());
         //sapSaleOrderInfo.setGoodsOrg("产品组");
@@ -129,6 +129,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
         } else {
             orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+            orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
         }
         //orderSync.setResultStatus(orderOperatorLog.isResultStatus());
         //orderSync.setRemark(orderOperatorLog.getRemark());

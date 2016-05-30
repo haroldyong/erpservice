@@ -31,6 +31,8 @@
         <module>erpprovider-iscs</module>
         <module>erpprovider-LGJ</module>
         <module>erpprovider-gy</module>
+        <module>erpprovider-kaola</module>
+        <module>erpprovider-kjyg</module>
     </modules>
 
     <properties>
@@ -103,7 +105,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.31</version>
+            <version>5.1.32</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
