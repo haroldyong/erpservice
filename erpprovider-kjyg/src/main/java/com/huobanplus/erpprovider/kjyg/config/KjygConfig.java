@@ -16,10 +16,10 @@ public class KjygConfig {
     private ERPRegister erpRegister;
 
     @Autowired
-    private KjygHandlerBuilder kjzyHandlerBuilder;
+    private KjygHandlerBuilder kjygHandlerBuilder;
 
     @PostConstruct
     public void init() {
-        erpRegister.addBuilders(kjzyHandlerBuilder);
+        erpRegister.addBuilders(kjygHandlerBuilder);
     }
 }

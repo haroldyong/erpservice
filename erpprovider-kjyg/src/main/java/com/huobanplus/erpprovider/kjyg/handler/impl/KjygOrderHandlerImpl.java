@@ -10,6 +10,7 @@ import com.huobanplus.erpprovider.kjyg.formatkjyg.KjygOrderItem;
 import com.huobanplus.erpprovider.kjyg.handler.KjygOrderHandler;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
+import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
@@ -49,7 +50,7 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
             KjygOrderItem kjygOrderItem = new KjygOrderItem();
             kjygOrderItem.setSpe(String.valueOf(orderItem.getItemId()));
             kjygOrderItem.setAmount(String.valueOf(orderItem.getNum()));
-            kjygOrderItem.setPrice(String.valueOf(orderItem.getPrice()));
+            kjygOrderItem.setPrice(String.valueOf(orderItem.getAmount()));// FIXME: 2016/5/30
             kjygOrderItems.add(kjygOrderItem);
         });
 
@@ -58,23 +59,41 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         createOrderInfo.setClientcode(kjygSysData.getClientCode());
         createOrderInfo.setShipName(orderInfo.getShipName());
         createOrderInfo.setShipMobile(orderInfo.getShipMobile());
-        createOrderInfo.setWebAccountNo("5555@qq.com");// TODO: 2016/5/24  
-        createOrderInfo.setWebTradeNo("JD0000002");// TODO: 2016/5/24  
-        createOrderInfo.setWebPayNo("P0000001");// TODO: 2016/5/24  
-        createOrderInfo.setPayWay("01");// TODO: 2016/5/24  
-        createOrderInfo.setBuyerPid("360782199009090099");// TODO: 2016/5/24
-        createOrderInfo.setBuyerName(orderInfo.getShipName());// FIXME: 2016/5/24
-        createOrderInfo.setBuyerTel("13211112222");// TODO: 2016/5/24  
-        createOrderInfo.setPayment("100.00");// TODO: 2016/5/24  
-        createOrderInfo.setWebsite("01");// TODO: 2016/5/24  
-        createOrderInfo.setProvince("01");orderInfo.getProvince();
-        createOrderInfo.setCity("0101");orderInfo.getCity();
-        createOrderInfo.setArea("010105");orderInfo.getShipArea();
-        createOrderInfo.setPostCode("341401");orderInfo.getShipZip();
-        createOrderInfo.setShipAddr("浙江省杭州市西湖区XXX栋2303室");orderInfo.getShipAddr();
-        createOrderInfo.setRemark("订单备注内容");orderInfo.getRemark();
+        createOrderInfo.setWebAccountNo(orderInfo.getUserLoginName());
+        createOrderInfo.setWebTradeNo(orderInfo.getOrderId());
+        createOrderInfo.setWebPayNo(orderInfo.getOrderId());
+
+        int orderPayWay = orderInfo.getPayWay();
+        String payWay = "";
+        if(orderPayWay == OrderEnum.PaymentOptions.ALIPAY_MOBILE.getCode() || orderPayWay==OrderEnum.PaymentOptions.ALIPAY_PC.getCode()){
+            payWay = "02";
+        } else if(orderPayWay == OrderEnum.PaymentOptions.WEIXINPAY.getCode() || orderPayWay== OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode()
+                || orderPayWay== OrderEnum.PaymentOptions.WEIXINPAY_APP.getCode()){
+            payWay = "16";
+        } else if(orderPayWay == OrderEnum.PaymentOptions.REDEMPTION.getCode()){
+
+        } else if(orderPayWay == OrderEnum.PaymentOptions.UNIONPAY.getCode()){
+            payWay = "01";
+        } else if(orderPayWay == OrderEnum.PaymentOptions.BAIDUPAY.getCode()){// 百度钱包
+
+        } else if(orderPayWay == OrderEnum.PaymentOptions.WEIFUTONG.getCode()){// 威富通
+
+        }
+
+        createOrderInfo.setPayWay(payWay);
+        createOrderInfo.setBuyerPid(orderInfo.getBuyerPid());
+        createOrderInfo.setBuyerName(orderInfo.getBuyerName());
+        createOrderInfo.setBuyerTel(orderInfo.getUserLoginName());// FIXME: 2016/5/30
+        createOrderInfo.setPayment(String.valueOf(orderInfo.getOnlinePayAmount()));
+        createOrderInfo.setWebsite(kjygSysData.getWebsite());
+        createOrderInfo.setProvince(orderInfo.getProvince());
+        createOrderInfo.setCity(orderInfo.getCity());
+        createOrderInfo.setArea(orderInfo.getShipArea());
+        createOrderInfo.setPostCode(orderInfo.getShipZip());
+        createOrderInfo.setShipAddr(orderInfo.getShipAddr());
+        createOrderInfo.setRemark(orderInfo.getRemark());
         createOrderInfo.setFharea("日本");// TODO: 2016/5/24
-        createOrderInfo.setOrderNo("XE0000003");orderInfo.getOrderId();
+        createOrderInfo.setOrderNo(orderInfo.getOrderId());
         createOrderInfo.setOrderItems(kjygOrderItems);
 
         JSONArray jsonArray = new JSONArray();
@@ -212,7 +231,6 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
                 if(resultArray.size()==0){
                     return EventResult.resultWith(EventResultEnum.SUCCESS,"无订单数据",null);
                 }else{
-                    Order order = new Order();
 
                 }
                 return EventResult.resultWith(EventResultEnum.SUCCESS);
@@ -224,4 +242,5 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
             return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
         }
     }
+
 }

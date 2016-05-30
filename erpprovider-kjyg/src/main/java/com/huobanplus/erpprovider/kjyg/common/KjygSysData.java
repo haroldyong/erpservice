@@ -22,4 +22,9 @@ public class KjygSysData {
      *  销售商代码
      */
     private String clientCode;
+
+    /**
+     * 伙伴商城在跨境易购的备案码
+     */
+    private String website="0001";
 }

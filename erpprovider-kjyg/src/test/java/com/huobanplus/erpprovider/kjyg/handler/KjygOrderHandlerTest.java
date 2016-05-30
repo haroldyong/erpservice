@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by wuxiongliu on 2016/5/23.
@@ -42,6 +43,7 @@ public class KjygOrderHandlerTest extends KjygTestBase {
         kjygSysData.setRequestUrl("http://www.kjygb2c.com/api/service.aspx");
         kjygSysData.setClientKey("daa48d8a2a77c13ad11a6a4cf7e25531");
         kjygSysData.setClientCode("K-0008");
+        kjygSysData.setWebsite("0001");
 
         mockOrderItems = new ArrayList<>();
         for(int i=0;i<5;i++){
@@ -53,15 +55,23 @@ public class KjygOrderHandlerTest extends KjygTestBase {
         }
 
         mockOrder = new Order();
-        mockOrder.setOrderId("25874125852656s565d");
+        mockOrder.setOrderId(UUID.randomUUID().toString());
         mockOrder.setMemberId(1);
         mockOrder.setShipName("wuxiongliu");
-        mockOrder.setShipMobile("18705153967");
+        mockOrder.setShipMobile("13211112222");
         mockOrder.setShipEmail("xiong328160186@qq.com");
         mockOrder.setProvince("zhejiang");
-        mockOrder.setCity("hangzhou");
+        mockOrder.setCity("0101");
         mockOrder.setDistrict("binjiang");
         mockOrder.setShipAddr("zhihuiegu");
+        mockOrder.setUserLoginName("18705153967");
+        mockOrder.setBuyerPid("362322199411050053");
+        mockOrder.setBuyerName("wuxiongliu");
+        mockOrder.setPayWay(1);
+        mockOrder.setFhArea("日本");
+        mockOrder.setShipZip("310000");
+        mockOrder.setShipArea("滨江区");
+        mockOrder.setRemark("test");
 
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         mockOrder.setOrderItems(mockOrderItems);
