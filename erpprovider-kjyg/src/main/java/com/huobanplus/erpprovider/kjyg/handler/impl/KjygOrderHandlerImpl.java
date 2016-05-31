@@ -75,9 +75,9 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         } else if(orderPayWay == OrderEnum.PaymentOptions.UNIONPAY.getCode()){
             payWay = "01";
         } else if(orderPayWay == OrderEnum.PaymentOptions.BAIDUPAY.getCode()){// 百度钱包
-
+            payWay = "02";
         } else if(orderPayWay == OrderEnum.PaymentOptions.WEIFUTONG.getCode()){// 威富通
-
+            payWay = "02";
         }
 
         createOrderInfo.setPayWay(payWay);
