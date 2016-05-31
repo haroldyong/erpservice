@@ -70,7 +70,7 @@ public class KjygOrderHandlerTest extends KjygTestBase {
         mockOrder.setPayWay(1);
         mockOrder.setFhArea("日本");
         mockOrder.setShipZip("310000");
-        mockOrder.setShipArea("滨江区");
+        mockOrder.setShipArea("其他区");
         mockOrder.setRemark("test");
 
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));

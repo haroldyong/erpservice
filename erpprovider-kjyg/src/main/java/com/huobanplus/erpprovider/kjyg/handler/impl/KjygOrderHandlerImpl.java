@@ -83,7 +83,7 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         createOrderInfo.setPayWay(payWay);
         createOrderInfo.setBuyerPid(orderInfo.getBuyerPid());
         createOrderInfo.setBuyerName(orderInfo.getBuyerName());
-        createOrderInfo.setBuyerTel(orderInfo.getUserLoginName());// FIXME: 2016/5/30
+        createOrderInfo.setBuyerTel(orderInfo.getUserLoginName());
         createOrderInfo.setPayment(String.valueOf(orderInfo.getOnlinePayAmount()));
         createOrderInfo.setWebsite(kjygSysData.getWebsite());
         createOrderInfo.setProvince(orderInfo.getProvince());
@@ -92,7 +92,7 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         createOrderInfo.setPostCode(orderInfo.getShipZip());
         createOrderInfo.setShipAddr(orderInfo.getShipAddr());
         createOrderInfo.setRemark(orderInfo.getRemark());
-        createOrderInfo.setFharea("日本");// TODO: 2016/5/24
+        createOrderInfo.setFharea(orderInfo.getFhArea());
         createOrderInfo.setOrderNo(orderInfo.getOrderId());
         createOrderInfo.setOrderItems(kjygOrderItems);
 
