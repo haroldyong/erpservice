@@ -32,11 +32,11 @@ public class LGJBaseHandlerTest extends LGJTestBase {
 
     @Test
     public void TestGetSecretStr() throws UnsupportedEncodingException {
-        System.out.println("secretKey :"+baseHandler.getSecretStr(mockSysData));
+        System.out.println(" secretKey :"+baseHandler.getSecretStr(mockSysData));
     }
 
     @Test
     public void TestGetToken() throws UnsupportedEncodingException {
-        System.out.println("Token :"+baseHandler.getToken(mockSysData));
+        System.out.println(" Token :"+baseHandler.getToken(mockSysData));
     }
 }
