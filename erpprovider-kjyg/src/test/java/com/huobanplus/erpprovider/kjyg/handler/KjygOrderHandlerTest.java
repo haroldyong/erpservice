@@ -15,10 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by wuxiongliu on 2016/5/23.
@@ -55,7 +52,7 @@ public class KjygOrderHandlerTest extends KjygTestBase {
         }
 
         mockOrder = new Order();
-        mockOrder.setOrderId(UUID.randomUUID().toString());
+        mockOrder.setOrderId("123456789XXX");
         mockOrder.setMemberId(1);
         mockOrder.setShipName("wuxiongliu");
         mockOrder.setShipMobile("13211112222");
@@ -70,7 +67,7 @@ public class KjygOrderHandlerTest extends KjygTestBase {
         mockOrder.setPayWay(1);
         mockOrder.setFhArea("日本");
         mockOrder.setShipZip("310000");
-        mockOrder.setShipArea("其他区");
+        mockOrder.setShipArea("滨江区");
         mockOrder.setRemark("test");
 
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
@@ -98,23 +95,20 @@ public class KjygOrderHandlerTest extends KjygTestBase {
 
     @Test
     public void testQueryOrder(){
-        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
-        pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
-        pushNewOrderEvent.setErpInfo(mockErpInfo);
-        pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
 
-        EventResult eventResult = kjygOrderHandler.queryOrder(pushNewOrderEvent);
+        String rOrderId = "123456789XXX";
+
+        EventResult eventResult = kjygOrderHandler.queryOrderTradNo(rOrderId,kjygSysData);
         System.out.println(eventResult.getResultMsg());
     }
 
     @Test
     public void testQueryOrderStat(){
-        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
-        pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
-        pushNewOrderEvent.setErpInfo(mockErpInfo);
-        pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
+        String rOrderId = "123456789XXX";
 
-        EventResult eventResult = kjygOrderHandler.queryOrderStat(pushNewOrderEvent);
+        EventResult eventResult = kjygOrderHandler.queryOrderStat(rOrderId,kjygSysData);
         System.out.println(eventResult.getResultMsg());
     }
+
+
 }

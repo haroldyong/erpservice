@@ -3,14 +3,13 @@ package com.huobanplus.erpprovider.kjyg.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.huobanplus.erpprovider.kjyg.KjygOrderSearch;
+import com.huobanplus.erpprovider.kjyg.search.KjygOrderSearch;
 import com.huobanplus.erpprovider.kjyg.common.KjygSysData;
 import com.huobanplus.erpprovider.kjyg.formatkjyg.KjygCreateOrderInfo;
 import com.huobanplus.erpprovider.kjyg.formatkjyg.KjygOrderItem;
 import com.huobanplus.erpprovider.kjyg.handler.KjygOrderHandler;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
-import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
@@ -63,22 +62,21 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         createOrderInfo.setWebTradeNo(orderInfo.getOrderId());
         createOrderInfo.setWebPayNo(orderInfo.getOrderId());
 
-        int orderPayWay = orderInfo.getPayWay();
-        String payWay = "";
-        if(orderPayWay == OrderEnum.PaymentOptions.ALIPAY_MOBILE.getCode() || orderPayWay==OrderEnum.PaymentOptions.ALIPAY_PC.getCode()){
-            payWay = "02";
-        } else if(orderPayWay == OrderEnum.PaymentOptions.WEIXINPAY.getCode() || orderPayWay== OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode()
-                || orderPayWay== OrderEnum.PaymentOptions.WEIXINPAY_APP.getCode()){
-            payWay = "16";
-        } else if(orderPayWay == OrderEnum.PaymentOptions.REDEMPTION.getCode()){
-
-        } else if(orderPayWay == OrderEnum.PaymentOptions.UNIONPAY.getCode()){
-            payWay = "01";
-        } else if(orderPayWay == OrderEnum.PaymentOptions.BAIDUPAY.getCode()){// 百度钱包
-            payWay = "02";
-        } else if(orderPayWay == OrderEnum.PaymentOptions.WEIFUTONG.getCode()){// 威富通
-            payWay = "02";
-        }
+        String payWay = "02";
+//        if(orderPayWay == OrderEnum.PaymentOptions.ALIPAY_MOBILE.getCode() || orderPayWay==OrderEnum.PaymentOptions.ALIPAY_PC.getCode()){
+//            payWay = "02";
+//        } else if(orderPayWay == OrderEnum.PaymentOptions.WEIXINPAY.getCode() || orderPayWay== OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode()
+//                || orderPayWay== OrderEnum.PaymentOptions.WEIXINPAY_APP.getCode()){
+//            payWay = "16";
+//        } else if(orderPayWay == OrderEnum.PaymentOptions.REDEMPTION.getCode()){
+//
+//        } else if(orderPayWay == OrderEnum.PaymentOptions.UNIONPAY.getCode()){
+//            payWay = "01";
+//        } else if(orderPayWay == OrderEnum.PaymentOptions.BAIDUPAY.getCode()){// 百度钱包
+//            payWay = "02";
+//        } else if(orderPayWay == OrderEnum.PaymentOptions.WEIFUTONG.getCode()){// 威富通
+//            payWay = "02";
+//        }
 
         createOrderInfo.setPayWay(payWay);
         createOrderInfo.setBuyerPid(orderInfo.getBuyerPid());
@@ -104,7 +102,6 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         requestData.put("mtype","trade");
         requestData.put("tradelist",jsonArray);
 
-        System.out.println(JSON.toJSONString(jsonArray).toString());
         HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(),requestData);
         if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
             JSONObject result = JSON.parseObject(httpResult.getHttpContent());
@@ -159,16 +156,10 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
     }
 
     @Override
-    public EventResult queryOrder(PushNewOrderEvent pushNewOrderEvent) {
-
-        Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-
-        ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
-        KjygSysData kjygSysData = JSON.parseObject(erpInfo.getSysDataJson(), KjygSysData.class);
-        ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
+    public EventResult queryOrderTradNo(String orderNo,KjygSysData kjygSysData) {
 
         KjygOrderSearch kjygOrderSearch = new KjygOrderSearch();
-        kjygOrderSearch.setOrderNo("XE0000003");
+        kjygOrderSearch.setOrderNo(orderNo);
 
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(kjygOrderSearch);
@@ -190,8 +181,8 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
                 }else{
 
                     JSONObject jsonObject = JSON.parseObject(resultArray.get(0).toString());
-
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                    System.out.println(jsonObject);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,jsonObject);
                 }
             }else{
                 System.out.println(result.getString("res"));
@@ -203,15 +194,10 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
     }
 
     @Override
-    public EventResult queryOrderStat(PushNewOrderEvent pushNewOrderEvent) {
-        Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-
-        ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
-        KjygSysData kjygSysData = JSON.parseObject(erpInfo.getSysDataJson(), KjygSysData.class);
-        ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
+    public EventResult queryOrderStat(String orderNo,KjygSysData kjygSysData) {
 
         KjygOrderSearch kjygOrderSearch = new KjygOrderSearch();
-        kjygOrderSearch.setOrderNo("XE0000003");
+        kjygOrderSearch.setOrderNo(orderNo);
 
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(kjygOrderSearch);
@@ -229,11 +215,13 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
             if(result.getString("sts").equals("Y")){
                 JSONArray resultArray = result.getJSONArray("res");
                 if(resultArray.size()==0){
-                    return EventResult.resultWith(EventResultEnum.SUCCESS,"无订单数据",null);
+                    return EventResult.resultWith(EventResultEnum.ERROR,"无订单数据",null);
                 }else{
-
+                    JSONObject jsonObject = JSON.parseObject(resultArray.get(0).toString());
+                    System.out.println(jsonObject);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,jsonObject);
                 }
-                return EventResult.resultWith(EventResultEnum.SUCCESS);
+
             }else{
                 System.out.println(result.getString("res"));
                 return EventResult.resultWith(EventResultEnum.ERROR,result.getString("res"),null);
