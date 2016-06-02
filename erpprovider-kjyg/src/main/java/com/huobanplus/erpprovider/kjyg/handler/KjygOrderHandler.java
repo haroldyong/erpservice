@@ -1,8 +1,11 @@
 package com.huobanplus.erpprovider.kjyg.handler;
 
 import com.huobanplus.erpprovider.kjyg.common.KjygSysData;
+import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+
+import java.util.List;
 
 /**
  * Created by wuxiongliu on 2016/5/23.
@@ -18,10 +21,11 @@ public interface KjygOrderHandler {
 
     /**
      * 销售商获取运单号及航班
-     * @param orderNo
+     * @param orderList
+     * @param kjygSysData
      * @return
      */
-    EventResult queryOrderTradNo(String orderNo,KjygSysData kjygSysData);
+    EventResult queryOrderTradNo(List<Order> orderList, KjygSysData kjygSysData);
 
     /**
      * 销售商订单跟踪

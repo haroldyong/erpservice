@@ -13,6 +13,7 @@ import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -156,41 +157,52 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
     }
 
     @Override
-    public EventResult queryOrderTradNo(String orderNo,KjygSysData kjygSysData) {
+    public EventResult queryOrderTradNo(List<Order> orderList,KjygSysData kjygSysData) {
 
-        KjygOrderSearch kjygOrderSearch = new KjygOrderSearch();
-        kjygOrderSearch.setOrderNo(orderNo);
+        List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
+        for (Order order : orderList) {
 
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.add(kjygOrderSearch);
+            OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
 
-        Map<String,Object> requestData = new HashMap<>();
-        requestData.put("clientkey",kjygSysData.getClientKey());
-        requestData.put("mtype","awb");
-        requestData.put("clientcode",kjygSysData.getClientCode());
-        requestData.put("ordernos",jsonArray.toJSONString());
-        System.out.println(jsonArray.toJSONString());
+            KjygOrderSearch kjygOrderSearch = new KjygOrderSearch();
+            kjygOrderSearch.setOrderNo(order.getOrderId());
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.add(kjygOrderSearch);
+            Map<String,Object> requestData = new HashMap<>();
+            requestData.put("clientkey",kjygSysData.getClientKey());
+            requestData.put("mtype","awb");
+            requestData.put("clientcode",kjygSysData.getClientCode());
+            requestData.put("ordernos",jsonArray.toJSONString());
+            System.out.println(jsonArray.toJSONString());
 
-        HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(),requestData);
-        if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
-            JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-            if(result.getString("sts").equals("Y")){
-                JSONArray resultArray = result.getJSONArray("res");
-                if(resultArray.size()==0){
-                    return EventResult.resultWith(EventResultEnum.ERROR,"无订单数据",null);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+                if(result.getString("sts").equals("Y")){
+                    JSONArray resultArray = result.getJSONArray("res");
+                    if(resultArray.size()==0){
+                        return EventResult.resultWith(EventResultEnum.ERROR,"无订单数据",null);
+                    }else{
+
+                        JSONObject jsonObject = JSON.parseObject(resultArray.get(0).toString());
+                        String orderId = jsonObject.getString("orderno");
+                        String trackNo = jsonObject.getString("trackno");
+                        String awb = jsonObject.getString("awb");//航班
+                        orderDeliveryInfo.setOrderId(orderId);
+                        orderDeliveryInfo.setLogiNo(trackNo);
+                        orderDeliveryInfo.setLogiName(awb);
+                        orderDeliveryInfoList.add(orderDeliveryInfo);
+                    }
                 }else{
-
-                    JSONObject jsonObject = JSON.parseObject(resultArray.get(0).toString());
-                    System.out.println(jsonObject);
-                    return EventResult.resultWith(EventResultEnum.SUCCESS,jsonObject);
+//                    System.out.println(result.getString("res"));
+//                    return EventResult.resultWith(EventResultEnum.ERROR);
                 }
             }else{
-                System.out.println(result.getString("res"));
-                return EventResult.resultWith(EventResultEnum.ERROR);
+//                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
             }
-        }else{
-            return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
         }
+        return EventResult.resultWith(EventResultEnum.SUCCESS,orderDeliveryInfoList);
+
     }
 
     @Override

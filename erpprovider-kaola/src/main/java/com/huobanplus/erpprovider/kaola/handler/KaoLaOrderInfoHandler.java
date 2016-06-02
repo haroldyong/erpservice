@@ -1,8 +1,11 @@
 package com.huobanplus.erpprovider.kaola.handler;
 
-import com.huobanplus.erpservice.eventhandler.erpevent.OrderStatusInfoEvent;
+import com.huobanplus.erpprovider.kaola.common.KaoLaSysData;
+import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+
+import java.util.List;
 
 /**
  * Created by wuxiongliu on 2016/5/9.
@@ -12,10 +15,10 @@ public interface KaoLaOrderInfoHandler {
 
     /**
      *  订单状态查询
-     * @param orderStatusInfoEvent
+     * @param orderList
      * @return
      */
-    EventResult queryOrderStatusInfo(OrderStatusInfoEvent orderStatusInfoEvent);
+    EventResult queryOrderStatusInfo(List<Order> orderList, KaoLaSysData kaoLaSysData);
 
     /**
      *  代下单代支付

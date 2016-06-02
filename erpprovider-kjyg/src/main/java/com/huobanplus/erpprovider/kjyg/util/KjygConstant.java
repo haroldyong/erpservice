@@ -8,4 +8,6 @@ public class KjygConstant {
     public static final String QUERY_ORDER_TRADNO = "getTradNo";
 
     public static final String QUERY_ORDER_STAT = "getStat";
+
+    public static final int PAGE_SIZE = 200;
 }
