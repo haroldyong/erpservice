@@ -82,13 +82,13 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
 
         OrderItem mockOrderItem = new OrderItem();
         mockOrderItem.setNum(5);
-        mockOrderItem.setOrderId("3873113");
-        mockOrderItem.setProductBn("3873113-ecc4090b639c47f89b453980923afb8e");
+        mockOrderItem.setOrderId("8070");
+        mockOrderItem.setProductBn("10405-68a3e5516d7a7dc21fbe0e7ee13bfc1c");
 
         OrderItem mockOrderItem2 = new OrderItem();
         mockOrderItem2.setNum(5);
-        mockOrderItem2.setOrderId("3872824");
-        mockOrderItem2.setProductBn("3872824-ecc4090b639c47f89b453980923afb8e");
+        mockOrderItem2.setOrderId("8071");
+        mockOrderItem2.setProductBn("10407-68a3e5516d7a7dc21fbe0e7ee13bfc1c");
 
 
 
@@ -153,42 +153,40 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
     }
 
 
-    private JSONArray testSkuIds() throws UnsupportedEncodingException {
-        String secrectKey = "3cf1a3ed8556444bbd1fbd8b9381c8bb";
+    private JSONArray testSkuIds(KaoLaSysData kaoLaSysData) throws UnsupportedEncodingException {
         String timestamp = StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN);
         Map<String, Object> requestData = new TreeMap<>();
-        requestData.put("channelId", 1200);
+        requestData.put("channelId", kaoLaSysData.getChannelId());
         requestData.put("timestamp", timestamp);
         requestData.put("v", "1.0");
         requestData.put("sign_method", "md5");
-        requestData.put("app_key", "0dd1a2b29d6e4bfebce479450889b4b2");
-        requestData.put("sign", SignBuilder.buildSign(requestData, secrectKey, secrectKey));
-        HttpResult httpResult = HttpClientUtil.getInstance().post("http://223.252.220.85/api/queryAllGoodsId", requestData);
+        requestData.put("app_key", kaoLaSysData.getAppKey());
+        requestData.put("sign", SignBuilder.buildSign(requestData, kaoLaSysData.getAppSecret(), kaoLaSysData.getAppSecret()));
+        HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl()+"/queryAllGoodsId", requestData);
         JSONObject jsonObject = JSONObject.parseObject(httpResult.getHttpContent());
         return jsonObject.getJSONArray("goodsInfo");
 
     }
 
-    private JSONObject testGoodsIds(String skuId) throws UnsupportedEncodingException {
-        String secrectKey = "3cf1a3ed8556444bbd1fbd8b9381c8bb";
+    private JSONObject testGoodsIds(String skuId,KaoLaSysData kaoLaSysData) throws UnsupportedEncodingException {
         String timestamp = StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN);
         Map<String, Object> requestData = new TreeMap<>();
-        requestData.put("channelId", 1200);
+        requestData.put("channelId", kaoLaSysData.getChannelId());
         requestData.put("timestamp", timestamp);
         requestData.put("v", "1.0");
         requestData.put("sign_method", "md5");
-        requestData.put("app_key", "0dd1a2b29d6e4bfebce479450889b4b2");
+        requestData.put("app_key", kaoLaSysData.getAppKey());
         requestData.put("skuId", skuId);
         requestData.put("queryType", 1);
-        requestData.put("sign", SignBuilder.buildSign(requestData, secrectKey, secrectKey));
-        HttpResult httpResult = HttpClientUtil.getInstance().post("http://223.252.220.85/api/queryGoodsInfoById", requestData);
+        requestData.put("sign", SignBuilder.buildSign(requestData, kaoLaSysData.getAppSecret(), kaoLaSysData.getAppSecret()));
+        HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl()+"/queryGoodsInfoById", requestData);
         JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
         return jsonObject.getJSONObject("goodsInfo");
     }
 
 //    @Test
 //    public void createGoodsIdAndSkuIdTable() throws IOException {
-//        JSONArray jsonArray = testSkuIds();
+//        JSONArray jsonArray = testSkuIds(mockKaoLaSysData);
 //        HSSFWorkbook workbook= new HSSFWorkbook();
 //        HSSFSheet sheet= workbook.createSheet("skuId&goodsId");
 //        FileOutputStream out = null;
@@ -204,9 +202,9 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
 //            for(Object item:jsonArray){
 //                row = sheet.createRow(count);
 //                String skuId =item.toString();
-//                if(testGoodsIds(skuId)!=null){
+//                if(testGoodsIds(skuId,mockKaoLaSysData)!=null){
 //                    row.createCell(0).setCellValue(skuId);
-//                    row.createCell(1).setCellValue(testGoodsIds(skuId).getString("goodsId"));
+//                    row.createCell(1).setCellValue(testGoodsIds(skuId,mockKaoLaSysData).getString("goodsId"));
 //                }
 //                count++;
 //                System.out.println("add....");
@@ -219,9 +217,13 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
 //            workbook.close();
 //            out.close();
 //        }
-//
 //    }
 
-
+    @Test
+    public void testQueryGoodsId() throws UnsupportedEncodingException {
+        String skuId = "10405-68a3e5516d7a7dc21fbe0e7ee13bfc1c";
+        String goodsId = kaoLaOrderInfoHandler.queryGoodsId(skuId,mockKaoLaSysData);
+        System.out.println(goodsId);
+    }
 
 }

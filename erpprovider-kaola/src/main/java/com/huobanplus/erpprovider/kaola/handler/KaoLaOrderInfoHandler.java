@@ -5,6 +5,7 @@ import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -26,4 +27,6 @@ public interface KaoLaOrderInfoHandler {
      * @return
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
+
+    String queryGoodsId(String skuId,KaoLaSysData kaoLaSysData) throws UnsupportedEncodingException;
 }
