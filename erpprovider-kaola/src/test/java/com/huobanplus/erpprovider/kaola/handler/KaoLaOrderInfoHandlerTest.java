@@ -1,11 +1,17 @@
 package com.huobanplus.erpprovider.kaola.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.kaola.KaoLaTestBase;
 import com.huobanplus.erpprovider.kaola.common.KaoLaSysData;
+import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
+import com.huobanplus.erpservice.common.httputil.HttpResult;
+import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.erpevent.OrderStatusInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -17,9 +23,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 /**
  * Created by wuxiongliu on 2016/5/10.
@@ -47,38 +52,54 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
 
     /**
      *  appkey: bb0b3ad64c9e5eb06c2fb6f163bf179e79051bd5c9b652fc45dc68a2b5dd23c6
+     *  appkey zs : ff438be07823f990fc6eef7f1a3171d05512031e704803949b36fc13fc05b493
      *  appkey: 0dd1a2b29d6e4bfebce479450889b4b2
      *  secretKey: 4ed8b056c32939b9fd66987470b3e9fb720bdded02197e678e516bdcdf810833
      *  secretKey: 3cf1a3ed8556444bbd1fbd8b9381c8bb
+     *  secretKey zs: ea2358dda586ed69e51812d0e6e107af5f3c741d5cde7c14e97f265eba9ebcdc
      */
 
     @Before
     public void setUp(){
+        String appKey = "ff438be07823f990fc6eef7f1a3171d05512031e704803949b36fc13fc05b493";
+        String secretKey = "ea2358dda586ed69e51812d0e6e107af5f3c741d5cde7c14e97f265eba9ebcdc";
+
         mockKaoLaSysData = new KaoLaSysData();
-        mockKaoLaSysData.setAppKey("0dd1a2b29d6e4bfebce479450889b4b2");
-        mockKaoLaSysData.setAppSecret("3cf1a3ed8556444bbd1fbd8b9381c8bb");
-        mockKaoLaSysData.setRequestUrl("http://223.252.220.85/api");//http://thirdpart.kaola.com/api,http://223.252.220.85/api
+        mockKaoLaSysData.setAppKey(appKey);
+        mockKaoLaSysData.setAppSecret(secretKey);
+        mockKaoLaSysData.setRequestUrl("http://thirdpart.kaola.com/api");//http://thirdpart.kaola.com/api,http://223.252.220.85/api
         mockKaoLaSysData.setV("1.0");
-        mockKaoLaSysData.setChannelId(1200L);
+        mockKaoLaSysData.setChannelId(240L);
 
 
         mockOrderInfo = new OrderInfo();
-        mockOrderInfo.setOrderCode("123");
+        mockOrderInfo.setOrderCode("25874125852656s565d22");
         mockOrderInfo.setOrderChannel("1200");
         mockOrderInfo.setPayTime(new Date());
 
 
         mockOrderItems = new ArrayList<>();
-        for(int i=0;i<5;i++){
-            OrderItem mockOrderItem = new OrderItem();
-            mockOrderItem.setNum(i+5);
-            mockOrderItems.add(mockOrderItem);
-        }
+
+        OrderItem mockOrderItem = new OrderItem();
+        mockOrderItem.setNum(5);
+        mockOrderItem.setOrderId("3873113");
+        mockOrderItem.setProductBn("3873113-ecc4090b639c47f89b453980923afb8e");
+
+        OrderItem mockOrderItem2 = new OrderItem();
+        mockOrderItem2.setNum(5);
+        mockOrderItem2.setOrderId("3872824");
+        mockOrderItem2.setProductBn("3872824-ecc4090b639c47f89b453980923afb8e");
+
+
+
+        mockOrderItems.add(mockOrderItem);
+        mockOrderItems.add(mockOrderItem2);
+
 
         mockOrder = new Order();
-        mockOrder.setOrderId("25874125852656s565d");
+        mockOrder.setOrderId("0003");
         mockOrder.setMemberId(1);
-        mockOrder.setShipName("wuxiongliu");
+        mockOrder.setShipName("吴雄琉");
         mockOrder.setShipMobile("18705153967");
         mockOrder.setShipEmail("xiong328160186@qq.com");
         mockOrder.setProvince("zhejiang");
@@ -104,10 +125,17 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
     @Test
     public void testQueryOrderInfo(){
 
+        List<Order> orderList = new ArrayList<>();
+        orderList.add(mockOrder);
+
         mockOrderStatusInfoEvent = new OrderStatusInfoEvent();
         mockOrderStatusInfoEvent.setOrderInfo(mockOrderInfo);
         mockOrderStatusInfoEvent.setErpInfo(mockErpInfo);
-        EventResult eventResult = kaoLaOrderInfoHandler.queryOrderStatusInfo(mockOrderStatusInfoEvent);
+        EventResult eventResult = kaoLaOrderInfoHandler.queryOrderStatusInfo(orderList,mockKaoLaSysData);
+        List<OrderDeliveryInfo> deliveryInfoList = (List<OrderDeliveryInfo>) eventResult.getData();
+        deliveryInfoList.forEach(deliveryInfo -> {
+            System.out.println(deliveryInfo);
+        });
         System.out.println(eventResult.getResultMsg());
         System.out.println(eventResult.getResultCode());
     }
@@ -123,5 +151,77 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
         EventResult eventResult = kaoLaOrderInfoHandler.pushOrder(mockPushNewOrderEvent);
         System.out.println(eventResult.getResultMsg());
     }
+
+
+    private JSONArray testSkuIds() throws UnsupportedEncodingException {
+        String secrectKey = "3cf1a3ed8556444bbd1fbd8b9381c8bb";
+        String timestamp = StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN);
+        Map<String, Object> requestData = new TreeMap<>();
+        requestData.put("channelId", 1200);
+        requestData.put("timestamp", timestamp);
+        requestData.put("v", "1.0");
+        requestData.put("sign_method", "md5");
+        requestData.put("app_key", "0dd1a2b29d6e4bfebce479450889b4b2");
+        requestData.put("sign", SignBuilder.buildSign(requestData, secrectKey, secrectKey));
+        HttpResult httpResult = HttpClientUtil.getInstance().post("http://223.252.220.85/api/queryAllGoodsId", requestData);
+        JSONObject jsonObject = JSONObject.parseObject(httpResult.getHttpContent());
+        return jsonObject.getJSONArray("goodsInfo");
+
+    }
+
+    private JSONObject testGoodsIds(String skuId) throws UnsupportedEncodingException {
+        String secrectKey = "3cf1a3ed8556444bbd1fbd8b9381c8bb";
+        String timestamp = StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN);
+        Map<String, Object> requestData = new TreeMap<>();
+        requestData.put("channelId", 1200);
+        requestData.put("timestamp", timestamp);
+        requestData.put("v", "1.0");
+        requestData.put("sign_method", "md5");
+        requestData.put("app_key", "0dd1a2b29d6e4bfebce479450889b4b2");
+        requestData.put("skuId", skuId);
+        requestData.put("queryType", 1);
+        requestData.put("sign", SignBuilder.buildSign(requestData, secrectKey, secrectKey));
+        HttpResult httpResult = HttpClientUtil.getInstance().post("http://223.252.220.85/api/queryGoodsInfoById", requestData);
+        JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
+        return jsonObject.getJSONObject("goodsInfo");
+    }
+
+//    @Test
+//    public void createGoodsIdAndSkuIdTable() throws IOException {
+//        JSONArray jsonArray = testSkuIds();
+//        HSSFWorkbook workbook= new HSSFWorkbook();
+//        HSSFSheet sheet= workbook.createSheet("skuId&goodsId");
+//        FileOutputStream out = null;
+//        try {
+//
+//            int count = 0;
+//            out = new FileOutputStream("d:/newKaola.xls");
+//
+//            HSSFRow row = sheet.createRow(0);
+//            row.createCell(0).setCellValue("skuId");
+//            row.createCell(1).setCellValue("goodsId");
+//
+//            for(Object item:jsonArray){
+//                row = sheet.createRow(count);
+//                String skuId =item.toString();
+//                if(testGoodsIds(skuId)!=null){
+//                    row.createCell(0).setCellValue(skuId);
+//                    row.createCell(1).setCellValue(testGoodsIds(skuId).getString("goodsId"));
+//                }
+//                count++;
+//                System.out.println("add....");
+//            }
+//
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }finally{
+//            workbook.write(out);
+//            workbook.close();
+//            out.close();
+//        }
+//
+//    }
+
+
 
 }

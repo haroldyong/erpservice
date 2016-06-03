@@ -95,10 +95,18 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
                         // 返回订单发货信息列表
 
                     } else {
+
+                        orderDeliveryInfo.setLogiName("");
+                        orderDeliveryInfo.setLogiName("");
+                        orderDeliveryInfoList.add(orderDeliveryInfo);
+
 //                        return EventResult.resultWith(EventResultEnum.ERROR, result.get("recMeg").toString(), null);
                     }
 
                 } else {
+                    orderDeliveryInfo.setLogiName("");
+                    orderDeliveryInfo.setLogiName("");
+                    orderDeliveryInfoList.add(orderDeliveryInfo);
 //                    return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
                 }
             } catch (UnsupportedEncodingException e) {
@@ -123,7 +131,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
         orderItems.forEach(item -> {
             KaoLaOrderItem kaoLaOrderItem = new KaoLaOrderItem();
-            kaoLaOrderItem.setGoodsId(item.getOrderId());
+            kaoLaOrderItem.setGoodsId(String.valueOf(item.getItemId()));
             kaoLaOrderItem.setSkuId(item.getProductBn());
             kaoLaOrderItem.setBuyAmount(item.getNum());
             kaoLaOrderItems.add(kaoLaOrderItem);

@@ -104,16 +104,16 @@ public class KjygOrderHandlerTest extends KjygTestBase {
 
         String rOrderId = "123456789XXX";
 
-        EventResult eventResult = kjygOrderHandler.queryOrderTradNo(rOrderId,kjygSysData);
-        System.out.println(eventResult.getResultMsg());
+//        EventResult eventResult = kjygOrderHandler.queryOrderTradNo(rOrderId,kjygSysData);
+//        System.out.println(eventResult.getResultMsg());
     }
 
     @Test
     public void testQueryOrderStat(){
         String rOrderId = "123456789XXX";
 
-        EventResult eventResult = kjygOrderHandler.queryOrderStat(rOrderId,kjygSysData);
-        System.out.println(eventResult.getResultMsg());
+//        EventResult eventResult = kjygOrderHandler.queryOrderStat(rOrderId,kjygSysData);
+//        System.out.println(eventResult.getResultMsg());
     }
 
     @Test

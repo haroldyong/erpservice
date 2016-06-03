@@ -163,6 +163,7 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         for (Order order : orderList) {
 
             OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
+            orderDeliveryInfo.setOrderId(order.getOrderId());
 
             KjygOrderSearch kjygOrderSearch = new KjygOrderSearch();
             kjygOrderSearch.setOrderNo(order.getOrderId());
@@ -188,16 +189,22 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
                         String orderId = jsonObject.getString("orderno");
                         String trackNo = jsonObject.getString("trackno");
                         String awb = jsonObject.getString("awb");//航班
-                        orderDeliveryInfo.setOrderId(orderId);
+
                         orderDeliveryInfo.setLogiNo(trackNo);
                         orderDeliveryInfo.setLogiName(awb);
                         orderDeliveryInfoList.add(orderDeliveryInfo);
                     }
                 }else{
+                    orderDeliveryInfo.setLogiNo("");
+                    orderDeliveryInfo.setLogiName("");
+                    orderDeliveryInfoList.add(orderDeliveryInfo);
 //                    System.out.println(result.getString("res"));
 //                    return EventResult.resultWith(EventResultEnum.ERROR);
                 }
             }else{
+                orderDeliveryInfo.setLogiNo("");
+                orderDeliveryInfo.setLogiName("");
+                orderDeliveryInfoList.add(orderDeliveryInfo);
 //                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
             }
         }

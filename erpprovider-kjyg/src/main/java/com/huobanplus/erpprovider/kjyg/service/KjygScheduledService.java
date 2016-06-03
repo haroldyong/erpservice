@@ -81,7 +81,7 @@ public class KjygScheduledService {
     public void syncOrderShip() {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
-        log.info("order ship sync for edb start!");
+        log.info("order ship sync for kjyg start!");
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.KJYG);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
             log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync order ship");
@@ -211,7 +211,7 @@ public class KjygScheduledService {
                 log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
             }
         }
-        log.info("edb ship sync end");
+        log.info("kjyg ship sync end");
     }
 
 }
