@@ -22,7 +22,8 @@ public interface ERPTypeEnum {
         ISCS(3, "网仓"),
         LGJ(4, "礼管家（尽请期待）"),
         KAOLA(5, "考拉"),
-        KJYG(6,"跨境易购");
+        KJYG(6,"跨境易购"),
+        GY(7,"网易");
 
         private int code;
         private String name;

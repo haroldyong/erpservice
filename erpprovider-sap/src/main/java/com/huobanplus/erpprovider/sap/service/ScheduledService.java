@@ -65,6 +65,7 @@ public class ScheduledService {
     /*
      * 同步订单发货状态轮训服务
      */
+    @SuppressWarnings("Duplicates")
     @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void syncOrderShip() {
@@ -77,8 +78,7 @@ public class ScheduledService {
             try {
                 SAPSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), SAPSysData.class);
                 ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
-                ERPUserInfo erpUserInfo = new ERPUserInfo();
-                erpUserInfo.setCustomerId(detailConfig.getCustomerId());
+                ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
 
                 List<LogiInfo> results = new ArrayList<>();
                 //获取订单信息]
@@ -129,6 +129,7 @@ public class ScheduledService {
                     erpUserInfo.setErpUserType(detailConfig.getErpUserType());
                     ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
                     EventResult batchDeliverEventResult = erpUserHandler.handleEvent(batchDeliverEvent);
+                    //记录日志
                     if (batchDeliverEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                         BatchDeliverResult batchDeliverResult = (BatchDeliverResult) batchDeliverEventResult.getData();
                         failedOrders = batchDeliverResult.getFailedOrders();
@@ -155,6 +156,32 @@ public class ScheduledService {
 
                         shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
                         shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+
+                        shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
+                    }else{
+
+                        orderShipSyncLog.setSuccessCount(0);
+                        orderShipSyncLog.setFailedCount(deliveryInfoList.size());
+
+                        int successCount = successOrders.size(), failedCount = failedOrders.size();
+
+                        if (successCount > 0 && failedCount > 0) {
+                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
+                        }
+                        if (successCount > 0 && failedCount == 0) {
+                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+                        }
+                        if (successCount == 0) {
+                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                        }
+
+                        orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
+
+                        //同步失败的订单记录
+                        List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
+
+                        shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, deliveryInfoList, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                        //shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
 
                         shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
                     }
