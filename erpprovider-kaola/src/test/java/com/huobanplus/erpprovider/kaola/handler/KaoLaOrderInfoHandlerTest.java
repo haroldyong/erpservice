@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.kaola.KaoLaTestBase;
 import com.huobanplus.erpprovider.kaola.common.KaoLaSysData;
+import com.huobanplus.erpprovider.kaola.service.KaolaScheduledService;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.util.SignBuilder;
@@ -50,6 +51,9 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
     @Autowired
     private KaoLaOrderInfoHandler kaoLaOrderInfoHandler;
 
+    @Autowired
+    private KaolaScheduledService kaolaScheduledService;
+
     /**
      *  appkey: bb0b3ad64c9e5eb06c2fb6f163bf179e79051bd5c9b652fc45dc68a2b5dd23c6
      *  appkey zs : ff438be07823f990fc6eef7f1a3171d05512031e704803949b36fc13fc05b493
@@ -61,15 +65,15 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
 
     @Before
     public void setUp(){
-        String appKey = "ff438be07823f990fc6eef7f1a3171d05512031e704803949b36fc13fc05b493";
-        String secretKey = "ea2358dda586ed69e51812d0e6e107af5f3c741d5cde7c14e97f265eba9ebcdc";
+        String appKey = "0dd1a2b29d6e4bfebce479450889b4b2";
+        String secretKey = "3cf1a3ed8556444bbd1fbd8b9381c8bb";
 
         mockKaoLaSysData = new KaoLaSysData();
         mockKaoLaSysData.setAppKey(appKey);
         mockKaoLaSysData.setAppSecret(secretKey);
-        mockKaoLaSysData.setRequestUrl("http://thirdpart.kaola.com/api");//http://thirdpart.kaola.com/api,http://223.252.220.85/api
+        mockKaoLaSysData.setRequestUrl("http://223.252.220.85/api");//http://thirdpart.kaola.com/api,http://223.252.220.85/api
         mockKaoLaSysData.setV("1.0");
-        mockKaoLaSysData.setChannelId(240L);
+        mockKaoLaSysData.setChannelId(1200L);
 
 
         mockOrderInfo = new OrderInfo();
@@ -106,6 +110,7 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
         mockOrder.setCity("hangzhou");
         mockOrder.setDistrict("binjiang");
         mockOrder.setShipAddr("zhihuiegu");
+        mockOrder.setBuyerPid("3623221994110580053");
 
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         mockOrder.setOrderItems(mockOrderItems);
@@ -150,6 +155,11 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
 
         EventResult eventResult = kaoLaOrderInfoHandler.pushOrder(mockPushNewOrderEvent);
         System.out.println(eventResult.getResultMsg());
+    }
+
+    @Test
+    public void testSync(){
+        kaolaScheduledService.syncOrderShip();
     }
 
 
