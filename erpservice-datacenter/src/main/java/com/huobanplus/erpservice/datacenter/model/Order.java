@@ -145,7 +145,7 @@ public class Order extends BaseInfo {
 
 
     /**
-     * 买家身份证
+     * 考拉&跨境易购：买家身份证
      */
     private String buyerPid;
 
@@ -155,7 +155,7 @@ public class Order extends BaseInfo {
     private String buyerName;
 
     /**
-     * 跨境易购： 支付方式
+     * 考拉&跨境易购： 支付方式
      */
     private int payWay;
 

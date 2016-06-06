@@ -3,7 +3,6 @@ package com.huobanplus.erpprovider.kaola.config;
 import com.huobanplus.erpprovider.kaola.handler.KaoLaOrderInfoHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.OrderStatusInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
@@ -40,10 +39,7 @@ public class KaoLaHandlerBuilder implements ERPHandlerBuilder {
                     PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
                     return kaoLaOrderInfoHandler.pushOrder(pushNewOrderEvent);
                 }
-                if(erpBaseEvent instanceof OrderStatusInfoEvent){
-                    OrderStatusInfoEvent orderStatusInfoEvent = (OrderStatusInfoEvent) erpBaseEvent;
-                    return kaoLaOrderInfoHandler.queryOrderStatusInfo(orderStatusInfoEvent);
-                }
+
                 return null;
             }
 

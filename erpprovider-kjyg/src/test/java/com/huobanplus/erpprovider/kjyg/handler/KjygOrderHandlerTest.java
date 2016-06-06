@@ -3,6 +3,7 @@ package com.huobanplus.erpprovider.kjyg.handler;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.kjyg.KjygTestBase;
 import com.huobanplus.erpprovider.kjyg.common.KjygSysData;
+import com.huobanplus.erpprovider.kjyg.service.KjygScheduledService;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by wuxiongliu on 2016/5/23.
@@ -36,6 +36,9 @@ public class KjygOrderHandlerTest extends KjygTestBase {
 
     private List<OrderItem> mockOrderItems;
     private Order mockOrder;
+
+    @Autowired
+    private KjygScheduledService kjygScheduledService;
 
     @Before
     public void setUp(){
@@ -55,7 +58,7 @@ public class KjygOrderHandlerTest extends KjygTestBase {
         }
 
         mockOrder = new Order();
-        mockOrder.setOrderId(UUID.randomUUID().toString());
+        mockOrder.setOrderId("123456789XXX");
         mockOrder.setMemberId(1);
         mockOrder.setShipName("wuxiongliu");
         mockOrder.setShipMobile("13211112222");
@@ -97,24 +100,30 @@ public class KjygOrderHandlerTest extends KjygTestBase {
     }
 
     @Test
-    public void testQueryOrder(){
-        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
-        pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
-        pushNewOrderEvent.setErpInfo(mockErpInfo);
-        pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
+    public void testQueryOrderTrackNo(){
 
-        EventResult eventResult = kjygOrderHandler.queryOrder(pushNewOrderEvent);
+        List<Order> orderList = new ArrayList<>();
+        orderList.add(mockOrder);
+
+        String rOrderId = "123456789XXX";
+
+        EventResult eventResult = kjygOrderHandler.queryOrderTradNo(orderList,kjygSysData);
         System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getData());
     }
 
     @Test
     public void testQueryOrderStat(){
-        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
-        pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
-        pushNewOrderEvent.setErpInfo(mockErpInfo);
-        pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
+        String rOrderId = "123456789XXX";
 
-        EventResult eventResult = kjygOrderHandler.queryOrderStat(pushNewOrderEvent);
+        EventResult eventResult = kjygOrderHandler.queryOrderStat(rOrderId,kjygSysData);
         System.out.println(eventResult.getResultMsg());
     }
+
+    @Test
+    public void testService(){
+        kjygScheduledService.syncOrderShip();
+    }
+
+
 }

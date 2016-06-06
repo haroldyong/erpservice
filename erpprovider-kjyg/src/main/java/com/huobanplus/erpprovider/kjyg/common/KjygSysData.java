@@ -26,5 +26,5 @@ public class KjygSysData {
     /**
      * 伙伴商城在跨境易购的备案码
      */
-    private String website="0001";
+    private String website="19416";
 }
