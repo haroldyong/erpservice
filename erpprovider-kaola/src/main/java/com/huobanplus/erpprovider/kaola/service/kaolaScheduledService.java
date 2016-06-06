@@ -114,20 +114,19 @@ public class KaolaScheduledService {
                     EventResult firstSyncResult = null;
 
                     if(orderList != null) {
-                        for (Order order : orderList) {
-                            EventResult deliveryResult = kaoLaOrderInfoHandler.queryOrderStatusInfo(orderList,kaolaSysData);
-                            if(deliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
-                                List<OrderDeliveryInfo> orderDeliveryInfoList = (List<OrderDeliveryInfo>) deliveryResult.getData();
-                                batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
-                                firstSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
-                                if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                    BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
-                                    failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
-                                    successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
-                                }
-                            }
 
+                        EventResult deliveryResult = kaoLaOrderInfoHandler.queryOrderStatusInfo(orderList,kaolaSysData);
+                        if(deliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                            List<OrderDeliveryInfo> orderDeliveryInfoList = (List<OrderDeliveryInfo>) deliveryResult.getData();
+                            batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
+                            firstSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
+                            if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
+                                failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
+                                successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
+                            }
                         }
+
                     }
 
                     // next pull
