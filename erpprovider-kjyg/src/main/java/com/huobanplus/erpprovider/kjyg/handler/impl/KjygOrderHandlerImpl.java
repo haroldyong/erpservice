@@ -11,6 +11,7 @@ import com.huobanplus.erpprovider.kjyg.handler.KjygOrderHandler;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
@@ -181,31 +182,18 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                 if(result.getString("sts").equals("Y")){
                     JSONArray resultArray = result.getJSONArray("res");
-                    if(resultArray.size()==0){
-                        return EventResult.resultWith(EventResultEnum.ERROR,"无订单数据",null);
-                    }else{
-
+                    if(resultArray.size()>0){
                         JSONObject jsonObject = JSON.parseObject(resultArray.get(0).toString());
-                        String orderId = jsonObject.getString("orderno");
                         String trackNo = jsonObject.getString("trackno");
                         String awb = jsonObject.getString("awb");//航班
 
-                        orderDeliveryInfo.setLogiNo(trackNo);
-                        orderDeliveryInfo.setLogiName(awb);
-                        orderDeliveryInfoList.add(orderDeliveryInfo);
+                        if(StringUtil.isNotEmpty(trackNo) && StringUtil.isNotEmpty(awb)) {
+                            orderDeliveryInfo.setLogiNo(trackNo);
+                            orderDeliveryInfo.setLogiName(awb);
+                            orderDeliveryInfoList.add(orderDeliveryInfo);
+                        }
                     }
-                }else{
-                    orderDeliveryInfo.setLogiNo("");
-                    orderDeliveryInfo.setLogiName("");
-                    orderDeliveryInfoList.add(orderDeliveryInfo);
-//                    System.out.println(result.getString("res"));
-//                    return EventResult.resultWith(EventResultEnum.ERROR);
                 }
-            }else{
-                orderDeliveryInfo.setLogiNo("");
-                orderDeliveryInfo.setLogiName("");
-                orderDeliveryInfoList.add(orderDeliveryInfo);
-//                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
             }
         }
         return EventResult.resultWith(EventResultEnum.SUCCESS,orderDeliveryInfoList);
@@ -226,7 +214,6 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         requestData.put("mtype","orderstat");
         requestData.put("clientcode",kjygSysData.getClientCode());
         requestData.put("ordernos",jsonArray.toJSONString());
-        System.out.println(jsonArray.toJSONString());
 
         HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(),requestData);
         if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
