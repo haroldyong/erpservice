@@ -99,15 +99,14 @@ public class LGJOrderHandlerImpl extends LGJBaseHandler implements LGJOrderHandl
             createOrder.setMobile(order.getShipMobile());
 
             String shipArea = order.getShipArea();
-            createOrder.setAddress(shipArea);
-            createOrder.setCountry(LGJConstant.COUNTY);//FIXME: 2016/4/29
+            createOrder.setAddress(order.getShipAddr());
             if (!StringUtils.isEmpty(shipArea)) {
                 String[] shipAreaArray = shipArea.split("/");
                 createOrder.setProvince(shipAreaArray[0]);
                 if (shipAreaArray.length > 1) {
                     createOrder.setCity(shipAreaArray[1]);
                     if (shipAreaArray.length > 2) {
-                        createOrder.setTown(shipAreaArray[2]);
+                        createOrder.setCounty(shipAreaArray[2]);
                     }
                 }
             }
@@ -137,7 +136,7 @@ public class LGJOrderHandlerImpl extends LGJBaseHandler implements LGJOrderHandl
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }
                 saveLog(order,erpUserInfo,erpInfo,pushNewOrderEvent,false);
-                log.error("推送订单失败,错误代买是："+resultJson.getString("result").trim());
+                log.error("推送订单失败,错误代码是："+resultJson.getString("result").trim());
             }
 
         } catch (UnsupportedEncodingException e) {

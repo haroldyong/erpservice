@@ -95,6 +95,9 @@
                 var erpConfigHandler = this.getErpConfigHandler(parseInt(erpType));
 
                 var sysDataJson = erpConfigHandler.getConfig();
+                console.log("*********");
+                console.log(sysDataJson);
+                console.log("*********");
                 if (sysDataJson == null) {
                     return;
                 }
@@ -120,6 +123,8 @@
                         return lgjConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.KAOLA.getCode()%>:
                         return kaoLaConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.KJYG.getCode()%>:
+                        return kjygConfigHandler;
                 }
             }
         };
@@ -279,6 +284,9 @@
                                 </div>
                                 <div id="detailConfig_<%=ERPTypeEnum.ProviderType.KAOLA.getCode()%>">
                                     <%@include file="/detailConfig/kaola_config.jsp" %>
+                                </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.KJYG.getCode()%>">
+                                    <%@include file="/detailConfig/kjyg_config.jsp" %>
                                 </div>
                             </div>
 

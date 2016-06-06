@@ -3,7 +3,7 @@ package com.huobanplus.erpprovider.kjyg.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.huobanplus.erpprovider.kjyg.KjygOrderSearch;
+import com.huobanplus.erpprovider.kjyg.search.KjygOrderSearch;
 import com.huobanplus.erpprovider.kjyg.common.KjygSysData;
 import com.huobanplus.erpprovider.kjyg.formatkjyg.KjygCreateOrderInfo;
 import com.huobanplus.erpprovider.kjyg.formatkjyg.KjygOrderItem;
@@ -11,8 +11,10 @@ import com.huobanplus.erpprovider.kjyg.handler.KjygOrderHandler;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -49,7 +51,7 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
             KjygOrderItem kjygOrderItem = new KjygOrderItem();
             kjygOrderItem.setSpe(String.valueOf(orderItem.getItemId()));
             kjygOrderItem.setAmount(String.valueOf(orderItem.getNum()));
-            kjygOrderItem.setPrice(String.valueOf(orderItem.getPrice()));
+            kjygOrderItem.setPrice(String.valueOf(orderItem.getAmount()));// FIXME: 2016/5/30
             kjygOrderItems.add(kjygOrderItem);
         });
 
@@ -58,23 +60,40 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         createOrderInfo.setClientcode(kjygSysData.getClientCode());
         createOrderInfo.setShipName(orderInfo.getShipName());
         createOrderInfo.setShipMobile(orderInfo.getShipMobile());
-        createOrderInfo.setWebAccountNo("5555@qq.com");// TODO: 2016/5/24  
-        createOrderInfo.setWebTradeNo("JD0000002");// TODO: 2016/5/24  
-        createOrderInfo.setWebPayNo("P0000001");// TODO: 2016/5/24  
-        createOrderInfo.setPayWay("01");// TODO: 2016/5/24  
-        createOrderInfo.setBuyerPid("360782199009090099");// TODO: 2016/5/24
-        createOrderInfo.setBuyerName(orderInfo.getShipName());// FIXME: 2016/5/24
-        createOrderInfo.setBuyerTel("13211112222");// TODO: 2016/5/24  
-        createOrderInfo.setPayment("100.00");// TODO: 2016/5/24  
-        createOrderInfo.setWebsite("01");// TODO: 2016/5/24  
-        createOrderInfo.setProvince("01");orderInfo.getProvince();
-        createOrderInfo.setCity("0101");orderInfo.getCity();
-        createOrderInfo.setArea("010105");orderInfo.getShipArea();
-        createOrderInfo.setPostCode("341401");orderInfo.getShipZip();
-        createOrderInfo.setShipAddr("浙江省杭州市西湖区XXX栋2303室");orderInfo.getShipAddr();
-        createOrderInfo.setRemark("订单备注内容");orderInfo.getRemark();
-        createOrderInfo.setFharea("日本");// TODO: 2016/5/24
-        createOrderInfo.setOrderNo("XE0000003");orderInfo.getOrderId();
+        createOrderInfo.setWebAccountNo(orderInfo.getUserLoginName());
+        createOrderInfo.setWebTradeNo(orderInfo.getOrderId());
+        createOrderInfo.setWebPayNo(orderInfo.getOrderId());
+
+        String payWay = "02";
+//        if(orderPayWay == OrderEnum.PaymentOptions.ALIPAY_MOBILE.getCode() || orderPayWay==OrderEnum.PaymentOptions.ALIPAY_PC.getCode()){
+//            payWay = "02";
+//        } else if(orderPayWay == OrderEnum.PaymentOptions.WEIXINPAY.getCode() || orderPayWay== OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode()
+//                || orderPayWay== OrderEnum.PaymentOptions.WEIXINPAY_APP.getCode()){
+//            payWay = "16";
+//        } else if(orderPayWay == OrderEnum.PaymentOptions.REDEMPTION.getCode()){
+//
+//        } else if(orderPayWay == OrderEnum.PaymentOptions.UNIONPAY.getCode()){
+//            payWay = "01";
+//        } else if(orderPayWay == OrderEnum.PaymentOptions.BAIDUPAY.getCode()){// 百度钱包
+//            payWay = "02";
+//        } else if(orderPayWay == OrderEnum.PaymentOptions.WEIFUTONG.getCode()){// 威富通
+//            payWay = "02";
+//        }
+
+        createOrderInfo.setPayWay(payWay);
+        createOrderInfo.setBuyerPid(orderInfo.getBuyerPid());
+        createOrderInfo.setBuyerName(orderInfo.getBuyerName());
+        createOrderInfo.setBuyerTel(orderInfo.getUserLoginName());
+        createOrderInfo.setPayment(String.valueOf(orderInfo.getOnlinePayAmount()));
+        createOrderInfo.setWebsite(kjygSysData.getWebsite());
+        createOrderInfo.setProvince(orderInfo.getProvince());
+        createOrderInfo.setCity(orderInfo.getCity());
+        createOrderInfo.setArea(orderInfo.getShipArea());
+        createOrderInfo.setPostCode(orderInfo.getShipZip());
+        createOrderInfo.setShipAddr(orderInfo.getShipAddr());
+        createOrderInfo.setRemark(orderInfo.getRemark());
+        createOrderInfo.setFharea(orderInfo.getFhArea());
+        createOrderInfo.setOrderNo(orderInfo.getOrderId());
         createOrderInfo.setOrderItems(kjygOrderItems);
 
         JSONArray jsonArray = new JSONArray();
@@ -85,7 +104,6 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         requestData.put("mtype","trade");
         requestData.put("tradelist",jsonArray);
 
-        System.out.println(JSON.toJSONString(jsonArray).toString());
         HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(),requestData);
         if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
             JSONObject result = JSON.parseObject(httpResult.getHttpContent());
@@ -140,59 +158,53 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
     }
 
     @Override
-    public EventResult queryOrder(PushNewOrderEvent pushNewOrderEvent) {
+    public EventResult queryOrderTradNo(List<Order> orderList,KjygSysData kjygSysData) {
 
-        Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+        List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
+        for (Order order : orderList) {
 
-        ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
-        KjygSysData kjygSysData = JSON.parseObject(erpInfo.getSysDataJson(), KjygSysData.class);
-        ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
+            OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
+            orderDeliveryInfo.setOrderId(order.getOrderId());
 
-        KjygOrderSearch kjygOrderSearch = new KjygOrderSearch();
-        kjygOrderSearch.setOrderNo("XE0000003");
+            KjygOrderSearch kjygOrderSearch = new KjygOrderSearch();
+            kjygOrderSearch.setOrderNo(order.getOrderId());
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.add(kjygOrderSearch);
+            Map<String,Object> requestData = new HashMap<>();
+            requestData.put("clientkey",kjygSysData.getClientKey());
+            requestData.put("mtype","awb");
+            requestData.put("clientcode",kjygSysData.getClientCode());
+            requestData.put("ordernos",jsonArray.toJSONString());
+            System.out.println(jsonArray.toJSONString());
 
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.add(kjygOrderSearch);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+                if(result.getString("sts").equals("Y")){
+                    JSONArray resultArray = result.getJSONArray("res");
+                    if(resultArray.size()>0){
+                        JSONObject jsonObject = JSON.parseObject(resultArray.get(0).toString());
+                        String trackNo = jsonObject.getString("trackno");
+                        String awb = jsonObject.getString("awb");//航班
 
-        Map<String,Object> requestData = new HashMap<>();
-        requestData.put("clientkey",kjygSysData.getClientKey());
-        requestData.put("mtype","awb");
-        requestData.put("clientcode",kjygSysData.getClientCode());
-        requestData.put("ordernos",jsonArray.toJSONString());
-        System.out.println(jsonArray.toJSONString());
-
-        HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(),requestData);
-        if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
-            JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-            if(result.getString("sts").equals("Y")){
-                JSONArray resultArray = result.getJSONArray("res");
-                if(resultArray.size()==0){
-                    return EventResult.resultWith(EventResultEnum.ERROR,"无订单数据",null);
-                }else{
-
-                    JSONObject jsonObject = JSON.parseObject(resultArray.get(0).toString());
-
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                        if(StringUtil.isNotEmpty(trackNo) && StringUtil.isNotEmpty(awb)) {
+                            orderDeliveryInfo.setLogiNo(trackNo);
+                            orderDeliveryInfo.setLogiName(awb);
+                            orderDeliveryInfoList.add(orderDeliveryInfo);
+                        }
+                    }
                 }
-            }else{
-                System.out.println(result.getString("res"));
-                return EventResult.resultWith(EventResultEnum.ERROR);
             }
-        }else{
-            return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
         }
+        return EventResult.resultWith(EventResultEnum.SUCCESS,orderDeliveryInfoList);
+
     }
 
     @Override
-    public EventResult queryOrderStat(PushNewOrderEvent pushNewOrderEvent) {
-        Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-
-        ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
-        KjygSysData kjygSysData = JSON.parseObject(erpInfo.getSysDataJson(), KjygSysData.class);
-        ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
+    public EventResult queryOrderStat(String orderNo,KjygSysData kjygSysData) {
 
         KjygOrderSearch kjygOrderSearch = new KjygOrderSearch();
-        kjygOrderSearch.setOrderNo("XE0000003");
+        kjygOrderSearch.setOrderNo(orderNo);
 
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(kjygOrderSearch);
@@ -202,7 +214,6 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         requestData.put("mtype","orderstat");
         requestData.put("clientcode",kjygSysData.getClientCode());
         requestData.put("ordernos",jsonArray.toJSONString());
-        System.out.println(jsonArray.toJSONString());
 
         HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(),requestData);
         if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
@@ -210,12 +221,13 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
             if(result.getString("sts").equals("Y")){
                 JSONArray resultArray = result.getJSONArray("res");
                 if(resultArray.size()==0){
-                    return EventResult.resultWith(EventResultEnum.SUCCESS,"无订单数据",null);
+                    return EventResult.resultWith(EventResultEnum.ERROR,"无订单数据",null);
                 }else{
-                    Order order = new Order();
-
+                    JSONObject jsonObject = JSON.parseObject(resultArray.get(0).toString());
+                    System.out.println(jsonObject);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,jsonObject);
                 }
-                return EventResult.resultWith(EventResultEnum.SUCCESS);
+
             }else{
                 System.out.println(result.getString("res"));
                 return EventResult.resultWith(EventResultEnum.ERROR,result.getString("res"),null);
@@ -224,4 +236,5 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
             return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package com.huobanplus.erpprovider.kjyg;
+package com.huobanplus.erpprovider.kjyg.search;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
