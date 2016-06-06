@@ -21,7 +21,13 @@ public class OrderSearchInfo extends BaseInfo {
     private Integer pageSize;
     private Integer shipStatus;
     private Integer payStatus;
+    /**
+     * 下单时间开始时间
+     */
     private String beginTime;
+    /**
+     * 下单时间结束时间
+     */
     private String endTime;
     private String beginPayTime;
     private String endPayTime;
