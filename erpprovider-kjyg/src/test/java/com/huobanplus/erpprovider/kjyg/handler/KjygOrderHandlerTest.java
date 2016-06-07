@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.kjyg.handler;
 
 import com.alibaba.fastjson.JSON;
@@ -70,8 +79,6 @@ public class KjygOrderHandlerTest extends KjygTestBase {
         mockOrder.setUserLoginName("18705153967");
         mockOrder.setBuyerPid("362322199411050053");
         mockOrder.setBuyerName("wuxiongliu");
-        mockOrder.setPayWay(1);
-        mockOrder.setFhArea("日本");
         mockOrder.setShipZip("310000");
         mockOrder.setShipArea("滨江区");
         mockOrder.setRemark("test");
