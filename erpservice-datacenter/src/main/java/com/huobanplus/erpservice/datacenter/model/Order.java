@@ -154,16 +154,6 @@ public class Order extends BaseInfo {
      */
     private String buyerName;
 
-    /**
-     * 考拉&跨境易购： 支付方式
-     */
-    private int payWay;
-
-
-    /**
-     * 跨境易购：发货区域（可选：美西、美东、韩国首尔、日本、澳洲悉尼、德国汉堡、荷兰阿姆、意大利米兰）
-     */
-    private String fhArea;
 
     private List<OrderItem> orderItems;
 }

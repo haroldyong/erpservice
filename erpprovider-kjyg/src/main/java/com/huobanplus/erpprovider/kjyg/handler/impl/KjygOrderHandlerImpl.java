@@ -103,7 +103,7 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         createOrderInfo.setPostCode(orderInfo.getShipZip());
         createOrderInfo.setShipAddr(orderInfo.getShipAddr());
         createOrderInfo.setRemark(orderInfo.getRemark());
-        createOrderInfo.setFharea(orderInfo.getFhArea());
+        createOrderInfo.setFharea("德国汉堡");
         createOrderInfo.setOrderNo(orderInfo.getOrderId());
         createOrderInfo.setOrderItems(kjygOrderItems);
 
