@@ -101,6 +101,7 @@ public class ScheduledService {
                     logiInfo.setZOrder(jCoTable.getString("ZORDER"));
                     logiInfo.setZType(jCoTable.getString("ZTYPE"));
                     logiInfo.setZWMOrder(jCoTable.getString("ZWMORDER"));
+                    logiInfo.setZWMLogiName(jCoTable.getString("ZWMLOGINAME"));
                     results.add(logiInfo);
                 }
                 //     String resultMsg = jCoFunction.getExportParameterList().getString("MESS");
@@ -117,6 +118,10 @@ public class ScheduledService {
                     List<OrderDeliveryInfo> deliveryInfoList = new ArrayList<>(); //等待发货的订单物流信息列表
                     addDeliveryInfo(results, deliveryInfoList);
                     orderShipSyncLog.setTotalCount(results.size());
+                    orderShipSyncLog.setCustomerId(detailConfig.getCustomerId());
+                    orderShipSyncLog.setSyncTime(now);
+                    orderShipSyncLog.setProviderType(erpInfo.getErpType());
+                    orderShipSyncLog.setUserType(erpUserInfo.getErpUserType());
 
                     //推送给使用者,执行批量发货
                     BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
@@ -158,7 +163,7 @@ public class ScheduledService {
                         shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
 
                         shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
-                    }else{
+                    } else {
 
                         orderShipSyncLog.setSuccessCount(0);
                         orderShipSyncLog.setFailedCount(deliveryInfoList.size());
