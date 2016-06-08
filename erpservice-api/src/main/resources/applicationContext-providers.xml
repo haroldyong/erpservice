@@ -23,7 +23,7 @@
     <context:component-scan base-package="com.huobanplus.erpprovider.sap"/>
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.iscs"/>-->
     <!-- <context:component-scan base-package="com.huobanplus.erpprovider.lgj"/>-->
-    <!--<context:component-scan base-package="com.huobanplus.erpprovider.kaola"/>-->
+    <context:component-scan base-package="com.huobanplus.erpprovider.kaola"/>
     <context:component-scan base-package="com.huobanplus.erpprovider.kjyg"/>
     <!--erp-user-->
     <context:component-scan base-package="com.huobanplus.erpuser.huobanmall"/>
