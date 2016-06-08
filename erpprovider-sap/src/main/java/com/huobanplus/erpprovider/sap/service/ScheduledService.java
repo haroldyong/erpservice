@@ -101,7 +101,7 @@ public class ScheduledService {
                     logiInfo.setZOrder(jCoTable.getString("ZORDER"));
                     logiInfo.setZType(jCoTable.getString("ZTYPE"));
                     logiInfo.setZWMOrder(jCoTable.getString("ZWMORDER"));
-                    logiInfo.setZWMLogiName(jCoTable.getString("ZWMLOGINAME"));
+                    logiInfo.setZWMLogiName("圆通");
                     results.add(logiInfo);
                 }
                 //     String resultMsg = jCoFunction.getExportParameterList().getString("MESS");
