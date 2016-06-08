@@ -184,7 +184,7 @@ public class ScheduledService {
 
                     orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
 
-                    //同步失败的订单记录
+                    //同步订单记录
                     List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
 
                     shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
@@ -193,7 +193,7 @@ public class ScheduledService {
                     shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
                 }
 
-                log.info("修改物流状态");
+                //回写SAP标记已经获取过的订单
                 JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
                 for (LogiInfo info : results) {
                     ztable.appendRow();
