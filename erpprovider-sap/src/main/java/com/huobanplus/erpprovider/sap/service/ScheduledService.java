@@ -110,18 +110,11 @@ public class ScheduledService {
 
                 //推送物流信息
                 if (results.size() > 0) {
-                    //发货同步记录
-                    OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
-                    List<OrderDeliveryInfo> failedOrders = new ArrayList<>();
-                    List<OrderDeliveryInfo> successOrders = new ArrayList<>();
+                    List<OrderDeliveryInfo> failedOrders = new ArrayList<>(); //失败的订单
+                    List<OrderDeliveryInfo> successOrders = new ArrayList<>(); //成功的订单
 
                     List<OrderDeliveryInfo> deliveryInfoList = new ArrayList<>(); //等待发货的订单物流信息列表
                     addDeliveryInfo(results, deliveryInfoList);
-                    orderShipSyncLog.setTotalCount(results.size());
-                    orderShipSyncLog.setCustomerId(detailConfig.getCustomerId());
-                    orderShipSyncLog.setSyncTime(now);
-                    orderShipSyncLog.setProviderType(erpInfo.getErpType());
-                    orderShipSyncLog.setUserType(erpUserInfo.getErpUserType());
 
                     //推送给使用者,执行批量发货
                     BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
@@ -134,62 +127,70 @@ public class ScheduledService {
                     erpUserInfo.setErpUserType(detailConfig.getErpUserType());
                     ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
                     EventResult batchDeliverEventResult = erpUserHandler.handleEvent(batchDeliverEvent);
-                    //记录日志
                     if (batchDeliverEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                         BatchDeliverResult batchDeliverResult = (BatchDeliverResult) batchDeliverEventResult.getData();
                         failedOrders = batchDeliverResult.getFailedOrders();
                         successOrders = batchDeliverResult.getSuccessOrders();
-                        orderShipSyncLog.setSuccessCount(successOrders.size());
-                        orderShipSyncLog.setFailedCount(failedOrders.size());
 
-                        int successCount = successOrders.size(), failedCount = failedOrders.size();
-
-                        if (successCount > 0 && failedCount > 0) {
-                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
-                        }
-                        if (successCount > 0 && failedCount == 0) {
-                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-                        }
-                        if (successCount == 0) {
-                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
-                        }
-
-                        orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
-
-                        //同步失败的订单记录
-                        List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
-
-                        shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
-                        shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-
-                        shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
-                    } else {
-
-                        orderShipSyncLog.setSuccessCount(0);
-                        orderShipSyncLog.setFailedCount(deliveryInfoList.size());
-
-                        int successCount = successOrders.size(), failedCount = failedOrders.size();
-
-                        if (successCount > 0 && failedCount > 0) {
-                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
-                        }
-                        if (successCount > 0 && failedCount == 0) {
-                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-                        }
-                        if (successCount == 0) {
-                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
-                        }
-
-                        orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
-
-                        //同步失败的订单记录
-                        List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
-
-                        shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, deliveryInfoList, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
-                        //shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-
-                        shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
                     }
+//                    else {
+//
+//                        orderShipSyncLog.setSuccessCount(0);
+//                        orderShipSyncLog.setFailedCount(deliveryInfoList.size());
+//
+//                        int successCount = successOrders.size(), failedCount = failedOrders.size();
+//
+//                        if (successCount > 0 && failedCount > 0) {
+//                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
+//                        }
+//                        if (successCount > 0 && failedCount == 0) {
+//                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+//                        }
+//                        if (successCount == 0) {
+//                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+//                        }
+//
+//                        orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
+//
+//                        //同步失败的订单记录
+//                        List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
+//
+//                        shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, deliveryInfoList, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+//                        //shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+//
+//                        shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
+//                    }
+                    //记录同步日志
+                    OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
+                    orderShipSyncLog.setTotalCount(results.size());
+                    orderShipSyncLog.setCustomerId(detailConfig.getCustomerId());
+                    orderShipSyncLog.setSyncTime(now);
+                    orderShipSyncLog.setProviderType(erpInfo.getErpType());
+                    orderShipSyncLog.setUserType(erpUserInfo.getErpUserType());
+                    orderShipSyncLog.setSuccessCount(successOrders.size());
+                    orderShipSyncLog.setFailedCount(failedOrders.size());
+
+                    int successCount = successOrders.size(), failedCount = failedOrders.size();
+
+                    if (successCount == 0) {
+                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                    }
+                    if (successCount > 0 && failedCount > 0) {
+                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
+                    }
+                    if (successCount > 0 && failedCount == 0) {
+                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+                    }
+
+                    orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
+
+                    //同步失败的订单记录
+                    List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
+
+                    shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                    shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+
+                    shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
                 }
 
                 log.info("修改物流状态");
