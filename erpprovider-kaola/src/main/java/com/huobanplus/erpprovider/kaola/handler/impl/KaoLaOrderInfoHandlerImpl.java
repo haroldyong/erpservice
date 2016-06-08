@@ -76,22 +76,29 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
                 if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                     JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                     if (result.getString("recCode").equals("200")) {
-                        double freight = result.getDouble("totalChinaLogisticsAmount");
 
-                        JSONArray jsonArray = result.getJSONArray("result");
+                        if(result.containsKey("result")){
+                            JSONArray jsonArray = result.getJSONArray("result");
 
-                        jsonArray.forEach(item -> {
-                            JSONObject jsonObject = JSON.parseObject(item.toString());
-                            int status = jsonObject.getInteger("status");
-                            if (status == 4) {// 订单已发货
-                                orderDeliveryInfo.setFreight(freight);
-                                String deliverNo = jsonObject.getString("deliverNo");
-                                String deliverName = jsonObject.getString("deliverName");
-                                orderDeliveryInfo.setLogiName(deliverName);
-                                orderDeliveryInfo.setLogiNo(deliverNo);
-                                orderDeliveryInfoList.add(orderDeliveryInfo);
-                            }
-                        });
+                            jsonArray.forEach(item -> {
+
+                                double freight = 0.0;
+                                if(result.containsKey("totalChinaLogisticsAmount")){
+                                    freight  = result.getDouble("totalChinaLogisticsAmount");
+                                }
+                                JSONObject jsonObject = JSON.parseObject(item.toString());
+                                int status = jsonObject.getInteger("status");
+                                if (status == 4) {// 订单已发货
+                                    orderDeliveryInfo.setFreight(freight);
+                                    String deliverNo = jsonObject.getString("deliverNo");
+                                    String deliverName = jsonObject.getString("deliverName");
+                                    orderDeliveryInfo.setLogiName(deliverName);
+                                    orderDeliveryInfo.setLogiNo(deliverNo);
+                                    orderDeliveryInfoList.add(orderDeliveryInfo);
+                                }
+                            });
+                        }
+
                     }
                 }
             } catch (UnsupportedEncodingException e) {
@@ -151,7 +158,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
             parameterMap.put("source", kaoLaSysData.getChannelId());
             parameterMap.put("thirdPartOrderId", orderInfo.getOrderId());
-            parameterMap.put("timestamp", orderInfo.getPayTime());
+            parameterMap.put("timestamp", StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
             parameterMap.put("v", kaoLaSysData.getV());
             parameterMap.put("sign_method", "md5");
             parameterMap.put("app_key", kaoLaSysData.getAppKey());
