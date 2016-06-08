@@ -214,8 +214,9 @@ public class ScheduledService {
     private void addDeliveryInfo(List<LogiInfo> orders, List<OrderDeliveryInfo> orderDeliveryInfoList) {
         for (LogiInfo o : orders) {
             OrderDeliveryInfo deliveryInfo = new OrderDeliveryInfo();
-            deliveryInfo.setOrderId(o.getZVBELN());
-            deliveryInfo.setLogiNo(o.getZOrder());
+            deliveryInfo.setOrderId(o.getZOrder());
+            deliveryInfo.setLogiNo(o.getZWMOrder());
+            deliveryInfo.setLogiName(o.getZWMLogiName());
             orderDeliveryInfoList.add(deliveryInfo);
         }
     }
