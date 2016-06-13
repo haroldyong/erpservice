@@ -1,8 +1,49 @@
 package com.huobanplus.erpprovider.gy.formatgy;
 
+import java.util.List;
+
 /**
+ * 用于退货单
  * Created by elvis on 2016/5/31.
  */
 public class ReturnDeliverBean {
+
+//    type_code 	String 	是 			退货类型代码
+//    shop_code 	String 	是 			店铺代码
+//    vip_code 	String 	是 			会员代码
+//    note 	String 				退货单备注
+//    trade_code 	String 				关联的销售订单的单据编号
+//    trade_platform_code 	String 				关联的销售订单的外部单号
+//    item_detail[] 	List 	是 			退入商品列表
+
+    /**
+     * type_code 	String 	是 			退货类型代码
+      */
+    private String typeCode;
+    /**
+     * shop_code 	String 	是 			店铺代码
+     */
+    private String shopCode;
+    /**
+     * vip_code 	String 	是 			会员代码
+     */
+    private String vipCode;
+    /**
+     * note 	String 				退货单备注
+     */
+    private String note;
+    /**
+     * trade_code 	String 				关联的销售订单的单据编号
+     */
+    private String tradeCode;
+    /**
+     * trade_platform_code 	String 				关联的销售订单的外部单号
+     */
+    private String tradePlatformCode;
+    /**
+     * item_detail[] 	List 	是 			退入商品列表
+     */
+    private List<ReturnSkuBean> itemDetails;
+
 
 }

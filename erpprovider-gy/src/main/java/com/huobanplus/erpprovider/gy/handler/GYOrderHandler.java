@@ -8,5 +8,17 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
  */
 public interface GYOrderHandler {
 
+
+    /**
+     * 推送订单，包含正常订单和退单
+     * @param pushNewOrderEvent
+     * @return
+     */
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
+
+
+    //退款单
+
+
+
 }
