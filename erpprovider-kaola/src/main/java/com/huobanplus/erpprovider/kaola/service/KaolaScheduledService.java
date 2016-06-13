@@ -11,6 +11,8 @@ package com.huobanplus.erpprovider.kaola.service;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.kaola.common.KaoLaSysData;
+import com.huobanplus.erpprovider.kaola.formatkaola.KaoLaGoodsInfo;
+import com.huobanplus.erpprovider.kaola.handler.KaoLaGoodsInfoHandler;
 import com.huobanplus.erpprovider.kaola.handler.KaoLaOrderInfoHandler;
 import com.huobanplus.erpprovider.kaola.util.KaolaConstant;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
@@ -59,6 +61,8 @@ public class KaolaScheduledService {
     private ERPRegister erpRegister;
     @Autowired
     private KaoLaOrderInfoHandler kaoLaOrderInfoHandler;
+    @Autowired
+    private KaoLaGoodsInfoHandler kaoLaGoodsInfoHandler;
 
 
 
@@ -202,6 +206,38 @@ public class KaolaScheduledService {
             }
         }
         log.info("kaola ship sync end");
+    }
+
+    /**
+     * 同步商品详情
+     * 每天凌晨三点进行一次同步
+     */
+    @Scheduled(cron = "0 0 3 * * ? ")
+    @Transactional
+    public void syncGoodsInfo() {
+        List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.KAOLA);
+        for (ERPDetailConfigEntity detailConfig : detailConfigs) {
+            try {
+                ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
+                ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
+                KaoLaSysData kaolaSysData = JSON.parseObject(detailConfig.getErpSysData(), KaoLaSysData.class);
+                EventResult result = kaoLaGoodsInfoHandler.queryAllGoodsId(kaolaSysData);
+                if(result.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                    List<String> skuIds = (List<String>) result.getData();
+                    skuIds.forEach(skuid ->{
+                        System.out.println(skuid);
+                        EventResult goodsInfoResult = kaoLaGoodsInfoHandler.queryGoodsInfoById(kaolaSysData,skuid);
+                        if(goodsInfoResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                            KaoLaGoodsInfo kaoLaGoodsInfo = (KaoLaGoodsInfo) goodsInfoResult.getData();
+                        }
+                        // TODO: 2016/6/12
+                    });
+                }
+
+            } catch (Exception e) {
+                log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
+            }
+        }
     }
 
 }
