@@ -62,7 +62,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
             OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
             orderDeliveryInfo.setOrderId(order.getOrderId());
 
-            Map<String, Object> parameterMap = new TreeMap<String, Object>();
+            Map<String, Object> parameterMap = new TreeMap<>();
             parameterMap.put("channelId", kaoLaSysData.getChannelId());
             parameterMap.put("thirdPartOrderId", order.getOrderId());
             parameterMap.put("timestamp", StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
