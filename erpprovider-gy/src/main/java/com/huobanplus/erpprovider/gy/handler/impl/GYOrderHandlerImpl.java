@@ -49,7 +49,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         CreateNewOrder newOrder = OrderChange(order,erpUserInfo);
 
         try {
-            Map<String, Object> requestData = getRequestData(sysData, newOrder);
+            Map<String, Object> requestData = getRequestData(sysData, newOrder,"methodName");
 
             HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getURL(), requestData);
 

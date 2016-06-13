@@ -79,14 +79,15 @@
             <input name="host" type="text" value="" id="iscs_host" class="input-normal"/>
         </td>
     </tr>
+
     <tr>
-        <th style="vertical-align: middle;">客户id：</th>
+        <th style="vertical-align: middle;">appKey：</th>
         <td>
             <input name="appKey" type="text" value="" id="iscs_appKey" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">客户接口密钥：</th>
+        <th style="vertical-align: middle;">appSecret：</th>
         <td>
             <input name="appSecret" type="text" value="" id="iscs_appSecret" class="input-normal"/>
         </td>

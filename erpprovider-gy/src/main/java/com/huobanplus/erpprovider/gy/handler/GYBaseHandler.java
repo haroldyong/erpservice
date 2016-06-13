@@ -32,14 +32,14 @@ public class GYBaseHandler {
      * @param clazz 请求数据实体
      * @return
      */
-    protected <T> Map<String, Object> getRequestData(GYSysData sysData,T clazz) throws IOException {
+    public static <T> Map<String, Object> getRequestData(GYSysData sysData,T clazz,String method) throws IOException {
 
         //通过标准Json 格式获得sign
         String JsonStr = JSON.toJSONString(clazz);
         JSONObject jsonObject = JSON.parseObject(JsonStr);
         jsonObject.put("appkey",sysData.getAppKey());
         jsonObject.put("sessionkey",sysData.getSessionkey());
-        jsonObject.put("method",sysData.getMethod());
+        jsonObject.put("method",method);
 
         String paramStr = JSON.toJSONString(jsonObject);
         SignHelper signHelper = new SignHelper();
