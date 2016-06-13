@@ -62,7 +62,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
             OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
             orderDeliveryInfo.setOrderId(order.getOrderId());
 
-            Map<String, Object> parameterMap = new TreeMap<String, Object>();
+            Map<String, Object> parameterMap = new TreeMap<>();
             parameterMap.put("channelId", kaoLaSysData.getChannelId());
             parameterMap.put("thirdPartOrderId", order.getOrderId());
             parameterMap.put("timestamp", StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
@@ -77,14 +77,14 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
                     JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                     if (result.getString("recCode").equals("200")) {
 
-                        if(result.containsKey("result")){
+                        if (result.containsKey("result")) {
                             JSONArray jsonArray = result.getJSONArray("result");
 
                             jsonArray.forEach(item -> {
 
                                 double freight = 0.0;
-                                if(result.containsKey("totalChinaLogisticsAmount")){
-                                    freight  = result.getDouble("totalChinaLogisticsAmount");
+                                if (result.containsKey("totalChinaLogisticsAmount")) {
+                                    freight = result.getDouble("totalChinaLogisticsAmount");
                                 }
                                 JSONObject jsonObject = JSON.parseObject(item.toString());
                                 int status = jsonObject.getInteger("status");
@@ -158,7 +158,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
             parameterMap.put("source", kaoLaSysData.getChannelId());
             parameterMap.put("thirdPartOrderId", orderInfo.getOrderId());
-            parameterMap.put("timestamp", StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
+            parameterMap.put("timestamp", orderInfo.getPayTime());
             parameterMap.put("v", kaoLaSysData.getV());
             parameterMap.put("sign_method", "md5");
             parameterMap.put("app_key", kaoLaSysData.getAppKey());
