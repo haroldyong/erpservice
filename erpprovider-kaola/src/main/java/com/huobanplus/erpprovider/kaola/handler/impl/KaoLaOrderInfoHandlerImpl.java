@@ -53,11 +53,11 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
     private OrderDetailSyncLogService orderDetailSyncLogService;
 
     @Override
-    public EventResult queryOrderStatusInfo(List<Order> orderList,KaoLaSysData kaoLaSysData) {
+    public EventResult queryOrderStatusInfo(List<Order> orderList, KaoLaSysData kaoLaSysData) {
 
         List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
 
-        for(Order order: orderList) {
+        for (Order order : orderList) {
 
             OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
             orderDeliveryInfo.setOrderId(order.getOrderId());
@@ -126,7 +126,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
             for (OrderItem item : orderItems) {
                 KaoLaOrderItem kaoLaOrderItem = new KaoLaOrderItem();
                 String goodsId = queryGoodsId(item.getProductBn(), kaoLaSysData);
-                if(goodsId == null) {
+                if (goodsId == null) {
                     return EventResult.resultWith(EventResultEnum.ERROR, "考拉中无此商品", null);
                 }
                 kaoLaOrderItem.setGoodsId(goodsId);
@@ -194,7 +194,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
             }
             orderDetailSyncLogService.save(orderDetailSyncLog);
             return eventResult;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return EventResult.resultWith(EventResultEnum.ERROR, ex.getMessage(), null);
         }
     }
@@ -251,26 +251,26 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
     }
 
     @Override
-    public String queryGoodsId(String skuId,KaoLaSysData kaoLaSysData) throws UnsupportedEncodingException {
+    public String queryGoodsId(String skuId, KaoLaSysData kaoLaSysData) throws UnsupportedEncodingException {
         Map<String, Object> requestData = new TreeMap<>();
         requestData.put("channelId", kaoLaSysData.getChannelId());
-        requestData.put("timestamp", StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
+        requestData.put("timestamp", StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         requestData.put("v", kaoLaSysData.getV());
         requestData.put("sign_method", "md5");
         requestData.put("app_key", kaoLaSysData.getAppKey());
         requestData.put("skuId", skuId);
         requestData.put("queryType", 1);
         requestData.put("sign", SignBuilder.buildSign(requestData, kaoLaSysData.getAppSecret(), kaoLaSysData.getAppSecret()));
-        HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl()+"/queryGoodsInfoById", requestData);
-        if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+        HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl() + "/queryGoodsInfoById", requestData);
+        if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
             JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
-            if(jsonObject.getInteger("recCode") == 200){
+            if (jsonObject.getInteger("recCode") == 200) {
                 JSONObject goodInfoJson = jsonObject.getJSONObject("goodsInfo");
                 return goodInfoJson.getString("goodsId");
-            }else{
+            } else {
                 return null;
             }
-        }else{
+        } else {
             return null;
         }
     }

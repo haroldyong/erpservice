@@ -43,10 +43,8 @@ public class LogiInfo {
      * 微订单
      */
     private String zOrder;
-
     /**
-     * 物流公司名称
+     * 物流公司
      */
     private String zWMLogiName;
-
 }
