@@ -65,8 +65,8 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
 
     @Before
     public void setUp(){
-        String appKey = "0dd1a2b29d6e4bfebce479450889b4b2";
-        String secretKey = "3cf1a3ed8556444bbd1fbd8b9381c8bb";
+        String appKey = "bb0b3ad64c9e5eb06c2fb6f163bf179e79051bd5c9b652fc45dc68a2b5dd23c6";
+        String secretKey = "4ed8b056c32939b9fd66987470b3e9fb720bdded02197e678e516bdcdf810833";
 
         mockKaoLaSysData = new KaoLaSysData();
         mockKaoLaSysData.setAppKey(appKey);
@@ -87,30 +87,31 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
         OrderItem mockOrderItem = new OrderItem();
         mockOrderItem.setNum(5);
         mockOrderItem.setOrderId("8070");
-        mockOrderItem.setProductBn("10405-68a3e5516d7a7dc21fbe0e7ee13bfc1c");
+        mockOrderItem.setProductBn("3872824-ecc4090b639c47f89b453980923afb8e");
 
-        OrderItem mockOrderItem2 = new OrderItem();
-        mockOrderItem2.setNum(5);
-        mockOrderItem2.setOrderId("8071");
-        mockOrderItem2.setProductBn("10407-68a3e5516d7a7dc21fbe0e7ee13bfc1c");
+//        OrderItem mockOrderItem2 = new OrderItem();
+//        mockOrderItem2.setNum(5);
+//        mockOrderItem2.setOrderId("8071");
+//        mockOrderItem2.setProductBn("10407-68a3e5516d7a7dc21fbe0e7ee13bfc1c");
 
 
 
         mockOrderItems.add(mockOrderItem);
-        mockOrderItems.add(mockOrderItem2);
+//        mockOrderItems.add(mockOrderItem2);
 
 
         mockOrder = new Order();
-        mockOrder.setOrderId("0003");
-        mockOrder.setMemberId(1);
+        mockOrder.setOrderId("000000001222");
+        mockOrder.setMemberId(1761390);
         mockOrder.setShipName("吴雄琉");
         mockOrder.setShipMobile("18705153967");
-        mockOrder.setShipEmail("xiong328160186@qq.com");
-        mockOrder.setProvince("zhejiang");
-        mockOrder.setCity("hangzhou");
-        mockOrder.setDistrict("binjiang");
-        mockOrder.setShipAddr("zhihuiegu");
-        mockOrder.setBuyerPid("3623221994110580053");
+        mockOrder.setShipEmail("");
+        mockOrder.setProvince("浙江省");
+        mockOrder.setCity("杭州市");
+        mockOrder.setDistrict("滨江区");
+        mockOrder.setShipAddr("浙江省杭州市滨江区阡陌路智慧E谷B幢4楼火图科技");
+        mockOrder.setBuyerPid("330682199006015217");
+        mockOrder.setBuyerName("刘渠成");
 
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         mockOrder.setOrderItems(mockOrderItems);
@@ -231,7 +232,7 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
 
     @Test
     public void testQueryGoodsId() throws UnsupportedEncodingException {
-        String skuId = "10405-68a3e5516d7a7dc21fbe0e7ee13bfc1c";
+        String skuId = "3872824-ecc4090b639c47f89b453980923afb8e";
         String goodsId = kaoLaOrderInfoHandler.queryGoodsId(skuId,mockKaoLaSysData);
         System.out.println(goodsId);
     }
