@@ -56,6 +56,6 @@ public class HBConstant {
 
     @Autowired
     private void initConstant(Environment environment) {
-        REQUEST_URL = environment.getProperty("huobanmall.pushUrl", "http://192.168.1.70:31105");
+        REQUEST_URL = environment.getProperty("huobanmall.pushUrl", "http://mallapi.letsgo.com");
     }
 }

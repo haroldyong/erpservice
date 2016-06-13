@@ -79,7 +79,6 @@ public class KaolaScheduledService {
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.KAOLA);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
             try{
-
                 ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
                 ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
                 KaoLaSysData kaolaSysData = JSON.parseObject(detailConfig.getErpSysData(), KaoLaSysData.class);
