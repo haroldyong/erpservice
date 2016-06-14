@@ -187,7 +187,6 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
             requestData.put("mtype", "awb");
             requestData.put("clientcode", kjygSysData.getClientCode());
             requestData.put("ordernos", jsonArray.toJSONString());
-            System.out.println(jsonArray.toJSONString());
 
             HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(), requestData);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
