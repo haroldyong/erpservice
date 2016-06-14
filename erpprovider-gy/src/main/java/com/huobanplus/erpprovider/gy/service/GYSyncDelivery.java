@@ -97,7 +97,7 @@ public class GYSyncDelivery extends GYBaseHandler{
 
                     orderSearch.setPageNo(numbers+"");
                     orderSearch.setPageSize(GYConstant.PAGE_SIZE + "");
-                    Map<String, Object> requestData = GYBaseHandler.getRequestData(sysData, orderSearch,"methodName");//// FIXME: 2016/5/31 方法名
+                    Map<String, Object> requestData = GYBaseHandler.getRequestData(sysData, orderSearch,"gy.erp.trade.deliverys.get");//// FIXME: 2016/5/31 方法名gy.erp.trade.deliverys.get
                     HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getURL(), requestData);
                     if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                         JSONObject resultJson = JSON.parseObject(httpResult.getHttpContent());
