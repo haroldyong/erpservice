@@ -111,22 +111,35 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
+        Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+        log.info("letsgo start to push kaola order,orderId=" + orderInfo.getOrderId());
+        ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
+        KaoLaSysData kaoLaSysData = JSON.parseObject(erpInfo.getSysDataJson(), KaoLaSysData.class);
+        ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
+
+        Date now = new Date();
+        OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
+        if (orderDetailSyncLog == null) {
+            orderDetailSyncLog = new OrderDetailSyncLog();
+            orderDetailSyncLog.setCreateTime(now);
+        }
+        orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+        orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+        orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+        orderDetailSyncLog.setOrderId(orderInfo.getOrderId());
+        orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+        orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+        orderDetailSyncLog.setSyncTime(now);
 
         try {
-
-            Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-
-            ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
-            KaoLaSysData kaoLaSysData = JSON.parseObject(erpInfo.getSysDataJson(), KaoLaSysData.class);
-            ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
-
             List<OrderItem> orderItems = orderInfo.getOrderItems();
-            List<KaoLaOrderItem> kaoLaOrderItems = new ArrayList<KaoLaOrderItem>();
+            List<KaoLaOrderItem> kaoLaOrderItems = new ArrayList<>();
 
             for (OrderItem item : orderItems) {
                 KaoLaOrderItem kaoLaOrderItem = new KaoLaOrderItem();
                 String goodsId = queryGoodsId(item.getProductBn(), kaoLaSysData);
                 if (goodsId == null) {
+                    log.info("订单:" + orderInfo.getOrderId() + "---考拉中无此商品");
                     return EventResult.resultWith(EventResultEnum.ERROR, "考拉中无此商品", null);
                 }
                 kaoLaOrderItem.setGoodsId(goodsId);
@@ -171,19 +184,6 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
             userInfoJson.put("userInfo", userInfo);
             parameterMap.put("userInfo", userInfoJson.toJSONString());
 
-            Date now = new Date();
-            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
-            if (orderDetailSyncLog == null) {
-                orderDetailSyncLog = new OrderDetailSyncLog();
-                orderDetailSyncLog.setCreateTime(now);
-            }
-            orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-            orderDetailSyncLog.setProviderType(erpInfo.getErpType());
-            orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
-            orderDetailSyncLog.setOrderId(orderInfo.getOrderId());
-            orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
-            orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
-            orderDetailSyncLog.setSyncTime(now);
 
             EventResult eventResult = orderPush(parameterMap, kaoLaSysData);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -195,6 +195,9 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
             orderDetailSyncLogService.save(orderDetailSyncLog);
             return eventResult;
         } catch (Exception ex) {
+            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+            orderDetailSyncLog.setErrorMsg(ex.getMessage());
+            orderDetailSyncLogService.save(orderDetailSyncLog);
             return EventResult.resultWith(EventResultEnum.ERROR, ex.getMessage(), null);
         }
     }
