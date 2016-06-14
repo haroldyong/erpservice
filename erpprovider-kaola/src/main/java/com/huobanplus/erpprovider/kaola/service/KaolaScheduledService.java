@@ -73,8 +73,7 @@ public class KaolaScheduledService {
      */
     @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
-    public void syncOrderShip() {
-
+    public synchronized void syncOrderShip() {
         Date now = new Date();
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.KAOLA);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {

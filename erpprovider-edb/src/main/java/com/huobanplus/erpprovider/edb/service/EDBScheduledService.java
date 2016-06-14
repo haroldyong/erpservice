@@ -177,7 +177,7 @@ public class EDBScheduledService {
      */
     @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
-    public void syncOrderShip() {
+    public synchronized void syncOrderShip() {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
         log.info("order ship sync for edb start!");

@@ -17,6 +17,7 @@ import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
 import com.huobanplus.erpprovider.edb.service.EDBScheduledService;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpprovider.kaola.service.KaolaScheduledService;
+import com.huobanplus.erpprovider.kjyg.service.KjygScheduledService;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
@@ -46,6 +47,8 @@ public class OrderSyncTest extends SpringWebTest {
     private EDBOrderHandler edbOrderHandler;
     @Autowired
     private KaolaScheduledService kaolaScheduledService;
+    @Autowired
+    private KjygScheduledService kjygScheduledService;
 
     @Test
     public void orderShipSyncForEdb() throws Exception {
@@ -81,6 +84,11 @@ public class OrderSyncTest extends SpringWebTest {
     @Test
     public void kaolaShipSyncTest() throws Exception {
         kaolaScheduledService.syncOrderShip();
+    }
+
+    @Test
+    public void KjygShipSyncTest() throws Exception {
+        kjygScheduledService.syncOrderShip();
     }
 
     @Test

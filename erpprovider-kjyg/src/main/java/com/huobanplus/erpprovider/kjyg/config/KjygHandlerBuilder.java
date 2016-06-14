@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.kjyg.config;
 
 import com.huobanplus.erpprovider.kjyg.handler.KjygOrderHandler;
@@ -32,26 +41,27 @@ public class KjygHandlerBuilder implements ERPHandlerBuilder {
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        return new ERPHandler() {
-            @Override
-            public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
-                if (baseEventClass == PushNewOrderEvent.class) {
-                    return true;
+        if (info.getErpType() == ERPTypeEnum.ProviderType.KJYG) {
+            return new ERPHandler() {
+                @Override
+                public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
+                    if (baseEventClass == PushNewOrderEvent.class) {
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
 
-            @Override
-            public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
-                if (erpBaseEvent instanceof PushNewOrderEvent) {
-                    PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                    return kjygOrderHandler.pushOrder(pushNewOrderEvent);
+                @Override
+                public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
+                    if (erpBaseEvent instanceof PushNewOrderEvent) {
+                        PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
+                        return kjygOrderHandler.pushOrder(pushNewOrderEvent);
+                    }
+                    return null;
                 }
-                return null;
-            }
 
-            @Override
-            public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
+                @Override
+                public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
 //                String method = request.getParameter("mType");
 //                String orderNo = request.getParameter("OrderNO");
 //
@@ -65,8 +75,10 @@ public class KjygHandlerBuilder implements ERPHandlerBuilder {
 //                    case KjygConstant.QUERY_ORDER_STAT:
 //                        return kjygOrderHandler.queryOrderStat(orderNo,kjygSysData);
 //                }
-                return null;
-            }
-        };
+                    return null;
+                }
+            };
+        }
+        return null;
     }
 }

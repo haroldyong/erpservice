@@ -76,7 +76,7 @@ public class KjygScheduledService {
      */
     @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
-    public void syncOrderShip() {
+    public synchronized void syncOrderShip() {
         log.info("order ship sync for kjyg start!");
         Date now = new Date();
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.KJYG);
@@ -103,9 +103,9 @@ public class KjygScheduledService {
                 getOrderDetailListEvent.setOrderSearchInfo(orderSearchInfo);
 
                 ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-                EventResult firseEventResult = erpUserHandler.handleEvent(getOrderDetailListEvent);
-                if(firseEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
-                    OrderListInfo orderListInfo = (OrderListInfo) firseEventResult.getData();
+                EventResult firstEventResult = erpUserHandler.handleEvent(getOrderDetailListEvent);
+                if (firstEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                    OrderListInfo orderListInfo = (OrderListInfo) firstEventResult.getData();
                     int totalResult = orderListInfo.getRecordCount();
                     totalCount = orderListInfo.getRecordCount();
                     List<Order> orderList = orderListInfo.getOrders();

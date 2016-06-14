@@ -32,6 +32,10 @@
     <script src="<c:url value="/resource/scripts/lib/jquery-1.7.2.min.js" />" type="text/javascript"></script>
     <script type="text/javascript" src="<c:url value="/resource/scripts/lib/jBox/jquery.jBox-2.3.min.js" />"></script>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resource/scripts/lib/jBox/Skins/Green/jbox.css"/>">
+    <script type="text/javascript"
+            src="<c:url value="/resource/scripts/lib/jqueryui/jquery-ui-1.8.20.min.js" />"></script>
+    <link href="<c:url value="/resource/scripts/lib/jqueryui/jquery-ui-1.10.3.custom.min.css"/>" rel="stylesheet"
+          type="text/css"/>
     <script src="<c:url value="/resource/scripts/lib/jquery.utils.js" />" type="text/javascript"></script>
     <script src="<c:url value="/resource/scripts/admin.js" />"></script>
     <script src="<c:url value="/resource/scripts/lib/My97DatePicker/WdatePicker.js" />" type="text/javascript"></script>
@@ -68,9 +72,22 @@
                 }, J.PostMethod)
             });
         }
+
+        function showErrorMsg(id) {
+            var errorMsg = $("#errorMsg" + id).html();
+            $("#error_dialog").html(errorMsg);
+            J.ShowDialogButton("error_dialog", "错误信息", {
+                "关闭": function () {
+                    $(this).dialog('close');
+                }
+            })
+        }
     </script>
 </head>
 <body>
+<div id="error_dialog" style="padding: 20px;display: none;">
+
+</div>
 <div class="container">
     <div class="blank10">
     </div>
@@ -174,7 +191,9 @@
                                                                     pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                 <td class="txt80 c">
                                     <c:if test="${log.detailSyncStatus.code==0}">
-                                        <a href="javascript:rePush(${log.id})">重新推送</a>
+                                        <a href="javascript:rePush(${log.id})">重新推送</a> |
+                                        <span style="display:none;" id="errorMsg${log.id}">${log.errorMsg}</span>
+                                        <a href="javascript:showErrorMsg(${log.id})">查看错误信息</a>
                                     </c:if>
                                 </td>
                             </tr>
