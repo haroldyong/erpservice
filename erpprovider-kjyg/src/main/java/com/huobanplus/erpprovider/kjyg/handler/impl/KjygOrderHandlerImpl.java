@@ -90,10 +90,10 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
 //        }
 
         createOrderInfo.setPayWay(payWay);
-        createOrderInfo.setBuyerPid(orderInfo.getBuyerPid());
-//        createOrderInfo.setBuyerPid("330682199006078898");
-        createOrderInfo.setBuyerName(orderInfo.getBuyerName());
-//        createOrderInfo.setBuyerName("测试");
+//        createOrderInfo.setBuyerPid(orderInfo.getBuyerPid());
+        createOrderInfo.setBuyerPid("330682199006078898");
+//        createOrderInfo.setBuyerName(orderInfo.getBuyerName());
+        createOrderInfo.setBuyerName("测试");
         createOrderInfo.setBuyerTel(orderInfo.getUserLoginName());
         createOrderInfo.setPayment(String.valueOf(orderInfo.getOnlinePayAmount()));
         createOrderInfo.setWebsite(kjygSysData.getWebsite());

@@ -37,7 +37,7 @@ public class PlatformInterceptor extends HandlerInterceptorAdapter {
         if (erpUserType.equals("0")) {
             customerId = CookieHelper.getCookieValInteger(request, "UserID");
             if (environment.acceptsProfiles("development")) {
-                customerId = 3677;
+                customerId = 296;
             }
 
             if (customerId == null || customerId == 0) {
@@ -50,7 +50,8 @@ public class PlatformInterceptor extends HandlerInterceptorAdapter {
             customerId = CookieHelper.getCookieValInteger(request, "supplierId");
 
             if (environment.acceptsProfiles("development")) {
-                customerId = 23367;
+//                customerId = 23367;
+                customerId = 7297;
             }
 
             if (customerId == null || customerId == 0) {

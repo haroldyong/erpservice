@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpprovider.gy.config;
 
-import com.huobanplus.erpprovider.gy.handler.GYBaseHandler;
+import com.huobanplus.erpprovider.gy.handler.GYOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -30,7 +30,7 @@ public class GYHandlerBuilder implements ERPHandlerBuilder {
 
 
     @Autowired
-    private GYBaseHandler GYOrderHandler;
+    private GYOrderHandler GYorderHandler;
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
@@ -48,7 +48,7 @@ public class GYHandlerBuilder implements ERPHandlerBuilder {
             public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                 if (erpBaseEvent instanceof PushNewOrderEvent) {
                     PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                    //GYOrderHandler.pushOrder(pushNewOrderEvent);
+                    GYorderHandler.pushOrder(pushNewOrderEvent);
                 }
                 return null;
             }
