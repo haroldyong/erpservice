@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
 import com.huobanplus.erpprovider.gy.formatgy.CreateNewOrder;
+import com.huobanplus.erpprovider.gy.formatgy.Invoice;
 import com.huobanplus.erpprovider.gy.formatgy.OrderItem;
+import com.huobanplus.erpprovider.gy.formatgy.Payment;
 import com.huobanplus.erpprovider.gy.handler.GYBaseHandler;
 import com.huobanplus.erpprovider.gy.handler.GYOrderHandler;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
@@ -52,6 +54,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
         try {
             Map<String, Object> requestData = getRequestData(sysData, newOrder,"gy.erp.trade.add");
+            System.out.println("***********************");
+            System.out.println(requestData);
 
             HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getURL(), requestData);
 
@@ -82,10 +86,10 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         newOrder.setCod(false);// FIXME: 2016/5/9 非货到付款
         newOrder.setPlatformCode(order.getOrderId());
         newOrder.setShopCode(erpUserInfo.getCustomerId()+"");
-        newOrder.setExpressCode(null);// FIXME: 2016/5/9 物流公司code 必填
-        newOrder.setWarehouseCode(null);// FIXME: 2016/5/9 仓库code 必填
-        newOrder.setVipCode(null);// FIXME: 2016/5/9 会员code 必填
-        newOrder.setVipName(null);
+        newOrder.setExpressCode("123");// FIXME: 2016/5/9 物流公司code 必填
+        newOrder.setWarehouseCode("2123");// FIXME: 2016/5/9 仓库code 必填
+        newOrder.setVipCode("123546");// FIXME: 2016/5/9 会员code 必填
+        newOrder.setVipName("126584");
 
         newOrder.setReceiverAddress(order.getShipAddr());
         newOrder.setReceiverZip(order.getShipZip());
@@ -122,8 +126,34 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         //发票信息
         // TODO: 2016/5/9
 
+        List<Invoice> invoices = new ArrayList<>();
+        for(int i=0;i<5;i++){
+            Invoice invoice = new Invoice();
+            invoice.setBillAmount("test");
+            invoice.setInvoiceAmount("test");
+            invoice.setInvoiceContent("test");
+            invoice.setInvoiceTitle("test");
+            invoice.setInvoiceType("test");
+            invoices.add(invoice);
+        }
+
+        newOrder.setInvoices(invoices);
+
 
         //支付信息
+        List<Payment> payments = new ArrayList<>();
+        for(int i=0;i<5;i++){
+            Payment payment = new Payment();
+            payment.setAccount("test");
+            payment.setPayCode("test");
+            payment.setPayment("test");
+            payment.setPaytime("test");
+            payment.setPayTypeCode("test");
+            payments.add(payment);
+        }
+
+        newOrder.setPayments(payments);
+
 
 
         return newOrder;

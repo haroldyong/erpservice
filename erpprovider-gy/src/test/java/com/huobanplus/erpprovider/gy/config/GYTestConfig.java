@@ -1,7 +1,13 @@
 package com.huobanplus.erpprovider.gy.config;
 
+import org.springframework.test.context.ActiveProfiles;
+
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import com.huobanplus.erpservice.datacenter.config.DataCenterConfig;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 /**
@@ -17,5 +23,6 @@ import org.springframework.test.context.ActiveProfiles;
         "com.huobanplus.erpuser.huobanmall",
         "com.huobanplus.erpuser.hotsupplier"
 })
+@Import({DataCenterConfig.class})
 public class GYTestConfig {
 }

@@ -1,11 +1,13 @@
 package com.huobanplus.erpprovider.gy.formatgy;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Data;
 
 /**
  * 支付信息对象
  * Created by elvis on 2016/5/9.
  */
+@Data
 public class Payment {
 
     /**

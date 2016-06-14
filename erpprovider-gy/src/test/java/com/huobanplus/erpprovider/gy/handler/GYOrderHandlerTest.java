@@ -43,6 +43,11 @@ public class GYOrderHandlerTest extends GYTestBase {
 
         mockGySysData = new GYSysData();
 
+        mockGySysData.setURL("https://demo.guanyierp.com/erpapi/rest/erp_open");
+        mockGySysData.setAppKey("test");
+        mockGySysData.setSessionkey("test");
+        mockGySysData.setSecret("fasfasdf");
+
 
 
         mockOrderItems = new ArrayList<>();
@@ -65,6 +70,7 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockOrder.setBuyerPid("330682199006015217");
         mockOrder.setBuyerName("刘渠成");
 
+        mockOrder.setCreateTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         mockOrder.setOrderItems(mockOrderItems);
 
