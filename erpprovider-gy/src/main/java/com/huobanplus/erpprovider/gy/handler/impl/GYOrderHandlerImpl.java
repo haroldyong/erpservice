@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import java.util.Map;
 /**
  * Created by elvis on 2016/5/9.
  */
+@Component
 public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler {
 
     @Autowired
