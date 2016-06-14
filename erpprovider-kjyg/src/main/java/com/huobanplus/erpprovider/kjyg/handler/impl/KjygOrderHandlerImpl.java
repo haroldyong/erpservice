@@ -58,7 +58,7 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         List<KjygOrderItem> kjygOrderItems = new ArrayList<KjygOrderItem>();
         orderItems.forEach(orderItem -> {
             KjygOrderItem kjygOrderItem = new KjygOrderItem();
-            kjygOrderItem.setSpe(String.valueOf(orderItem.getItemId()));
+            kjygOrderItem.setSpe(orderItem.getProductBn());
             kjygOrderItem.setAmount(String.valueOf(orderItem.getNum()));
             kjygOrderItem.setPrice(String.valueOf(orderItem.getAmount()));// FIXME: 2016/5/30
             kjygOrderItems.add(kjygOrderItem);
@@ -90,10 +90,8 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
 //        }
 
         createOrderInfo.setPayWay(payWay);
-//        createOrderInfo.setBuyerPid(orderInfo.getBuyerPid());
-        createOrderInfo.setBuyerPid("330682199006078898");
-//        createOrderInfo.setBuyerName(orderInfo.getBuyerName());
-        createOrderInfo.setBuyerName("测试");
+        createOrderInfo.setBuyerPid(orderInfo.getBuyerPid());
+        createOrderInfo.setBuyerName(orderInfo.getBuyerName());
         createOrderInfo.setBuyerTel(orderInfo.getUserLoginName());
         createOrderInfo.setPayment(String.valueOf(orderInfo.getOnlinePayAmount()));
         createOrderInfo.setWebsite(kjygSysData.getWebsite());
@@ -114,6 +112,7 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         requestData.put("clientkey", kjygSysData.getClientKey());
         requestData.put("mtype", "trade");
         requestData.put("tradelist", jsonArray);
+        System.out.println(jsonArray.toJSONString());
 
         HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(), requestData);
         if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {

@@ -32,41 +32,45 @@ public class KjygHandlerBuilder implements ERPHandlerBuilder {
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        return new ERPHandler() {
-            @Override
-            public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
-                if (baseEventClass == PushNewOrderEvent.class) {
-                    return true;
-                }
-                return false;
-            }
+        if(info.getErpType() == ERPTypeEnum.ProviderType.KJYG){
 
-            @Override
-            public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
-                if (erpBaseEvent instanceof PushNewOrderEvent) {
-                    PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                    return kjygOrderHandler.pushOrder(pushNewOrderEvent);
+            return new ERPHandler() {
+                @Override
+                public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
+                    if (baseEventClass == PushNewOrderEvent.class) {
+                        return true;
+                    }
+                    return false;
                 }
-                return null;
-            }
 
-            @Override
-            public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
-//                String method = request.getParameter("mType");
-//                String orderNo = request.getParameter("OrderNO");
-//
-//                //通过uCode得到指定erp配置信息
-//                List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserType(providerType, erpUserType);
-//                ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
-//                KjygSysData kjygSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), KjygSysData.class);
-//                switch (method){
-//                    case KjygConstant.QUERY_ORDER_TRADNO:
-//                        return kjygOrderHandler.queryOrderTradNo(orderNo,kjygSysData);
-//                    case KjygConstant.QUERY_ORDER_STAT:
-//                        return kjygOrderHandler.queryOrderStat(orderNo,kjygSysData);
-//                }
-                return null;
-            }
-        };
+                @Override
+                public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
+                    if (erpBaseEvent instanceof PushNewOrderEvent) {
+                        PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
+                        return kjygOrderHandler.pushOrder(pushNewOrderEvent);
+                    }
+                    return null;
+                }
+
+                @Override
+                public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
+    //                String method = request.getParameter("mType");
+    //                String orderNo = request.getParameter("OrderNO");
+    //
+    //                //通过uCode得到指定erp配置信息
+    //                List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserType(providerType, erpUserType);
+    //                ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
+    //                KjygSysData kjygSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), KjygSysData.class);
+    //                switch (method){
+    //                    case KjygConstant.QUERY_ORDER_TRADNO:
+    //                        return kjygOrderHandler.queryOrderTradNo(orderNo,kjygSysData);
+    //                    case KjygConstant.QUERY_ORDER_STAT:
+    //                        return kjygOrderHandler.queryOrderStat(orderNo,kjygSysData);
+    //                }
+                    return null;
+                }
+            };
+        }
+        return null;
     }
 }
