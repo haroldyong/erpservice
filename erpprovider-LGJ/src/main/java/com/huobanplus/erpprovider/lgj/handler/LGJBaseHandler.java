@@ -80,6 +80,7 @@ public class LGJBaseHandler {
         Map<String, Object> data = new HashMap<>();
         Map<String, Object> requestData = new HashMap<>();
         data.put("func", LGJConstant.GET_TOKEN_FUN);// FIXME: 2016/4/29
+
         data.put("username",sysData.getUsername());
         data.put("password",sysData.getPassword());
         data.put("api_name",sysData.getApiName());

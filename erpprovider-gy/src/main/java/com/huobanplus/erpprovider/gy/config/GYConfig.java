@@ -23,8 +23,11 @@ public class GYConfig {
     @Autowired
     private ERPRegister erpRegister;
 
+    @Autowired
+    private GYHandlerBuilder gyHandlerBuilder;
+
     @PostConstruct
     public void init() {
-        erpRegister.addBuilders(null);
+        erpRegister.addBuilders(gyHandlerBuilder);
     }
 }

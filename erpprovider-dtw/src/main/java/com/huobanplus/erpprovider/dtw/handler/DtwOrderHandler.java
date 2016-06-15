@@ -1,24 +1,17 @@
-package com.huobanplus.erpprovider.gy.handler;
+package com.huobanplus.erpprovider.dtw.handler;
 
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 /**
- * Created by admin on 2016/5/9.
+ * Created by wuxiongliu on 2016/5/23.
  */
-public interface GYOrderHandler {
-
+public interface DtwOrderHandler {
 
     /**
-     * 推送订单，包含正常订单和退单
+     *  推送订单
      * @param pushNewOrderEvent
      * @return
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
-
-
-    //退款单
-
-
-
 }

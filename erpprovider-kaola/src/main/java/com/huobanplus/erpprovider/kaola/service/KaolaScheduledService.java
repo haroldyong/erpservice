@@ -11,16 +11,20 @@ package com.huobanplus.erpprovider.kaola.service;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.kaola.common.KaoLaSysData;
+import com.huobanplus.erpprovider.kaola.formatkaola.KaoLaGoodsInfo;
+import com.huobanplus.erpprovider.kaola.handler.KaoLaGoodsInfoHandler;
 import com.huobanplus.erpprovider.kaola.handler.KaoLaOrderInfoHandler;
 import com.huobanplus.erpprovider.kaola.util.KaolaConstant;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.entity.logs.GoodsInfoSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
 import com.huobanplus.erpservice.datacenter.model.*;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
+import com.huobanplus.erpservice.datacenter.service.logs.GoodsInfoSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
@@ -54,11 +58,15 @@ public class KaolaScheduledService {
     @Autowired
     private OrderShipSyncLogService orderShipSyncLogService;
     @Autowired
+    private GoodsInfoSyncLogService goodsInfoSyncLogService;
+    @Autowired
     private ShipSyncDeliverInfoService shipSyncDeliverInfoService;
     @Autowired
     private ERPRegister erpRegister;
     @Autowired
     private KaoLaOrderInfoHandler kaoLaOrderInfoHandler;
+    @Autowired
+    private KaoLaGoodsInfoHandler kaoLaGoodsInfoHandler;
 
 
 
@@ -201,6 +209,53 @@ public class KaolaScheduledService {
             }
         }
         log.info("kaola ship sync end");
+    }
+
+    /**
+     * 同步商品详情
+     * 每天凌晨三点进行一次同步
+     */
+    @Scheduled(cron = "0 0 3 * * ? ")
+    @Transactional
+    public void syncGoodsInfo() {
+        Date now = new Date();
+
+        List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.KAOLA);
+        for (ERPDetailConfigEntity detailConfig : detailConfigs) {
+            try {
+                ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
+                ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
+                KaoLaSysData kaolaSysData = JSON.parseObject(detailConfig.getErpSysData(), KaoLaSysData.class);
+                EventResult result = kaoLaGoodsInfoHandler.queryAllGoodsId(kaolaSysData);
+
+
+                GoodsInfoSyncLog goodsInfoSyncLog = new GoodsInfoSyncLog();
+                goodsInfoSyncLog.setProviderType(erpInfo.getErpType());
+                goodsInfoSyncLog.setSyncTime(now);
+                goodsInfoSyncLog.setUserType(erpUserInfo.getErpUserType());
+                goodsInfoSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+                // TODO: 2016/6/14
+
+
+                if(result.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                    List<String> skuIds = (List<String>) result.getData();
+                    skuIds.forEach(skuid ->{
+                        System.out.println(skuid);
+                        EventResult goodsInfoResult = kaoLaGoodsInfoHandler.queryGoodsInfoById(kaolaSysData,skuid);
+                        if(goodsInfoResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                            KaoLaGoodsInfo kaoLaGoodsInfo = (KaoLaGoodsInfo) goodsInfoResult.getData();
+                            // 推送此商品到平台 // TODO: 2016/6/12
+                        }
+                    });
+                }
+
+                // 保存此次同步日志
+                goodsInfoSyncLogService.save(goodsInfoSyncLog);
+
+            } catch (Exception e) {
+                log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
+            }
+        }
     }
 
 }

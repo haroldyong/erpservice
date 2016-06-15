@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpprovider.gy.config;
 
-import com.huobanplus.erpprovider.gy.handler.GYBaseHandler;
+import com.huobanplus.erpprovider.gy.handler.GYOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -30,33 +30,36 @@ public class GYHandlerBuilder implements ERPHandlerBuilder {
 
 
     @Autowired
-    private GYBaseHandler GYOrderHandler;
+    private GYOrderHandler GYorderHandler;
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        return new ERPHandler() {
+        if(info.getErpType() == ERPTypeEnum.ProviderType.GY){
+            return new ERPHandler() {
 
-            @Override
-            public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
-                if (baseEventClass == PushNewOrderEvent.class) {
-                    return true;
+                @Override
+                public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
+                    if (baseEventClass == PushNewOrderEvent.class) {
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
 
-            @Override
-            public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
-                if (erpBaseEvent instanceof PushNewOrderEvent) {
-                    PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                    //GYOrderHandler.pushOrder(pushNewOrderEvent);
+                @Override
+                public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
+                    if (erpBaseEvent instanceof PushNewOrderEvent) {
+                        PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
+                        GYorderHandler.pushOrder(pushNewOrderEvent);
+                    }
+                    return null;
                 }
-                return null;
-            }
 
-            @Override
-            public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
-                return null;
-            }
-        };
+                @Override
+                public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
+                    return null;
+                }
+            };
+        }
+        return null;
     }
 }

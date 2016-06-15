@@ -34,32 +34,35 @@ public class ISCSHandlerBuilder implements ERPHandlerBuilder {
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        return new ERPHandler() {
-            @Override
-            public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
-                if (baseEventClass == PushNewOrderEvent.class) {
-                    return true;
+        if(info.getErpType() == ERPTypeEnum.ProviderType.ISCS){
+            return new ERPHandler() {
+                @Override
+                public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
+                    if (baseEventClass == PushNewOrderEvent.class) {
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
 
-            @Override
-            public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
-                if (erpBaseEvent instanceof PushNewOrderEvent) {
-                    PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                    return iscsOrderHandler.pushOrder(pushNewOrderEvent);
+                @Override
+                public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
+                    if (erpBaseEvent instanceof PushNewOrderEvent) {
+                        PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
+                        return iscsOrderHandler.pushOrder(pushNewOrderEvent);
+                    }
+                    if (erpBaseEvent instanceof PushReturnInfoEvent){
+                        PushReturnInfoEvent pushReturnInfoEvent = (PushReturnInfoEvent) erpBaseEvent;
+                        return iscsOrderHandler.pushReturnOrder(pushReturnInfoEvent);
+                    }
+                    return null;
                 }
-                if (erpBaseEvent instanceof PushReturnInfoEvent){
-                    PushReturnInfoEvent pushReturnInfoEvent = (PushReturnInfoEvent) erpBaseEvent;
-                    return iscsOrderHandler.pushReturnOrder(pushReturnInfoEvent);
-                }
-                return null;
-            }
 
-            @Override
-            public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
-                return null;
-            }
-        };
+                @Override
+                public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
+                    return null;
+                }
+            };
+        }
+        return null;
     }
 }

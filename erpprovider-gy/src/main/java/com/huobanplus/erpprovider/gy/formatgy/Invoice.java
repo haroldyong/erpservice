@@ -1,10 +1,12 @@
 package com.huobanplus.erpprovider.gy.formatgy;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Data;
 
 /**
  * Created by admin on 2016/5/9.
  */
+@Data
 public class Invoice {
 
     /**
