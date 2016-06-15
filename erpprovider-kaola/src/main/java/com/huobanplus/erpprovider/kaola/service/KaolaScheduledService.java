@@ -215,8 +215,8 @@ public class KaolaScheduledService {
      * 同步商品详情
      * 每天凌晨三点进行一次同步
      */
-    @Scheduled(cron = "0 0 3 * * ? ")
-    @Transactional
+//    @Scheduled(cron = "0 0 3 * * ? ")
+//    @Transactional
     public void syncGoodsInfo() {
         Date now = new Date();
 
