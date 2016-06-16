@@ -47,38 +47,41 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             Map<String, Object> requestMap = new HashMap<>();
             DtwOrder dtwOrder = new DtwOrder();
             dtwOrder.setPassKey(dtwSysData.getPassKey());
-            dtwOrder.setMsgid("1");
-            dtwOrder.setPayCompanyCode("001");
-            dtwOrder.setPayNumber("100001");
-            dtwOrder.setOrderNo("201625621535");
-            dtwOrder.setLogisCompanyName("tefaffasdf");
-            dtwOrder.setLogisCompanyCode("logisCompanyCode");
-            dtwOrder.setPurchaserId("123");
-            dtwOrder.setShipper("wuxiongliu");
-            dtwOrder.setShipperAddress("zhejiang");
-            dtwOrder.setShipperCountry("china");
-            dtwOrder.setConsignee("wuxiongliu2");
-            dtwOrder.setConsigneePro("zhejiang");
-            dtwOrder.setConsigneeCity("hangzhou");
-            dtwOrder.setConsigneeDistrict("binjiangqu");
-            dtwOrder.setConsigneeAdd("testaddress");
-            dtwOrder.setConsigneeCountry("china");
             dtwOrder.setECommerceCode(dtwSysData.getECommerceCode());
             dtwOrder.setECommerceName(dtwSysData.getECommerceName());
-            dtwOrder.setConsigneeMobile("18705153967");
-            dtwOrder.setConsigneeTel("18705153967");
 
+            dtwOrder.setMsgid("1");// TODO: 2016/6/16
+            dtwOrder.setPayCompanyCode("001");// TODO: 2016/6/16
+            dtwOrder.setPayNumber("100001");// TODO: 2016/6/16
+            dtwOrder.setOrderNo(order.getOrderId());
+            dtwOrder.setLogisCompanyName(order.getLogiName());
+            dtwOrder.setLogisCompanyCode("logisCompanyCode");// TODO: 2016/6/16
+            dtwOrder.setPurchaserId(String.valueOf(order.getMemberId()));
+            dtwOrder.setShipper("wuxiongliu");// TODO: 2016/6/16
+            dtwOrder.setShipperAddress("zhejiang");// TODO: 2016/6/16
+            dtwOrder.setShipperCountry("china");// TODO: 2016/6/16
+            dtwOrder.setConsignee(order.getShipName());
+            dtwOrder.setConsigneePro(order.getProvince());
+            dtwOrder.setConsigneeCity(order.getCity());
+            dtwOrder.setConsigneeDistrict(order.getDistrict());
+            dtwOrder.setConsigneeAdd(order.getShipAddr());
+            dtwOrder.setConsigneeCountry("china");// TODO: 2016/6/16
+            dtwOrder.setConsigneeMobile(order.getShipMobile());
+            dtwOrder.setConsigneeTel(order.getShipTel());
+            dtwOrder.setConsigneeZip(order.getShipZip());
+            dtwOrder.setWeight(order.getWeight());// FIXME: 2016/6/16
+            dtwOrder.setLotNo("");
+            dtwOrder.setNetWeight(order.getWeight());// FIXME: 2016/6/16
+            dtwOrder.setIeFlag("I/O");//（I进口,O出口）// FIXME: 2016/6/16
 
             List<DtwOrderItem> dtwOrderItemList = new ArrayList<>();
             List<OrderItem> orderItemList = order.getOrderItems();
             orderItemList.forEach(orderItem -> {
                 DtwOrderItem dtwOrderItem = new DtwOrderItem();
-                dtwOrderItem.setPartno("test");
-                orderItem.getProductBn();
-                dtwOrderItem.setPartName("testtt");
-                orderItem.getName();
-                dtwOrderItem.setUnit("test");
-                dtwOrderItem.setCurrency("test");
+                dtwOrderItem.setPartno("test");orderItem.getProductBn();
+                dtwOrderItem.setPartName("testtt");orderItem.getName();
+                dtwOrderItem.setUnit("test");// TODO: 2016/6/16  
+                dtwOrderItem.setCurrency(order.getCurrency());// FIXME: 2016/6/16 
 
                 dtwOrderItemList.add(dtwOrderItem);
             });

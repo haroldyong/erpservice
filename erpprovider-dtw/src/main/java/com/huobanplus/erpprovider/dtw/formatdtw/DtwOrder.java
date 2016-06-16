@@ -212,25 +212,25 @@ public class DtwOrder {
     private double netWeight;
 
     /**
-     * 物流企业编号
+     * 批次号
      */
     @JSONField(name = "LotNo")
-    private String logNo;
+    private String lotNo;
 
     /**
-     * 物流企业名称
+     * 物流企业编号(必填)
      */
     @JSONField(name = "logisCompanyCode")
     private String logisCompanyCode;
 
     /**
-     * 进口类型（0一般进口，1保税进口）(必填)
+     * 物流企业名称(必填)
      */
     @JSONField(name = "logisCompanyName")
     private String logisCompanyName;
 
     /**
-     *
+     * 进口类型（0一般进口，1保税进口）(必填)
      */
     @JSONField(name = "importType")
     private String importType;
