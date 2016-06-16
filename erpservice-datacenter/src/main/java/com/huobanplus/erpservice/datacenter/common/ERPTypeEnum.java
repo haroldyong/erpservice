@@ -23,7 +23,8 @@ public interface ERPTypeEnum {
         LGJ(4, "礼管家（尽请期待）"),
         KAOLA(5, "考拉"),
         KJYG(6,"跨境易购"),
-        GY(7,"网易");
+        GY(7,"网易"),
+        DTW(8,"大田跨境");
 
         private int code;
         private String name;

@@ -14,6 +14,12 @@ public class DtwOrder {
     @JSONField(name = "PassKey")
     private String passKey;
 
+    @JSONField(name = "eCommerceCode")
+    private String eCommerceCode;
+
+    @JSONField(name = "eCommerceName")
+    private String eCommerceName;
+
     /**
      * 电商企业发货单号(必填)
      */
@@ -214,7 +220,7 @@ public class DtwOrder {
     /**
      * 物流企业名称
      */
-    @JSONField(name = "logisCompanyCode ")
+    @JSONField(name = "logisCompanyCode")
     private String logisCompanyCode;
 
     /**
