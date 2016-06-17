@@ -2,7 +2,9 @@ package com.huobanplus.erpprovider.gy.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.gy.GYTestBase;
+import com.huobanplus.erpprovider.gy.common.GYConstant;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
+import com.huobanplus.erpprovider.gy.search.GYOrderSearch;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
@@ -93,6 +95,17 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
 
         gyOrderHandler.pushOrder(mockPushNewOrderEvent);
+    }
+
+    @Test
+    public void testOrderQuery(){
+        GYOrderSearch gyOrderSearch = new GYOrderSearch();
+        gyOrderSearch.setPageNo(1);
+        gyOrderSearch.setPageSize(GYConstant.PAGE_SIZE);
+        gyOrderSearch.setBeginTime(new Date());
+        gyOrderSearch.setOrderState(1);
+        gyOrderSearch.setReveiverMobile("wuxiongliu");
+        gyOrderHandler.orderQuery(gyOrderSearch,mockGySysData);
     }
 
 }

@@ -5,8 +5,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.gy.common.GYConstant;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
-import com.huobanplus.erpprovider.gy.formatgy.GetDeliveryBean;
 import com.huobanplus.erpprovider.gy.handler.GYBaseHandler;
+import com.huobanplus.erpprovider.gy.search.GYDeliveryOrderSearch;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
@@ -32,10 +32,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.Jsr310Converters;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,7 +84,7 @@ public class GYSyncDelivery extends GYBaseHandler{
                 List<OrderDeliveryInfo> successOrders = new ArrayList<>(); //成功的订单列表
                 int totalCount = 0; //总数量
 
-                GetDeliveryBean orderSearch = new GetDeliveryBean();
+                GYDeliveryOrderSearch orderSearch = new GYDeliveryOrderSearch();
 
                 boolean flag = true;//用于控制循环
                 int numbers = 0;
@@ -95,8 +93,8 @@ public class GYSyncDelivery extends GYBaseHandler{
 
                     numbers++;//查询次数自增
 
-                    orderSearch.setPageNo(numbers+"");
-                    orderSearch.setPageSize(GYConstant.PAGE_SIZE + "");
+                    orderSearch.setPageNo(numbers);
+                    orderSearch.setPageSize(GYConstant.PAGE_SIZE);
                     Map<String, Object> requestData = GYBaseHandler.getRequestData(sysData, orderSearch,"gy.erp.trade.deliverys.get");//// FIXME: 2016/5/31 方法名gy.erp.trade.deliverys.get
                     HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getURL(), requestData);
                     if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {

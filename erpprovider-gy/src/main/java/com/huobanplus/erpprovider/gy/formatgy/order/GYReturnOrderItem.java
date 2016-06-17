@@ -1,9 +1,9 @@
-package com.huobanplus.erpprovider.gy.formatgy;
+package com.huobanplus.erpprovider.gy.formatgy.order;
 
 /**
  * Created by admin on 2016/6/8.
  */
-public class ReturnSkuBean {
+public class GYReturnOrderItem {
 
 //    barcode": "010020009",
 //            "qty":10,

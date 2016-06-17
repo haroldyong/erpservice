@@ -1,4 +1,4 @@
-package com.huobanplus.erpprovider.gy.formatgy;
+package com.huobanplus.erpprovider.gy.formatgy.order;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Getter;
@@ -9,41 +9,46 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class OrderItem {
+public class GYOrderItem {
 
     /**
-     * "qty":
+     * "qty": 商品数量
      */
+    @JSONField(name = "qyt")
     private String qty;
 
     /**
-     * "price"
+     * "price" 实际单价
      */
+    @JSONField(name = "price")
     private String price;
 
     /**
-     * "note":
+     * "note": 备注
      */
+    @JSONField(name = "note")
     private String note;
 
     /**
-     * "refund":
+     * "refund": 是否退款 0非退款 ,1退款(退款中);
      */
-    private String refund;
+    @JSONField(name = "refund")
+    private int refund;
 
     /**
-     * "oid":
+     * "oid": 子订单ID
      */
+    @JSONField(name = "oid")
     private String oid;
 
     /**
-     * "item_code"
+     * "item_code" 商品代码
      */
     @JSONField(name = "item_code")
     private String itemCode;
 
     /**
-     * "sku_code":
+     * "sku_code": 规格代码
      */
     @JSONField(name="sku_code")
     private String skuCode;

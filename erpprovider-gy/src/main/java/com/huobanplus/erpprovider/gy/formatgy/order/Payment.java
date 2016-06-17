@@ -1,4 +1,4 @@
-package com.huobanplus.erpprovider.gy.formatgy;
+package com.huobanplus.erpprovider.gy.formatgy.order;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
