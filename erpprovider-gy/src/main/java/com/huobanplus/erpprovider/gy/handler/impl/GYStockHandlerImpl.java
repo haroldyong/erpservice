@@ -13,6 +13,7 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Map;
@@ -20,6 +21,7 @@ import java.util.Map;
 /**
  * Created by wuxiongliu on 2016/6/17.
  */
+@Component
 public class GYStockHandlerImpl extends GYBaseHandler implements GYStockHandler {
     private static final Log log = LogFactory.getLog(GYStockHandlerImpl.class);
 
