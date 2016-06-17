@@ -59,13 +59,13 @@ public class DtwOrder {
      * 订单总金额
      */
     @JSONField(name = "orderTotalAmount")
-    private String orderTotalAmount;
+    private double orderTotalAmount;
 
     /**
      * 订单货款
      */
     @JSONField(name = "orderGoodsAmount")
-    private String orderGoodsAmount;
+    private double orderGoodsAmount;
 
     /**
      * 订单税款 交易过程中商家向用户征收的税款，免税模式填写0
