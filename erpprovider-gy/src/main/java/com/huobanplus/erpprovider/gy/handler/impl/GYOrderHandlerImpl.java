@@ -48,37 +48,44 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
 
-        Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-        ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
-        GYSysData sysData = JSON.parseObject(erpInfo.getSysDataJson(), GYSysData.class);
-        ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
-
-        GYOrder newOrder = OrderChange(order,erpUserInfo);
-
         try {
-            Map<String, Object> requestData = getRequestData(sysData, newOrder, GYConstant.ORDER_ADD);
-            System.out.println("***********************");
-            System.out.println(requestData);
+            Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+            ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
+            GYSysData sysData = JSON.parseObject(erpInfo.getSysDataJson(), GYSysData.class);
+            ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
 
-            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getURL(), requestData);
+            GYOrder newOrder = OrderChange(order,erpUserInfo);
 
-            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                JSONObject resultJson = JSON.parseObject(httpResult.getHttpContent());
-                if("true".equals(resultJson.getString("success").trim())){
-                    //记录日志并返回
-                    saveLog(order,erpUserInfo,erpInfo,pushNewOrderEvent,true);
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }
-                saveLog(order,erpUserInfo,erpInfo,pushNewOrderEvent,false);
-                log.error("推送订单失败,errorCode:"+resultJson.getString("errorCode").trim());
+            Date now = new Date();
+            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
+            if (orderDetailSyncLog == null) {
+                orderDetailSyncLog = new OrderDetailSyncLog();
+                orderDetailSyncLog.setCreateTime(now);
             }
+            orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+            orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+            orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+            orderDetailSyncLog.setOrderId(order.getOrderId());
+            orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+            orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+            orderDetailSyncLog.setSyncTime(now);
+
+
+            Map<String, Object> requestData = getRequestData(sysData, newOrder, GYConstant.ORDER_ADD);
+            EventResult eventResult = orderPush(requestData,sysData);
+            if(eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+            } else{
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
+            }
+            orderDetailSyncLogService.save(orderDetailSyncLog);
+            return eventResult;
+
         } catch (IOException e) {
-            log.error("推送订单失败,得到请求参数"+e.toString());
-            saveLog(order,erpUserInfo,erpInfo,pushNewOrderEvent,false);
+            log.error(e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
         }
-
-
-        return null;
     }
 
     private GYOrder OrderChange(Order order, ERPUserInfo erpUserInfo){
@@ -162,38 +169,24 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         return newOrder;
     }
 
-
-    /**
-     * 记录日志
-     * @param orderInfo
-     * @param erpUserInfo
-     * @param erpInfo
-     * @param pushNewOrderEvent
-     * @param isSuccess
-     */
-    private void saveLog(Order orderInfo,ERPUserInfo erpUserInfo,ERPInfo erpInfo,PushNewOrderEvent pushNewOrderEvent,boolean isSuccess ){
-        OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
-        Date now = new Date();
-        if (orderDetailSyncLog == null) {
-            orderDetailSyncLog = new OrderDetailSyncLog();
-            orderDetailSyncLog.setCreateTime(now);
+    private EventResult orderPush(Map<String,Object> requestMap,GYSysData gySysData){
+        try{
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(), requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject resultJson = JSON.parseObject(httpResult.getHttpContent());
+                if(resultJson.getBoolean("success")){
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                } else{
+                    return  EventResult.resultWith(EventResultEnum.ERROR,resultJson.getString("errorCode"),null);
+                }
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        }catch (Exception e){
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
         }
-        orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-        orderDetailSyncLog.setProviderType(erpInfo.getErpType());
-        orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
-        orderDetailSyncLog.setOrderId(orderInfo.getOrderId());
-        orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
-        orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
-        orderDetailSyncLog.setSyncTime(now);
-
-        if (isSuccess) {
-            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-        } else {
-            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-        }
-
-        orderDetailSyncLogService.save(orderDetailSyncLog);
     }
+
 
     @Override
     public EventResult orderQuery(GYOrderSearch orderSearch,GYSysData gySysData) {
@@ -204,9 +197,15 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
-                    // TODO: 2016/6/17
+                    // 封装实体类
                     JSONArray jsonArray = result.getJSONArray("orders");
-                    return EventResult.resultWith(EventResultEnum.SUCCESS,jsonArray);
+                    List<GYResponseOrder> responseOrders = new ArrayList<>();
+                    jsonArray.forEach(order->{
+                        GYResponseOrder responseOrder = JSON.parseObject(order.toString(),GYResponseOrder.class);
+                        responseOrders.add(responseOrder);
+                    });
+
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,responseOrders);
                 }else{
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
@@ -220,10 +219,14 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     }
 
     @Override
-    public EventResult orderMemoUpdate(GYOrderMemo gyOrderMemo, GYSysData gySysData) {
+    public EventResult orderMemoUpdate() {
         try {
 
             //fill entity // TODO: 2016/6/17
+            GYOrderMemo gyOrderMemo = new GYOrderMemo();
+
+
+            GYSysData gySysData =  new GYSysData();
 
             Map<String, Object> requestData = getRequestData(gySysData, gyOrderMemo,GYConstant.ORDER_MEMO_UPDATE);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
@@ -244,10 +247,13 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     }
 
     @Override
-    public EventResult orderRefundStateUpdate(GYRefundOrder gyRefundOrder, GYSysData gySysData) {
+    public EventResult orderRefundStateUpdate() {
         try {
 
             //fill entity // TODO: 2016/6/17
+            GYRefundOrder gyRefundOrder =  new GYRefundOrder();
+
+            GYSysData gySysData =  new GYSysData();
 
             Map<String, Object> requestData = getRequestData(gySysData, gyRefundOrder,GYConstant.ORDER_REFUND_STATE_UPDATE);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
@@ -312,10 +318,13 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     }
 
     @Override
-    public EventResult deliveryOrderUpdate(GYDeliveryOrderUpdate deliveryOrderUpdate, GYSysData gySysData) {
+    public EventResult deliveryOrderUpdate() {
         try {
 
             //fill entity // TODO: 2016/6/17
+            GYDeliveryOrderUpdate deliveryOrderUpdate =  new GYDeliveryOrderUpdate();
+
+            GYSysData gySysData =  new GYSysData();
 
             Map<String, Object> requestData = getRequestData(gySysData, deliveryOrderUpdate,GYConstant.DELIVERY_INFO_UPDATE);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
@@ -359,8 +368,14 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     }
 
     @Override
-    public EventResult pushReturnOrder(GYReturnOrder gyReturnOrder, GYSysData gySysData) {
+    public EventResult pushReturnOrder() {
         try {
+
+
+            GYReturnOrder gyReturnOrder =  new GYReturnOrder();
+
+            GYSysData gySysData = new GYSysData();
+
             Map<String, Object> requestData = getRequestData(gySysData, gyReturnOrder,GYConstant.RETUR_ORDER_ADD);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
@@ -381,8 +396,13 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     }
 
     @Override
-    public EventResult returnOrderInStock(GYReturnOrderInStock gyReturnOrderInStock, GYSysData gySysData) {
+    public EventResult returnOrderInStock() {
         try {
+            //fill entity // TODO: 2016/6/17
+            GYReturnOrderInStock gyReturnOrderInStock = new GYReturnOrderInStock();
+
+            GYSysData gySysData =  new GYSysData();
+
             Map<String, Object> requestData = getRequestData(gySysData, gyReturnOrderInStock,GYConstant.RETURN_ORDER_IN_STOCK);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
@@ -425,8 +445,13 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     }
 
     @Override
-    public EventResult refundOrderPush(GYRefundOrder gyRefundOrder, GYSysData gySysData) {
+    public EventResult refundOrderPush() {
         try {
+            //fill entity // TODO: 2016/6/17
+            GYRefundOrder gyRefundOrder =  new GYRefundOrder();
+
+            GYSysData gySysData =  new GYSysData();
+
             Map<String, Object> requestData = getRequestData(gySysData, gyRefundOrder,GYConstant.REFUND_ORDER_ADD);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){

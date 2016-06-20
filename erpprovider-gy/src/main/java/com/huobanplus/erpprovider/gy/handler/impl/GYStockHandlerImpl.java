@@ -1,8 +1,11 @@
 package com.huobanplus.erpprovider.gy.handler.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.gy.common.GYConstant;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
+import com.huobanplus.erpprovider.gy.formatgy.stock.GYResponseStock;
 import com.huobanplus.erpprovider.gy.handler.GYBaseHandler;
 import com.huobanplus.erpprovider.gy.handler.GYStockHandler;
 import com.huobanplus.erpprovider.gy.search.GYStockSearch;
@@ -16,6 +19,8 @@ import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,8 +38,15 @@ public class GYStockHandlerImpl extends GYBaseHandler implements GYStockHandler 
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
-                    // TODO: 2016/6/17
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+
+                    JSONArray jsonArray = result.getJSONArray("stocks");
+                    List<GYResponseStock> gyrStocks = new ArrayList<>();
+                    jsonArray.forEach(stock->{
+                        GYResponseStock gyrStock = JSON.parseObject(stock.toString(),GYResponseStock.class);
+                        gyrStocks.add(gyrStock);
+                    });
+
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,gyrStocks);
                 }else{
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }

@@ -1,7 +1,6 @@
 package com.huobanplus.erpprovider.gy.handler;
 
 import com.huobanplus.erpprovider.gy.common.GYSysData;
-import com.huobanplus.erpprovider.gy.formatgy.order.*;
 import com.huobanplus.erpprovider.gy.search.GYDeliveryOrderSearch;
 import com.huobanplus.erpprovider.gy.search.GYOrderSearch;
 import com.huobanplus.erpprovider.gy.search.GYRefundOrderSearch;
@@ -33,19 +32,15 @@ public interface GYOrderHandler {
 
     /**
      *  订单备注修改
-     * @param gyOrderMemo
-     * @param gySysData
      * @return
      */
-    EventResult orderMemoUpdate(GYOrderMemo gyOrderMemo, GYSysData gySysData);
+    EventResult orderMemoUpdate();
 
     /**
      *  订单退款状态修改
-     * @param gyRefundOrder
-     * @param gySysData
      * @return
      */
-    EventResult orderRefundStateUpdate(GYRefundOrder gyRefundOrder,GYSysData gySysData);
+    EventResult orderRefundStateUpdate();
 
     /**
      *  发货单查询
@@ -65,11 +60,9 @@ public interface GYOrderHandler {
 
     /**
      *  发货单信息修改
-     * @param deliveryOrderUpdate
-     * @param gySysData
      * @return
      */
-    EventResult deliveryOrderUpdate(GYDeliveryOrderUpdate deliveryOrderUpdate,GYSysData gySysData);
+    EventResult deliveryOrderUpdate();
 
     /**
      *  退换货单查询
@@ -81,18 +74,15 @@ public interface GYOrderHandler {
 
     /**
      *  退货单增加
-     * @param gyReturnOrder
-     * @param gySysData
      * @return
      */
-    EventResult pushReturnOrder(GYReturnOrder gyReturnOrder,GYSysData gySysData);
+    EventResult pushReturnOrder();
 
     /**
      *  退货单入库
-     * @param gyReturnOrderInStock
      * @return
      */
-    EventResult returnOrderInStock(GYReturnOrderInStock gyReturnOrderInStock,GYSysData gySysData);
+    EventResult returnOrderInStock();
 
     /**
      *  历史订单查询
@@ -104,15 +94,14 @@ public interface GYOrderHandler {
 
     /**
      *  退款单新增
-     * @param gyRefundOrder
-     * @param gySysData
      * @return
      */
-    EventResult refundOrderPush(GYRefundOrder gyRefundOrder,GYSysData gySysData);
+    EventResult refundOrderPush();
 
     /**
      *  退款单查询
      * @param gyRefundOrderSearch
+     * @param gySysData
      * @return
      */
     EventResult refundOrderQuery(GYRefundOrderSearch gyRefundOrderSearch,GYSysData gySysData);
