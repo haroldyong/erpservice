@@ -121,12 +121,31 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
 
             List<OrderItem> orderItems = orderInfo.getOrderItems();
-            List<KaoLaOrderItem> kaoLaOrderItems = new ArrayList<KaoLaOrderItem>();
+            List<KaoLaOrderItem> kaoLaOrderItems = new ArrayList<>();
+
+            //日志准备
+            Date now = new Date();
+            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
+            if (orderDetailSyncLog == null) {
+                orderDetailSyncLog = new OrderDetailSyncLog();
+                orderDetailSyncLog.setCreateTime(now);
+            }
+            orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+            orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+            orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+            orderDetailSyncLog.setOrderId(orderInfo.getOrderId());
+            orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+            orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+            orderDetailSyncLog.setSyncTime(now);
 
             for (OrderItem item : orderItems) {
                 KaoLaOrderItem kaoLaOrderItem = new KaoLaOrderItem();
                 String goodsId = queryGoodsId(item.getProductBn(), kaoLaSysData);
                 if (goodsId == null) {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                    orderDetailSyncLog.setErrorMsg("考拉中无此商品");
+                    orderDetailSyncLogService.save(orderDetailSyncLog);
+
                     return EventResult.resultWith(EventResultEnum.ERROR, "考拉中无此商品", null);
                 }
                 kaoLaOrderItem.setGoodsId(goodsId);
@@ -154,7 +173,7 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
             userInfo.setIdentityId(orderInfo.getBuyerPid());
 
 
-            Map<String, Object> parameterMap = new TreeMap<String, Object>();
+            Map<String, Object> parameterMap = new TreeMap<>();
 
             parameterMap.put("source", kaoLaSysData.getChannelId());
             parameterMap.put("thirdPartOrderId", orderInfo.getOrderId());
@@ -170,20 +189,6 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
             JSONObject userInfoJson = new JSONObject();
             userInfoJson.put("userInfo", userInfo);
             parameterMap.put("userInfo", userInfoJson.toJSONString());
-
-            Date now = new Date();
-            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
-            if (orderDetailSyncLog == null) {
-                orderDetailSyncLog = new OrderDetailSyncLog();
-                orderDetailSyncLog.setCreateTime(now);
-            }
-            orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-            orderDetailSyncLog.setProviderType(erpInfo.getErpType());
-            orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
-            orderDetailSyncLog.setOrderId(orderInfo.getOrderId());
-            orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
-            orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
-            orderDetailSyncLog.setSyncTime(now);
 
             EventResult eventResult = orderPush(parameterMap, kaoLaSysData);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
