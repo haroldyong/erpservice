@@ -1,6 +1,7 @@
 package com.huobanplus.erpprovider.gy.handler;
 
 import com.huobanplus.erpprovider.gy.common.GYSysData;
+import com.huobanplus.erpprovider.gy.formatgy.order.*;
 import com.huobanplus.erpprovider.gy.search.GYDeliveryOrderSearch;
 import com.huobanplus.erpprovider.gy.search.GYOrderSearch;
 import com.huobanplus.erpprovider.gy.search.GYRefundOrderSearch;
@@ -34,13 +35,13 @@ public interface GYOrderHandler {
      *  订单备注修改
      * @return
      */
-    EventResult orderMemoUpdate();
+    EventResult orderMemoUpdate(GYOrderMemo gyOrderMemo, GYSysData gySysData);
 
     /**
      *  订单退款状态修改
      * @return
      */
-    EventResult orderRefundStateUpdate();
+    EventResult orderRefundStateUpdate(GYOrderRefundUpdate gyOrderRefundUpdate, GYSysData gySysData);
 
     /**
      *  发货单查询
@@ -62,7 +63,7 @@ public interface GYOrderHandler {
      *  发货单信息修改
      * @return
      */
-    EventResult deliveryOrderUpdate();
+    EventResult deliveryOrderUpdate(GYDeliveryOrderUpdate deliveryOrderUpdate, GYSysData gySysData);
 
     /**
      *  退换货单查询
@@ -76,7 +77,7 @@ public interface GYOrderHandler {
      *  退货单增加
      * @return
      */
-    EventResult pushReturnOrder();
+    EventResult pushReturnOrder(GYReturnOrder gyReturnOrder, GYSysData gySysData);
 
     /**
      *  退货单入库
@@ -96,7 +97,7 @@ public interface GYOrderHandler {
      *  退款单新增
      * @return
      */
-    EventResult refundOrderPush();
+    EventResult pushRefundOrder(GYRefundOrder gyRefundOrder, GYSysData gySysData);
 
     /**
      *  退款单查询

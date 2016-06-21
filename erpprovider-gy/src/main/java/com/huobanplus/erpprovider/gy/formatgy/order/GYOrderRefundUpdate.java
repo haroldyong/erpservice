@@ -25,5 +25,5 @@ public class GYOrderRefundUpdate {
      *  退款状态 0、取消退款 1、标识退款  	是
      */
     @JSONField(name = "refund_state")
-    private String refundState;
+    private int refundState;
 }

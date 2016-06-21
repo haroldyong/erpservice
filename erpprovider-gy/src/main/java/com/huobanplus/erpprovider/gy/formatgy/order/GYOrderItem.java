@@ -15,13 +15,13 @@ public class GYOrderItem {
      * "qty": 商品数量
      */
     @JSONField(name = "qyt")
-    private String qty;
+    private int qty;
 
     /**
      * "price" 实际单价
      */
     @JSONField(name = "price")
-    private String price;
+    private double price;
 
     /**
      * "note": 备注
@@ -42,7 +42,7 @@ public class GYOrderItem {
     private String oid;
 
     /**
-     * "item_code" 商品代码
+     * "item_code" 商品代码  必填
      */
     @JSONField(name = "item_code")
     private String itemCode;

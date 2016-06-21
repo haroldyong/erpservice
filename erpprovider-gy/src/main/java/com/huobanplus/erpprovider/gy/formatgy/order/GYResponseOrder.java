@@ -3,7 +3,6 @@ package com.huobanplus.erpprovider.gy.formatgy.order;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,19 +33,19 @@ public class GYResponseOrder {
      * 制单时间
      */
     @JSONField(name= "createtime")
-    private Date createtime;
+    private String createtime;
 
     /**
      * 拍单时间
      */
     @JSONField(name= "dealtime")
-    private Date dealtime;
+    private String dealtime;
 
     /**
      * 支付时间
      */
     @JSONField(name= "paytime")
-    private Date paytime;
+    private String paytime;
 
     /**
      * 是否为货到付款

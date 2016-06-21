@@ -1,6 +1,7 @@
 package com.huobanplus.erpprovider.gy.formatgy.order;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Data;
 
 import java.util.List;
 
@@ -8,6 +9,7 @@ import java.util.List;
  * 用于退货单
  * Created by elvis on 2016/5/31.
  */
+@Data
 public class GYReturnOrder {
 
 //    type_code 	String 	是 			退货类型代码

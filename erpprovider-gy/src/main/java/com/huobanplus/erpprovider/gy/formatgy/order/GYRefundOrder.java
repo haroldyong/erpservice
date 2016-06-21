@@ -21,7 +21,7 @@ public class GYRefundOrder {
      * 退款单种类 是	0-仅退款;1-退货退款
      */
     @JSONField(name = "refund_type")
-    private String refundType;
+    private int refundType;
 
     /**
      * 退款原因

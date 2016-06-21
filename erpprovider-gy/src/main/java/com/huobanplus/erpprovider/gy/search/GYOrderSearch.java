@@ -75,6 +75,6 @@ public class GYOrderSearch {
      * 收件手机
      */
     @JSONField(name = "receiver_mobile")
-    private String reveiverMobile;
+    private String receiverMobile;
 
 }

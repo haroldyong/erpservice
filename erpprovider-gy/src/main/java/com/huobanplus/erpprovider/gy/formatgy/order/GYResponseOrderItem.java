@@ -19,7 +19,7 @@ public class GYResponseOrderItem {
      * 退款状态
      */
     @JSONField(name= "refund")
-    private double refund;
+    private int refund;
 
     /**
      * 商品代码

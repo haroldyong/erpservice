@@ -152,19 +152,19 @@ public class GYOrder {
      * post_fee 	Price 			0.0 	物流费用
      */
     @JSONField(name = "post_fee")
-    private String postFee;
+    private double postFee;
 
     /**
      * cod_fee 	Price 				到付服务费
      */
     @JSONField(name = "cod_fee")
-    private String codFee;
+    private double codFee;
 
     /**
      * discount_fee 	Price 				让利金额
      */
     @JSONField(name = "discount_fee")
-    private String discountFee;
+    private double discountFee;
 
     /**
      * plan_delivery_date 	Date 				预计发货日期
@@ -212,7 +212,7 @@ public class GYOrder {
      *invoices[] 	List 	是 			发票信息数组
      */
     @JSONField(name = "invoices")
-    private List<Invoice> invoices;
+    private List<GYInvoice> invoices;
 
     /*
      *details[] 	List 				商品信息数组
@@ -224,5 +224,5 @@ public class GYOrder {
      *payments[] 	List 	是 			支付信息数组
      */
     @JSONField(name = "payments")
-    private List<Payment> payments;
+    private List<GYPayment> payments;
 }
