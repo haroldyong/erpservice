@@ -1,5 +1,6 @@
 package com.huobanplus.erpprovider.gy.handler.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.gy.common.GYConstant;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
@@ -17,6 +18,8 @@ import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,17 +30,26 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
 
     private static final Log log = LogFactory.getLog(GYGoodsHandlerImpl.class);
 
+    @SuppressWarnings("Duplicates")
     @Override
     public EventResult goodsQuery(GYGoodsSearch goodsSearch, GYSysData gySysData) {
         try {
 
-            Map<String, Object> requestData = getRequestData(gySysData, goodsSearch, GYConstant.GOODS_QUERY);
+           String requestData = getRequestData2(gySysData, goodsSearch, GYConstant.GOODS_QUERY);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
-                    // TODO: 2016/6/17
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                    List<GYResponseGoodsItem> gyResponseGoodsItems = new ArrayList<>();
+
+                    JSONArray jsonArray = result.getJSONArray("items");
+                    jsonArray.forEach(item->{
+                        System.out.println("********************");
+                        System.out.println(item);
+                        GYResponseGoodsItem gyResponseGoodsItem = JSONObject.parseObject(item.toString(),GYResponseGoodsItem.class);
+                        gyResponseGoodsItems.add(gyResponseGoodsItem);
+                    });
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,gyResponseGoodsItems);
                 }else{
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
@@ -50,16 +62,16 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public EventResult pushGoods(GYGoods gyGoods, GYSysData gySysData) {
         try {
 
-            Map<String, Object> requestData = getRequestData(gySysData, gyGoods, GYConstant.GOODS_ADD);
+            String requestData = getRequestData2(gySysData, gyGoods, GYConstant.GOODS_ADD);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
-                    // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
@@ -73,16 +85,16 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public EventResult updateGoods(GYGoods gyGoods, GYSysData gySysData) {
         try {
 
-            Map<String, Object> requestData = getRequestData(gySysData, gyGoods, GYConstant.GOODS_UPDATE);
+            String requestData = getRequestData2(gySysData, gyGoods, GYConstant.GOODS_UPDATE);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
-                    // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
@@ -96,6 +108,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public EventResult deleteGoods(GYDeleteGoods gyDeleteGoods, GYSysData gySysData) {
         try {
@@ -119,6 +132,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public EventResult pushGoodsSku(GYGoodsSku gyGoodsSku, GYSysData gySysData) {
         try {
@@ -142,6 +156,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public EventResult updateGoodsSku(GYGoodsSku gyGoodsSku, GYSysData gySysData) {
         try {
@@ -165,6 +180,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public EventResult deleteGoodsSku(GYDeleteSku gyDeleteSku, GYSysData gySysData) {
         try {
@@ -188,6 +204,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public EventResult pushGoodsBarCode(GYGoodsBarCode gyGoodsBarCode, GYSysData gySysData) {
         try {
