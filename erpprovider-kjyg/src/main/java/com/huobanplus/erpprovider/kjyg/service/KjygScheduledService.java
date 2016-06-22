@@ -115,7 +115,7 @@ public class KjygScheduledService {
                     batchDeliverEvent.setErpInfo(erpInfo);
                     EventResult firstSyncResult = null;
 
-                    if (orderList != null && orderList.size()) {
+                    if (orderList != null && orderList.size() > 0) {
 
                         EventResult deliveryResult = kjygOrderHandler.queryOrderTradNo(orderList, kjygSysData);
                         if (deliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
