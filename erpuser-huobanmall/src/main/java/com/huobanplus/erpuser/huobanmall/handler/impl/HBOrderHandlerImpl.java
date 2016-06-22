@@ -194,7 +194,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
                 return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
             }
             return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }

@@ -26,7 +26,7 @@ public class GYGoodsHandlerTest extends GYTestBase {
     public void setUp(){
         mockGySysData = new GYSysData();
 
-        mockGySysData.setURL("https://demo.guanyierp.com/erpapi/rest/erp_open");
+        mockGySysData.setRequestUrl("https://demo.guanyierp.com/erpapi/rest/erp_open");
         mockGySysData.setAppKey("143158");
         mockGySysData.setSessionkey("58b9c91e195e4a28be107e1485264890");
         mockGySysData.setSecret("a4384907606e435bbf594c420760d29a");
@@ -35,7 +35,7 @@ public class GYGoodsHandlerTest extends GYTestBase {
     @Test
     public void testGoodsQuery(){
         GYGoodsSearch gyGoodsSearch = new GYGoodsSearch();
-        gyGoodsSearch.setCode("1011hot");
+        gyGoodsSearch.setCode("1014hot");
         gyGoodsHandler.goodsQuery(gyGoodsSearch,mockGySysData);
     }
 

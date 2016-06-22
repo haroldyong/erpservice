@@ -36,7 +36,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         try {
 
            String requestData = getRequestData2(gySysData, goodsSearch, GYConstant.GOODS_QUERY);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
@@ -68,7 +68,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         try {
 
             String requestData = getRequestData2(gySysData, gyGoods, GYConstant.GOODS_ADD);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
@@ -91,7 +91,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         try {
 
             String requestData = getRequestData2(gySysData, gyGoods, GYConstant.GOODS_UPDATE);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
@@ -114,7 +114,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         try {
 
             Map<String, Object> requestData = getRequestData(gySysData, gyDeleteGoods, GYConstant.GOODS_DELETE);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
@@ -138,7 +138,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         try {
 
             Map<String, Object> requestData = getRequestData(gySysData, gyGoodsSku, GYConstant.GOODS_SKU_ADD);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
@@ -162,7 +162,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         try {
 
             Map<String, Object> requestData = getRequestData(gySysData, gyGoodsSku, GYConstant.GOODS_SKU_UPDATE);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
@@ -186,7 +186,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         try {
 
             Map<String, Object> requestData = getRequestData(gySysData, gyDeleteSku, GYConstant.GOODS_SKU_DELETE);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
@@ -210,7 +210,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
         try {
 
             Map<String, Object> requestData = getRequestData(gySysData, gyGoodsBarCode, GYConstant.GOODS_BARCODE_ADD);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){

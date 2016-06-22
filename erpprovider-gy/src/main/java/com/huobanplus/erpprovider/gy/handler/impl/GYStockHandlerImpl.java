@@ -34,7 +34,7 @@ public class GYStockHandlerImpl extends GYBaseHandler implements GYStockHandler 
     public EventResult stockQuery(GYStockSearch gyStockSearch, GYSysData gySysData) {
         try {
             Map<String, Object> requestData = getRequestData(gySysData, gyStockSearch, GYConstant.STOCK_QUERY);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){

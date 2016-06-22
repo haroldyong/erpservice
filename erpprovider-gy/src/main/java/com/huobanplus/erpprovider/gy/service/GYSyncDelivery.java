@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.gy.common.GYConstant;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
 import com.huobanplus.erpprovider.gy.handler.GYBaseHandler;
+import com.huobanplus.erpprovider.gy.handler.GYOrderHandler;
 import com.huobanplus.erpprovider.gy.search.GYDeliveryOrderSearch;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
@@ -32,17 +33,18 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.Jsr310Converters;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by elvis on 2016/5/31.
  */
+@Service
 public class GYSyncDelivery extends GYBaseHandler{
 
     private static final Log log = LogFactory.getLog(GYSyncDelivery.class);
@@ -57,13 +59,16 @@ public class GYSyncDelivery extends GYBaseHandler{
     @Autowired
     private ERPRegister erpRegister;
 
+    @Autowired
+    private GYOrderHandler gyOrderHandler;
+
 
 //    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void syncOrderShip() {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
-        log.info("order ship sync for edb start!");
+        log.info("order ship sync for GY start!");
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.GY);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
             log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync order ship");
@@ -85,6 +90,8 @@ public class GYSyncDelivery extends GYBaseHandler{
                 int totalCount = 0; //总数量
 
                 GYDeliveryOrderSearch orderSearch = new GYDeliveryOrderSearch();
+//                orderSearch.setDelivery(1);
+                orderSearch.setShopCode("ruyi");// FIXME: 2016/6/22
 
                 boolean flag = true;//用于控制循环
                 int numbers = 0;
@@ -95,8 +102,8 @@ public class GYSyncDelivery extends GYBaseHandler{
 
                     orderSearch.setPageNo(numbers);
                     orderSearch.setPageSize(GYConstant.PAGE_SIZE);
-                    Map<String, Object> requestData = GYBaseHandler.getRequestData(sysData, orderSearch,"gy.erp.trade.deliverys.get");//// FIXME: 2016/5/31 方法名gy.erp.trade.deliverys.get
-                    HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getURL(), requestData);
+                    String requestData = GYBaseHandler.getRequestData2(sysData, orderSearch,GYConstant.DELIVERY_QUERY);//// FIXME: 2016/5/31 方法名gy.erp.trade.deliverys.get
+                    HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), requestData);
                     if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                         JSONObject resultJson = JSON.parseObject(httpResult.getHttpContent());
                         if (Integer.parseInt(resultJson.get("total").toString()) <= numbers * GYConstant.PAGE_SIZE) {
@@ -134,7 +141,7 @@ public class GYSyncDelivery extends GYBaseHandler{
             } catch (Exception e) {
                 log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
             }
-            log.info("edb ship sync end");
+            log.info("GY ship sync end");
         }
     }
 
@@ -187,11 +194,32 @@ public class GYSyncDelivery extends GYBaseHandler{
     public List<OrderDeliveryInfo> changeToSyncOrder(JSONArray deliverys){
 
         List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
-        for (Object o : deliverys) {
-            JSONObject orderInfoJson = (JSONObject) o;
 
-
-        }
+        deliverys.forEach(delivery ->{
+            JSONObject jsonObject = (JSONObject) delivery;
+            JSONObject deliveryStatusInfo = jsonObject.getJSONObject("delivery_statusInfo");
+            int deliveryStatus = deliveryStatusInfo.getInteger("delivery");
+            if(deliveryStatus == 1 || deliveryStatus==2){// 发货中
+                OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
+                orderDeliveryInfo.setLogiName(jsonObject.getString("express_name"));
+                orderDeliveryInfo.setOrderId(jsonObject.getString("platform_code"));
+                orderDeliveryInfo.setLogiNo(jsonObject.getString("express_no"));
+                // 序列化商品明细
+                JSONArray detailsArray = jsonObject.getJSONArray("details");
+                String itemStr = "";
+                for (Object item : detailsArray) {
+                    JSONObject obj = (JSONObject) item;
+                    String productBn = obj.getString("sku_code");
+                    int qty = obj.getInteger("qty");
+                    itemStr +=productBn+","+qty+"|";
+                }
+                orderDeliveryInfo.setDeliverItemsStr(itemStr);
+                orderDeliveryInfo.setFreight(jsonObject.getDouble("post_fee"));
+                orderDeliveryInfo.setRemark(jsonObject.getString("seller_memo"));
+                orderDeliveryInfo.setLogiCode(jsonObject.getString("express_code"));
+                orderDeliveryInfoList.add(orderDeliveryInfo);
+            }
+        });
 
         return orderDeliveryInfoList;
     }

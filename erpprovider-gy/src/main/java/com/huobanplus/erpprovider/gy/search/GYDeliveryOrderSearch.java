@@ -75,19 +75,19 @@ public class GYDeliveryOrderSearch {
      * 查询物流单的打印状态
      */
     @JSONField(name= "print")
-    private double print;
+    private Double print;
 
     /**
      * 扫描状态
      */
     @JSONField(name= "scan")
-    private double scan;
+    private Double scan;
 
     /**
      * 是否货到付款
      */
     @JSONField(name= "cod")
-    private double cod;
+    private Double cod;
 
     /**
      * 会员名称
@@ -99,7 +99,7 @@ public class GYDeliveryOrderSearch {
      * 发货状态
      */
     @JSONField(name= "delivery")
-    private double delivery;
+    private Integer delivery;
 
     /**
      * 物流单号

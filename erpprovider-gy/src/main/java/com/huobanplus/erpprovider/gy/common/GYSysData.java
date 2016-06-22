@@ -20,7 +20,7 @@ public class GYSysData {
     /**
      *管易接口请求地址
      */
-    private String URL;
+    private String requestUrl;
 
     /**
      *接入管易标识
