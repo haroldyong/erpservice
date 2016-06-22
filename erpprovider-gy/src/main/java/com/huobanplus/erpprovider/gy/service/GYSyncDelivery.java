@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.Jsr310Converters;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,7 +61,7 @@ public class GYSyncDelivery extends GYBaseHandler {
     private GYOrderHandler gyOrderHandler;
 
 
-    //    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void syncOrderShip() {
         Date now = new Date();
@@ -86,11 +87,9 @@ public class GYSyncDelivery extends GYBaseHandler {
 
                 GYDeliveryOrderSearch orderSearch = new GYDeliveryOrderSearch();
                 orderSearch.setPageSize(GYConstant.PAGE_SIZE);
-//                orderSearch.setDelivery(1);
+                orderSearch.setBeginTime(StringUtil.DateFormat(beginTime,StringUtil.TIME_PATTERN));
+                orderSearch.setEndTime(nowStr);
                 orderSearch.setShopCode(sysData.getShopCode());// FIXME: 2016/6/22 eg:ruyi
-
-
-
 
                 // 第一次同步
                 EventResult eventResult = gyOrderHandler.deliveryOrderQuery(orderSearch, sysData);

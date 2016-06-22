@@ -3,8 +3,6 @@ package com.huobanplus.erpprovider.gy.search;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
-import java.util.Date;
-
 /**
  * Created by wuxiongliu on 2016/6/17.
  */
@@ -33,25 +31,25 @@ public class GYDeliveryOrderSearch {
      * 开始_创建时间
      */
     @JSONField(name= "start_create")
-    private Date startCreate;
+    private String beginTime;
 
     /**
      * 结束_创建时间
      */
     @JSONField(name= "end_create")
-    private Date endCreate;
+    private String endTime;
 
     /**
      * 开始-发货时间
      */
     @JSONField(name= "start_delivery_date")
-    private Date startDeliveryDate;
+    private String startDeliveryDate;
 
     /**
      * 结束-发货时间
      */
     @JSONField(name= "end_delivery_date")
-    private Date endDeliveryDate;
+    private String endDeliveryDate;
 
     /**
      * 仓库代码
