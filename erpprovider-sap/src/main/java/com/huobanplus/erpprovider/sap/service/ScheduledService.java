@@ -133,33 +133,21 @@ public class ScheduledService {
                         successOrders = batchDeliverResult.getSuccessOrders();
 
                     }
-//                    else {
 //
-//                        orderShipSyncLog.setSuccessCount(0);
-//                        orderShipSyncLog.setFailedCount(deliveryInfoList.size());
-//
-//                        int successCount = successOrders.size(), failedCount = failedOrders.size();
-//
-//                        if (successCount > 0 && failedCount > 0) {
-//                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
-//                        }
-//                        if (successCount > 0 && failedCount == 0) {
-//                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-//                        }
-//                        if (successCount == 0) {
-//                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
-//                        }
-//
-//                        orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
-//
-//                        //同步失败的订单记录
-//                        List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
-//
-//                        shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, deliveryInfoList, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
-//                        //shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-//
-//                        shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
-//                    }
+                    //回写已经取过并且物流信息同步成功的订单
+                    JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
+                    for (OrderDeliveryInfo successOrder : successOrders) {
+                        LogiInfo info = results.stream().filter(p -> p.getZOrder().equals(successOrder.getOrderId())).findFirst().get();
+                        ztable.appendRow();
+                        ztable.setValue("ZVBELN", info.getZVBELN());
+                        ztable.setValue("YVBELN", info.getYVBELN());
+                        ztable.setValue("ZORDER", info.getZOrder());
+                        ztable.setValue("ZTYPE", "X");
+                        ztable.setValue("ZWMORDER", info.getZWMOrder());
+                    }
+                    jCoFunctionIn.execute(jCoDestination);
+                    jCoFunctionIn.getExportParameterList().getString("MESS");
+
                     //记录同步日志
                     OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
                     orderShipSyncLog.setTotalCount(results.size());
@@ -193,18 +181,18 @@ public class ScheduledService {
                     shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
                 }
 
-                //回写SAP标记已经获取过的订单
-                JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
-                for (LogiInfo info : results) {
-                    ztable.appendRow();
-                    ztable.setValue("ZVBELN", info.getZVBELN());
-                    ztable.setValue("YVBELN", info.getYVBELN());
-                    ztable.setValue("ZORDER", info.getZOrder());
-                    ztable.setValue("ZTYPE", "X");
-                    ztable.setValue("ZWMORDER", info.getZWMOrder());
-                }
-                jCoFunctionIn.execute(jCoDestination);
-                jCoFunctionIn.getExportParameterList().getString("MESS");
+                //回写SAP标记已经获取过的订单--debug:应该是同步成功的订单需要回写
+//                JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
+//                for (LogiInfo info : results) {
+//                    ztable.appendRow();
+//                    ztable.setValue("ZVBELN", info.getZVBELN());
+//                    ztable.setValue("YVBELN", info.getYVBELN());
+//                    ztable.setValue("ZORDER", info.getZOrder());
+//                    ztable.setValue("ZTYPE", "X");
+//                    ztable.setValue("ZWMORDER", info.getZWMOrder());
+//                }
+//                jCoFunctionIn.execute(jCoDestination);
+//                jCoFunctionIn.getExportParameterList().getString("MESS");
             } catch (Exception e) {
                 log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
             }

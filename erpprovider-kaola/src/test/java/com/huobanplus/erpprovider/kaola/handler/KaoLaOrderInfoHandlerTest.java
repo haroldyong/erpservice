@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.kaola.handler;
 
 import com.alibaba.fastjson.JSON;
@@ -30,7 +39,7 @@ import java.util.*;
 /**
  * Created by wuxiongliu on 2016/5/10.
  */
-public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
+public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase {
 
     private KaoLaSysData mockKaoLaSysData;
 
@@ -55,16 +64,16 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
     private KaolaScheduledService kaolaScheduledService;
 
     /**
-     *  appkey: bb0b3ad64c9e5eb06c2fb6f163bf179e79051bd5c9b652fc45dc68a2b5dd23c6
-     *  appkey zs : ff438be07823f990fc6eef7f1a3171d05512031e704803949b36fc13fc05b493
-     *  appkey: 0dd1a2b29d6e4bfebce479450889b4b2
-     *  secretKey: 4ed8b056c32939b9fd66987470b3e9fb720bdded02197e678e516bdcdf810833
-     *  secretKey: 3cf1a3ed8556444bbd1fbd8b9381c8bb
-     *  secretKey zs: ea2358dda586ed69e51812d0e6e107af5f3c741d5cde7c14e97f265eba9ebcdc
+     * appkey: bb0b3ad64c9e5eb06c2fb6f163bf179e79051bd5c9b652fc45dc68a2b5dd23c6
+     * appkey zs : ff438be07823f990fc6eef7f1a3171d05512031e704803949b36fc13fc05b493
+     * appkey: 0dd1a2b29d6e4bfebce479450889b4b2
+     * secretKey: 4ed8b056c32939b9fd66987470b3e9fb720bdded02197e678e516bdcdf810833
+     * secretKey: 3cf1a3ed8556444bbd1fbd8b9381c8bb
+     * secretKey zs: ea2358dda586ed69e51812d0e6e107af5f3c741d5cde7c14e97f265eba9ebcdc
      */
 
     @Before
-    public void setUp(){
+    public void setUp() {
         String appKey = "bb0b3ad64c9e5eb06c2fb6f163bf179e79051bd5c9b652fc45dc68a2b5dd23c6";
         String secretKey = "4ed8b056c32939b9fd66987470b3e9fb720bdded02197e678e516bdcdf810833";
 
@@ -95,7 +104,6 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
 //        mockOrderItem2.setProductBn("10407-68a3e5516d7a7dc21fbe0e7ee13bfc1c");
 
 
-
         mockOrderItems.add(mockOrderItem);
 //        mockOrderItems.add(mockOrderItem2);
 
@@ -113,7 +121,7 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
         mockOrder.setBuyerPid("330682199006015217");
         mockOrder.setBuyerName("刘渠成");
 
-        mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
+        mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         mockOrder.setOrderItems(mockOrderItems);
 
 
@@ -129,7 +137,7 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
     }
 
     @Test
-    public void testQueryOrderInfo(){
+    public void testQueryOrderInfo() {
 
         List<Order> orderList = new ArrayList<>();
         orderList.add(mockOrder);
@@ -137,7 +145,7 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
         mockOrderStatusInfoEvent = new OrderStatusInfoEvent();
         mockOrderStatusInfoEvent.setOrderInfo(mockOrderInfo);
         mockOrderStatusInfoEvent.setErpInfo(mockErpInfo);
-        EventResult eventResult = kaoLaOrderInfoHandler.queryOrderStatusInfo(orderList,mockKaoLaSysData);
+        EventResult eventResult = kaoLaOrderInfoHandler.queryOrderStatusInfo(orderList, mockKaoLaSysData);
         List<OrderDeliveryInfo> deliveryInfoList = (List<OrderDeliveryInfo>) eventResult.getData();
         deliveryInfoList.forEach(deliveryInfo -> {
             System.out.println(deliveryInfo);
@@ -147,7 +155,7 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
     }
 
     @Test
-    public void testPushOrder(){
+    public void testPushOrder() {
 
         mockPushNewOrderEvent = new PushNewOrderEvent();
         mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
@@ -159,7 +167,7 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
     }
 
     @Test
-    public void testSync(){
+    public void testSync() {
         kaolaScheduledService.syncOrderShip();
     }
 
@@ -173,13 +181,13 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
         requestData.put("sign_method", "md5");
         requestData.put("app_key", kaoLaSysData.getAppKey());
         requestData.put("sign", SignBuilder.buildSign(requestData, kaoLaSysData.getAppSecret(), kaoLaSysData.getAppSecret()));
-        HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl()+"/queryAllGoodsId", requestData);
+        HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl() + "/queryAllGoodsId", requestData);
         JSONObject jsonObject = JSONObject.parseObject(httpResult.getHttpContent());
         return jsonObject.getJSONArray("goodsInfo");
 
     }
 
-    private JSONObject testGoodsIds(String skuId,KaoLaSysData kaoLaSysData) throws UnsupportedEncodingException {
+    private JSONObject testGoodsIds(String skuId, KaoLaSysData kaoLaSysData) throws UnsupportedEncodingException {
         String timestamp = StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN);
         Map<String, Object> requestData = new TreeMap<>();
         requestData.put("channelId", kaoLaSysData.getChannelId());
@@ -190,7 +198,7 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
         requestData.put("skuId", skuId);
         requestData.put("queryType", 1);
         requestData.put("sign", SignBuilder.buildSign(requestData, kaoLaSysData.getAppSecret(), kaoLaSysData.getAppSecret()));
-        HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl()+"/queryGoodsInfoById", requestData);
+        HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl() + "/queryGoodsInfoById", requestData);
         JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
         return jsonObject.getJSONObject("goodsInfo");
     }
@@ -232,9 +240,9 @@ public class KaoLaOrderInfoHandlerTest extends KaoLaTestBase{
 
     @Test
     public void testQueryGoodsId() throws UnsupportedEncodingException {
-        String skuId = "3872824-ecc4090b639c47f89b453980923afb8e";
-        String goodsId = kaoLaOrderInfoHandler.queryGoodsId(skuId,mockKaoLaSysData);
-        System.out.println(goodsId);
+        String skuId = "3872824-ecc4090b639c47f89b453980923afb8e1";
+        EventResult eventResult = kaoLaOrderInfoHandler.queryGoodsId(skuId, mockKaoLaSysData);
+        System.out.println(eventResult.getResultMsg() + "---" + eventResult.getData());
     }
 
 }

@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.eventhandler.common;
@@ -18,10 +18,16 @@ public enum EventResultEnum {
     NO_SIGN(4000, "签名参数未传"),
     WRONG_SIGN(4001, "签名不正确"),
     BAD_REQUEST_PARAM(5001, "请求参数不正确"),
-    NO_DATA(3000, "未找到相关处理信息");
+    NO_DATA(3000, "未找到相关处理信息"),
+    SYSTEM_BAD_REQUEST(5002, "服务器请求失败");
 
     private int resultCode;
     private String resultMsg;
+
+    EventResultEnum(int resultCode, String resultMsg) {
+        this.resultCode = resultCode;
+        this.resultMsg = resultMsg;
+    }
 
     public int getResultCode() {
         return resultCode;
@@ -36,11 +42,6 @@ public enum EventResultEnum {
     }
 
     public void setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
-    }
-
-    EventResultEnum(int resultCode, String resultMsg) {
-        this.resultCode = resultCode;
         this.resultMsg = resultMsg;
     }
 }

@@ -111,129 +111,18 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
+        Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
 
-        try {
+        ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
+        KaoLaSysData kaoLaSysData = JSON.parseObject(erpInfo.getSysDataJson(), KaoLaSysData.class);
+        ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
 
-            Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+        List<OrderItem> orderItems = orderInfo.getOrderItems();
+        List<KaoLaOrderItem> kaoLaOrderItems = new ArrayList<>();
 
-            ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
-            KaoLaSysData kaoLaSysData = JSON.parseObject(erpInfo.getSysDataJson(), KaoLaSysData.class);
-            ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
-
-            List<OrderItem> orderItems = orderInfo.getOrderItems();
-            List<KaoLaOrderItem> kaoLaOrderItems = new ArrayList<>();
-
-            //日志准备
-            Date now = new Date();
-            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
-            if (orderDetailSyncLog == null) {
-                orderDetailSyncLog = new OrderDetailSyncLog();
-                orderDetailSyncLog.setCreateTime(now);
-            }
-            orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-            orderDetailSyncLog.setProviderType(erpInfo.getErpType());
-            orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
-            orderDetailSyncLog.setOrderId(orderInfo.getOrderId());
-            orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
-            orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
-            orderDetailSyncLog.setSyncTime(now);
-
-            for (OrderItem item : orderItems) {
-                KaoLaOrderItem kaoLaOrderItem = new KaoLaOrderItem();
-                String goodsId = queryGoodsId(item.getProductBn(), kaoLaSysData);
-                if (goodsId == null) {
-                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-                    orderDetailSyncLog.setErrorMsg("考拉中无此商品");
-                    orderDetailSyncLogService.save(orderDetailSyncLog);
-
-                    return EventResult.resultWith(EventResultEnum.ERROR, "考拉中无此商品", null);
-                }
-                kaoLaOrderItem.setGoodsId(goodsId);
-                kaoLaOrderItem.setSkuId(item.getProductBn());
-                kaoLaOrderItem.setBuyAmount(item.getNum());
-                kaoLaOrderItems.add(kaoLaOrderItem);
-            }
-
-            KaoLaUserInfo userInfo = new KaoLaUserInfo();
-            userInfo.setAccountId(String.valueOf(orderInfo.getMemberId()));
-            userInfo.setName(orderInfo.getBuyerName());
-            userInfo.setMobile(orderInfo.getShipMobile());
-            userInfo.setEmail(orderInfo.getShipEmail());
-            userInfo.setProvinceName(orderInfo.getProvince());
-            //userInfo.setProvinceCode("");
-            userInfo.setCityName(orderInfo.getCity());
-//        userInfo.setCityCode("");
-            userInfo.setDistrictName(orderInfo.getDistrict());
-//        userInfo.setDistrictCode("");
-            userInfo.setAddress(orderInfo.getShipAddr());
-//        userInfo.setPostCode(orderInfo.getShipZip());
-//        userInfo.setPhoneNum("");
-//        userInfo.setPhoneAreaNum("");
-//        userInfo.setPhoneExtNum("");
-            userInfo.setIdentityId(orderInfo.getBuyerPid());
-
-
-            Map<String, Object> parameterMap = new TreeMap<>();
-
-            parameterMap.put("source", kaoLaSysData.getChannelId());
-            parameterMap.put("thirdPartOrderId", orderInfo.getOrderId());
-            parameterMap.put("timestamp", orderInfo.getPayTime());
-            parameterMap.put("v", kaoLaSysData.getV());
-            parameterMap.put("sign_method", "md5");
-            parameterMap.put("app_key", kaoLaSysData.getAppKey());
-            JSONObject orderItemsJson = new JSONObject();
-            orderItemsJson.put("orderItemList", kaoLaOrderItems);
-            parameterMap.put("orderItemList", orderItemsJson.toJSONString());
-
-
-            JSONObject userInfoJson = new JSONObject();
-            userInfoJson.put("userInfo", userInfo);
-            parameterMap.put("userInfo", userInfoJson.toJSONString());
-
-            EventResult eventResult = orderPush(parameterMap, kaoLaSysData);
-            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-            } else {
-                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
-            }
-            orderDetailSyncLogService.save(orderDetailSyncLog);
-            return eventResult;
-        } catch (Exception ex) {
-            return EventResult.resultWith(EventResultEnum.ERROR, ex.getMessage(), null);
-        }
-    }
-
-    private EventResult orderPush(Map<String, Object> parameterMap, KaoLaSysData kaoLaSysData) throws UnsupportedEncodingException {
-
-        Map<String, Object> requestData = getRequestData(kaoLaSysData, parameterMap);
-        HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl() + "/bookpayorder", requestData);
-        if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-            JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-            if (result.getString("recCode").equals("200")) {
-                // TODO: 2016/5/9
-                return EventResult.resultWith(EventResultEnum.SUCCESS, result.getString("gorder"));
-            } else {
-                return EventResult.resultWith(EventResultEnum.ERROR, result.get("recMeg").toString(), null);
-            }
-
-        } else {
-            return EventResult.resultWith(EventResultEnum.ERROR, "服务器请求失败", null);
-        }
-    }
-
-    /**
-     * 记录日志
-     *
-     * @param orderInfo
-     * @param erpUserInfo
-     * @param erpInfo
-     * @param pushNewOrderEvent
-     * @param isSuccess
-     */
-    private void saveLog(Order orderInfo, ERPUserInfo erpUserInfo, ERPInfo erpInfo, PushNewOrderEvent pushNewOrderEvent, boolean isSuccess) {
-        OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
+        //日志准备
         Date now = new Date();
+        OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
         if (orderDetailSyncLog == null) {
             orderDetailSyncLog = new OrderDetailSyncLog();
             orderDetailSyncLog.setCreateTime(now);
@@ -246,37 +135,117 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
         orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
         orderDetailSyncLog.setSyncTime(now);
 
-        if (isSuccess) {
+        for (OrderItem item : orderItems) {
+            KaoLaOrderItem kaoLaOrderItem = new KaoLaOrderItem();
+            EventResult queryGoodResult = queryGoodsId(item.getProductBn(), kaoLaSysData);
+            if (queryGoodResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                orderDetailSyncLog.setErrorMsg(queryGoodResult.getResultMsg());
+                orderDetailSyncLogService.save(orderDetailSyncLog);
+
+                return queryGoodResult;
+            }
+            String goodsId = queryGoodResult.getData().toString();
+            kaoLaOrderItem.setGoodsId(goodsId);
+            kaoLaOrderItem.setSkuId(item.getProductBn());
+            kaoLaOrderItem.setBuyAmount(item.getNum());
+            kaoLaOrderItems.add(kaoLaOrderItem);
+        }
+
+        KaoLaUserInfo userInfo = new KaoLaUserInfo();
+        userInfo.setAccountId(String.valueOf(orderInfo.getMemberId()));
+        userInfo.setName(orderInfo.getBuyerName());
+        userInfo.setMobile(orderInfo.getShipMobile());
+        userInfo.setEmail(orderInfo.getShipEmail());
+        userInfo.setProvinceName(orderInfo.getProvince());
+        //userInfo.setProvinceCode("");
+        userInfo.setCityName(orderInfo.getCity());
+//        userInfo.setCityCode("");
+        userInfo.setDistrictName(orderInfo.getDistrict());
+//        userInfo.setDistrictCode("");
+        userInfo.setAddress(orderInfo.getShipAddr());
+//        userInfo.setPostCode(orderInfo.getShipZip());
+//        userInfo.setPhoneNum("");
+//        userInfo.setPhoneAreaNum("");
+//        userInfo.setPhoneExtNum("");
+        userInfo.setIdentityId(orderInfo.getBuyerPid());
+        log.info("kaola userinfo----" + JSON.toJSONString(userInfo));
+
+        Map<String, Object> parameterMap = new TreeMap<>();
+
+        parameterMap.put("source", kaoLaSysData.getChannelId());
+        parameterMap.put("thirdPartOrderId", orderInfo.getOrderId());
+        parameterMap.put("timestamp", orderInfo.getPayTime());
+        parameterMap.put("v", kaoLaSysData.getV());
+        parameterMap.put("sign_method", "md5");
+        parameterMap.put("app_key", kaoLaSysData.getAppKey());
+        JSONObject orderItemsJson = new JSONObject();
+        orderItemsJson.put("orderItemList", kaoLaOrderItems);
+        parameterMap.put("orderItemList", orderItemsJson.toJSONString());
+
+
+        JSONObject userInfoJson = new JSONObject();
+        userInfoJson.put("userInfo", userInfo);
+        parameterMap.put("userInfo", userInfoJson.toJSONString());
+
+        EventResult eventResult = orderPush(parameterMap, kaoLaSysData);
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
         } else {
             orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+            orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
         }
-
         orderDetailSyncLogService.save(orderDetailSyncLog);
+        return eventResult;
+    }
+
+    private EventResult orderPush(Map<String, Object> parameterMap, KaoLaSysData kaoLaSysData) {
+        try {
+            Map<String, Object> requestData = getRequestData(kaoLaSysData, parameterMap);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl() + "/bookpayorder", requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+                if (result.getString("recCode").equals("200")) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, result.getString("gorder"));
+                } else {
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.get("recMeg").toString(), null);
+                }
+
+            } else {
+                return EventResult.resultWith(EventResultEnum.SYSTEM_BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            log.info("考拉推送异常--" + e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, "考拉订单推送---" + e.getMessage(), null);
+        }
     }
 
     @Override
-    public String queryGoodsId(String skuId, KaoLaSysData kaoLaSysData) throws UnsupportedEncodingException {
-        Map<String, Object> requestData = new TreeMap<>();
-        requestData.put("channelId", kaoLaSysData.getChannelId());
-        requestData.put("timestamp", StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
-        requestData.put("v", kaoLaSysData.getV());
-        requestData.put("sign_method", "md5");
-        requestData.put("app_key", kaoLaSysData.getAppKey());
-        requestData.put("skuId", skuId);
-        requestData.put("queryType", 1);
-        requestData.put("sign", SignBuilder.buildSign(requestData, kaoLaSysData.getAppSecret(), kaoLaSysData.getAppSecret()));
-        HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl() + "/queryGoodsInfoById", requestData);
-        if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-            JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
-            if (jsonObject.getInteger("recCode") == 200) {
-                JSONObject goodInfoJson = jsonObject.getJSONObject("goodsInfo");
-                return goodInfoJson.getString("goodsId");
+    public EventResult queryGoodsId(String skuId, KaoLaSysData kaoLaSysData) {
+        try {
+            Map<String, Object> requestData = new TreeMap<>();
+            requestData.put("channelId", kaoLaSysData.getChannelId());
+            requestData.put("timestamp", StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
+            requestData.put("v", kaoLaSysData.getV());
+            requestData.put("sign_method", "md5");
+            requestData.put("app_key", kaoLaSysData.getAppKey());
+            requestData.put("skuId", skuId);
+            requestData.put("queryType", 1);
+            requestData.put("sign", SignBuilder.buildSign(requestData, kaoLaSysData.getAppSecret(), kaoLaSysData.getAppSecret()));
+            HttpResult httpResult = HttpClientUtil.getInstance().post(kaoLaSysData.getRequestUrl() + "/queryGoodsInfoById", requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
+                if (jsonObject.getInteger("recCode") == 200) {
+                    JSONObject goodInfoJson = jsonObject.getJSONObject("goodsInfo");
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, goodInfoJson.getString("goodsId"));
+                } else {
+                    return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("recMsg"), null);
+                }
             } else {
-                return null;
+                return EventResult.resultWith(EventResultEnum.SYSTEM_BAD_REQUEST);
             }
-        } else {
-            return null;
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, "获取考拉商品---" + e.getMessage(), null);
         }
     }
 }

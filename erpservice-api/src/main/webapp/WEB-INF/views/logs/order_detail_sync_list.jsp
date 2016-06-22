@@ -175,6 +175,8 @@
                             </th>
                             <th scope="col">最后一次同步时间
                             </th>
+                            <th scope="col">错误信息
+                            </th>
                             <th scope="col">操作
                             </th>
                         </tr>
@@ -189,6 +191,7 @@
                                                                     pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                 <td class="txt40 c"><fmt:formatDate value="${log.syncTime}"
                                                                     pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                                <td class="txt40 c">${log.errorMsg}</td>
                                 <td class="txt80 c">
                                     <c:if test="${log.detailSyncStatus.code==0}">
                                         <a href="javascript:rePush(${log.id})">重新推送</a> |
