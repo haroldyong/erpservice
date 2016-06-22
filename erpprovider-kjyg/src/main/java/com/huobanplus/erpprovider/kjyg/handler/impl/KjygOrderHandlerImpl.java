@@ -32,8 +32,11 @@ import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -42,6 +45,7 @@ import java.util.*;
  */
 @Component
 public class KjygOrderHandlerImpl implements KjygOrderHandler {
+    private static final Log log = LogFactory.getLog(KjygOrderHandlerImpl.class);
 
     @Autowired
     private OrderDetailSyncLogService orderDetailSyncLogService;
@@ -92,9 +96,7 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
 
         createOrderInfo.setPayWay(payWay);
         createOrderInfo.setBuyerPid(orderInfo.getBuyerPid());
-//        createOrderInfo.setBuyerPid("330682199006078898");
         createOrderInfo.setBuyerName(orderInfo.getBuyerName());
-//        createOrderInfo.setBuyerName("测试");
         createOrderInfo.setBuyerTel(orderInfo.getUserLoginName());
         createOrderInfo.setPayment(String.valueOf(orderInfo.getOnlinePayAmount()));
         createOrderInfo.setWebsite(kjygSysData.getWebsite());
@@ -108,27 +110,39 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         createOrderInfo.setOrderNo(kjOrderId);
         createOrderInfo.setOrderItems(kjygOrderItems);
 
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.add(createOrderInfo);
-
-        Map<String, Object> requestData = new HashMap<>();
-        requestData.put("clientkey", kjygSysData.getClientKey());
-        requestData.put("mtype", "trade");
-        requestData.put("tradelist", jsonArray);
-
-        HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(), requestData);
-        if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-            JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-            if (result.getString("sts").equals("Y")) {
-                saveLog(orderInfo, erpUserInfo, erpInfo, pushNewOrderEvent, true, null);
-                return EventResult.resultWith(EventResultEnum.SUCCESS);
-            } else {
-                saveLog(orderInfo, erpUserInfo, erpInfo, pushNewOrderEvent, false, result.getString("res"));
-                return EventResult.resultWith(EventResultEnum.ERROR);
-            }
+        EventResult eventResult = orderPush(kjygSysData, createOrderInfo, orderInfo.getOrderId());
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            saveLog(orderInfo, erpUserInfo, erpInfo, pushNewOrderEvent, true, null);
         } else {
-            saveLog(orderInfo, erpUserInfo, erpInfo, pushNewOrderEvent, false, httpResult.getHttpContent());
-            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            saveLog(orderInfo, erpUserInfo, erpInfo, pushNewOrderEvent, false, eventResult.getResultMsg());
+        }
+
+        return eventResult;
+    }
+
+    private EventResult orderPush(KjygSysData kjygSysData, KjygCreateOrderInfo createOrderInfo, String originOrderId) {
+        try {
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.add(createOrderInfo);
+            Map<String, Object> requestData = new HashMap<>();
+            requestData.put("clientkey", kjygSysData.getClientKey());
+            requestData.put("mtype", "trade");
+            requestData.put("tradelist", jsonArray);
+
+            HttpResult httpResult = HttpClientUtil.getInstance().post(kjygSysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+                if (result.getString("sts").equals("Y")) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                } else {
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("res"), null);
+                }
+            } else {
+                return EventResult.resultWith(EventResultEnum.SYSTEM_BAD_REQUEST, httpResult.getHttpContent(), null);
+            }
+        } catch (Exception e) {
+            log.info("跨境易购推送订单异常（" + originOrderId + "）-----" + e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
@@ -155,7 +169,7 @@ public class KjygOrderHandlerImpl implements KjygOrderHandler {
         orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
         orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
         orderDetailSyncLog.setSyncTime(now);
-        if (errorMsg != null) {
+        if (!StringUtils.isEmpty(errorMsg)) {
             orderDetailSyncLog.setErrorMsg(errorMsg);
         }
 

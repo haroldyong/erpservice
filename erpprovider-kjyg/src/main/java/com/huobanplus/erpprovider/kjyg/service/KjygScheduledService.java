@@ -64,7 +64,6 @@ public class KjygScheduledService {
     private HBOrderHandler hbOrderHandler;
 
 
-
     /**
      * 同步发货状态,根据发货时间进行轮询同步
      * <p>
@@ -76,12 +75,12 @@ public class KjygScheduledService {
      */
     @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
-    public synchronized void syncOrderShip() {
+    public void syncOrderShip() {
         log.info("order ship sync for kjyg start!");
         Date now = new Date();
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.KJYG);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
-            try{
+            try {
 
                 ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
                 ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
@@ -107,7 +106,7 @@ public class KjygScheduledService {
                 if (firstEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                     OrderListInfo orderListInfo = (OrderListInfo) firstEventResult.getData();
                     int totalResult = orderListInfo.getRecordCount();
-                    totalCount = orderListInfo.getRecordCount();
+//                    totalCount = orderListInfo.getRecordCount();
                     List<Order> orderList = orderListInfo.getOrders();
 
                     // first pull
@@ -116,11 +115,12 @@ public class KjygScheduledService {
                     batchDeliverEvent.setErpInfo(erpInfo);
                     EventResult firstSyncResult = null;
 
-                    if(orderList != null) {
+                    if (orderList != null && orderList.size()) {
 
-                        EventResult deliveryResult = kjygOrderHandler.queryOrderTradNo(orderList,kjygSysData);
-                        if(deliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                        EventResult deliveryResult = kjygOrderHandler.queryOrderTradNo(orderList, kjygSysData);
+                        if (deliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                             List<OrderDeliveryInfo> orderDeliveryInfoList = (List<OrderDeliveryInfo>) deliveryResult.getData();
+                            totalCount += orderDeliveryInfoList.size();
                             batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
                             firstSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
                             if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -138,16 +138,16 @@ public class KjygScheduledService {
                     }
                     if (totalPage > 1) {
                         currentPageIndex++;
-                        for(int i=currentPageIndex;i<=totalPage;i++){
+                        for (int i = currentPageIndex; i <= totalPage; i++) {
                             orderSearchInfo.setPageIndex(currentPageIndex);
                             EventResult nextEventResult = erpUserHandler.handleEvent(getOrderDetailListEvent);
                             if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                                 OrderListInfo nextOrderListInfo = (OrderListInfo) nextEventResult.getData();
-                                if(nextOrderListInfo!=null){
+                                if (nextOrderListInfo != null) {
                                     List<Order> nextOrderList = orderListInfo.getOrders();
-                                    if(nextOrderList != null){
-                                        EventResult nextDeliveryResult = kjygOrderHandler.queryOrderTradNo(nextOrderList,kjygSysData);
-                                        if(nextDeliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                                    if (nextOrderList != null && nextOrderList.size() > 0) {
+                                        EventResult nextDeliveryResult = kjygOrderHandler.queryOrderTradNo(nextOrderList, kjygSysData);
+                                        if (nextDeliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                                             List<OrderDeliveryInfo> next = (List<OrderDeliveryInfo>) nextDeliveryResult.getData();
                                             batchDeliverEvent.setOrderDeliveryInfoList(next);
                                             totalCount += next.size();

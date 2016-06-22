@@ -210,7 +210,6 @@ public class KaoLaOrderInfoHandlerImpl extends KaoLaBaseHandler implements KaoLa
                 } else {
                     return EventResult.resultWith(EventResultEnum.ERROR, result.get("recMeg").toString(), null);
                 }
-
             } else {
                 return EventResult.resultWith(EventResultEnum.SYSTEM_BAD_REQUEST);
             }

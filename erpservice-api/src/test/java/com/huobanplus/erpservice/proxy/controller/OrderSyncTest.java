@@ -12,6 +12,7 @@ package com.huobanplus.erpservice.proxy.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
+import com.huobanplus.erpprovider.edb.common.EDBEnum;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
 import com.huobanplus.erpprovider.edb.service.EDBScheduledService;
@@ -72,18 +73,27 @@ public class OrderSyncTest extends SpringWebTest {
         edbOrderSearch.setPageSize(EDBConstant.PAGE_SIZE);
         edbOrderSearch.setStorageId(sysData.getStorageId());
         edbOrderSearch.setShopId(sysData.getShopId());
-//        edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
-//        edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
-        edbOrderSearch.setOrderId("2016051383558943");
+        edbOrderSearch.setPayStatus(EDBEnum.PayStatusEnum.ALL_PAYED);
+        edbOrderSearch.setShipStatus(EDBEnum.ShipStatusEnum.ALL_DELIVER);
+//        edbOrderSearch.setOrderId("2016051383558943");
         EventResult eventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
         JSONObject result = (JSONObject) eventResult.getData();
         JSONArray resultArray = result.getJSONObject("items").getJSONArray("item");
-        List<OrderDeliveryInfo> list = edbScheduledService.orderDeliveryInfoList(resultArray);
+        int totalResult = resultArray.getJSONObject(0).getIntValue("总数量");//本次获取的总数据量
+        System.out.println(totalResult);
     }
 
     @Test
     public void kaolaShipSyncTest() throws Exception {
-        kaolaScheduledService.syncOrderShip();
+        int pageIndex = 1;
+        int totalResult = 18;
+        int totalPage = totalResult / EDBConstant.PAGE_SIZE;
+        if (totalResult % EDBConstant.PAGE_SIZE != 0) {
+            totalPage++;
+        }
+        pageIndex++;
+        System.out.println(pageIndex);
+//        kaolaScheduledService.syncOrderShip();
     }
 
     @Test

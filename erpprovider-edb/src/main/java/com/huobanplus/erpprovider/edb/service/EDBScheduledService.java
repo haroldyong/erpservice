@@ -177,7 +177,7 @@ public class EDBScheduledService {
      */
     @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
-    public synchronized void syncOrderShip() {
+    public void syncOrderShip() {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
         log.info("order ship sync for edb start!");
@@ -287,6 +287,7 @@ public class EDBScheduledService {
                     }
 
                     orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
+                    log.info("EDB日志已保存" + nowStr);
 
                     List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
 

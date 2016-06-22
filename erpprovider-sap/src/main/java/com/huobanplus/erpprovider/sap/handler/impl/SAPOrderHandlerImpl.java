@@ -131,8 +131,6 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
             orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
         }
-        //orderSync.setResultStatus(orderOperatorLog.isResultStatus());
-        //orderSync.setRemark(orderOperatorLog.getRemark());
 
         orderDetailSyncLogService.save(orderDetailSyncLog);
         return eventResult;
@@ -192,7 +190,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
 
             jCoFunction.execute(jCoDestination);
             String resultMsg = jCoFunction.getExportParameterList().getString("MESS");
-            log.info(resultMsg);
+            log.info("SAP订单推送--" + resultMsg);
 
             return EventResult.resultWith(EventResultEnum.SUCCESS);
 

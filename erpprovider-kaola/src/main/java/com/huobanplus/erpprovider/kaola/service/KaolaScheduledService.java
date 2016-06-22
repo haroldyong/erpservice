@@ -69,7 +69,6 @@ public class KaolaScheduledService {
     private KaoLaGoodsInfoHandler kaoLaGoodsInfoHandler;
 
 
-
     /**
      * 同步发货状态,根据发货时间进行轮询同步
      * <p>
@@ -81,16 +80,16 @@ public class KaolaScheduledService {
      */
     @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
-    public synchronized void syncOrderShip() {
+    public void syncOrderShip() {
+        log.info("kaola start to sync order ship!");
         Date now = new Date();
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.KAOLA);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
-            try{
+            try {
                 ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
                 ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
                 KaoLaSysData kaolaSysData = JSON.parseObject(detailConfig.getErpSysData(), KaoLaSysData.class);
                 int currentPageIndex = 1;
-                OrderShipSyncLog lastSyncLog = orderShipSyncLogService.findTop(erpUserInfo.getCustomerId(), ERPTypeEnum.ProviderType.KAOLA);
                 List<OrderDeliveryInfo> failedOrders = new ArrayList<>(); //失败的订单列表
                 List<OrderDeliveryInfo> successOrders = new ArrayList<>(); //成功的订单列表
                 int totalCount = 0; //总数量
@@ -107,10 +106,10 @@ public class KaolaScheduledService {
 
                 ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
                 EventResult firseEventResult = erpUserHandler.handleEvent(getOrderDetailListEvent);
-                if(firseEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                if (firseEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                     OrderListInfo orderListInfo = (OrderListInfo) firseEventResult.getData();
                     int totalResult = orderListInfo.getRecordCount();
-                    totalCount = orderListInfo.getRecordCount();
+//                    totalCount = orderListInfo.getRecordCount();
                     List<Order> orderList = orderListInfo.getOrders();
 
                     // first pull
@@ -119,11 +118,12 @@ public class KaolaScheduledService {
                     batchDeliverEvent.setErpInfo(erpInfo);
                     EventResult firstSyncResult = null;
 
-                    if(orderList != null) {
+                    if (orderList != null && orderList.size() > 0) {
 
-                        EventResult deliveryResult = kaoLaOrderInfoHandler.queryOrderStatusInfo(orderList,kaolaSysData);
-                        if(deliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                        EventResult deliveryResult = kaoLaOrderInfoHandler.queryOrderStatusInfo(orderList, kaolaSysData);
+                        if (deliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                             List<OrderDeliveryInfo> orderDeliveryInfoList = (List<OrderDeliveryInfo>) deliveryResult.getData();
+                            totalCount += orderDeliveryInfoList.size();
                             batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
                             firstSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
                             if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -142,16 +142,16 @@ public class KaolaScheduledService {
                     }
                     if (totalPage > 1) {
                         currentPageIndex++;
-                        for(int i=currentPageIndex;i<=totalPage;i++){
+                        for (int i = currentPageIndex; i <= totalPage; i++) {
                             orderSearchInfo.setPageIndex(currentPageIndex);
                             EventResult nextEventResult = erpUserHandler.handleEvent(getOrderDetailListEvent);
                             if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                                 OrderListInfo nextOrderListInfo = (OrderListInfo) nextEventResult.getData();
-                                if(nextOrderListInfo!=null){
+                                if (nextOrderListInfo != null) {
                                     List<Order> nextOrderList = orderListInfo.getOrders();
-                                    if(nextOrderList != null){
-                                        EventResult nextDeliveryResult = kaoLaOrderInfoHandler.queryOrderStatusInfo(nextOrderList,kaolaSysData);
-                                        if(nextDeliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                                    if (nextOrderList != null && nextOrderList.size() > 0) {
+                                        EventResult nextDeliveryResult = kaoLaOrderInfoHandler.queryOrderStatusInfo(nextOrderList, kaolaSysData);
+                                        if (nextDeliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                                             List<OrderDeliveryInfo> next = (List<OrderDeliveryInfo>) nextDeliveryResult.getData();
                                             batchDeliverEvent.setOrderDeliveryInfoList(next);
                                             totalCount += next.size();
@@ -237,12 +237,12 @@ public class KaolaScheduledService {
                 // TODO: 2016/6/14
 
 
-                if(result.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                if (result.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                     List<String> skuIds = (List<String>) result.getData();
-                    skuIds.forEach(skuid ->{
+                    skuIds.forEach(skuid -> {
                         System.out.println(skuid);
-                        EventResult goodsInfoResult = kaoLaGoodsInfoHandler.queryGoodsInfoById(kaolaSysData,skuid);
-                        if(goodsInfoResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                        EventResult goodsInfoResult = kaoLaGoodsInfoHandler.queryGoodsInfoById(kaolaSysData, skuid);
+                        if (goodsInfoResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                             KaoLaGoodsInfo kaoLaGoodsInfo = (KaoLaGoodsInfo) goodsInfoResult.getData();
                             // 推送此商品到平台 // TODO: 2016/6/12
                         }
