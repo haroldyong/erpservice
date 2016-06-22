@@ -56,7 +56,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
             GYSysData sysData = JSON.parseObject(erpInfo.getSysDataJson(), GYSysData.class);
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
 
-            GYOrder newOrder = OrderChange(order,erpUserInfo);
+            GYOrder newOrder = OrderChange(order,erpUserInfo,sysData);
 
             Date now = new Date();
             OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
@@ -90,7 +90,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         }
     }
 
-    private GYOrder OrderChange(Order order, ERPUserInfo erpUserInfo) throws ParseException {
+    private GYOrder OrderChange(Order order, ERPUserInfo erpUserInfo,GYSysData gySysData) throws ParseException {
 
         GYOrder newOrder = new GYOrder();
 
@@ -98,9 +98,9 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         newOrder.setCod(false);// FIXME: 2016/5/9 非货到付款
 //        newOrder.setOrderSettlementCode("nouse");// 没有用的字段
         newOrder.setPlatformCode(order.getOrderId());
-        newOrder.setShopCode("9999");// FIXME: 2016/6/21   店铺code
-        newOrder.setExpressCode("Qfasfasfa");// FIXME: 2016/5/9 物流公司code 必填
-        newOrder.setWarehouseCode("tk01");// FIXME: 2016/5/9 仓库code 必填  指定一个默认的
+        newOrder.setShopCode(gySysData.getShopCode());// FIXME: 2016/6/21   店铺code
+        newOrder.setExpressCode(order.getLogiCode());// FIXME: 2016/5/9 物流公司code 必填 eg:Qfasfasfa
+        newOrder.setWarehouseCode(gySysData.getWarehouseCode());// FIXME: 2016/5/9 仓库code 必填  指定一个默认的eg:tk01
         newOrder.setVipCode(order.getUserLoginName());// FIXME: 2016/5/9 会员code 必填 
         newOrder.setVipName(order.getBuyerName());// FIXME: 2016/6/21
 
@@ -279,7 +279,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if(result.getBoolean("success")){
                     // TODO: 2016/6/17
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,result);
                 }else{
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }

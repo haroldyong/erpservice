@@ -16,7 +16,7 @@ public class GYConstant {
     /**
      * 轮训的页码
      */
-    public static final int PAGE_SIZE = 100;
+    public static final int PAGE_SIZE = 3;
 
 // 请求方法
 

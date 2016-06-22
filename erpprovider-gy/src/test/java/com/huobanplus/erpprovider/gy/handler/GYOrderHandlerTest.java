@@ -53,6 +53,8 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockGySysData.setAppKey("143158");
         mockGySysData.setSessionkey("58b9c91e195e4a28be107e1485264890");
         mockGySysData.setSecret("a4384907606e435bbf594c420760d29a");
+        mockGySysData.setShopCode("ruyi");
+        mockGySysData.setWarehouseCode("tk01");
 
 
 
@@ -90,6 +92,7 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockOrder.setShipAddr("浙江省杭州市滨江区阡陌路智慧E谷B幢4楼火图科技");
         mockOrder.setBuyerPid("330682199006015217");
         mockOrder.setBuyerName("testName");
+        mockOrder.setLogiCode("QFKD");
 
         mockOrder.setCreateTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
