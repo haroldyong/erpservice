@@ -1,24 +1,26 @@
-package com.huobanplus.erpprovider.gy.formatgy;
+package com.huobanplus.erpprovider.gy.formatgy.order;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * 支付信息对象
  * Created by elvis on 2016/5/9.
  */
 @Data
-public class Payment {
+public class GYPayment {
 
     /**
      * "payment":
      */
-    private String payment;
+    private double payment;
 
     /**
      * "paytime": "2014-12-17 09:54:22"
      */
-    private String paytime;
+    private Date paytime;
 
     /**
      * "account":

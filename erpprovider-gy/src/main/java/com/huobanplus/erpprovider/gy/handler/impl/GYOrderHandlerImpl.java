@@ -1,14 +1,17 @@
 package com.huobanplus.erpprovider.gy.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.huobanplus.erpprovider.gy.common.GYConstant;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
-import com.huobanplus.erpprovider.gy.formatgy.CreateNewOrder;
-import com.huobanplus.erpprovider.gy.formatgy.Invoice;
-import com.huobanplus.erpprovider.gy.formatgy.OrderItem;
-import com.huobanplus.erpprovider.gy.formatgy.Payment;
+import com.huobanplus.erpprovider.gy.formatgy.order.*;
 import com.huobanplus.erpprovider.gy.handler.GYBaseHandler;
 import com.huobanplus.erpprovider.gy.handler.GYOrderHandler;
+import com.huobanplus.erpprovider.gy.search.GYDeliveryOrderSearch;
+import com.huobanplus.erpprovider.gy.search.GYOrderSearch;
+import com.huobanplus.erpprovider.gy.search.GYRefundOrderSearch;
+import com.huobanplus.erpprovider.gy.search.GYReturnOrderSearch;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
@@ -27,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,51 +50,59 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
 
-        Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-        ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
-        GYSysData sysData = JSON.parseObject(erpInfo.getSysDataJson(), GYSysData.class);
-        ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
-
-        CreateNewOrder newOrder = OrderChange(order,erpUserInfo);
-
         try {
-            Map<String, Object> requestData = getRequestData(sysData, newOrder,"gy.erp.trade.add");
-            System.out.println("***********************");
-            System.out.println(requestData);
+            Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+            ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
+            GYSysData sysData = JSON.parseObject(erpInfo.getSysDataJson(), GYSysData.class);
+            ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
 
-            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getURL(), requestData);
+            GYOrder newOrder = OrderChange(order,erpUserInfo);
 
-            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                JSONObject resultJson = JSON.parseObject(httpResult.getHttpContent());
-                if("true".equals(resultJson.getString("success").trim())){
-                    //记录日志并返回
-                    saveLog(order,erpUserInfo,erpInfo,pushNewOrderEvent,true);
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }
-                saveLog(order,erpUserInfo,erpInfo,pushNewOrderEvent,false);
-                log.error("推送订单失败,errorCode:"+resultJson.getString("errorCode").trim());
+            Date now = new Date();
+            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
+            if (orderDetailSyncLog == null) {
+                orderDetailSyncLog = new OrderDetailSyncLog();
+                orderDetailSyncLog.setCreateTime(now);
             }
-        } catch (IOException e) {
-            log.error("推送订单失败,得到请求参数"+e.toString());
-            saveLog(order,erpUserInfo,erpInfo,pushNewOrderEvent,false);
+            orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+            orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+            orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+            orderDetailSyncLog.setOrderId(order.getOrderId());
+            orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+            orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+            orderDetailSyncLog.setSyncTime(now);
+
+
+            String requestData = getRequestData2(sysData, newOrder, GYConstant.ORDER_ADD);
+            EventResult eventResult = orderPush(requestData,sysData);
+            if(eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+            } else{
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
+            }
+            orderDetailSyncLogService.save(orderDetailSyncLog);
+            return eventResult;
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
         }
-
-
-        return null;
     }
 
-    private CreateNewOrder OrderChange(Order order,ERPUserInfo erpUserInfo){
+    private GYOrder OrderChange(Order order, ERPUserInfo erpUserInfo) throws ParseException {
 
-        CreateNewOrder newOrder = new CreateNewOrder();
+        GYOrder newOrder = new GYOrder();
 
         newOrder.setRefund(0);// FIXME: 2016/5/9 0-非退款 ，1--退款（退款中）；
         newOrder.setCod(false);// FIXME: 2016/5/9 非货到付款
+//        newOrder.setOrderSettlementCode("nouse");// 没有用的字段
         newOrder.setPlatformCode(order.getOrderId());
-        newOrder.setShopCode(erpUserInfo.getCustomerId()+"");
-        newOrder.setExpressCode("123");// FIXME: 2016/5/9 物流公司code 必填
-        newOrder.setWarehouseCode("2123");// FIXME: 2016/5/9 仓库code 必填
-        newOrder.setVipCode("123546");// FIXME: 2016/5/9 会员code 必填
-        newOrder.setVipName("126584");
+        newOrder.setShopCode("9999");// FIXME: 2016/6/21   店铺code
+        newOrder.setExpressCode("QFKD");// FIXME: 2016/5/9 物流公司code 必填
+        newOrder.setWarehouseCode("tk01");// FIXME: 2016/5/9 仓库code 必填  指定一个默认的
+        newOrder.setVipCode(order.getUserLoginName());// FIXME: 2016/5/9 会员code 必填 
+        newOrder.setVipName(order.getBuyerName());// FIXME: 2016/6/21
 
         newOrder.setReceiverAddress(order.getShipAddr());
         newOrder.setReceiverZip(order.getShipZip());
@@ -97,99 +110,380 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         newOrder.setReceiverPhone(order.getShipTel());
         newOrder.setReceiverProvince(order.getProvince());
         newOrder.setReceiverCity(order.getCity());
-        newOrder.setDiscountFee(order.getDistrict());
+        newOrder.setReceiverDistrict(order.getDistrict());
         newOrder.setTagCode(null);// FIXME: 2016/5/9
         newOrder.setDealDatetime(order.getCreateTime());
         newOrder.setPayDatetime(order.getPayTime());
         newOrder.setBusinessManCode(null);// FIXME: 2016/5/9
-        newOrder.setPostFee("0.0");// FIXME: 2016/5/9
-        newOrder.setCodFee(null);// FIXME: 2016/5/9
-        newOrder.setDiscountFee(null);
+        newOrder.setPostFee(order.getCostFreight());// FIXME: 2016/5/9
+        newOrder.setCodFee(0.0);// FIXME: 2016/5/9  到付服务费
+        newOrder.setDiscountFee(order.getPmtAmount());// 让利金额
         newOrder.setPlanDeliveryDate(null);//// FIXME: 2016/5/9 预计发货日期，可能有格式问题
         newOrder.setBuyerMemo(order.getMemo());
         newOrder.setSellerMemo(order.getRemark());
         newOrder.setSellerMemoLate(null);// FIXME: 2016/5/9 二次备注
-        newOrder.setVipIdCard(null);// FIXME: 2016/5/9 身份证号
-        newOrder.setVipRealName(null);// FIXME: 2016/5/9  	真实姓名
+        newOrder.setVipIdCard(order.getBuyerPid());
+        newOrder.setVipRealName(order.getBuyerName());
         newOrder.setVipEmail(order.getShipEmail());
 
-        List<OrderItem> details = new ArrayList<>();
+        List<GYOrderItem> details = new ArrayList<>();
 
         order.getOrderItems().forEach(item ->{
-            OrderItem detail = new OrderItem();
-            detail.setPrice(item.getPrice()+"");
-            detail.setQty(item.getAmount()+"");
-            detail.setSkuCode(item.getOrderId());
+            GYOrderItem detail = new GYOrderItem();
+            detail.setItemCode(item.getGoodBn());
+            detail.setSkuCode(item.getProductBn());
+            detail.setPrice(item.getPrice());
+            detail.setRefund(0);//0非退款 ,1退款(退款中);
+            detail.setNote("");//备注
+            detail.setQty(item.getNum());
+            detail.setOid(item.getStandard());// FIXME: 2016/6/21  子订单ID 用于后续订单状态修改的查询
             details.add(detail);
         });
+        newOrder.setDetails(details);
 
-        //发票信息
-        // TODO: 2016/5/9
-
-        List<Invoice> invoices = new ArrayList<>();
-        for(int i=0;i<5;i++){
-            Invoice invoice = new Invoice();
-            invoice.setBillAmount("test");
-            invoice.setInvoiceAmount("test");
-            invoice.setInvoiceContent("test");
-            invoice.setInvoiceTitle("test");
-            invoice.setInvoiceType("test");
-            invoices.add(invoice);
-        }
-
+        // 一笔订单对应一条发票信息
+        List<GYInvoice> invoices = new ArrayList<>();
+        GYInvoice gyInvoice = new GYInvoice();
+        gyInvoice.setInvoiceAmount(100.0);// FIXME: 2016/6/21
+        gyInvoice.setInvoiceContent("test");// FIXME: 2016/6/21
+        gyInvoice.setInvoiceTitle(order.getTaxCompany());//发票抬头
+        gyInvoice.setInvoiceType(1);// FIXME: 2016/6/21 1-普通发票；2-增值发票
+        invoices.add(gyInvoice);
         newOrder.setInvoices(invoices);
 
 
-        //支付信息
-        List<Payment> payments = new ArrayList<>();
-        for(int i=0;i<5;i++){
-            Payment payment = new Payment();
-            payment.setAccount("test");
-            payment.setPayCode("test");
-            payment.setPayment("test");
-            payment.setPaytime("test");
-            payment.setPayTypeCode("test");
-            payments.add(payment);
-        }
-
+        //一笔订单支付信息
+        List<GYPayment> payments = new ArrayList<>();
+        GYPayment payment = new GYPayment();
+        payment.setPayTypeCode("test");//支付类型code
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        payment.setPaytime(dateFormat.parse(order.getPayTime()));// 支付时间 时间戳类型
+        payment.setPayment(order.getOnlinePayAmount()); // 支付金额
+        payment.setPayCode("test");// FIXME: 2016/6/21 支付交易号
+        payment.setAccount("test");// FIXME: 2016/6/21
+        payments.add(payment);
         newOrder.setPayments(payments);
-
-
 
         return newOrder;
     }
 
-
-    /**
-     * 记录日志
-     * @param orderInfo
-     * @param erpUserInfo
-     * @param erpInfo
-     * @param pushNewOrderEvent
-     * @param isSuccess
-     */
-    private void saveLog(Order orderInfo,ERPUserInfo erpUserInfo,ERPInfo erpInfo,PushNewOrderEvent pushNewOrderEvent,boolean isSuccess ){
-        OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
-        Date now = new Date();
-        if (orderDetailSyncLog == null) {
-            orderDetailSyncLog = new OrderDetailSyncLog();
-            orderDetailSyncLog.setCreateTime(now);
+    @SuppressWarnings("Duplicates")
+    private EventResult orderPush(String requestData,GYSysData gySysData){
+        try{
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject resultJson = JSON.parseObject(httpResult.getHttpContent());
+                if(resultJson.getBoolean("success")){
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                } else{
+                    return  EventResult.resultWith(EventResultEnum.ERROR,resultJson.getString("errorCode"),null);
+                }
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        }catch (Exception e){
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
         }
-        orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-        orderDetailSyncLog.setProviderType(erpInfo.getErpType());
-        orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
-        orderDetailSyncLog.setOrderId(orderInfo.getOrderId());
-        orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
-        orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
-        orderDetailSyncLog.setSyncTime(now);
-
-        if (isSuccess) {
-            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-        } else {
-            orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-        }
-
-        orderDetailSyncLogService.save(orderDetailSyncLog);
     }
 
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult orderQuery(GYOrderSearch orderSearch,GYSysData gySysData) {
+        try {
+
+            String requestData = getRequestData2(gySysData,orderSearch,GYConstant.ORDER_QUERY);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
+                    // 封装实体类
+                    JSONArray jsonArray = result.getJSONArray("orders");
+                    List<GYResponseOrder> responseOrders = new ArrayList<>();
+                    jsonArray.forEach(order->{
+                        GYResponseOrder responseOrder = JSON.parseObject(order.toString(),GYResponseOrder.class);
+                        responseOrders.add(responseOrder);
+                    });
+
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,responseOrders);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult orderMemoUpdate(GYOrderMemo gyOrderMemo,GYSysData gySysData) {
+        try {
+
+            //fill entity // TODO: 2016/6/17
+
+
+            String requestData = getRequestData2(gySysData, gyOrderMemo,GYConstant.ORDER_MEMO_UPDATE);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult orderRefundStateUpdate(GYOrderRefundUpdate gyOrderRefundUpdate,GYSysData gySysData) {
+        try {
+
+            //fill entity // TODO: 2016/6/17
+
+            String requestData = getRequestData2(gySysData, gyOrderRefundUpdate,GYConstant.ORDER_REFUND_STATE_UPDATE);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult deliveryOrderQuery(GYDeliveryOrderSearch gyDeliveryOrderSearch, GYSysData gySysData) {
+        try {
+            String requestData = getRequestData2(gySysData, gyDeliveryOrderSearch,GYConstant.DELIVERY_QUERY);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
+                    // TODO: 2016/6/17
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult historyDeliveryOrderQuery(GYDeliveryOrderSearch gyDeliveryOrderSearch, GYSysData gySysData) {
+        try {
+            String requestData = getRequestData2(gySysData, gyDeliveryOrderSearch,GYConstant.HISTORY_DELIVERY_QUERY);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
+                    // TODO: 2016/6/17
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult deliveryOrderUpdate(GYDeliveryOrderUpdate deliveryOrderUpdate,GYSysData gySysData) {
+        try {
+
+            //fill entity // TODO: 2016/6/17
+
+            String requestData = getRequestData2(gySysData, deliveryOrderUpdate,GYConstant.DELIVERY_INFO_UPDATE);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
+                    // TODO: 2016/6/17
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult returnOrderQuery(GYReturnOrderSearch gyReturnOrderSearch, GYSysData gySysData) {
+        try {
+            String requestData = getRequestData2(gySysData, gyReturnOrderSearch,GYConstant.RETURN_ORDER_QUERY);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
+                    // TODO: 2016/6/17
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult pushReturnOrder(GYReturnOrder gyReturnOrder,GYSysData gySysData) {
+        try {
+
+            String requestData = getRequestData2(gySysData, gyReturnOrder,GYConstant.RETUR_ORDER_ADD);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
+                    // TODO: 2016/6/17
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult returnOrderInStock() {
+        try {
+            //fill entity // TODO: 2016/6/17
+            GYReturnOrderInStock gyReturnOrderInStock = new GYReturnOrderInStock();
+
+            GYSysData gySysData =  new GYSysData();
+
+            Map<String, Object> requestData = getRequestData(gySysData, gyReturnOrderInStock,GYConstant.RETURN_ORDER_IN_STOCK);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
+                    // TODO: 2016/6/17
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult historyOrderQuery(GYOrderSearch gyOrderSearch,GYSysData gySysData) {
+        try {
+            Map<String, Object> requestData = getRequestData(gySysData, gyOrderSearch,GYConstant.HISTORY_ORDER_QUERY);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
+                    // TODO: 2016/6/17
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult pushRefundOrder(GYRefundOrder gyRefundOrder,GYSysData gySysData) {
+        try {
+            //fill entity // TODO: 2016/6/17
+
+            String requestData = getRequestData2(gySysData, gyRefundOrder,GYConstant.REFUND_ORDER_ADD);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
+                    // TODO: 2016/6/17
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult refundOrderQuery(GYRefundOrderSearch gyRefundOrderSearch,GYSysData gySysData) {
+        try {
+            String requestData = getRequestData2(gySysData, gyRefundOrderSearch,GYConstant.REFUND_ORDER_QUERY);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getURL(),requestData);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
+                    // TODO: 2016/6/17
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                }
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
 }

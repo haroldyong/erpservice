@@ -14,10 +14,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
 import com.huobanplus.erpprovider.gy.util.SignHelper;
-import com.sun.javafx.collections.MappingChange;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -47,10 +45,30 @@ public class GYBaseHandler {
         jsonObject.put("sign",sign);
 
         String reqestStr = JSON.toJSONString(jsonObject);
+        System.out.println(reqestStr);
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String,Object> requestData = mapper.readValue(reqestStr,Map.class);//转成map
 
         return requestData;
+    }
+
+    public static <T> String getRequestData2(GYSysData sysData,T clazz,String method) throws IOException {
+
+        //通过标准Json 格式获得sign
+        String JsonStr = JSON.toJSONString(clazz);
+        JSONObject jsonObject = JSON.parseObject(JsonStr);
+        jsonObject.put("appkey",sysData.getAppKey());
+        jsonObject.put("sessionkey",sysData.getSessionkey());
+        jsonObject.put("method",method);
+
+        String paramStr = JSON.toJSONString(jsonObject);
+        SignHelper signHelper = new SignHelper();
+        String sign = signHelper.sign(paramStr,sysData.getSecret());
+        jsonObject.put("sign",sign);
+
+        String reqestStr = JSON.toJSONString(jsonObject);
+
+        return reqestStr;
     }
 }
