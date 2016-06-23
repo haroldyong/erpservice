@@ -50,6 +50,8 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
                     });
                     return EventResult.resultWith(EventResultEnum.SUCCESS,gyResponseGoodsItems);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -73,6 +75,8 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
                 if(result.getBoolean("success")){
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -96,6 +100,8 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
                 if(result.getBoolean("success")){
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -120,6 +126,8 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -144,6 +152,8 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -168,6 +178,8 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -192,6 +204,8 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -216,6 +230,8 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{

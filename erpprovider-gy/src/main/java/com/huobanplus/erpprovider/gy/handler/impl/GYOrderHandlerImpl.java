@@ -171,11 +171,13 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         try{
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                JSONObject resultJson = JSON.parseObject(httpResult.getHttpContent());
-                if(resultJson.getBoolean("success")){
+                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+                if(result.getBoolean("success")){
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 } else{
-                    return  EventResult.resultWith(EventResultEnum.ERROR,resultJson.getString("errorCode"),null);
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
+                    return  EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorCode"),null);
                 }
             } else {
                 return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
@@ -206,6 +208,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
                     return EventResult.resultWith(EventResultEnum.SUCCESS,responseOrders);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -232,6 +236,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                 if(result.getBoolean("success")){
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -257,6 +263,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                 if(result.getBoolean("success")){
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -280,6 +288,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS,result);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -303,6 +313,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -329,6 +341,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -352,6 +366,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -376,6 +392,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -402,6 +420,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -425,6 +445,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -450,6 +472,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{
@@ -473,6 +497,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 }else{
+                    log.info("错误信息："+result.getString("errorDesc"));
+                    log.info("请求数据报文："+requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             }else{

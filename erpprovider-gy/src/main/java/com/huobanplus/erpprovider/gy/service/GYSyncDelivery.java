@@ -61,7 +61,7 @@ public class GYSyncDelivery extends GYBaseHandler {
     private GYOrderHandler gyOrderHandler;
 
 
-    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 0/1 * * * ? ")
     @Transactional
     public void syncOrderShip() {
         Date now = new Date();
@@ -88,9 +88,10 @@ public class GYSyncDelivery extends GYBaseHandler {
 
                 GYDeliveryOrderSearch orderSearch = new GYDeliveryOrderSearch();
                 orderSearch.setPageSize(GYConstant.PAGE_SIZE);
-                orderSearch.setBeginTime(StringUtil.DateFormat(beginTime,StringUtil.TIME_PATTERN));
-                orderSearch.setEndTime(nowStr);
+                orderSearch.setStartDeliveryDate(StringUtil.DateFormat(beginTime,StringUtil.TIME_PATTERN));
+                orderSearch.setEndDeliveryDate(nowStr);
                 orderSearch.setShopCode(sysData.getShopCode());// FIXME: 2016/6/22 eg:ruyi
+                orderSearch.setDelivery(1);// 发货完成
 
                 // 第一次同步
                 EventResult eventResult = gyOrderHandler.deliveryOrderQuery(orderSearch, sysData);
@@ -117,6 +118,8 @@ public class GYSyncDelivery extends GYBaseHandler {
                     BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
                     failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
                     successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
+                } else{
+                    failedOrders.addAll(first);
                 }
 
                 int totalPage = 0;
@@ -141,6 +144,8 @@ public class GYSyncDelivery extends GYBaseHandler {
                             BatchDeliverResult nextBatchDeliverResult = (BatchDeliverResult) nextSyncResult.getData();
                             failedOrders.addAll(nextBatchDeliverResult.getFailedOrders());
                             successOrders.addAll(nextBatchDeliverResult.getSuccessOrders());
+                        } else{
+                            failedOrders.addAll(next);
                         }
                     }
                 }
@@ -211,7 +216,7 @@ public class GYSyncDelivery extends GYBaseHandler {
             JSONObject jsonObject = (JSONObject) delivery;
             JSONObject deliveryStatusInfo = jsonObject.getJSONObject("delivery_statusInfo");
             int deliveryStatus = deliveryStatusInfo.getInteger("delivery");
-            if (deliveryStatus == 1 || deliveryStatus == 2) {// 发货中
+            if (deliveryStatus == 1 || deliveryStatus == 2) {// 发货中 发货成功
                 OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
                 orderDeliveryInfo.setLogiName(jsonObject.getString("express_name"));
                 orderDeliveryInfo.setOrderId(jsonObject.getString("platform_code"));
