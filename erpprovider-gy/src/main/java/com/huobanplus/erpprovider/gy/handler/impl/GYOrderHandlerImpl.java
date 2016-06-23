@@ -35,7 +35,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by elvis on 2016/5/9.
@@ -73,7 +72,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
             orderDetailSyncLog.setSyncTime(now);
 
 
-            String requestData = getRequestData2(sysData, newOrder, GYConstant.ORDER_ADD);
+            String requestData = getRequestData(sysData, newOrder, GYConstant.ORDER_ADD);
             EventResult eventResult = orderPush(requestData,sysData);
             if(eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
@@ -192,7 +191,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     public EventResult orderQuery(GYOrderSearch orderSearch,GYSysData gySysData) {
         try {
 
-            String requestData = getRequestData2(gySysData,orderSearch,GYConstant.ORDER_QUERY);
+            String requestData = getRequestData(gySysData,orderSearch,GYConstant.ORDER_QUERY);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
@@ -226,7 +225,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
             //fill entity // TODO: 2016/6/17
 
 
-            String requestData = getRequestData2(gySysData, gyOrderMemo,GYConstant.ORDER_MEMO_UPDATE);
+            String requestData = getRequestData(gySysData, gyOrderMemo,GYConstant.ORDER_MEMO_UPDATE);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
@@ -251,7 +250,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
             //fill entity // TODO: 2016/6/17
 
-            String requestData = getRequestData2(gySysData, gyOrderRefundUpdate,GYConstant.ORDER_REFUND_STATE_UPDATE);
+            String requestData = getRequestData(gySysData, gyOrderRefundUpdate,GYConstant.ORDER_REFUND_STATE_UPDATE);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
@@ -273,7 +272,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     @Override
     public EventResult deliveryOrderQuery(GYDeliveryOrderSearch gyDeliveryOrderSearch, GYSysData gySysData) {
         try {
-            String requestData = getRequestData2(gySysData, gyDeliveryOrderSearch,GYConstant.DELIVERY_QUERY);
+            String requestData = getRequestData(gySysData, gyDeliveryOrderSearch,GYConstant.DELIVERY_QUERY);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
@@ -296,7 +295,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     @Override
     public EventResult historyDeliveryOrderQuery(GYDeliveryOrderSearch gyDeliveryOrderSearch, GYSysData gySysData) {
         try {
-            String requestData = getRequestData2(gySysData, gyDeliveryOrderSearch,GYConstant.HISTORY_DELIVERY_QUERY);
+            String requestData = getRequestData(gySysData, gyDeliveryOrderSearch,GYConstant.HISTORY_DELIVERY_QUERY);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
@@ -322,7 +321,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
             //fill entity // TODO: 2016/6/17
 
-            String requestData = getRequestData2(gySysData, deliveryOrderUpdate,GYConstant.DELIVERY_INFO_UPDATE);
+            String requestData = getRequestData(gySysData, deliveryOrderUpdate,GYConstant.DELIVERY_INFO_UPDATE);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
@@ -345,7 +344,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     @Override
     public EventResult returnOrderQuery(GYReturnOrderSearch gyReturnOrderSearch, GYSysData gySysData) {
         try {
-            String requestData = getRequestData2(gySysData, gyReturnOrderSearch,GYConstant.RETURN_ORDER_QUERY);
+            String requestData = getRequestData(gySysData, gyReturnOrderSearch,GYConstant.RETURN_ORDER_QUERY);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
@@ -369,7 +368,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     public EventResult pushReturnOrder(GYReturnOrder gyReturnOrder,GYSysData gySysData) {
         try {
 
-            String requestData = getRequestData2(gySysData, gyReturnOrder,GYConstant.RETUR_ORDER_ADD);
+            String requestData = getRequestData(gySysData, gyReturnOrder,GYConstant.RETUR_ORDER_ADD);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
@@ -390,14 +389,12 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
     @SuppressWarnings("Duplicates")
     @Override
-    public EventResult returnOrderInStock() {
+    public EventResult returnOrderInStock(GYReturnOrderInStock gyReturnOrderInStock,GYSysData gySysData) {
         try {
             //fill entity // TODO: 2016/6/17
-            GYReturnOrderInStock gyReturnOrderInStock = new GYReturnOrderInStock();
 
-            GYSysData gySysData =  new GYSysData();
 
-            Map<String, Object> requestData = getRequestData(gySysData, gyReturnOrderInStock,GYConstant.RETURN_ORDER_IN_STOCK);
+            String requestData = getRequestData(gySysData, gyReturnOrderInStock,GYConstant.RETURN_ORDER_IN_STOCK);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
@@ -420,7 +417,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     @Override
     public EventResult historyOrderQuery(GYOrderSearch gyOrderSearch,GYSysData gySysData) {
         try {
-            Map<String, Object> requestData = getRequestData(gySysData, gyOrderSearch,GYConstant.HISTORY_ORDER_QUERY);
+            String requestData = getRequestData(gySysData, gyOrderSearch,GYConstant.HISTORY_ORDER_QUERY);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
@@ -445,7 +442,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         try {
             //fill entity // TODO: 2016/6/17
 
-            String requestData = getRequestData2(gySysData, gyRefundOrder,GYConstant.REFUND_ORDER_ADD);
+            String requestData = getRequestData(gySysData, gyRefundOrder,GYConstant.REFUND_ORDER_ADD);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
@@ -468,7 +465,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     @Override
     public EventResult refundOrderQuery(GYRefundOrderSearch gyRefundOrderSearch,GYSysData gySysData) {
         try {
-            String requestData = getRequestData2(gySysData, gyRefundOrderSearch,GYConstant.REFUND_ORDER_QUERY);
+            String requestData = getRequestData(gySysData, gyRefundOrderSearch,GYConstant.REFUND_ORDER_QUERY);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());

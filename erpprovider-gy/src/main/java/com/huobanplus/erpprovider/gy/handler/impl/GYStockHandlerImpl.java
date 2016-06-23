@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by wuxiongliu on 2016/6/17.
@@ -33,7 +32,7 @@ public class GYStockHandlerImpl extends GYBaseHandler implements GYStockHandler 
     @Override
     public EventResult stockQuery(GYStockSearch gyStockSearch, GYSysData gySysData) {
         try {
-            Map<String, Object> requestData = getRequestData(gySysData, gyStockSearch, GYConstant.STOCK_QUERY);
+            String requestData = getRequestData(gySysData, gyStockSearch, GYConstant.STOCK_QUERY);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());

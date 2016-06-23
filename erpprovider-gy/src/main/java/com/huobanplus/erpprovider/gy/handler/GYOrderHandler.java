@@ -83,7 +83,7 @@ public interface GYOrderHandler {
      *  退货单入库
      * @return
      */
-    EventResult returnOrderInStock();
+    EventResult returnOrderInStock(GYReturnOrderInStock gyReturnOrderInStock,GYSysData gySysData);
 
     /**
      *  历史订单查询

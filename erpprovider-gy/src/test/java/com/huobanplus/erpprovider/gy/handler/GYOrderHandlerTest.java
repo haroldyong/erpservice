@@ -16,6 +16,7 @@ import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -194,7 +195,18 @@ public class GYOrderHandlerTest extends GYTestBase {
         gyReturnOrderItem.setPrice(11.0);
         gyReturnOrderItems.add(gyReturnOrderItem);
 
-        gyOrderHandler.pushReturnOrder(gyReturnOrder,mockGySysData);
+        EventResult eventResult = gyOrderHandler.pushReturnOrder(gyReturnOrder,mockGySysData);
+        System.out.println(eventResult.getResultCode());
+    }
+
+    @Test
+    public void testReturnOrderInStock(){
+        GYReturnOrderInStock gyReturnOrderInStock = new GYReturnOrderInStock();
+        gyReturnOrderInStock.setCode("RGO1020525785");
+        gyReturnOrderInStock.setWareHouseCode("tk01");
+
+        gyOrderHandler.returnOrderInStock(gyReturnOrderInStock,mockGySysData);
+
     }
 
     @Test

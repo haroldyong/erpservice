@@ -84,6 +84,7 @@ public class GYSyncDelivery extends GYBaseHandler {
                 List<OrderDeliveryInfo> failedOrders = new ArrayList<>(); //失败的订单列表
                 List<OrderDeliveryInfo> successOrders = new ArrayList<>(); //成功的订单列表
                 int totalCount = 0; //总数量
+                boolean syncFlag = true;
 
                 GYDeliveryOrderSearch orderSearch = new GYDeliveryOrderSearch();
                 orderSearch.setPageSize(GYConstant.PAGE_SIZE);
@@ -100,6 +101,9 @@ public class GYSyncDelivery extends GYBaseHandler {
                     totalCount = result.getInteger("total");
 
                     first = changeToSyncOrder(deliveryArray);
+                }
+                if(totalCount == 0){
+                    syncFlag = false;
                 }
 
                 BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
@@ -140,7 +144,10 @@ public class GYSyncDelivery extends GYBaseHandler {
                         }
                     }
                 }
-                syncLog(failedOrders,successOrders,totalCount,erpUserInfo,erpInfo);
+                if(syncFlag){// 轮询若无数据，则不记录日志
+                    syncLog(failedOrders,successOrders,totalCount,erpUserInfo,erpInfo);
+                }
+
             } catch (Exception e) {
                 log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
             }

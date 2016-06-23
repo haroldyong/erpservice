@@ -2,8 +2,7 @@ package com.huobanplus.erpprovider.gy.handler;
 
 import com.huobanplus.erpprovider.gy.GYTestBase;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
-import com.huobanplus.erpprovider.gy.formatgy.goods.GYGoods;
-import com.huobanplus.erpprovider.gy.formatgy.goods.GYSku;
+import com.huobanplus.erpprovider.gy.formatgy.goods.*;
 import com.huobanplus.erpprovider.gy.search.GYGoodsSearch;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +34,7 @@ public class GYGoodsHandlerTest extends GYTestBase {
     @Test
     public void testGoodsQuery(){
         GYGoodsSearch gyGoodsSearch = new GYGoodsSearch();
-        gyGoodsSearch.setCode("1014hot");
+        gyGoodsSearch.setCode("hotcode");
         gyGoodsHandler.goodsQuery(gyGoodsSearch,mockGySysData);
     }
 
@@ -73,5 +72,70 @@ public class GYGoodsHandlerTest extends GYTestBase {
         gyGoods.setSkus(gySkus);
 
         gyGoodsHandler.updateGoods(gyGoods,mockGySysData);
+    }
+
+    @Test
+    public void testDeleteGoods(){
+        GYDeleteGoods gyDeleteGoods = new GYDeleteGoods();
+        gyDeleteGoods.setCode("20161025");
+        gyGoodsHandler.deleteGoods(gyDeleteGoods,mockGySysData);
+    }
+
+    @Test
+    public void testPushGoodsSku(){
+        GYGoodsSku gyGoodsSku = new GYGoodsSku();
+        gyGoodsSku.setItemId("1021942961");
+        gyGoodsSku.setCode("testskucode");
+        gyGoodsSku.setName("testsku");
+        gyGoodsSku.setStockStatusCode("");
+        gyGoodsSku.setWeight(100.2);
+        gyGoodsSku.setSalesPoint(5);
+        gyGoodsSku.setPackagePoint(5);
+        gyGoodsSku.setPurchasePrice(5);
+        gyGoodsSku.setSalesPoint(7);
+        gyGoodsSku.setAgentPrice(6);
+        gyGoodsSku.setCostPrice(3);
+        gyGoodsSku.setNote("test");
+
+        gyGoodsHandler.pushGoodsSku(gyGoodsSku,mockGySysData);
+
+    }
+
+    @Test
+    public void testUpdateGoodsSku(){
+        GYGoodsSku gyGoodsSku = new GYGoodsSku();
+        gyGoodsSku.setItemId("1021942961");
+        gyGoodsSku.setCode("testskucode");
+        gyGoodsSku.setName("testskuUpdate");
+        gyGoodsSku.setStockStatusCode("");
+        gyGoodsSku.setWeight(100.2);
+        gyGoodsSku.setSalesPoint(5);
+        gyGoodsSku.setPackagePoint(5);
+        gyGoodsSku.setPurchasePrice(5);
+        gyGoodsSku.setSalesPoint(7);
+        gyGoodsSku.setAgentPrice(6);
+        gyGoodsSku.setCostPrice(3);
+        gyGoodsSku.setNote("test");
+        gyGoodsHandler.updateGoodsSku(gyGoodsSku,mockGySysData);
+    }
+
+    @Test
+    public void testDeleteGoodsSku(){
+        GYDeleteSku gyDeleteSku = new GYDeleteSku();
+        gyDeleteSku.setItemId("1021942961");
+        gyDeleteSku.setCode("testskucode");
+
+        gyGoodsHandler.deleteGoodsSku(gyDeleteSku,mockGySysData);
+
+    }
+
+    @Test
+    public void testPushGoodsBarCode(){
+        GYGoodsBarCode gyGoodsBarCode = new GYGoodsBarCode();
+        gyGoodsBarCode.setBarCode("testbarcode");
+        gyGoodsBarCode.setItemCode("hotcode");
+        gyGoodsBarCode.setSkuCode("testskucode");
+
+        gyGoodsHandler.pushGoodsBarCode(gyGoodsBarCode,mockGySysData);
     }
 }
