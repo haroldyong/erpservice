@@ -13,13 +13,13 @@ public class GYDeliveryOrderSearch {
      * 页码
      */
     @JSONField(name= "page_no")
-    private double pageNo;
+    private Integer pageNo;
 
     /**
      * 每页大小
      */
     @JSONField(name= "page_size")
-    private double pageSize;
+    private Integer pageSize;
 
     /**
      * 单据编号

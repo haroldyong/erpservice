@@ -81,7 +81,7 @@ public class GYOrderHandlerTest extends GYTestBase {
 //        mockOrderItems.add(mockOrderItem2);
 
         mockOrder = new Order();
-        mockOrder.setOrderId("2016wxl10");
+        mockOrder.setOrderId("1005");
         mockOrder.setUserLoginName("wuliuxiong22");
         mockOrder.setMemberId(1761390);
         mockOrder.setShipName("wuxiongliu");
@@ -117,7 +117,9 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockPushNewOrderEvent.setErpInfo(mockErpInfo);
         mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
 
-        gyOrderHandler.pushOrder(mockPushNewOrderEvent);
+        EventResult result = gyOrderHandler.pushOrder(mockPushNewOrderEvent);
+        System.out.println(result.getResultCode());
+        System.out.println(result.getResultMsg());
     }
 
     @Test
