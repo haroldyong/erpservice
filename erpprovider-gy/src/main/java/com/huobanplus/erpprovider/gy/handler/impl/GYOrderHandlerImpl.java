@@ -177,7 +177,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
                 } else{
                     log.info("错误信息："+result.getString("errorDesc"));
                     log.info("请求数据报文："+requestData);
-                    return  EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorCode"),null);
+                    return  EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
                 }
             } else {
                 return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);

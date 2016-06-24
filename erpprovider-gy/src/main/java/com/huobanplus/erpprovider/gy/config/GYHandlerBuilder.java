@@ -49,7 +49,7 @@ public class GYHandlerBuilder implements ERPHandlerBuilder {
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                        GYorderHandler.pushOrder(pushNewOrderEvent);
+                        return GYorderHandler.pushOrder(pushNewOrderEvent);
                     }
                     return null;
                 }
