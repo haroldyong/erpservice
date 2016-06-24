@@ -56,6 +56,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
 
             GYOrder newOrder = OrderChange(order,erpUserInfo,sysData);
+            System.out.println(JSON.toJSONString(order));
 
             Date now = new Date();
             OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
@@ -98,7 +99,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 //        newOrder.setOrderSettlementCode("nouse");// 没有用的字段
         newOrder.setPlatformCode(order.getOrderId());
         newOrder.setShopCode(gySysData.getShopCode());// FIXME: 2016/6/21   店铺code
-        newOrder.setExpressCode(order.getLogiCode());// FIXME: 2016/5/9 物流公司code 必填 eg:Qfasfasfa
+        newOrder.setExpressCode("QFKD");// FIXME: 2016/5/9 物流公司code 必填 eg:Qfasfasfa
         newOrder.setWarehouseCode(gySysData.getWarehouseCode());// FIXME: 2016/5/9 仓库code 必填  指定一个默认的eg:tk01
         newOrder.setVipCode(order.getUserLoginName());// FIXME: 2016/5/9 会员code 必填 
         newOrder.setVipName(order.getBuyerName());// FIXME: 2016/6/21
@@ -129,7 +130,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
         order.getOrderItems().forEach(item ->{
             GYOrderItem detail = new GYOrderItem();
-            detail.setItemCode(item.getGoodBn());
+            detail.setItemCode("test");item.getGoodBn();
             detail.setSkuCode(item.getProductBn());
             detail.setPrice(item.getPrice());
             detail.setRefund(0);//0非退款 ,1退款(退款中);
@@ -143,8 +144,8 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         // 一笔订单对应一条发票信息
         List<GYInvoice> invoices = new ArrayList<>();
         GYInvoice gyInvoice = new GYInvoice();
-        gyInvoice.setInvoiceAmount(100.0);// FIXME: 2016/6/21
-        gyInvoice.setInvoiceContent("test");// FIXME: 2016/6/21
+//        gyInvoice.setInvoiceAmount(100.0);// FIXME: 2016/6/21
+//        gyInvoice.setInvoiceContent("test");// FIXME: 2016/6/21
         gyInvoice.setInvoiceTitle(order.getTaxCompany());//发票抬头
         gyInvoice.setInvoiceType(1);// FIXME: 2016/6/21 1-普通发票；2-增值发票
         invoices.add(gyInvoice);
@@ -154,12 +155,12 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         //一笔订单支付信息
         List<GYPayment> payments = new ArrayList<>();
         GYPayment payment = new GYPayment();
-        payment.setPayTypeCode("test");//支付类型code
+        payment.setPayTypeCode("zhifubao");//支付类型code
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         payment.setPaytime(dateFormat.parse(order.getPayTime()));// 支付时间 时间戳类型
-        payment.setPayment(order.getOnlinePayAmount()); // 支付金额
-        payment.setPayCode("test");// FIXME: 2016/6/21 支付交易号
-        payment.setAccount("test");// FIXME: 2016/6/21
+        payment.setPayment(order.getFinalAmount()); // 支付金额
+//        payment.setPayCode("test");// FIXME: 2016/6/21 支付交易号
+//        payment.setAccount("test");// FIXME: 2016/6/21
         payments.add(payment);
         newOrder.setPayments(payments);
 

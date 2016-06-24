@@ -14,7 +14,7 @@ public class GYOrderItem {
     /**
      * "qty": 商品数量
      */
-    @JSONField(name = "qyt")
+    @JSONField(name = "qty")
     private int qty;
 
     /**
