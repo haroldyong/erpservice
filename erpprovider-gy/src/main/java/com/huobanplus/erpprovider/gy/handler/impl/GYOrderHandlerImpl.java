@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.gy.common.GYConstant;
+import com.huobanplus.erpprovider.gy.common.GYEnum;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
 import com.huobanplus.erpprovider.gy.formatgy.order.*;
 import com.huobanplus.erpprovider.gy.handler.GYBaseHandler;
@@ -99,7 +100,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 //        newOrder.setOrderSettlementCode("nouse");// 没有用的字段
         newOrder.setPlatformCode(order.getOrderId());
         newOrder.setShopCode(gySysData.getShopCode());// FIXME: 2016/6/21   店铺code
-        newOrder.setExpressCode("QFKD");// FIXME: 2016/5/9 物流公司code 必填 eg:Qfasfasfa
+        newOrder.setExpressCode(order.getLogiCode());// FIXME: 2016/5/9 物流公司code 必填 eg:QFKD
         newOrder.setWarehouseCode(gySysData.getWarehouseCode());// FIXME: 2016/5/9 仓库code 必填  指定一个默认的eg:tk01
         newOrder.setVipCode(order.getUserLoginName());// FIXME: 2016/5/9 会员code 必填 
         newOrder.setVipName(order.getBuyerName());// FIXME: 2016/6/21
@@ -116,12 +117,12 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         newOrder.setPayDatetime(order.getPayTime());
         newOrder.setBusinessManCode(null);// FIXME: 2016/5/9
         newOrder.setPostFee(order.getCostFreight());// FIXME: 2016/5/9
-        newOrder.setCodFee(0.0);// FIXME: 2016/5/9  到付服务费
+//        newOrder.setCodFee(0.0);// FIXME: 2016/5/9  到付服务费
         newOrder.setDiscountFee(order.getPmtAmount());// 让利金额
-        newOrder.setPlanDeliveryDate(null);//// FIXME: 2016/5/9 预计发货日期，可能有格式问题
+//        newOrder.setPlanDeliveryDate(null);//// FIXME: 2016/5/9 预计发货日期，可能有格式问题
         newOrder.setBuyerMemo(order.getMemo());
         newOrder.setSellerMemo(order.getRemark());
-        newOrder.setSellerMemoLate(null);// FIXME: 2016/5/9 二次备注
+//        newOrder.setSellerMemoLate(null);// FIXME: 2016/5/9 二次备注
         newOrder.setVipIdCard(order.getBuyerPid());
         newOrder.setVipRealName(order.getBuyerName());
         newOrder.setVipEmail(order.getShipEmail());
@@ -134,9 +135,12 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
             detail.setSkuCode(item.getProductBn());
             detail.setPrice(item.getPrice());
             detail.setRefund(0);//0非退款 ,1退款(退款中);
-            detail.setNote("");//备注
+//            detail.setNote("");//备注
             detail.setQty(item.getNum());
-            detail.setOid(item.getStandard());// FIXME: 2016/6/21  子订单ID 用于后续订单状态修改的查询
+
+            if(item.getItemId() != null){
+                detail.setOid(String.valueOf(item.getItemId()));// FIXME: 2016/6/21  子订单ID 用于后续订单状态修改的查询
+            }
             details.add(detail);
         });
         newOrder.setDetails(details);
@@ -155,7 +159,11 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         //一笔订单支付信息
         List<GYPayment> payments = new ArrayList<>();
         GYPayment payment = new GYPayment();
-        payment.setPayTypeCode("zhifubao");//支付类型code
+        if(order.getPaymentName().equals("支付宝")){
+            payment.setPayTypeCode(GYEnum.PaymentOptions.ZHIFUBAO.getCode());//支付类型code
+        } else{
+            payment.setPayTypeCode(GYEnum.PaymentOptions.WEIXIN.getCode());
+        }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         payment.setPaytime(dateFormat.parse(order.getPayTime()));// 支付时间 时间戳类型
         payment.setPayment(order.getFinalAmount()); // 支付金额

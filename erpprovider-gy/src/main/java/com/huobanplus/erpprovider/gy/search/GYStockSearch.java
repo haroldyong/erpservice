@@ -13,31 +13,31 @@ public class GYStockSearch {
     /**
      * 页码
      */
-    @JSONField(name = "")
-    private int pageNo;
+    @JSONField(name = "page_no")
+    private Integer pageNo;
 
     /**
      * 	每页大小
      */
-    @JSONField(name = "")
-    private int pageSize;
+    @JSONField(name = "page_size")
+    private Integer pageSize;
 
     /**
      * 商品代码
      */
-    @JSONField(name = "")
+    @JSONField(name = "item_code")
     private String itemCode;
 
     /**
      * 规格代码
      */
-    @JSONField(name = "")
+    @JSONField(name = "sku_code")
     private String skuCode;
 
     /**
      * 仓库code
      */
-    @JSONField(name = "")
+    @JSONField(name = "warehouse_code")
     private String earehouseCode;
 
 }

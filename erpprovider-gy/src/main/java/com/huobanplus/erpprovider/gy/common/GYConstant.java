@@ -16,7 +16,7 @@ public class GYConstant {
     /**
      * 轮训的页码
      */
-    public static final int PAGE_SIZE = 3;
+    public static final int PAGE_SIZE = 100;  // 管易平台请求pageSize上限：100
 
 // 请求方法
 

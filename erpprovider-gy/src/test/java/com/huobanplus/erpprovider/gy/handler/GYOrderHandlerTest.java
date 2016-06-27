@@ -68,6 +68,7 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockOrderItem.setPrice(20.0);
         mockOrderItem.setStandard("test1");
         mockOrderItem.setGoodBn("1014hot");
+        mockOrderItem.setItemId(123456);
 
 //        OrderItem mockOrderItem2 = new OrderItem();
 //        mockOrderItem2.setNum(5);
@@ -81,8 +82,8 @@ public class GYOrderHandlerTest extends GYTestBase {
 //        mockOrderItems.add(mockOrderItem2);
 
         mockOrder = new Order();
-        mockOrder.setOrderId("1005");
-        mockOrder.setUserLoginName("wuliuxiong22");
+        mockOrder.setOrderId("2016102546654222");
+        mockOrder.setUserLoginName("18705153967");
         mockOrder.setMemberId(1761390);
         mockOrder.setShipName("wuxiongliu");
         mockOrder.setShipMobile("18705153967");
@@ -94,6 +95,7 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockOrder.setBuyerPid("330682199006015217");
         mockOrder.setBuyerName("testName");
         mockOrder.setLogiCode("QFKD");
+        mockOrder.setPaymentName("支付宝");
 
         mockOrder.setCreateTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
@@ -127,11 +129,13 @@ public class GYOrderHandlerTest extends GYTestBase {
         GYOrderSearch gyOrderSearch = new GYOrderSearch();
         gyOrderSearch.setPageNo(1);
         gyOrderSearch.setPageSize(GYConstant.PAGE_SIZE);
-        gyOrderSearch.setBeginTime(new Date());
+        gyOrderSearch.setBeginTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         gyOrderSearch.setOrderState(1);
         gyOrderSearch.setReceiverMobile("18705153967");
         gyOrderSearch.setPlatformCode("2016wxl");
-        gyOrderHandler.orderQuery(gyOrderSearch,mockGySysData);
+        EventResult eventResult = gyOrderHandler.orderQuery(gyOrderSearch,mockGySysData);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
     }
 
     @Test
@@ -139,7 +143,9 @@ public class GYOrderHandlerTest extends GYTestBase {
         GYOrderMemo gyOrderMemo = new GYOrderMemo();
         gyOrderMemo.setMemo("add memo");
         gyOrderMemo.setTid("1234566584511222111");
-        gyOrderHandler.orderMemoUpdate(gyOrderMemo,mockGySysData);
+        EventResult eventResult = gyOrderHandler.orderMemoUpdate(gyOrderMemo,mockGySysData);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
     }
 
     @Test
@@ -148,7 +154,9 @@ public class GYOrderHandlerTest extends GYTestBase {
         gyOrderRefundUpdate.setOid("test1");
         gyOrderRefundUpdate.setTid("2016wxl1");
         gyOrderRefundUpdate.setRefundState(1);
-        gyOrderHandler.orderRefundStateUpdate(gyOrderRefundUpdate,mockGySysData);
+        EventResult eventResult = gyOrderHandler.orderRefundStateUpdate(gyOrderRefundUpdate,mockGySysData);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
     }
 
     @Test
@@ -158,7 +166,10 @@ public class GYOrderHandlerTest extends GYTestBase {
         gyDeliveryOrderSearch.setPageSize(20);
         gyDeliveryOrderSearch.setShopCode("9999");
         gyDeliveryOrderSearch.setOuterCode("2016wxl1");
-        gyOrderHandler.deliveryOrderQuery(gyDeliveryOrderSearch,mockGySysData);
+        EventResult eventResult = gyOrderHandler.deliveryOrderQuery(gyDeliveryOrderSearch,mockGySysData);
+        System.out.println(eventResult.getData());
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
     }
 
     @Test
@@ -176,7 +187,9 @@ public class GYOrderHandlerTest extends GYTestBase {
         gyDeliveryStates.add(gyDeliveryState);
 
         gyDeliveryOrderUpdate.setDeliveryStates(gyDeliveryStates);
-        gyOrderHandler.deliveryOrderUpdate(gyDeliveryOrderUpdate,mockGySysData);
+        EventResult eventResult = gyOrderHandler.deliveryOrderUpdate(gyDeliveryOrderUpdate,mockGySysData);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
 
     }
 
@@ -199,6 +212,7 @@ public class GYOrderHandlerTest extends GYTestBase {
 
         EventResult eventResult = gyOrderHandler.pushReturnOrder(gyReturnOrder,mockGySysData);
         System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
     }
 
     @Test
@@ -207,7 +221,9 @@ public class GYOrderHandlerTest extends GYTestBase {
         gyReturnOrderInStock.setCode("RGO1020525785");
         gyReturnOrderInStock.setWareHouseCode("tk01");
 
-        gyOrderHandler.returnOrderInStock(gyReturnOrderInStock,mockGySysData);
+        EventResult eventResult = gyOrderHandler.returnOrderInStock(gyReturnOrderInStock,mockGySysData);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
 
     }
 
@@ -216,7 +232,9 @@ public class GYOrderHandlerTest extends GYTestBase {
         GYReturnOrderSearch gyReturnOrderSearch = new GYReturnOrderSearch();
         gyReturnOrderSearch.setPageNo(1);
         gyReturnOrderSearch.setSkuCode("3872824-ecc4090b639c47f89b453980923afb8e");
-        gyOrderHandler.returnOrderQuery(gyReturnOrderSearch,mockGySysData);
+        EventResult eventResult = gyOrderHandler.returnOrderQuery(gyReturnOrderSearch,mockGySysData);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
     }
 
     @Test
@@ -235,7 +253,9 @@ public class GYOrderHandlerTest extends GYTestBase {
         gyRefundOrderItems.add(gyRefundOrderItem);
         gyRefundOrder.setItemDetails(gyRefundOrderItems);
 
-        gyOrderHandler.pushRefundOrder(gyRefundOrder,mockGySysData);
+        EventResult eventResult = gyOrderHandler.pushRefundOrder(gyRefundOrder,mockGySysData);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
 
     }
 
@@ -244,7 +264,10 @@ public class GYOrderHandlerTest extends GYTestBase {
     public void testRefundOrderQuery(){
         GYRefundOrderSearch gyRefundOrderSearch = new GYRefundOrderSearch();
         gyRefundOrderSearch.setCode("RMO1020536851");
-        gyOrderHandler.refundOrderQuery(gyRefundOrderSearch,mockGySysData);
+        EventResult eventResult = gyOrderHandler.refundOrderQuery(gyRefundOrderSearch,mockGySysData);
+        System.out.println(eventResult.getData());
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
     }
 
 }
