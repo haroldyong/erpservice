@@ -20,7 +20,7 @@ public class GYSysData {
     /**
      *管易接口请求地址
      */
-    private String URL;
+    private String requestUrl;
 
     /**
      *接入管易标识
@@ -28,16 +28,22 @@ public class GYSysData {
     private String appKey;
 
     /**
-     *
+     *  sessionkey
      */
     private String sessionkey;
 
-    /**
-     *请求方法
-     */
-    private String method;
 
-    /*
+    /**
+     *  店铺代码
+     */
+    private String shopCode;
+
+    /**
+     *  仓库代码
+     */
+    private String warehouseCode;
+
+    /**
      *签名信息
      */
     private String secret;

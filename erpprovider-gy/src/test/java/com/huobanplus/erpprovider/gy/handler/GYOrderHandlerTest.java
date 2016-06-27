@@ -16,6 +16,7 @@ import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +50,12 @@ public class GYOrderHandlerTest extends GYTestBase {
 
         mockGySysData = new GYSysData();
 
-        mockGySysData.setURL("https://demo.guanyierp.com/erpapi/rest/erp_open");
+        mockGySysData.setRequestUrl("https://demo.guanyierp.com/erpapi/rest/erp_open");
         mockGySysData.setAppKey("143158");
         mockGySysData.setSessionkey("58b9c91e195e4a28be107e1485264890");
         mockGySysData.setSecret("a4384907606e435bbf594c420760d29a");
+        mockGySysData.setShopCode("ruyi");
+        mockGySysData.setWarehouseCode("tk01");
 
 
 
@@ -60,25 +63,25 @@ public class GYOrderHandlerTest extends GYTestBase {
         OrderItem mockOrderItem = new OrderItem();
         mockOrderItem.setNum(5);
         mockOrderItem.setOrderId("2016wxl1");
-        mockOrderItem.setProductBn("3872824-ecc4090b639c47f89b453980923afb8e");
+        mockOrderItem.setProductBn("testskucode");
         mockOrderItem.setNum(10);
         mockOrderItem.setPrice(20.0);
         mockOrderItem.setStandard("test1");
-        mockOrderItem.setGoodBn("1020021");
+        mockOrderItem.setGoodBn("1014hot");
 
-        OrderItem mockOrderItem2 = new OrderItem();
-        mockOrderItem2.setNum(5);
-        mockOrderItem2.setOrderId("2016wxl1");
-        mockOrderItem2.setProductBn("3872824-ecc4090b639c47f89b453980923afb8e");
-        mockOrderItem2.setNum(10);
-        mockOrderItem2.setPrice(20.0);
-        mockOrderItem2.setStandard("test2");
-        mockOrderItem2.setGoodBn("1020021");
+//        OrderItem mockOrderItem2 = new OrderItem();
+//        mockOrderItem2.setNum(5);
+//        mockOrderItem2.setOrderId("2016wxl1");
+//        mockOrderItem2.setProductBn("3872824-ecc4090b639c47f89b453980923afb8e");
+//        mockOrderItem2.setNum(10);
+//        mockOrderItem2.setPrice(20.0);
+//        mockOrderItem2.setStandard("test2");
+//        mockOrderItem2.setGoodBn("1020021");
         mockOrderItems.add(mockOrderItem);
-        mockOrderItems.add(mockOrderItem2);
+//        mockOrderItems.add(mockOrderItem2);
 
         mockOrder = new Order();
-        mockOrder.setOrderId("2016wxl1");
+        mockOrder.setOrderId("2016wxl10");
         mockOrder.setUserLoginName("wuliuxiong22");
         mockOrder.setMemberId(1761390);
         mockOrder.setShipName("wuxiongliu");
@@ -90,6 +93,7 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockOrder.setShipAddr("浙江省杭州市滨江区阡陌路智慧E谷B幢4楼火图科技");
         mockOrder.setBuyerPid("330682199006015217");
         mockOrder.setBuyerName("testName");
+        mockOrder.setLogiCode("QFKD");
 
         mockOrder.setCreateTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
@@ -191,7 +195,18 @@ public class GYOrderHandlerTest extends GYTestBase {
         gyReturnOrderItem.setPrice(11.0);
         gyReturnOrderItems.add(gyReturnOrderItem);
 
-        gyOrderHandler.pushReturnOrder(gyReturnOrder,mockGySysData);
+        EventResult eventResult = gyOrderHandler.pushReturnOrder(gyReturnOrder,mockGySysData);
+        System.out.println(eventResult.getResultCode());
+    }
+
+    @Test
+    public void testReturnOrderInStock(){
+        GYReturnOrderInStock gyReturnOrderInStock = new GYReturnOrderInStock();
+        gyReturnOrderInStock.setCode("RGO1020525785");
+        gyReturnOrderInStock.setWareHouseCode("tk01");
+
+        gyOrderHandler.returnOrderInStock(gyReturnOrderInStock,mockGySysData);
+
     }
 
     @Test

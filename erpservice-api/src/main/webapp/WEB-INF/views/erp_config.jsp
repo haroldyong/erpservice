@@ -125,6 +125,8 @@
                         return kaoLaConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.KJYG.getCode()%>:
                         return kjygConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.GY.getCode()%>:
+                        return gyConfigHandler;
                 }
             }
         };
@@ -287,6 +289,9 @@
                                 </div>
                                 <div id="detailConfig_<%=ERPTypeEnum.ProviderType.KJYG.getCode()%>">
                                     <%@include file="/detailConfig/kjyg_config.jsp" %>
+                                </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.GY.getCode()%>">
+                                    <%@include file="/detailConfig/gy_config.jsp" %>
                                 </div>
                             </div>
 
