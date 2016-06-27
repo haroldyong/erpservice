@@ -7,6 +7,7 @@ import java.util.Date;
 
 /**
  * Created by wuxiongliu on 2016/6/17.
+ * 管易订单查询实体
  */
 @Data
 public class GYOrderSearch {

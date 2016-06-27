@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Created by wuxiongliu on 2016/6/17.
+ * 管易退款单实体
  */
 @Data
 public class GYRefundOrder {

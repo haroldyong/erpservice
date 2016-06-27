@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * Created by wuxiongliu on 2016/6/20.
+ * 管易订单明细实体 响应实体（针对订单查询返回结果）
  */
 @Data
 public class GYResponseOrderItem {

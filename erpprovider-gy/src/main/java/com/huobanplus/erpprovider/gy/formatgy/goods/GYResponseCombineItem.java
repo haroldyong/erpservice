@@ -7,6 +7,7 @@ import java.util.Date;
 
 /**
  * Created by wuxiongliu on 2016/6/22.
+ * 管易组合商品列表实体
  */
 @Data
 public class GYResponseCombineItem {

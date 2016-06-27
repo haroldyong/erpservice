@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * Created by wuxiongliu on 2016/6/17.
+ * 管易订单退款状态实体
  */
 @Data
 public class GYOrderRefundUpdate {

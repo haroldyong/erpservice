@@ -89,7 +89,7 @@ public class GYSyncDelivery extends GYBaseHandler {
                 GYDeliveryOrderSearch orderSearch = new GYDeliveryOrderSearch();
                 orderSearch.setPageNo(1);
                 orderSearch.setPageSize(GYConstant.PAGE_SIZE);
-//                orderSearch.setStartDeliveryDate(StringUtil.DateFormat(beginTime,StringUtil.TIME_PATTERN));
+                orderSearch.setStartDeliveryDate(StringUtil.DateFormat(beginTime,StringUtil.TIME_PATTERN));
                 orderSearch.setEndDeliveryDate(nowStr);
                 orderSearch.setShopCode(sysData.getShopCode());// FIXME: 2016/6/22 eg:ruyi
                 orderSearch.setDelivery(1);// 已发货

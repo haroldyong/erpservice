@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 
 /**
  * Created by wuxiongliu on 2016/6/20.
+ * 管易发票实体 响应实体（针对发货单查询返回的结果）
  */
 public class GYResponseInvoice {
     /**

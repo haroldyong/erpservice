@@ -4,7 +4,8 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 /**
- * Created by admin on 2016/6/8.
+ * Created by wuxiongliu on 2016/6/8.
+ * 管易退货单明细
  */
 @Data
 public class GYReturnOrderItem {

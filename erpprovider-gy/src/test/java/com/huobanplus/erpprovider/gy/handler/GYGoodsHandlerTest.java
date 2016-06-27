@@ -4,12 +4,14 @@ import com.huobanplus.erpprovider.gy.GYTestBase;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
 import com.huobanplus.erpprovider.gy.formatgy.goods.*;
 import com.huobanplus.erpprovider.gy.search.GYGoodsSearch;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by wuxiongliu on 2016/6/22.
@@ -34,14 +36,18 @@ public class GYGoodsHandlerTest extends GYTestBase {
     @Test
     public void testGoodsQuery(){
         GYGoodsSearch gyGoodsSearch = new GYGoodsSearch();
-        gyGoodsSearch.setCode("hotcode");
-        gyGoodsHandler.goodsQuery(gyGoodsSearch,mockGySysData);
+        gyGoodsSearch.setCode("1014hot");
+        EventResult eventResult = gyGoodsHandler.goodsQuery(gyGoodsSearch,mockGySysData);
+        System.out.println(eventResult.getData());
+        System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getResultCode());
+
     }
 
     @Test
     public void testPushGoods(){
         GYGoods gyGoods = new GYGoods();
-        gyGoods.setCode("1014hot");
+        gyGoods.setCode(UUID.randomUUID().toString());
         gyGoods.setName("芬达");
         gyGoods.setSimpleName("芬达饮料");
         gyGoods.setCategoryCode("1012");// 食品分类
@@ -55,7 +61,9 @@ public class GYGoodsHandlerTest extends GYTestBase {
         gySkus.add(gySku);
 
         gyGoods.setSkus(gySkus);
-        gyGoodsHandler.pushGoods(gyGoods,mockGySysData);
+        EventResult eventResult = gyGoodsHandler.pushGoods(gyGoods,mockGySysData);
+        System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getResultCode());
 
     }
 
@@ -71,22 +79,26 @@ public class GYGoodsHandlerTest extends GYTestBase {
         gySkus.add(gySku);
         gyGoods.setSkus(gySkus);
 
-        gyGoodsHandler.updateGoods(gyGoods,mockGySysData);
+        EventResult eventResult = gyGoodsHandler.updateGoods(gyGoods,mockGySysData);
+        System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getResultCode());
     }
 
     @Test
     public void testDeleteGoods(){
         GYDeleteGoods gyDeleteGoods = new GYDeleteGoods();
-        gyDeleteGoods.setCode("20161025");
-        gyGoodsHandler.deleteGoods(gyDeleteGoods,mockGySysData);
+        gyDeleteGoods.setCode("1014hot");
+        EventResult eventResult = gyGoodsHandler.deleteGoods(gyDeleteGoods,mockGySysData);
+        System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getResultCode());
     }
 
     @Test
     public void testPushGoodsSku(){
         GYGoodsSku gyGoodsSku = new GYGoodsSku();
-        gyGoodsSku.setItemId("1021942961");
-        gyGoodsSku.setCode("testskucode");
-        gyGoodsSku.setName("testsku");
+        gyGoodsSku.setItemId("10252204162222");
+        gyGoodsSku.setCode("testskucode2233");
+        gyGoodsSku.setName("testsku2233");
         gyGoodsSku.setStockStatusCode("");
         gyGoodsSku.setWeight(100.2);
         gyGoodsSku.setSalesPoint(5);
@@ -97,7 +109,9 @@ public class GYGoodsHandlerTest extends GYTestBase {
         gyGoodsSku.setCostPrice(3);
         gyGoodsSku.setNote("test");
 
-        gyGoodsHandler.pushGoodsSku(gyGoodsSku,mockGySysData);
+        EventResult eventResult = gyGoodsHandler.pushGoodsSku(gyGoodsSku,mockGySysData);
+        System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getResultCode());
 
     }
 
@@ -116,7 +130,9 @@ public class GYGoodsHandlerTest extends GYTestBase {
         gyGoodsSku.setAgentPrice(6);
         gyGoodsSku.setCostPrice(3);
         gyGoodsSku.setNote("test");
-        gyGoodsHandler.updateGoodsSku(gyGoodsSku,mockGySysData);
+        EventResult eventResult = gyGoodsHandler.updateGoodsSku(gyGoodsSku,mockGySysData);
+        System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getResultCode());
     }
 
     @Test
@@ -125,17 +141,21 @@ public class GYGoodsHandlerTest extends GYTestBase {
         gyDeleteSku.setItemId("1021942961");
         gyDeleteSku.setCode("testskucode");
 
-        gyGoodsHandler.deleteGoodsSku(gyDeleteSku,mockGySysData);
+        EventResult eventResult = gyGoodsHandler.deleteGoodsSku(gyDeleteSku,mockGySysData);
+        System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getResultCode());
 
     }
 
     @Test
     public void testPushGoodsBarCode(){
         GYGoodsBarCode gyGoodsBarCode = new GYGoodsBarCode();
-        gyGoodsBarCode.setBarCode("testbarcode");
+        gyGoodsBarCode.setBarCode("testbarcode22");
         gyGoodsBarCode.setItemCode("hotcode");
         gyGoodsBarCode.setSkuCode("testskucode");
 
-        gyGoodsHandler.pushGoodsBarCode(gyGoodsBarCode,mockGySysData);
+        EventResult eventResult = gyGoodsHandler.pushGoodsBarCode(gyGoodsBarCode,mockGySysData);
+        System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getResultCode());
     }
 }

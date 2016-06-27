@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * Created by wuxiongliu on 2016/6/17.
+ * 管易商品查询实体
  */
 @Data
 public class GYGoodsSearch {

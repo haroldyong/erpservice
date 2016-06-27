@@ -7,6 +7,7 @@ import java.util.Date;
 
 /**
  * Created by wuxiongliu on 2016/6/17.
+ * 管易发货状态实体
  */
 @Data
 public class GYDeliveryState {

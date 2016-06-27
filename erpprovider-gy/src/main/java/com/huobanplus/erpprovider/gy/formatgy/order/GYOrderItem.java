@@ -1,14 +1,13 @@
 package com.huobanplus.erpprovider.gy.formatgy.order;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * Created by admin on 2016/5/9.
+ * 管易订单明细实体
  */
-@Setter
-@Getter
+@Data
 public class GYOrderItem {
 
     /**
