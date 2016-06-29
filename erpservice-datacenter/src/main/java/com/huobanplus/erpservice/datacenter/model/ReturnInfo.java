@@ -11,6 +11,8 @@ package com.huobanplus.erpservice.datacenter.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Created by liual on 2015-10-19.
  */
@@ -25,6 +27,14 @@ public class ReturnInfo extends BaseInfo {
     private String returnName;
     private String returnZip;
     private double freight;
+    /**
+     * 退货单备注
+     */
     private String remark;
     private String returnItemStr;
+    /**
+     * 退款用户的登录名
+     */
+    private String userLoginName;
+    private List<ProReturnInfo> proReturnInfoList;
 }

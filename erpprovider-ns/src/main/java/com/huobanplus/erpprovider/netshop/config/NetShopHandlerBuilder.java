@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.netshop.config;
@@ -22,10 +22,12 @@ import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPSysDataInfoService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.*;
+import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
-import com.huobanplus.erpservice.eventhandler.model.*;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -54,24 +56,6 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
     public ERPHandler buildHandler(ERPInfo info) {
         if (info.getErpType() == ERPTypeEnum.ProviderType.NETSHOP) {
             return new ERPHandler() {
-
-                @Override
-                public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
-
-                    if (baseEventClass == DeliveryInfoEvent.class) {
-                        return true;
-                    } else if (baseEventClass == ObtainOrderListEvent.class) {
-                        return true;
-                    } else if (baseEventClass == ObtainOrderDetailEvent.class) {
-                        return true;
-                    } else if (baseEventClass == ObtainGoodListEvent.class) {
-                        return true;
-                    } else if (baseEventClass == InventoryEvent.class) {
-                        return true;
-                    }
-                    return false;
-                }
-
                 @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                     return null;

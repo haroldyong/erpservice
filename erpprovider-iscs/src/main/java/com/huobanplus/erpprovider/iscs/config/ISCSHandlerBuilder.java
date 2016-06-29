@@ -11,6 +11,7 @@ package com.huobanplus.erpprovider.iscs.config;
 
 import com.huobanplus.erpprovider.iscs.handler.ISCSOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
@@ -37,14 +38,6 @@ public class ISCSHandlerBuilder implements ERPHandlerBuilder {
         if(info.getErpType() == ERPTypeEnum.ProviderType.ISCS){
             return new ERPHandler() {
                 @Override
-                public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
-                    if (baseEventClass == PushNewOrderEvent.class) {
-                        return true;
-                    }
-                    return false;
-                }
-
-                @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
@@ -54,7 +47,7 @@ public class ISCSHandlerBuilder implements ERPHandlerBuilder {
                         PushReturnInfoEvent pushReturnInfoEvent = (PushReturnInfoEvent) erpBaseEvent;
                         return iscsOrderHandler.pushReturnOrder(pushReturnInfoEvent);
                     }
-                    return null;
+                    return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT);
                 }
 
                 @Override

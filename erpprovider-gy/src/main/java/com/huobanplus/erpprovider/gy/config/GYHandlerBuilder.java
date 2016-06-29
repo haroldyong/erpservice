@@ -9,9 +9,14 @@
 
 package com.huobanplus.erpprovider.gy.config;
 
+import com.alibaba.fastjson.JSON;
+import com.huobanplus.erpprovider.gy.common.GYSysData;
 import com.huobanplus.erpprovider.gy.handler.GYOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRefundStatusUpdate;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRemarkUpdate;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
@@ -30,28 +35,29 @@ public class GYHandlerBuilder implements ERPHandlerBuilder {
 
 
     @Autowired
-    private GYOrderHandler GYorderHandler;
+    private GYOrderHandler gyOrderHandler;
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        if(info.getErpType() == ERPTypeEnum.ProviderType.GY){
+        if (info.getErpType() == ERPTypeEnum.ProviderType.GY) {
             return new ERPHandler() {
-
-                @Override
-                public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
-                    if (baseEventClass == PushNewOrderEvent.class) {
-                        return true;
-                    }
-                    return false;
-                }
-
                 @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
+                    GYSysData gySysData = JSON.parseObject(erpBaseEvent.getErpInfo().getSysDataJson(), GYSysData.class);
+
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                        return GYorderHandler.pushOrder(pushNewOrderEvent);
+                        return gyOrderHandler.pushOrder(pushNewOrderEvent, gySysData);
                     }
-                    return null;
+                    if (erpBaseEvent instanceof OrderRemarkUpdate) {
+                        OrderRemarkUpdate orderRemarkUpdate = (OrderRemarkUpdate) erpBaseEvent;
+                        return gyOrderHandler.orderMemoUpdate(orderRemarkUpdate.getOrderRemarkUpdateInfo(), gySysData);
+                    }
+                    if (erpBaseEvent instanceof OrderRefundStatusUpdate) {
+                        OrderRefundStatusUpdate orderRefundStatusUpdate = (OrderRefundStatusUpdate) erpBaseEvent;
+                        return gyOrderHandler.orderRefundStateUpdate(orderRefundStatusUpdate.getOrderRefundStatusInfo(), gySysData);
+                    }
+                    return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT);
                 }
 
                 @Override

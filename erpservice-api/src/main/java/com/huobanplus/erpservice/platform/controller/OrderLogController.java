@@ -125,7 +125,7 @@ public class OrderLogController {
         pushNewOrderEvent.setErpUserInfo(userInfo);
         pushNewOrderEvent.setOrderInfoJson(orderDetailSyncLog.getOrderInfoJson());
 
-        return orderProxyService.pushOrder(pushNewOrderEvent);
+        return orderProxyService.handleEvent(pushNewOrderEvent);
     }
 
     @RequestMapping(value = "/reSyncOrderShip", method = RequestMethod.POST)
@@ -133,11 +133,14 @@ public class OrderLogController {
     private ApiResult syncOrderShip(long id) {
         ShipSyncDeliverInfo shipSyncDeliverInfo = shipSyncDeliverInfoService.findById(id);
         ERPUserInfo erpUserInfo = new ERPUserInfo(shipSyncDeliverInfo.getOrderShipSyncLog().getUserType(), shipSyncDeliverInfo.getOrderShipSyncLog().getCustomerId());
+
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+
         PushDeliveryInfoEvent pushDeliveryInfoEvent = new PushDeliveryInfoEvent();
         pushDeliveryInfoEvent.setErpUserInfo(erpUserInfo);
         OrderDeliveryInfo orderDeliveryInfo = shipSyncDeliverInfo.getOrderDeliveryInfo();
         pushDeliveryInfoEvent.setDeliveryInfo(orderDeliveryInfo);
+
         EventResult eventResult = erpUserHandler.handleEvent(pushDeliveryInfoEvent);
 
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {

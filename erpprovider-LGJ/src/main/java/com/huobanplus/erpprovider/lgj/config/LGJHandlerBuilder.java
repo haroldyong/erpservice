@@ -9,7 +9,7 @@
 
 package com.huobanplus.erpprovider.lgj.config;
 
-import com.huobanplus.erpprovider.lgj.common.LGJConstant;
+import com.huobanplus.erpprovider.lgj.handler.LGJOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
@@ -20,7 +20,6 @@ import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.huobanplus.erpprovider.lgj.handler.LGJOrderHandler;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,14 +36,6 @@ public class LGJHandlerBuilder implements ERPHandlerBuilder {
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
         return new ERPHandler() {
-            @Override
-            public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
-                if (baseEventClass == PushNewOrderEvent.class) {
-                    return true;
-                }
-                return false;
-            }
-
             @Override
             public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                 if (erpBaseEvent instanceof PushNewOrderEvent) {

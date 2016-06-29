@@ -17,6 +17,7 @@ public enum EventResultEnum {
     ERROR(5000, "处理失败"),
     NO_SIGN(4000, "签名参数未传"),
     WRONG_SIGN(4001, "签名不正确"),
+    UNSUPPORT_EVENT(4002, "不支持的ERP事件"),
     BAD_REQUEST_PARAM(5001, "请求参数不正确"),
     NO_DATA(3000, "未找到相关处理信息"),
     SYSTEM_BAD_REQUEST(5002, "服务器请求失败");

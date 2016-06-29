@@ -25,6 +25,7 @@
             var appSecret = $.trim($("#gy_appSecret").val());
             var shopCode = $.trim($("#gy_shopCode").val());
             var warehouseCode = $("#gy_warehouseCode").val();
+            var defaultLogiCode = $.trim($("#gy_defaultLogiCode").val());
 
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入请求地址");
@@ -35,7 +36,7 @@
                 $.jBox.tip("请输入管易的appkey");
                 return null;
             }
-            if(sessionKey.length == 0){
+            if (sessionKey.length == 0) {
                 $.jBox.tip("请输入管易的sesssionKey");
                 return null;
             }
@@ -51,14 +52,19 @@
                 $.jBox.tip("请输入管易的仓库代码");
                 return null;
             }
+            if (defaultLogiCode.length == 0) {
+                $.jBox.tip("请输入默认快递代码");
+                return null;
+            }
 
             var gyConfig = {
                 requestUrl: requestUrl,
                 appKey: gyAppKey,
-                sessionKey:sessionKey,
+                sessionKey: sessionKey,
                 secret: appSecret,
-                shopCode:shopCode,
-                warehouseCode:warehouseCode
+                shopCode: shopCode,
+                warehouseCode: warehouseCode,
+                defaultLogiCode: defaultLogiCode
             };
             return JSON.stringify(gyConfig);
         },
@@ -69,7 +75,7 @@
             $("#gy_appSecret").val(jsonData.secret);
             $("#gy_shopCode").val(jsonData.shopCode);
             $("#gy_warehouseCode").val(jsonData.warehouseCode);
-
+            $("#gy_defaultLogiCode").val(jsonData.defaultLogiCode);
         }
     };
 </script>
@@ -113,6 +119,13 @@
         <th style="vertical-align: middle;">仓库代码：</th>
         <td>
             <input name="gy_warehouseCode" type="text" value="" id="gy_warehouseCode" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">默认快递代码：</th>
+        <td>
+            <input name="gy_defaultLogiCode" type="text" value="" id="gy_defaultLogiCode" class="input-normal"/>
+            (基础信息->快递管理->物流公司查看)
         </td>
     </tr>
     <%--<tr>--%>

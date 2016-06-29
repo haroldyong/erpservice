@@ -27,6 +27,10 @@ public class Order extends BaseInfo {
      * 下单用户账户名（手机号）
      */
     private String userLoginName;
+    /**
+     * 下单用户用户昵称
+     */
+    private String userNickname;
     private int confirm;
     private int orderStatus;
     private int payStatus;

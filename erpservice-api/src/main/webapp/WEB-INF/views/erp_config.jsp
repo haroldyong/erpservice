@@ -161,7 +161,7 @@
             } else {
                 $("#currentErp").html($("#erpType").find("option:selected").text());
             }
-        })
+        });
     </script>
 </head>
 <body>

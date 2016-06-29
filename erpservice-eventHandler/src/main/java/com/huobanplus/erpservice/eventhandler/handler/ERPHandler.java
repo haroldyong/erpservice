@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.eventhandler.handler;
@@ -12,12 +12,9 @@ package com.huobanplus.erpservice.eventhandler.handler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.FailedBean;
-import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 /**
  * 事件处理器
@@ -25,13 +22,6 @@ import java.io.UnsupportedEncodingException;
  * Created by allan on 2015/7/13.
  */
 public interface ERPHandler {
-    /**
-     * 是否支持该事件
-     *
-     * @param baseEventClass 某事件
-     * @return true表示支持
-     */
-    boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass);
 
     /**
      * 处理事件

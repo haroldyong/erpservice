@@ -18,35 +18,38 @@ import lombok.Data;
 public class GYSysData {
 
     /**
-     *管易接口请求地址
+     * 管易接口请求地址
      */
     private String requestUrl;
 
     /**
-     *接入管易标识
+     * 接入管易标识
      */
     private String appKey;
 
     /**
-     *  sessionkey
+     * sessionkey
      */
     private String sessionkey;
 
 
     /**
-     *  店铺代码
+     * 店铺代码
      */
     private String shopCode;
 
     /**
-     *  仓库代码
+     * 仓库代码
      */
     private String warehouseCode;
 
     /**
-     *签名信息
+     * 签名信息
      */
     private String secret;
 
-
+    /**
+     * 默认快递公司代码
+     */
+    private String defaultLogiCode;
 }

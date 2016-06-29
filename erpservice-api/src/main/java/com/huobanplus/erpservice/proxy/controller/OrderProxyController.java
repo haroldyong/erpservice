@@ -12,11 +12,14 @@ package com.huobanplus.erpservice.proxy.controller;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
+import com.huobanplus.erpservice.datacenter.model.OrderRefundStatusInfo;
+import com.huobanplus.erpservice.datacenter.model.OrderRemarkUpdateInfo;
 import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * <b>提供给erp使用者的api，erp通过此类接口推送数据到erp服务平台，并转交给相应的erp处理</b>
@@ -42,6 +45,7 @@ public interface OrderProxyController {
      * @throws Exception
      */
     @RequestMapping(value = "/createOrder")
+    @ResponseBody
     ApiResult createOrder(
             String orderInfoJson,
             @RequestAttribute ERPInfo erpInfo,
@@ -49,6 +53,7 @@ public interface OrderProxyController {
     ) throws Exception;
 
     @RequestMapping(value = "/updateOrder")
+    @ResponseBody
     ApiResult updateOrder(String orderInfoJson, @RequestAttribute ERPInfo erpInfo) throws Exception;
 
     /**
@@ -61,21 +66,49 @@ public interface OrderProxyController {
      * @throws Exception
      */
     @RequestMapping("/orderDeliver")
+    @ResponseBody
     ApiResult orderDeliver(
             @RequestAttribute ERPInfo erpInfo,
             @RequestAttribute ERPUserInfo erpUserInfo,
             OrderDeliveryInfo deliveryInfo
     ) throws Exception;
 
-    @RequestMapping("/cancelOrder")
-    ApiResult cancelOrder(
-            String orderId,
-            @RequestAttribute ERPInfo erpInfo
-    ) throws Exception;
-
     @RequestMapping("/getOrderDetail")
+    @ResponseBody
     ApiResult getOrderDetail(
             String orderId,
             @RequestAttribute ERPInfo erpInfo
     ) throws Exception;
+
+    /**
+     * 更新退款状态
+     *
+     * @param erpInfo
+     * @param erpUserInfo
+     * @param orderRefundStatusInfo
+     * @return
+     */
+    @RequestMapping("/orderRefundStatus")
+    @ResponseBody
+    ApiResult orderRefundStatus(
+            @RequestAttribute ERPInfo erpInfo,
+            @RequestAttribute ERPUserInfo erpUserInfo,
+            OrderRefundStatusInfo orderRefundStatusInfo
+    );
+
+    /**
+     * 更新订单备注
+     *
+     * @param erpInfo               erp信息
+     * @param erpUserInfo           erp使用者信息
+     * @param orderRemarkUpdateInfo {@link OrderRemarkUpdateInfo}
+     * @return
+     */
+    @RequestMapping("/orderRemarkUpdate")
+    @ResponseBody
+    ApiResult orderRemarkUpdate(
+            @RequestAttribute ERPInfo erpInfo,
+            @RequestAttribute ERPUserInfo erpUserInfo,
+            OrderRemarkUpdateInfo orderRemarkUpdateInfo
+    );
 }

@@ -4,18 +4,18 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2016. All rights reserved.
  */
 
 package com.huobanplus.erpservice.proxy.controller.impl;
 
+import com.huobanplus.erpservice.commons.bean.ApiResult;
+import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.erpevent.InventoryEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
-import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.commons.bean.ResultCode;
-import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.proxy.common.HotBaseController;
 import com.huobanplus.erpservice.proxy.controller.HotProductController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,17 +42,13 @@ public class HotProductControllerImpl extends HotBaseController implements HotPr
             if (erpHandler == null) {
                 return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
             }
-            if (erpHandler.eventSupported(InventoryEvent.class)) {
-                InventoryEvent inventoryEvent = new InventoryEvent();
-                inventoryEvent.setErpInfo(erpInfo);
-                EventResult eventResult = erpHandler.handleEvent(inventoryEvent);
-                if (eventResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
-                    return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
-                } else {
-                    return ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, eventResult.getData());
-                }
+            InventoryEvent inventoryEvent = new InventoryEvent();
+            inventoryEvent.setErpInfo(erpInfo);
+            EventResult eventResult = erpHandler.handleEvent(inventoryEvent);
+            if (eventResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
+                return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
             } else {
-                return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT);
+                return ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, eventResult.getResultMsg(), null);
             }
         } catch (Exception e) {
             return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, e.getMessage());

@@ -11,6 +11,7 @@ package com.huobanplus.erpprovider.kaola.config;
 
 import com.huobanplus.erpprovider.kaola.handler.KaoLaOrderInfoHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
@@ -36,21 +37,13 @@ public class KaoLaHandlerBuilder implements ERPHandlerBuilder {
         if (info.getErpType() == ERPTypeEnum.ProviderType.KAOLA) {
             return new ERPHandler() {
                 @Override
-                public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
-                    if (baseEventClass == PushNewOrderEvent.class) {
-                        return true;
-                    }
-                    return false;
-                }
-
-                @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
                         return kaoLaOrderInfoHandler.pushOrder(pushNewOrderEvent);
                     }
 
-                    return null;
+                    return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT);
                 }
 
                 @Override

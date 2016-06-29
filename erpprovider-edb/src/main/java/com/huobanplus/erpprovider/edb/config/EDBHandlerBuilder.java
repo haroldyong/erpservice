@@ -12,6 +12,7 @@ package com.huobanplus.erpprovider.edb.config;
 
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -44,18 +45,6 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
         if (erpInfo.getErpType() == ERPTypeEnum.ProviderType.EDB) {
             return new ERPHandler() {
                 @Override
-                public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
-                    if (baseEventClass == PushNewOrderEvent.class) {
-                        return true;
-                    }
-                    if (baseEventClass == PushDeliveryInfoEvent.class) {
-                        return true;
-                    }
-                    //todo 判断事件是否可以处理
-                    return false;
-                }
-
-                @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
@@ -66,7 +55,7 @@ public class EDBHandlerBuilder implements ERPHandlerBuilder {
                         PushDeliveryInfoEvent pushDeliveryInfoEvent = (PushDeliveryInfoEvent) erpBaseEvent;
                         return edbOrderHandler.orderDeliver(pushDeliveryInfoEvent);
                     }
-                    return null;
+                    return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT);
                 }
 
                 @Override

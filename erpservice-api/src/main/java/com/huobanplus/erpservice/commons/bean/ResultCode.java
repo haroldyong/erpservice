@@ -18,7 +18,7 @@ public enum ResultCode {
     NO_SUCH_ERPHANDLER(6001, "没有找到支持的erp"),
     EVENT_NOT_SUPPORT(6002, "该erp不支持此事件"),
     SYSTEM_BAD_REQUEST(5000, "系统请求失败"),
-    ERP_BAD_REQUEST(5001, "erp系统请求失败"),
+    ERP_BAD_REQUEST(5001, "ERP处理失败"),
     ERPUSER_BAD_REQUEST(5002, "erp使用者系统请求失败"),
     EMPTY_SIGN_CODE(4000, "签名参数不可为空"),
     WRONG_SIGN_CODE(4001, "签名验证不正确"),
