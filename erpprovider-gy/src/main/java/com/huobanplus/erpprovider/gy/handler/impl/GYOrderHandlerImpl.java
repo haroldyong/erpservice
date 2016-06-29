@@ -56,7 +56,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
             GYSysData sysData = JSON.parseObject(erpInfo.getSysDataJson(), GYSysData.class);
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
 
-            GYOrder newOrder = OrderChange(order,erpUserInfo,sysData);
+            GYOrder newOrder = OrderChange(order, erpUserInfo, sysData);
             System.out.println(JSON.toJSONString(order));
 
             Date now = new Date();
@@ -75,10 +75,10 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
 
             String requestData = getRequestData(sysData, newOrder, GYConstant.ORDER_ADD);
-            EventResult eventResult = orderPush(requestData,sysData);
-            if(eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+            EventResult eventResult = orderPush(requestData, sysData);
+            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-            } else{
+            } else {
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
                 orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
             }
@@ -87,11 +87,11 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
         } catch (Exception e) {
             log.error(e.getMessage());
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
-    private GYOrder OrderChange(Order order, ERPUserInfo erpUserInfo,GYSysData gySysData) throws ParseException {
+    private GYOrder OrderChange(Order order, ERPUserInfo erpUserInfo, GYSysData gySysData) throws ParseException {
 
         GYOrder newOrder = new GYOrder();
 
@@ -105,6 +105,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         newOrder.setVipCode(order.getUserLoginName());// FIXME: 2016/5/9 会员code 必填 
         newOrder.setVipName(order.getBuyerName());// FIXME: 2016/6/21
 
+        newOrder.setReceiverName(order.getShipName());
         newOrder.setReceiverAddress(order.getShipAddr());
         newOrder.setReceiverZip(order.getShipZip());
         newOrder.setReceiverMobile(order.getShipMobile());
@@ -118,7 +119,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         newOrder.setBusinessManCode(null);// FIXME: 2016/5/9
         newOrder.setPostFee(order.getCostFreight());// FIXME: 2016/5/9
 //        newOrder.setCodFee(0.0);// FIXME: 2016/5/9  到付服务费
-        newOrder.setDiscountFee(order.getPmtAmount());// 让利金额
+//        newOrder.setDiscountFee(order.getPmtAmount());// 让利金额
 //        newOrder.setPlanDeliveryDate(null);//// FIXME: 2016/5/9 预计发货日期，可能有格式问题
         newOrder.setBuyerMemo(order.getMemo());
         newOrder.setSellerMemo(order.getRemark());
@@ -129,16 +130,17 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
         List<GYOrderItem> details = new ArrayList<>();
 
-        order.getOrderItems().forEach(item ->{
+        order.getOrderItems().forEach(item -> {
             GYOrderItem detail = new GYOrderItem();
-            detail.setItemCode("test");item.getGoodBn();
+            detail.setItemCode("test");
+            item.getGoodBn();
             detail.setSkuCode(item.getProductBn());
             detail.setPrice(item.getPrice());
             detail.setRefund(0);//0非退款 ,1退款(退款中);
 //            detail.setNote("");//备注
             detail.setQty(item.getNum());
 
-            if(item.getItemId() != null){
+            if (item.getItemId() != null) {
                 detail.setOid(String.valueOf(item.getItemId()));// FIXME: 2016/6/21  子订单ID 用于后续订单状态修改的查询
             }
             details.add(detail);
@@ -159,9 +161,9 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         //一笔订单支付信息
         List<GYPayment> payments = new ArrayList<>();
         GYPayment payment = new GYPayment();
-        if(order.getPaymentName().equals("支付宝")){
+        if (order.getPaymentName().equals("支付宝")) {
             payment.setPayTypeCode(GYEnum.PaymentOptions.ZHIFUBAO.getCode());//支付类型code
-        } else{
+        } else {
             payment.setPayTypeCode(GYEnum.PaymentOptions.WEIXIN.getCode());
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -176,112 +178,112 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     }
 
     @SuppressWarnings("Duplicates")
-    private EventResult orderPush(String requestData,GYSysData gySysData){
-        try{
+    private EventResult orderPush(String requestData, GYSysData gySysData) {
+        try {
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
+                if (result.getBoolean("success")) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
-                } else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return  EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
                 }
             } else {
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
-        }catch (Exception e){
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
 
     @SuppressWarnings("Duplicates")
     @Override
-    public EventResult orderQuery(GYOrderSearch orderSearch,GYSysData gySysData) {
+    public EventResult orderQuery(GYOrderSearch orderSearch, GYSysData gySysData) {
         try {
 
-            String requestData = getRequestData(gySysData,orderSearch,GYConstant.ORDER_QUERY);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            String requestData = getRequestData(gySysData, orderSearch, GYConstant.ORDER_QUERY);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
+                if (result.getBoolean("success")) {
                     // 封装实体类
                     JSONArray jsonArray = result.getJSONArray("orders");
                     List<GYResponseOrder> responseOrders = new ArrayList<>();
-                    jsonArray.forEach(order->{
-                        GYResponseOrder responseOrder = JSON.parseObject(order.toString(),GYResponseOrder.class);
+                    jsonArray.forEach(order -> {
+                        GYResponseOrder responseOrder = JSON.parseObject(order.toString(), GYResponseOrder.class);
                         responseOrders.add(responseOrder);
                     });
 
-                    return EventResult.resultWith(EventResultEnum.SUCCESS,responseOrders);
-                }else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, responseOrders);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
                 }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (IOException e) {
             log.error(e);
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
     @SuppressWarnings("Duplicates")
     @Override
-    public EventResult orderMemoUpdate(GYOrderMemo gyOrderMemo,GYSysData gySysData) {
+    public EventResult orderMemoUpdate(GYOrderMemo gyOrderMemo, GYSysData gySysData) {
         try {
 
             //fill entity // TODO: 2016/6/17
 
 
-            String requestData = getRequestData(gySysData, gyOrderMemo,GYConstant.ORDER_MEMO_UPDATE);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            String requestData = getRequestData(gySysData, gyOrderMemo, GYConstant.ORDER_MEMO_UPDATE);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
+                if (result.getBoolean("success")) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
                 }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (IOException e) {
             log.error(e);
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
     @SuppressWarnings("Duplicates")
     @Override
-    public EventResult orderRefundStateUpdate(GYOrderRefundUpdate gyOrderRefundUpdate,GYSysData gySysData) {
+    public EventResult orderRefundStateUpdate(GYOrderRefundUpdate gyOrderRefundUpdate, GYSysData gySysData) {
         try {
 
             //fill entity // TODO: 2016/6/17
 
-            String requestData = getRequestData(gySysData, gyOrderRefundUpdate,GYConstant.ORDER_REFUND_STATE_UPDATE);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            String requestData = getRequestData(gySysData, gyOrderRefundUpdate, GYConstant.ORDER_REFUND_STATE_UPDATE);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
+                if (result.getBoolean("success")) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
                 }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (IOException e) {
             log.error(e);
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
@@ -289,24 +291,24 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     @Override
     public EventResult deliveryOrderQuery(GYDeliveryOrderSearch gyDeliveryOrderSearch, GYSysData gySysData) {
         try {
-            String requestData = getRequestData(gySysData, gyDeliveryOrderSearch,GYConstant.DELIVERY_QUERY);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            String requestData = getRequestData(gySysData, gyDeliveryOrderSearch, GYConstant.DELIVERY_QUERY);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
+                if (result.getBoolean("success")) {
                     // TODO: 2016/6/17
-                    return EventResult.resultWith(EventResultEnum.SUCCESS,result);
-                }else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, result);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
                 }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (IOException e) {
             log.error(e);
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
@@ -314,52 +316,52 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     @Override
     public EventResult historyDeliveryOrderQuery(GYDeliveryOrderSearch gyDeliveryOrderSearch, GYSysData gySysData) {
         try {
-            String requestData = getRequestData(gySysData, gyDeliveryOrderSearch,GYConstant.HISTORY_DELIVERY_QUERY);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            String requestData = getRequestData(gySysData, gyDeliveryOrderSearch, GYConstant.HISTORY_DELIVERY_QUERY);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
+                if (result.getBoolean("success")) {
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
                 }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (IOException e) {
             log.error(e);
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
     @SuppressWarnings("Duplicates")
     @Override
-    public EventResult deliveryOrderUpdate(GYDeliveryOrderUpdate deliveryOrderUpdate,GYSysData gySysData) {
+    public EventResult deliveryOrderUpdate(GYDeliveryOrderUpdate deliveryOrderUpdate, GYSysData gySysData) {
         try {
 
             //fill entity // TODO: 2016/6/17
 
-            String requestData = getRequestData(gySysData, deliveryOrderUpdate,GYConstant.DELIVERY_INFO_UPDATE);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            String requestData = getRequestData(gySysData, deliveryOrderUpdate, GYConstant.DELIVERY_INFO_UPDATE);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
+                if (result.getBoolean("success")) {
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
                 }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (IOException e) {
             log.error(e);
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
@@ -367,155 +369,155 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     @Override
     public EventResult returnOrderQuery(GYReturnOrderSearch gyReturnOrderSearch, GYSysData gySysData) {
         try {
-            String requestData = getRequestData(gySysData, gyReturnOrderSearch,GYConstant.RETURN_ORDER_QUERY);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            String requestData = getRequestData(gySysData, gyReturnOrderSearch, GYConstant.RETURN_ORDER_QUERY);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
+                if (result.getBoolean("success")) {
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
                 }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (IOException e) {
             log.error(e);
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
     @SuppressWarnings("Duplicates")
     @Override
-    public EventResult pushReturnOrder(GYReturnOrder gyReturnOrder,GYSysData gySysData) {
+    public EventResult pushReturnOrder(GYReturnOrder gyReturnOrder, GYSysData gySysData) {
         try {
 
-            String requestData = getRequestData(gySysData, gyReturnOrder,GYConstant.RETUR_ORDER_ADD);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            String requestData = getRequestData(gySysData, gyReturnOrder, GYConstant.RETUR_ORDER_ADD);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
+                if (result.getBoolean("success")) {
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
                 }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (IOException e) {
             log.error(e);
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
     @SuppressWarnings("Duplicates")
     @Override
-    public EventResult returnOrderInStock(GYReturnOrderInStock gyReturnOrderInStock,GYSysData gySysData) {
-        try {
-            //fill entity // TODO: 2016/6/17
-
-
-            String requestData = getRequestData(gySysData, gyReturnOrderInStock,GYConstant.RETURN_ORDER_IN_STOCK);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
-                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
-                    // TODO: 2016/6/17
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
-                }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
-            }
-        } catch (IOException e) {
-            log.error(e);
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
-        }
-    }
-
-    @SuppressWarnings("Duplicates")
-    @Override
-    public EventResult historyOrderQuery(GYOrderSearch gyOrderSearch,GYSysData gySysData) {
-        try {
-            String requestData = getRequestData(gySysData, gyOrderSearch,GYConstant.HISTORY_ORDER_QUERY);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
-                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
-                    // TODO: 2016/6/17
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
-                }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
-            }
-        } catch (IOException e) {
-            log.error(e);
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
-        }
-    }
-
-    @SuppressWarnings("Duplicates")
-    @Override
-    public EventResult pushRefundOrder(GYRefundOrder gyRefundOrder,GYSysData gySysData) {
+    public EventResult returnOrderInStock(GYReturnOrderInStock gyReturnOrderInStock, GYSysData gySysData) {
         try {
             //fill entity // TODO: 2016/6/17
 
-            String requestData = getRequestData(gySysData, gyRefundOrder,GYConstant.REFUND_ORDER_ADD);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+
+            String requestData = getRequestData(gySysData, gyReturnOrderInStock, GYConstant.RETURN_ORDER_IN_STOCK);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
+                if (result.getBoolean("success")) {
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
                 }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (IOException e) {
             log.error(e);
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
     @SuppressWarnings("Duplicates")
     @Override
-    public EventResult refundOrderQuery(GYRefundOrderSearch gyRefundOrderSearch,GYSysData gySysData) {
+    public EventResult historyOrderQuery(GYOrderSearch gyOrderSearch, GYSysData gySysData) {
         try {
-            String requestData = getRequestData(gySysData, gyRefundOrderSearch,GYConstant.REFUND_ORDER_QUERY);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            String requestData = getRequestData(gySysData, gyOrderSearch, GYConstant.HISTORY_ORDER_QUERY);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
-                if(result.getBoolean("success")){
+                if (result.getBoolean("success")) {
                     // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }else{
-                    log.info("错误信息："+result.getString("errorDesc"));
-                    log.info("请求数据报文："+requestData);
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("errorDesc"),null);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
                 }
-            }else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (IOException e) {
             log.error(e);
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult pushRefundOrder(GYRefundOrder gyRefundOrder, GYSysData gySysData) {
+        try {
+            //fill entity // TODO: 2016/6/17
+
+            String requestData = getRequestData(gySysData, gyRefundOrder, GYConstant.REFUND_ORDER_ADD);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if (result.getBoolean("success")) {
+                    // TODO: 2016/6/17
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
+                }
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public EventResult refundOrderQuery(GYRefundOrderSearch gyRefundOrderSearch, GYSysData gySysData) {
+        try {
+            String requestData = getRequestData(gySysData, gyRefundOrderSearch, GYConstant.REFUND_ORDER_QUERY);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(), requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                if (result.getBoolean("success")) {
+                    // TODO: 2016/6/17
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                } else {
+                    log.info("错误信息：" + result.getString("errorDesc"));
+                    log.info("请求数据报文：" + requestData);
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
+                }
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 }
