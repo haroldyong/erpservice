@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Created by wuxiongliu on 2016/6/20.
+ * 管易订单实体 响应实体（针对订单查询返回结果）
  */
 @Data
 public class GYResponseOrder {

@@ -3,10 +3,9 @@ package com.huobanplus.erpprovider.gy.search;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
-import java.util.Date;
-
 /**
  * Created by wuxiongliu on 2016/6/17.
+ * 管易退货单查询实体
  */
 @Data
 public class GYRefundOrderSearch {
@@ -15,25 +14,25 @@ public class GYRefundOrderSearch {
      * 页码
      */
     @JSONField(name = "page_no")
-    private int pageNo;
+    private Integer pageNo;
 
     /**
      * 每页大小
      */
     @JSONField(name = "page_size")
-    private int pageSize;
+    private Integer pageSize;
 
     /**
      * 开始时间
      */
     @JSONField(name = "start_date")
-    private Date beginTime;// FIXME: 2016/6/17 
+    private String beginTime;
 
     /**
      * 结束时间
      */
     @JSONField(name = "end_date")
-    private Date endTime;// FIXME: 2016/6/17
+    private String endTime;
 
 
     /**
@@ -88,9 +87,6 @@ public class GYRefundOrderSearch {
      * 作废状态 0-未作废;1-已作废
      */
     @JSONField(name = "cancel")
-    private int cancel;
-    
-    
-
+    private Integer cancel;
 
 }

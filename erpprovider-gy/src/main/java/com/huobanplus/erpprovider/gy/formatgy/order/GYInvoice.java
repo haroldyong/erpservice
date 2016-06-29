@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * Created by admin on 2016/5/9.
+ * 管易发票实体
  */
 @Data
 public class GYInvoice {

@@ -33,6 +33,8 @@ public class GYStockHandlerTest extends GYTestBase {
         GYStockSearch gyStockSearch = new GYStockSearch();
 
         EventResult eventResult = gyStockHandler.stockQuery(gyStockSearch,mockGySysData);
+        System.out.println(eventResult.getData());
+        System.out.println(eventResult.getResultMsg());
         System.out.println(eventResult.getResultCode());
 
     }

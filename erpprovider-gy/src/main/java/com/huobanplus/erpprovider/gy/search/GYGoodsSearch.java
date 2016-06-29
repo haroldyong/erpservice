@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * Created by wuxiongliu on 2016/6/17.
+ * 管易商品查询实体
  */
 @Data
 public class GYGoodsSearch {
@@ -13,13 +14,13 @@ public class GYGoodsSearch {
      *  页码
      */
     @JSONField(name = "page_no")
-    private int pageNo;
+    private Integer pageNo;
 
     /**
      *  每页大小
      */
     @JSONField(name = "page_size")
-    private int pageSize;
+    private Integer pageSize;
 
     /**
      *  商品代码

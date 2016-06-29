@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Created by wuxiongliu on 2016/6/17.
+ * 管易发货单更新实体
  */
 @Data
 public class GYDeliveryOrderUpdate {

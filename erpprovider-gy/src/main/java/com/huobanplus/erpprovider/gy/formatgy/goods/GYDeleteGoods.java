@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * Created by wuxiongliu on 2016/6/17.
+ * 管易删除商品实体
  */
 @Data
 public class GYDeleteGoods {

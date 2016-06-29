@@ -61,9 +61,9 @@ public class GYSyncDelivery extends GYBaseHandler {
     private GYOrderHandler gyOrderHandler;
 
 
-    @Scheduled(cron = "0 0/1 * * * ? ")
+    @Scheduled(cron = "0 */1 * * * ? ")
     @Transactional
-    public void syncOrderShip() {
+    public synchronized void syncOrderShip() {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
         log.info("order ship sync for GY start!");
@@ -87,11 +87,12 @@ public class GYSyncDelivery extends GYBaseHandler {
                 boolean syncFlag = true;
 
                 GYDeliveryOrderSearch orderSearch = new GYDeliveryOrderSearch();
+                orderSearch.setPageNo(1);
                 orderSearch.setPageSize(GYConstant.PAGE_SIZE);
                 orderSearch.setStartDeliveryDate(StringUtil.DateFormat(beginTime,StringUtil.TIME_PATTERN));
                 orderSearch.setEndDeliveryDate(nowStr);
                 orderSearch.setShopCode(sysData.getShopCode());// FIXME: 2016/6/22 eg:ruyi
-                orderSearch.setDelivery(1);// 发货完成
+                orderSearch.setDelivery(1);// 已发货
 
                 // 第一次同步
                 EventResult eventResult = gyOrderHandler.deliveryOrderQuery(orderSearch, sysData);

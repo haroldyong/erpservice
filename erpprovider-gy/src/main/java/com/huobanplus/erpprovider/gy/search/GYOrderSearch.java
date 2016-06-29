@@ -7,6 +7,7 @@ import java.util.Date;
 
 /**
  * Created by wuxiongliu on 2016/6/17.
+ * 管易订单查询实体
  */
 @Data
 public class GYOrderSearch {
@@ -15,25 +16,25 @@ public class GYOrderSearch {
      * 页码
      */
     @JSONField(name = "page_no")
-    private int pageNo;
+    private Integer pageNo;
 
     /**
      * 每页大小
      */
     @JSONField(name = "page_size")
-    private int pageSize;
+    private Integer pageSize;
 
     /**
      * 开始时间
      */
     @JSONField(name = "start_date")
-    private Date beginTime;
+    private String beginTime;
 
     /**
      * 结束时间
      */
     @JSONField(name = "end_date")
-    private Date endTime;
+    private String endTime;
 
     /**
      * 时间类型 默认为0, 0、创建时间 1、拍单时间 2、付款时间
@@ -45,7 +46,7 @@ public class GYOrderSearch {
      * 订单类型 默认为0, 0、全部 1、未审核 2、已审核
      */
     @JSONField(name = "order_state")
-    private int orderState;
+    private Integer orderState;
 
     /**
      * 仓库代码

@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * Created by wuxiongliu on 2016/6/22.
+ * 管易商品规格实体  响应结果封装实体
  */
 @Data
 public class GYResponseGoodsSku {

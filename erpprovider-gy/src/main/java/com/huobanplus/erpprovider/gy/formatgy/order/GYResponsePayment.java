@@ -7,6 +7,7 @@ import java.util.Date;
 
 /**
  * Created by wuxiongliu on 2016/6/20.
+ * 管易支付信息实体  响应实体（针对订单查询返回结果）
  */
 @Data
 public class GYResponsePayment {
