@@ -15,10 +15,12 @@ import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
+import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLogDetail;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderDetailSyncSearch;
+import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogDetailService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
@@ -35,10 +37,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by allan on 4/13/16.
@@ -48,6 +49,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class OrderLogController {
     @Autowired
     private OrderDetailSyncLogService orderDetailSyncLogService;
+    @Autowired
+    private OrderDetailSyncLogDetailService orderDetailSyncLogDetailService;
     @Autowired
     private OrderProxyService orderProxyService;
     @Autowired
@@ -75,6 +78,18 @@ public class OrderLogController {
         model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);
         model.addAttribute("erpUserType", erpUserType);
         return "logs/order_detail_sync_list";
+    }
+
+    @RequestMapping(value = "/orderDetailSyncDetail", method = RequestMethod.GET)
+    private String orderDetailSyncDetail(
+            @RequestAttribute int customerId,
+            @ModelAttribute(value = "erpUserType") int erpUserType,
+            long syncLogId,
+            Model model
+    ) {
+        List<OrderDetailSyncLogDetail> orderDetailSyncLogDetails = orderDetailSyncLogDetailService.findBySyncLogId(syncLogId);
+        // TODO: 6/30/16
+        return null;
     }
 
     @RequestMapping(value = "/orderShipSyncs", method = RequestMethod.GET)

@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.gy.handler;
 
 import com.alibaba.fastjson.JSON;
@@ -119,7 +128,7 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockPushNewOrderEvent.setErpInfo(mockErpInfo);
         mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
 
-        EventResult result = gyOrderHandler.pushOrder(mockPushNewOrderEvent);
+        EventResult result = gyOrderHandler.pushOrder(mockPushNewOrderEvent, mockGySysData);
         System.out.println(result.getResultCode());
         System.out.println(result.getResultMsg());
     }
@@ -140,23 +149,23 @@ public class GYOrderHandlerTest extends GYTestBase {
 
     @Test
     public void testOrderMemoUpdate(){
-        GYOrderMemo gyOrderMemo = new GYOrderMemo();
-        gyOrderMemo.setMemo("add memo");
-        gyOrderMemo.setTid("1234566584511222111");
-        EventResult eventResult = gyOrderHandler.orderMemoUpdate(gyOrderMemo,mockGySysData);
-        System.out.println(eventResult.getResultCode());
-        System.out.println(eventResult.getResultMsg());
+//        GYOrderMemo gyOrderMemo = new GYOrderMemo();
+//        gyOrderMemo.setMemo("add memo");
+//        gyOrderMemo.setTid("1234566584511222111");
+//        EventResult eventResult = gyOrderHandler.orderMemoUpdate(gyOrderMemo,mockGySysData);
+//        System.out.println(eventResult.getResultCode());
+//        System.out.println(eventResult.getResultMsg());
     }
 
     @Test
     public void testOrderRefundStateUpdate(){
-        GYOrderRefundUpdate gyOrderRefundUpdate = new GYOrderRefundUpdate();
-        gyOrderRefundUpdate.setOid("test1");
-        gyOrderRefundUpdate.setTid("2016wxl1");
-        gyOrderRefundUpdate.setRefundState(1);
-        EventResult eventResult = gyOrderHandler.orderRefundStateUpdate(gyOrderRefundUpdate,mockGySysData);
-        System.out.println(eventResult.getResultCode());
-        System.out.println(eventResult.getResultMsg());
+//        GYOrderRefundUpdate gyOrderRefundUpdate = new GYOrderRefundUpdate();
+//        gyOrderRefundUpdate.setOid("test1");
+//        gyOrderRefundUpdate.setTid("2016wxl1");
+//        gyOrderRefundUpdate.setRefundState(1);
+//        EventResult eventResult = gyOrderHandler.orderRefundStateUpdate(gyOrderRefundUpdate,mockGySysData);
+//        System.out.println(eventResult.getResultCode());
+//        System.out.println(eventResult.getResultMsg());
     }
 
     @Test
@@ -195,24 +204,24 @@ public class GYOrderHandlerTest extends GYTestBase {
 
     @Test
     public void testPushReturnOrder(){
-        GYReturnOrder gyReturnOrder = new GYReturnOrder();
-        gyReturnOrder.setTypeCode("001");
-        gyReturnOrder.setShopCode("9999");
-        gyReturnOrder.setVipCode("wuliuxiong22");
-        gyReturnOrder.setNote("wxo");
-
-        List<GYReturnOrderItem> gyReturnOrderItems = new ArrayList<>();
-        GYReturnOrderItem gyReturnOrderItem = new GYReturnOrderItem();
-        gyReturnOrderItem.setItemCode("1020021");
-        gyReturnOrderItem.setSkuCode("3872824-ecc4090b639c47f89b453980923afb8e");
-        gyReturnOrderItem.setQty(10);
-        gyReturnOrderItem.setOriginPrice(10.0);
-        gyReturnOrderItem.setPrice(11.0);
-        gyReturnOrderItems.add(gyReturnOrderItem);
-
-        EventResult eventResult = gyOrderHandler.pushReturnOrder(gyReturnOrder,mockGySysData);
-        System.out.println(eventResult.getResultCode());
-        System.out.println(eventResult.getResultMsg());
+//        GYReturnOrder gyReturnOrder = new GYReturnOrder();
+//        gyReturnOrder.setTypeCode("001");
+//        gyReturnOrder.setShopCode("9999");
+//        gyReturnOrder.setVipCode("wuliuxiong22");
+//        gyReturnOrder.setNote("wxo");
+//
+//        List<GYReturnOrderItem> gyReturnOrderItems = new ArrayList<>();
+//        GYReturnOrderItem gyReturnOrderItem = new GYReturnOrderItem();
+//        gyReturnOrderItem.setItemCode("1020021");
+//        gyReturnOrderItem.setSkuCode("3872824-ecc4090b639c47f89b453980923afb8e");
+//        gyReturnOrderItem.setQty(10);
+//        gyReturnOrderItem.setOriginPrice(10.0);
+//        gyReturnOrderItem.setPrice(11.0);
+//        gyReturnOrderItems.add(gyReturnOrderItem);
+//
+//        EventResult eventResult = gyOrderHandler.pushReturnOrder(gyReturnOrder,mockGySysData);
+//        System.out.println(eventResult.getResultCode());
+//        System.out.println(eventResult.getResultMsg());
     }
 
     @Test

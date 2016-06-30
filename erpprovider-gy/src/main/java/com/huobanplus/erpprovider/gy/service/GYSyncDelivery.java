@@ -70,9 +70,10 @@ public class GYSyncDelivery extends GYBaseHandler {
     private GYOrderHandler gyOrderHandler;
 
 
-    @Scheduled(cron = "0 0 */1 * * ?")
+    //    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 */5 * * * ?")//用于测试，每隔6分钟结算一次
     @Transactional
-    public synchronized void syncOrderShip() {
+    public void syncOrderShip() {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
         log.info("order ship sync for GY start!");
@@ -85,89 +86,86 @@ public class GYSyncDelivery extends GYBaseHandler {
                 GYSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), GYSysData.class);
 
                 //是否是第一次同步,第一次同步beginTime则为当前时间的前一天
-                OrderShipSyncLog lastSyncLog = orderShipSyncLogService.findTop(erpUserInfo.getCustomerId(), ERPTypeEnum.ProviderType.EDB);
+                OrderShipSyncLog lastSyncLog = orderShipSyncLogService.findTop(erpUserInfo.getCustomerId(), ERPTypeEnum.ProviderType.GY);
                 Date beginTime = lastSyncLog == null
-                        ? Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusDays(1))
+                        ? Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusDays(2))
                         : lastSyncLog.getSyncTime();
 
                 List<OrderDeliveryInfo> failedOrders = new ArrayList<>(); //失败的订单列表
                 List<OrderDeliveryInfo> successOrders = new ArrayList<>(); //成功的订单列表
                 int totalCount = 0; //总数量
-                boolean syncFlag = true;
 
                 GYDeliveryOrderSearch orderSearch = new GYDeliveryOrderSearch();
                 orderSearch.setPageNo(1);
                 orderSearch.setPageSize(GYConstant.PAGE_SIZE);
-                orderSearch.setStartDeliveryDate(StringUtil.DateFormat(beginTime,StringUtil.TIME_PATTERN));
+                orderSearch.setStartDeliveryDate(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
                 orderSearch.setEndDeliveryDate(nowStr);
                 orderSearch.setShopCode(sysData.getShopCode());// FIXME: 2016/6/22 eg:ruyi
                 orderSearch.setDelivery(1);// 已发货
 
                 // 第一次同步
                 EventResult eventResult = gyOrderHandler.deliveryOrderQuery(orderSearch, sysData);
-                List<OrderDeliveryInfo> first = new ArrayList<>();
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                     JSONObject result = (JSONObject) eventResult.getData();
                     JSONArray deliveryArray = result.getJSONArray("deliverys");
                     totalCount = result.getInteger("total");
+                    if (totalCount > 0) {
+                        List<OrderDeliveryInfo> first = changeToSyncOrder(deliveryArray);
+                        BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
+                        batchDeliverEvent.setErpUserInfo(erpUserInfo);
+                        batchDeliverEvent.setErpInfo(erpInfo);
+                        batchDeliverEvent.setOrderDeliveryInfoList(first);
+                        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+                        EventResult firstSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
 
-                    first = changeToSyncOrder(deliveryArray);
-                }
-                if(totalCount == 0){
-                    syncFlag = false;
-                }
-
-                BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
-                batchDeliverEvent.setErpUserInfo(erpUserInfo);
-                batchDeliverEvent.setErpInfo(erpInfo);
-                batchDeliverEvent.setOrderDeliveryInfoList(first);
-                ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-                EventResult firstSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
-
-                if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                    BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
-                    failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
-                    successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
-                } else{
-                    failedOrders.addAll(first);
-                }
-
-                int totalPage = 0;
-                // 后续几页同步
-                totalPage = totalCount / GYConstant.PAGE_SIZE;
-                if(totalCount%GYConstant.PAGE_SIZE != 0){
-                    totalPage++;
-                }
-                if (totalPage > 1) {
-                    for (int index = 2; index <= totalPage; index++) {
-                        orderSearch.setPageNo(index);
-                        EventResult nextEventResult = gyOrderHandler.deliveryOrderQuery(orderSearch, sysData);
-                        List<OrderDeliveryInfo> next = new ArrayList<>();
-                        if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                            JSONObject result = (JSONObject) nextEventResult.getData();
-                            JSONArray deliveryArray = result.getJSONArray("deliverys");
-                            next = changeToSyncOrder(deliveryArray);
+                        if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                            BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
+                            failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
+                            successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
+                        } else {
+                            failedOrders.addAll(first);
                         }
-                        batchDeliverEvent.setOrderDeliveryInfoList(next);
-                        EventResult nextSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
-                        if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                            BatchDeliverResult nextBatchDeliverResult = (BatchDeliverResult) nextSyncResult.getData();
-                            failedOrders.addAll(nextBatchDeliverResult.getFailedOrders());
-                            successOrders.addAll(nextBatchDeliverResult.getSuccessOrders());
-                        } else{
-                            failedOrders.addAll(next);
+
+                        int totalPage = totalCount / GYConstant.PAGE_SIZE;
+
+                        // 后续几页同步
+                        if (totalCount % GYConstant.PAGE_SIZE != 0) {
+                            totalPage++;
+                        }
+                        if (totalPage > 1) {
+                            for (int index = 2; index <= totalPage; index++) {
+                                orderSearch.setPageNo(index);
+                                EventResult nextEventResult = gyOrderHandler.deliveryOrderQuery(orderSearch, sysData);
+                                List<OrderDeliveryInfo> next = new ArrayList<>();
+                                if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                    JSONObject nextResult = (JSONObject) nextEventResult.getData();
+                                    JSONArray nextDeliveryArray = nextResult.getJSONArray("deliverys");
+                                    next = changeToSyncOrder(nextDeliveryArray);
+                                }
+                                batchDeliverEvent.setOrderDeliveryInfoList(next);
+                                EventResult nextSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
+                                if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                    BatchDeliverResult nextBatchDeliverResult = (BatchDeliverResult) nextSyncResult.getData();
+                                    failedOrders.addAll(nextBatchDeliverResult.getFailedOrders());
+                                    successOrders.addAll(nextBatchDeliverResult.getSuccessOrders());
+                                } else {
+                                    failedOrders.addAll(next);
+                                }
+                            }
                         }
                     }
                 }
-                if(syncFlag){// 轮询若无数据，则不记录日志
-                    syncLog(failedOrders,successOrders,totalCount,erpUserInfo,erpInfo);
+
+
+                if (totalCount > 0) {// 轮询若无数据，则不记录日志
+                    syncLog(failedOrders, successOrders, totalCount, erpUserInfo, erpInfo);
                 }
 
             } catch (Exception e) {
                 log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
             }
-            log.info("GY ship sync end");
         }
+        log.info("GY ship sync end");
     }
 
     /**
