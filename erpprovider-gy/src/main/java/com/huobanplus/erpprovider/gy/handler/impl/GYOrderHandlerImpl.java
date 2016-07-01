@@ -23,6 +23,7 @@ import com.huobanplus.erpprovider.gy.search.GYRefundOrderSearch;
 import com.huobanplus.erpprovider.gy.search.GYReturnOrderSearch;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
+import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
@@ -62,6 +63,10 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent, GYSysData sysData) {
         try {
             Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+            //如果不是已支付的单子.不需要推送（比如是售后单,有些ERP需要通过此事件标记,但是管易不行,所以过滤）
+            if (order.getPayStatus() != OrderEnum.PayStatus.PAYED.getCode()) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "无需进行推送", null);
+            }
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
 

@@ -70,8 +70,8 @@ public class GYSyncDelivery extends GYBaseHandler {
     private GYOrderHandler gyOrderHandler;
 
 
-    //    @Scheduled(cron = "0 0 */1 * * ?")
-    @Scheduled(cron = "0 */5 * * * ?")//用于测试，每隔6分钟结算一次
+    @Scheduled(cron = "0 0 */1 * * ?")
+//    @Scheduled(cron = "0 */5 * * * ?")//用于测试，每隔6分钟结算一次
     @Transactional
     public void syncOrderShip() {
         Date now = new Date();

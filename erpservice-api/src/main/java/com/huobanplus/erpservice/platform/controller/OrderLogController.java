@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.platform.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpservice.common.SysConstant;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
@@ -26,6 +27,7 @@ import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService
 import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -134,13 +136,26 @@ public class OrderLogController {
     private ApiResult rePushOrder(long id) {
         OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findById(id);
         ERPInfo erpInfo = new ERPInfo(orderDetailSyncLog.getProviderType(), orderDetailSyncLog.getErpSysData());
-        ERPUserInfo userInfo = new ERPUserInfo(orderDetailSyncLog.getUserType(), orderDetailSyncLog.getCustomerId());
+        ERPUserInfo erpUserInfo = new ERPUserInfo(orderDetailSyncLog.getUserType(), orderDetailSyncLog.getCustomerId());
         PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
         pushNewOrderEvent.setErpInfo(erpInfo);
-        pushNewOrderEvent.setErpUserInfo(userInfo);
-        pushNewOrderEvent.setOrderInfoJson(orderDetailSyncLog.getOrderInfoJson());
+        pushNewOrderEvent.setErpUserInfo(erpUserInfo);
 
-        return orderProxyService.handleEvent(pushNewOrderEvent);
+        ERPUserHandler userHandler = erpRegister.getERPUserHandler(erpUserInfo);
+        if (userHandler == null) {
+            return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
+        }
+
+        GetOrderDetailEvent getOrderDetailEvent = new GetOrderDetailEvent();
+        getOrderDetailEvent.setErpUserInfo(erpUserInfo);
+        getOrderDetailEvent.setErpInfo(erpInfo);
+        getOrderDetailEvent.setOrderId(orderDetailSyncLog.getOrderId());
+        EventResult eventResult = userHandler.handleEvent(getOrderDetailEvent);
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(eventResult.getData()));
+            return orderProxyService.handleEvent(pushNewOrderEvent);
+        }
+        return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, eventResult.getResultMsg(), null);
     }
 
     @RequestMapping(value = "/reSyncOrderShip", method = RequestMethod.POST)
