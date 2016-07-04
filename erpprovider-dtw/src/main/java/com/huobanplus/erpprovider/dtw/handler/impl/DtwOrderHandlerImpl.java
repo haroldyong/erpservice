@@ -3,6 +3,7 @@ package com.huobanplus.erpprovider.dtw.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
+import com.huobanplus.erpprovider.dtw.formatdtw.DtwGoodsDelcareItem;
 import com.huobanplus.erpprovider.dtw.formatdtw.DtwOrder;
 import com.huobanplus.erpprovider.dtw.formatdtw.DtwOrderItem;
 import com.huobanplus.erpprovider.dtw.formatdtw.DtwPersonalDelcareInfo;
@@ -119,15 +120,32 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
             orderDetailSyncLog.setSyncTime(now);
 
-            EventResult eventResult = orderPush(requestMap, dtwSysData);
-            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            EventResult orderPushEventResult = orderPush(requestMap, dtwSysData);
+            EventResult declarePushEvent = pushPersonalDeclareOrder(order,dtwSysData);
+            boolean pushFlag = false;
+            if(orderPushEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode() &&
+                    declarePushEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                pushFlag = true;
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-            } else {
+            } else if(orderPushEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode() &&
+                    declarePushEvent.getResultCode() != EventResultEnum.SUCCESS.getResultCode()){// 订单推送成功，个人申报单推送失败
+
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
+                orderDetailSyncLog.setErrorMsg(declarePushEvent.getResultMsg());
+
+            } else if(orderPushEventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode() &&
+                    declarePushEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                orderDetailSyncLog.setErrorMsg(orderPushEventResult.getResultMsg());
+
+            } else{
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                orderDetailSyncLog.setErrorMsg(orderPushEventResult.getResultMsg()+";"+declarePushEvent.getResultCode());
             }
+
             orderDetailSyncLogService.save(orderDetailSyncLog);
-            return eventResult;
+            return orderPushEventResult;
 
         } catch (Exception e) {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
@@ -152,8 +170,61 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         }
     }
 
-    @Override
-    public EventResult pushPersonalDeclareOrder(DtwPersonalDelcareInfo dtwPersonalDelcareInfo, DtwSysData dtwSysData) {
+    private EventResult pushPersonalDeclareOrder(Order order, DtwSysData dtwSysData) {
+
+        DtwPersonalDelcareInfo dtwPersonalDelcareInfo = new DtwPersonalDelcareInfo();
+        dtwPersonalDelcareInfo.setMsgid("");
+        dtwPersonalDelcareInfo.setPreEntryNumber("");
+        dtwPersonalDelcareInfo.setImportType(0);// FIXME: 2016/7/4 进口类型（0一般进口，1保税进口）
+        dtwPersonalDelcareInfo.setECommerceCode("");
+        dtwPersonalDelcareInfo.setECommerceName("");
+        dtwPersonalDelcareInfo.setOrderNo("");
+        dtwPersonalDelcareInfo.setWayBill("");
+        dtwPersonalDelcareInfo.setPackNo(0);// FIXME: 2016/7/4
+        dtwPersonalDelcareInfo.setGrossWeight(0.0);
+        dtwPersonalDelcareInfo.setNetWeight(0.0);
+        dtwPersonalDelcareInfo.setRemark("");
+        dtwPersonalDelcareInfo.setSenderName("");
+        dtwPersonalDelcareInfo.setConsignee("");
+        dtwPersonalDelcareInfo.setSenderCity("");
+        dtwPersonalDelcareInfo.setPaperType("");
+        dtwPersonalDelcareInfo.setPaperNumber("");
+        dtwPersonalDelcareInfo.setWorth(0.0);
+        dtwPersonalDelcareInfo.setCurrCode("");
+        dtwPersonalDelcareInfo.setMainGName("");
+        dtwPersonalDelcareInfo.setSenderCountry("");
+        dtwPersonalDelcareInfo.setPurchaserTelNumber("");
+        dtwPersonalDelcareInfo.setBuyerIdType("");
+        dtwPersonalDelcareInfo.setBuyerName("");
+        dtwPersonalDelcareInfo.setFeeAmount(0.0);
+        dtwPersonalDelcareInfo.setInsureAmount(0.0);
+        dtwPersonalDelcareInfo.setCompanyName("");
+        dtwPersonalDelcareInfo.setCompanyCode("");
+        dtwPersonalDelcareInfo.setTradeCountry("");
+
+        List<DtwGoodsDelcareItem> dtwItems = new ArrayList<>();
+        DtwGoodsDelcareItem dtwGoodsDelcareItem = new DtwGoodsDelcareItem();
+        dtwGoodsDelcareItem.setGoodsOrder(1);
+        dtwGoodsDelcareItem.setCodeTs("");
+        dtwGoodsDelcareItem.setGoodsItemNo("");
+        dtwGoodsDelcareItem.setGoodsName("");
+        dtwGoodsDelcareItem.setGoodsModel("");
+        dtwGoodsDelcareItem.setOriginCountry("");
+        dtwGoodsDelcareItem.setTradeCurr("");
+        dtwGoodsDelcareItem.setTradeTotal(0.0);
+        dtwGoodsDelcareItem.setDeclPrice(0.0);
+        dtwGoodsDelcareItem.setDeclTotalPrice(0.0);
+        dtwGoodsDelcareItem.setUseTo("");
+        dtwGoodsDelcareItem.setDeclareCount(0);
+        dtwGoodsDelcareItem.setGoodsUnit("");
+        dtwGoodsDelcareItem.setFirstUnit("");
+        dtwGoodsDelcareItem.setFirstCount(0.0);
+        dtwGoodsDelcareItem.setSecondUnit("");
+        dtwGoodsDelcareItem.setSecondCount(0.0);
+
+        dtwItems.add(dtwGoodsDelcareItem);
+
+        dtwPersonalDelcareInfo.setItems(dtwItems);
 
         Map<String,Object> requestMap = new HashMap<>();
         requestMap.put("data",JSON.toJSONString(dtwPersonalDelcareInfo));

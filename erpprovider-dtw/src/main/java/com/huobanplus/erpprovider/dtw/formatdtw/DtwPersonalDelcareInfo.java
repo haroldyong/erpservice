@@ -24,6 +24,12 @@ public class DtwPersonalDelcareInfo {
     private String msgid;
 
     /**
+     * 预录入号
+     */
+    @JSONField(name = "preEntryNumber")
+    private String preEntryNumber;
+
+    /**
      * 电商平台名称（电商平台在跨境电商通关服务平台的备案名称）
      */
     @JSONField(name= "companyName")
