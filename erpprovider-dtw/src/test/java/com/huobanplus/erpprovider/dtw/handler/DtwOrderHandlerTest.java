@@ -3,6 +3,7 @@ package com.huobanplus.erpprovider.dtw.handler;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.dtw.DtwTestBase;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
+import com.huobanplus.erpprovider.dtw.formatdtw.DtwPersonalDelcareInfo;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
@@ -82,8 +83,6 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockErpUserInfo.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);
         mockErpUserInfo.setCustomerId(23347);
 
-
-
     }
 
 
@@ -95,5 +94,11 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockPushNewOrderEvent.setErpInfo(mockErpInfo);
         mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
         dtwOrderHandler.pushOrder(mockPushNewOrderEvent);
+    }
+
+    @Test
+    public void testPushPersonalDeclareOrder(){
+        DtwPersonalDelcareInfo dtwPersonalDelcareInfo = new DtwPersonalDelcareInfo();
+        dtwOrderHandler.pushPersonalDeclareOrder(dtwPersonalDelcareInfo,mockDtwSysData);
     }
 }

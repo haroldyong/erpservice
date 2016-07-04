@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpprovider.dtw.formatdtw.DtwOrder;
 import com.huobanplus.erpprovider.dtw.formatdtw.DtwOrderItem;
+import com.huobanplus.erpprovider.dtw.formatdtw.DtwPersonalDelcareInfo;
 import com.huobanplus.erpprovider.dtw.handler.DtwOrderHandler;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
@@ -151,4 +152,23 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         }
     }
 
+    @Override
+    public EventResult pushPersonalDeclareOrder(DtwPersonalDelcareInfo dtwPersonalDelcareInfo, DtwSysData dtwSysData) {
+
+        Map<String,Object> requestMap = new HashMap<>();
+        requestMap.put("data",JSON.toJSONString(dtwPersonalDelcareInfo));
+        HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl()+"/QBPresonal",requestMap);
+        System.out.println("\n********************************");
+        System.out.println(httpResult.getHttpContent());
+        System.out.println("********************************");
+        if(httpResult.getHttpStatus()==HttpStatus.SC_OK){
+            JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+            if (result.getString("ErrCode").equals("000")) {
+                return EventResult.resultWith(EventResultEnum.SUCCESS);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
+            }
+        }
+        return null;
+    }
 }
