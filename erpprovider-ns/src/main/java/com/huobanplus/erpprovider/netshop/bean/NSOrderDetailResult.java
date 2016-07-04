@@ -9,7 +9,6 @@
 
 package com.huobanplus.erpprovider.netshop.bean;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
@@ -26,6 +25,8 @@ public class NSOrderDetailResult {
     private String DateTime;
     private String BuyerId;
     private String BuyerName;
+    private int CardType;
+    private String IDCard;
     private String Country;
     private String Province;
     private String City;
@@ -35,6 +36,7 @@ public class NSOrderDetailResult {
     private String Email;
     private String Phone;
     private double Total;
+    private String Currency;
     private double Postage;
     private String PayAccount;
     private String PayID;
@@ -91,6 +93,22 @@ public class NSOrderDetailResult {
 
     public void setBuyerName(String buyerName) {
         BuyerName = buyerName;
+    }
+
+    public int getCardType() {
+        return CardType;
+    }
+
+    public void setCardType(int cardType) {
+        CardType = cardType;
+    }
+
+    public String getIDCard() {
+        return IDCard;
+    }
+
+    public void setIDCard(String IDCard) {
+        this.IDCard = IDCard;
     }
 
     public String getCountry() {
@@ -163,6 +181,14 @@ public class NSOrderDetailResult {
 
     public void setTotal(double total) {
         Total = total;
+    }
+
+    public String getCurrency() {
+        return Currency;
+    }
+
+    public void setCurrency(String currency) {
+        Currency = currency;
     }
 
     public double getPostage() {

@@ -18,6 +18,8 @@ public class NSOrderItemResult {
     private double Price;
     private String GoodsSpec;
     private int Count;
+    private String GoodsStatus;
+    private double Tax;
 
     public String getGoodsID() {
         return GoodsID;
@@ -57,5 +59,21 @@ public class NSOrderItemResult {
 
     public void setCount(int count) {
         Count = count;
+    }
+
+    public String getGoodsStatus() {
+        return GoodsStatus;
+    }
+
+    public void setGoodsStatus(String goodsStatus) {
+        GoodsStatus = goodsStatus;
+    }
+
+    public double getTax() {
+        return Tax;
+    }
+
+    public void setTax(double tax) {
+        Tax = tax;
     }
 }

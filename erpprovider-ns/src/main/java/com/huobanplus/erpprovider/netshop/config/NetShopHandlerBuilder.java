@@ -115,10 +115,12 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                                     int pageSize = Integer.parseInt(request.getParameter("PageSize"));
                                     Integer pageIndex = null;
                                     String pageIndexStr = request.getParameter("Page");
+                                    String startUpdateTime = request.getParameter("Start_Modified");
+                                    String endUpdateTime = request.getParameter("End_Modified");
                                     if (!StringUtils.isEmpty(pageIndexStr)) {
                                         pageIndex = Integer.valueOf(pageIndexStr);
                                     }
-                                    return nsOrderHandler.obtainOrderInfoList(orderStatus, pageSize, pageIndex, erpUserInfo, method);
+                                    return nsOrderHandler.obtainOrderInfoList(orderStatus, pageSize, pageIndex, erpUserInfo, method,startUpdateTime,endUpdateTime);
                                 case Constant.OBTAIN_ORDER_DETAIL:
                                     String orderId = request.getParameter("OrderNO");
                                     if (StringUtils.isEmpty(orderId)) {

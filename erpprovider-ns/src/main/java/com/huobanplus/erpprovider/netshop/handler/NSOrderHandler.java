@@ -11,9 +11,7 @@ package com.huobanplus.erpprovider.netshop.handler;
 
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.Monitor;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -29,7 +27,7 @@ public interface NSOrderHandler {
      * @return 返回订单详细信息结果
      * @throws IOException IO 异常
      */
-    EventResult obtainOrderInfoList(int orderStatus, int pageSize, Integer pageIndex, ERPUserInfo erpUserInfo, String mType);
+    EventResult obtainOrderInfoList(int orderStatus, int pageSize, Integer pageIndex, ERPUserInfo erpUserInfo, String mType,String startUpdateTime,String endUpdateTime);
 
     /**
      * 获取订单信息（详情）
