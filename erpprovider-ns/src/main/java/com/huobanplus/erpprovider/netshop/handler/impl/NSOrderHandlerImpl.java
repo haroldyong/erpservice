@@ -145,7 +145,13 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
                 orderItemResults.add(orderItemResult);
             });
             String resultXml = new XmlMapper().writeValueAsString(orderDetailResult);
-            return EventResult.resultWith(EventResultEnum.SUCCESS, resultXml);
+            int firstIndex = resultXml.indexOf("<Item>");
+            int lastIndex = resultXml.lastIndexOf("</Item>");
+            String firstPanel = resultXml.substring(0, firstIndex);
+            String orderItemPanel = resultXml.substring(firstIndex + 6, lastIndex);
+            String lastPanel = resultXml.substring(lastIndex + 7);
+            String xmlResult = firstPanel  + orderItemPanel + lastPanel;
+            return EventResult.resultWith(EventResultEnum.SUCCESS, xmlResult);
         } catch (Exception e) {
             return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, "服务器错误--" + e.getMessage());
         }

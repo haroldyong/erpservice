@@ -25,13 +25,16 @@ import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.*;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
-import com.huobanplus.erpservice.eventhandler.model.*;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -81,19 +84,29 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                 public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
                     String method = request.getParameter("mType");
                     try {
-                        String requestSign = request.getParameter("sign");
+                        String requestSign = request.getParameter("Sign");
                         if (StringUtils.isEmpty(requestSign)) {
                             return NSExceptionHandler.handleException(method, EventResultEnum.NO_SIGN, "签名参数未传");
                         }
                         //签名验证
                         Map<String, String[]> paramMap = request.getParameterMap();
-                        Map<String, Object> signMap = new TreeMap<>();
+                        Map<String, Object> signMap = new TreeMap<>(new Comparator() {
+                            @Override
+                            public int compare(Object o1, Object o2) {
+                                String str1 = (String) o1;
+                                String str2 = (String) o2;
+                                return str1.toUpperCase().compareTo(str2.toUpperCase());
+                            }
+                        });
                         paramMap.forEach((key, value) -> {
                             if (!"sign".equals(key.toLowerCase())) {
                                 if (value != null && value.length > 0)
+                                    if(key.equals("uCode") || key.equals("mType") || key.equals("TimeStamp"))
                                     signMap.put(key, value[0]);
                             }
                         });
+
+
                         //通过uCode得到指定erp配置信息
                         List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserType(providerType, erpUserType);
                         ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
@@ -105,7 +118,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                         } catch (UnsupportedEncodingException e) {
                             return NSExceptionHandler.handleException(method, EventResultEnum.ERROR, e.getMessage());
                         }
-                        if (sign.equals(requestSign)) {
+                        if (sign.toUpperCase().equals(requestSign)) {
                             //开始处理
                             //得到erpUserInfo
                             ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());

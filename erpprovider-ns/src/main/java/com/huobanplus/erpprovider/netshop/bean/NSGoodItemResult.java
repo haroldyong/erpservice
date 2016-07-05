@@ -17,6 +17,7 @@ public class NSGoodItemResult {
     private String SkuOuterID;
     private String SkuID;
     private int Num;
+    private double SkuPrice;
 
     public String getUnit() {
         return Unit;
@@ -48,5 +49,13 @@ public class NSGoodItemResult {
 
     public void setNum(int num) {
         Num = num;
+    }
+
+    public double getSkuPrice() {
+        return SkuPrice;
+    }
+
+    public void setSkuPrice(double skuPrice) {
+        SkuPrice = skuPrice;
     }
 }

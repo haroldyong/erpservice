@@ -9,6 +9,8 @@
 
 package com.huobanplus.erpprovider.netshop.bean;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
@@ -23,28 +25,66 @@ public class NSOrderDetailResult {
     private String Cause;
     private String OrderNo;
     private String DateTime;
+
+    @JacksonXmlCData(value = true)
     private String BuyerId;
+
+    @JacksonXmlCData(value = true)
     private String BuyerName;
     private int CardType;
+
+    @JacksonXmlCData(value = true)
     private String IDCard;
+
+    @JacksonXmlCData(value = true)
     private String Country;
+
+    @JacksonXmlCData(value = true)
     private String Province;
+
+    @JacksonXmlCData(value = true)
     private String City;
+
+    @JacksonXmlCData(value = true)
     private String Town;
+
+    @JacksonXmlCData(value = true)
     private String Adr;
+
+    @JacksonXmlCData(value = true)
     private String Zip;
+
+    @JacksonXmlCData(value = true)
     private String Email;
+
+    @JacksonXmlCData(value = true)
     private String Phone;
     private double Total;
     private String Currency;
     private double Postage;
+
+    @JacksonXmlCData(value = true)
     private String PayAccount;
+
+    @JacksonXmlCData(value = true)
     private String PayID;
+
+    @JacksonXmlCData(value = true)
     private String logisticsName;
+
+    @JacksonXmlCData(value = true)
     private String chargetype;
+
+    @JacksonXmlCData(value = true)
     private String CustomerRemark;
+
+    @JacksonXmlCData(value = true)
     private String Remark;
+
+    @JacksonXmlCData(value = true)
     private String InvoiceTitle;
+
+    @JacksonXmlProperty(localName = "Item")
     private List<NSOrderItemResult> orderItemResults;
 
     public int getResult() {

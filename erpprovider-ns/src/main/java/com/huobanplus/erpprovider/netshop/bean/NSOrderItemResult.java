@@ -9,11 +9,17 @@
 
 package com.huobanplus.erpprovider.netshop.bean;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
+
 /**
  * Created by liual on 2015-08-26.
  */
 public class NSOrderItemResult {
+
+    @JacksonXmlCData(value = true)
     private String GoodsID;
+
+    @JacksonXmlCData(value = true)
     private String GoodsName;
     private double Price;
     private String GoodsSpec;

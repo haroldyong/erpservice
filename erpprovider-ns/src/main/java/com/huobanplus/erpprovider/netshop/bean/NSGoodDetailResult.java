@@ -23,6 +23,7 @@ public class NSGoodDetailResult {
     private int Num;
     private double Price;
     private int IsSku;
+    private String Remark;
     @JacksonXmlProperty(localName = "Item")
     private List<NSGoodItemResult> itemResults;
 
@@ -80,5 +81,13 @@ public class NSGoodDetailResult {
 
     public void setItemResults(List<NSGoodItemResult> itemResults) {
         this.itemResults = itemResults;
+    }
+
+    public String getRemark() {
+        return Remark;
+    }
+
+    public void setRemark(String remark) {
+        Remark = remark;
     }
 }
