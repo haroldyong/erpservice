@@ -206,6 +206,7 @@ public class ScheduledService {
             deliveryInfo.setOrderId(o.getZOrder());
             deliveryInfo.setLogiNo(o.getZWMOrder());
             deliveryInfo.setLogiName(o.getZWMLogiName());
+            deliveryInfo.setLogiCode("yuantong");
             orderDeliveryInfoList.add(deliveryInfo);
         }
     }

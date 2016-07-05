@@ -91,9 +91,9 @@
                     return;
                 }
                 var erpType = $("#erpType").val();
-                if (erpType != -1) {
-                    var erpConfigHandler = this.getErpConfigHandler(parseInt(erpType));
+                var erpConfigHandler = this.getErpConfigHandler(parseInt(erpType));
 
+                if (erpConfigHandler != null) {
                     var sysDataJson = erpConfigHandler.getConfig();
                     if (sysDataJson == null) {
                         return;
@@ -125,6 +125,7 @@
                     case <%=ERPTypeEnum.ProviderType.KJYG.getCode()%>:
                         return kjygConfigHandler;
                 }
+                return null;
             }
         };
 
@@ -239,68 +240,68 @@
 
                     </div>
                     <c:if test="${baseConfig!=null && baseConfig.isOpen == 1}">
-                        <div>
-                            <span class="spModuleTitle">ERP系统详细配置</span>
+                    <div>
+                        <span class="spModuleTitle">ERP系统详细配置</span>
 
-                            <div class="division">
-                                <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                                    <tbody>
-                                    <tr>
-                                        <th>选择您使用的ERP平台：</th>
-                                        <td>
-                                            <select id="erpType" name="erpType">
-                                                <option value="-1">请选择</option>
-                                                <c:forEach var="erpType" items="${erpTypeList}">
-                                                    <option value="${erpType.code}">${erpType.name}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                        <div class="division">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                <tbody>
+                                <tr>
+                                    <th>选择您使用的ERP平台：</th>
+                                    <td>
+                                        <select id="erpType" name="erpType">
+                                            <option value="-1">请选择</option>
+                                            <c:forEach var="erpType" items="${erpTypeList}">
+                                                <option value="${erpType.code}">${erpType.name}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="division" id="erpDetailConfigDiv">
+                            <input name="sysDataJson" id="sysDataJson" type="hidden"/>
+
+                            <div id="detailConfig_<%=ERPTypeEnum.ProviderType.EDB.getCode()%>">
+                                <%@include file="/detailConfig/edb_config.jsp" %>
                             </div>
 
-                            <div class="division" id="erpDetailConfigDiv">
-                                <input name="sysDataJson" id="sysDataJson" type="hidden"/>
-
-                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.EDB.getCode()%>">
-                                    <%@include file="/detailConfig/edb_config.jsp" %>
-                                </div>
-
-                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.NETSHOP.getCode()%>">
-                                    <%@include file="/detailConfig/ns_config.jsp" %>
-                                </div>
-
-                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.SAP.getCode()%>">
-                                    <%@include file="/detailConfig/sap_config.jsp" %>
-                                </div>
-
-                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.ISCS.getCode()%>">
-                                    <%@include file="/detailConfig/iscs_config.jsp" %>
-                                </div>
-                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.LGJ.getCode()%>">
-                                    <%@include file="/detailConfig/lgj_config.jsp" %>
-                                </div>
-                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.KAOLA.getCode()%>">
-                                    <%@include file="/detailConfig/kaola_config.jsp" %>
-                                </div>
-                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.KJYG.getCode()%>">
-                                    <%@include file="/detailConfig/kjyg_config.jsp" %>
-                                </div>
+                            <div id="detailConfig_<%=ERPTypeEnum.ProviderType.NETSHOP.getCode()%>">
+                                <%@include file="/detailConfig/ns_config.jsp" %>
                             </div>
 
+                            <div id="detailConfig_<%=ERPTypeEnum.ProviderType.SAP.getCode()%>">
+                                <%@include file="/detailConfig/sap_config.jsp" %>
+                            </div>
+
+                            <div id="detailConfig_<%=ERPTypeEnum.ProviderType.ISCS.getCode()%>">
+                                <%@include file="/detailConfig/iscs_config.jsp" %>
+                            </div>
+                            <div id="detailConfig_<%=ERPTypeEnum.ProviderType.LGJ.getCode()%>">
+                                <%@include file="/detailConfig/lgj_config.jsp" %>
+                            </div>
+                            <div id="detailConfig_<%=ERPTypeEnum.ProviderType.KAOLA.getCode()%>">
+                                <%@include file="/detailConfig/kaola_config.jsp" %>
+                            </div>
+                            <div id="detailConfig_<%=ERPTypeEnum.ProviderType.KJYG.getCode()%>">
+                                <%@include file="/detailConfig/kjyg_config.jsp" %>
                             </div>
                         </div>
-                        <div style="text-align: center;">
-                            <div style="display: none;">
-                                <input type="submit" name="btnSave" value="" id="btnSave">
-                            </div>
-                            <a class="btn-lit" href="javascript:configHandler.submitForm();"><span>保存</span></a>
-                        </div>
-                    </c:if>
+
+                    </div>
                 </div>
+                <div style="text-align: center;">
+                    <div style="display: none;">
+                        <input type="submit" name="btnSave" value="" id="btnSave">
+                    </div>
+                    <a class="btn-lit" href="javascript:configHandler.submitForm();"><span>保存</span></a>
+                </div>
+                </c:if>
             </div>
         </div>
+    </div>
     </div>
 </form>
 </body>
