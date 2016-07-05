@@ -94,14 +94,14 @@
                 var erpType = $("#erpType").val();
                 var erpConfigHandler = this.getErpConfigHandler(parseInt(erpType));
 
-                var sysDataJson = erpConfigHandler.getConfig();
-                console.log("*********");
-                console.log(sysDataJson);
-                console.log("*********");
-                if (sysDataJson == null) {
-                    return;
+                if (erpConfigHandler != null) {
+                    var sysDataJson = erpConfigHandler.getConfig();
+                    if (sysDataJson == null) {
+                        return;
+                    }
+                    $("#sysDataJson").val(sysDataJson);
                 }
-                $("#sysDataJson").val(sysDataJson);
+
                 $.jBox.tip("正在保存...", "loading");
                 $("#submitForm").submit();
             },
@@ -128,6 +128,7 @@
                     case <%=ERPTypeEnum.ProviderType.GY.getCode()%>:
                         return gyConfigHandler;
                 }
+                return null;
             }
         };
 
