@@ -295,8 +295,6 @@
                                     <%@include file="/detailConfig/gy_config.jsp" %>
                                 </div>
                             </div>
-
-                            </div>
                         </div>
                         <div style="text-align: center;">
                             <div style="display: none;">
