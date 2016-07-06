@@ -98,13 +98,9 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                                 return str1.toUpperCase().compareTo(str2.toUpperCase());
                             }
                         });
-                        paramMap.forEach((key, value) -> {
-                            if (!"sign".equals(key.toLowerCase())) {
-                                if (value != null && value.length > 0)
-                                    if(key.equals("uCode") || key.equals("mType") || key.equals("TimeStamp"))
-                                    signMap.put(key, value[0]);
-                            }
-                        });
+                        signMap.put("uCode",paramMap.get("uCode")[0]);
+                        signMap.put("mType",paramMap.get("mType")[0]);
+                        signMap.put("TimeStamp",paramMap.get("TimeStamp")[0]);
 
 
                         //通过uCode得到指定erp配置信息
