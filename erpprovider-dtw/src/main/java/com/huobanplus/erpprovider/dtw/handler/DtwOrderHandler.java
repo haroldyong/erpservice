@@ -1,6 +1,9 @@
 package com.huobanplus.erpprovider.dtw.handler;
 
+import com.huobanplus.erpprovider.dtw.common.DtwSysData;
+import com.huobanplus.erpprovider.dtw.search.DtwStockSearch;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 /**
@@ -22,4 +25,8 @@ public interface DtwOrderHandler {
 //     * @return
 //     */
 //    EventResult pushPersonalDeclareOrder(DtwPersonalDelcareInfo dtwPersonalDelcareInfo, DtwSysData dtwSysData);
+
+    EventResult deliverOrder(String Msgid,String wayBill, String weight,String state,ERPUserInfo erpUserInfo);
+
+    EventResult stockQuery(DtwStockSearch dtwStockSearch, DtwSysData dtwSysData);
 }

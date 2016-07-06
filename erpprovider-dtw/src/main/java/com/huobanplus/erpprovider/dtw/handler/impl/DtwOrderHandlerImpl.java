@@ -1,13 +1,12 @@
 package com.huobanplus.erpprovider.dtw.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
-import com.huobanplus.erpprovider.dtw.formatdtw.DtwGoodsDelcareItem;
-import com.huobanplus.erpprovider.dtw.formatdtw.DtwOrder;
-import com.huobanplus.erpprovider.dtw.formatdtw.DtwOrderItem;
-import com.huobanplus.erpprovider.dtw.formatdtw.DtwPersonalDelcareInfo;
+import com.huobanplus.erpprovider.dtw.formatdtw.*;
 import com.huobanplus.erpprovider.dtw.handler.DtwOrderHandler;
+import com.huobanplus.erpprovider.dtw.search.DtwStockSearch;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
@@ -15,11 +14,15 @@ import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
+import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
@@ -38,6 +41,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
     @Autowired
     private OrderDetailSyncLogService orderDetailSyncLogService;
+
+    @Autowired
+    private ERPRegister erpRegister;
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
@@ -239,7 +245,53 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             } else {
                 return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
             }
+        } else{
+            return EventResult.resultWith(EventResultEnum.ERROR,"服务器请求失败",null);
         }
-        return null;
+
+    }
+
+    @Override
+    public EventResult deliverOrder(String Msgid,String wayBill, String weight,String state,ERPUserInfo erpUserInfo) {
+        try {
+            ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+            if (erpUserHandler == null) {
+                return EventResult.resultWith(EventResultEnum.NO_DATA,"未找到数据源信息",null);
+            }
+            DeliveryInfoEvent deliveryInfoEvent = new DeliveryInfoEvent();
+            deliveryInfoEvent.setErpUserInfo(erpUserInfo);
+            DeliveryInfo deliveryInfo = new DeliveryInfo();
+            deliveryInfo.setOrderId(Msgid);
+//            deliveryInfo.setLogiName(logiName);
+            deliveryInfo.setLogiNo(wayBill);
+            deliveryInfoEvent.setDeliveryInfo(deliveryInfo);
+            EventResult eventResult = erpUserHandler.handleEvent(deliveryInfoEvent);
+           return eventResult;
+        } catch (Exception e) {
+           return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
+
+    @Override
+    public EventResult stockQuery(DtwStockSearch dtwStockSearch, DtwSysData dtwSysData) {
+        Map<String,Object> requestMap = new HashMap<>();
+        requestMap.put("data",JSON.toJSONString(dtwStockSearch));
+        HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl()+"/QBStockQey",requestMap);
+        if(httpResult.getHttpStatus()==HttpStatus.SC_OK){
+            JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+            if (result.getString("ErrCode").equals("000")) {
+                JSONArray jsonArray = result.getJSONArray("Items");
+                List<DtwStockItem> dtwStockItems = new ArrayList<>();
+                jsonArray.forEach(item->{
+                    DtwStockItem dtwStockItem = JSON.parseObject(item.toString(),DtwStockItem.class);
+                    dtwStockItems.add(dtwStockItem);
+                });
+                return EventResult.resultWith(EventResultEnum.SUCCESS,dtwStockItems);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
+            }
+        } else{
+            return EventResult.resultWith(EventResultEnum.ERROR,"服务器请求失败",null);
+        }
     }
 }
