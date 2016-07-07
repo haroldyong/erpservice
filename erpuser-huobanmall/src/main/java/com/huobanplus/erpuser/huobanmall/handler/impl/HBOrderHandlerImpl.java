@@ -14,7 +14,6 @@ import com.alibaba.fastjson.TypeReference;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.util.SignBuilder;
-import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.model.*;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -90,55 +89,65 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
 
     @Override
     public EventResult obtainOrderList(OrderSearchInfo orderSearchInfo, ERPUserInfo erpUserInfo) {
+        //获取伙伴商城接口数据
+        //签名
+        Map<String, Object> signMap = HBConstant.buildSignMap(orderSearchInfo);
+//        signMap.put("orderStatus", orderSearchInfo.getOrderStatus());
+//        signMap.put("pageIndex", orderSearchInfo.getPageIndex());
+//        signMap.put("pageSize", orderSearchInfo.getPageSize());
+//        signMap.put("shipStatus", orderSearchInfo.getShipStatus());
+//        signMap.put("payStatus", orderSearchInfo.getPayStatus());
+//        signMap.put("customerId", erpUserInfo.getCustomerId());
+//        signMap.put("beginTime", orderSearchInfo.getBeginTime());
+//        signMap.put("endTime", orderSearchInfo.getEndTime());
+        signMap.put("customerId", erpUserInfo.getCustomerId());
+        signMap.put("erpUserType", erpUserInfo.getErpUserType().getCode());
+        signMap.put("timestamp", new Date().getTime());
+        try {
+            String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
+            Map<String, Object> requestMap = new HashMap<>(signMap);
+            requestMap.put("sign", sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderList", requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                ApiResult<OrderListInfo> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<OrderListInfo>>() {
+                });
+                if (apiResult.getCode() == 200) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            }
 
-        ApiResult<OrderListInfo> apiResult = new ApiResult<>();
-        OrderListInfo orderListInfo = new OrderListInfo();
-        orderListInfo.setPageSize(5);
-        orderListInfo.setRecordCount(20);
-
-        List<Order> orderList = new ArrayList<>();
-        for(int i=0;i<20;i++){
-            Order order = new Order();
-            order.setOrderId(UUID.randomUUID().toString());
-            order.setBuyerName("wuxiongliu");
-            order.setShipAddr("浙江省杭州市滨江区");
-
-            orderList.add(order);
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+        } catch (IOException e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
-        orderListInfo.setOrders(orderList);
-        apiResult.setData(orderListInfo);
-
-        return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
     }
 
     @Override
     public EventResult obtainOrderDetail(String orderId, ERPUserInfo erpUserInfo) {
-        ApiResult<Order> apiResult = new ApiResult<>();
-        Order order = new Order();
-        List<OrderItem> orderItems = new ArrayList<>();
-
-        OrderItem orderItem = new OrderItem();
-        orderItem.setNum(5);
-        orderItem.setOrderId("8070");
-        orderItem.setProductBn("3872824-ecc4090b639c47f89b453980923afb8e");
-        orderItems.add(orderItem);
-
-        order.setOrderId("000000001222");
-        order.setMemberId(1761390);
-        order.setShipName("吴雄琉");
-        order.setShipMobile("18705153967");
-        order.setShipEmail("");
-        order.setProvince("浙江省");
-        order.setCity("杭州市");
-        order.setDistrict("滨江区");
-        order.setShipAddr("浙江省杭州市滨江区阡陌路智慧E谷B幢4楼火图科技");
-        order.setBuyerPid("330682199006015217");
-        order.setBuyerName("刘渠成");
-
-        order.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
-        order.setOrderItems(orderItems);
-        apiResult.setData(order);
-        return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+        if (StringUtils.isEmpty(orderId)) {
+            return EventResult.resultWith(EventResultEnum.BAD_REQUEST_PARAM, "orderId未传", null);
+        }
+        Map<String, Object> signMap = new TreeMap<>();
+        signMap.put("orderId", orderId);
+        signMap.put("timestamp", new Date().getTime());
+        try {
+            String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
+            Map<String, Object> requestMap = new HashMap<>(signMap);
+            requestMap.put("sign", sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderDetail", requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                ApiResult<Order> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<Order>>() {
+                });
+                if (apiResult.getCode() == 200) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+        } catch (IOException e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
     }
 
     @Override
