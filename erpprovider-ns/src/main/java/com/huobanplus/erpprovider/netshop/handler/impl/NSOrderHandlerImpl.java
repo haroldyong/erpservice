@@ -15,6 +15,7 @@ import com.huobanplus.erpprovider.netshop.bean.NSOrderItemResult;
 import com.huobanplus.erpprovider.netshop.bean.NSOrderListResult;
 import com.huobanplus.erpprovider.netshop.exceptionhandler.NSExceptionHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSOrderHandler;
+import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderListInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
@@ -114,8 +115,10 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             orderDetailResult.setDateTime(orderBean.getPayTime());
             orderDetailResult.setBuyerId(orderBean.getUserLoginName());
             orderDetailResult.setBuyerName(orderBean.getShipName());
-            orderDetailResult.setCardType(1);// FIXME: 2016/7/4
-            orderDetailResult.setIdCard(orderBean.getBuyerPid());
+            if(StringUtil.isEmpty(orderBean.getBuyerPid())){
+                orderDetailResult.setCardType(1);
+                orderDetailResult.setIdCard(orderBean.getBuyerPid());
+            }
             orderDetailResult.setCountry("中国");
             orderDetailResult.setProvince(orderBean.getProvince());
             orderDetailResult.setCity(orderBean.getCity());
@@ -130,7 +133,7 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             orderDetailResult.setPayAccount(orderBean.getPaymentName());
 //            orderDetailResult.setPayID(orderBean);
             orderDetailResult.setLogisticsName(orderBean.getLogiName());
-            orderDetailResult.setChargetype(""); // FIXME: 2016/7/4
+            orderDetailResult.setChargetype("担保交易"); // FIXME: 2016/7/4  针对支付宝，微信支付这类
             orderDetailResult.setCustomerRemark(orderBean.getMemo());
 //            orderDetailResult.setInvoiceTitle(orderBean.getInvoiceTitle());
             orderDetailResult.setRemark(orderBean.getRemark());
