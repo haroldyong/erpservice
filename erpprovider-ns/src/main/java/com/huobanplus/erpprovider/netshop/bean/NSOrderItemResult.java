@@ -10,76 +10,36 @@
 package com.huobanplus.erpprovider.netshop.bean;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import lombok.Data;
 
 /**
  * Created by liual on 2015-08-26.
  */
+@Data
 public class NSOrderItemResult {
 
     @JacksonXmlCData(value = true)
-    private String GoodsID;
+    @JacksonXmlProperty(localName = "GoodsID")
+    private String goodsID;
 
     @JacksonXmlCData(value = true)
-    private String GoodsName;
-    private double Price;
-    private String GoodsSpec;
-    private int Count;
-    private String GoodsStatus;
-    private double Tax;
+    @JacksonXmlProperty(localName = "GoodsName")
+    private String goodsName;
 
-    public String getGoodsID() {
-        return GoodsID;
-    }
+    @JacksonXmlProperty(localName = "Price")
+    private double price;
 
-    public void setGoodsID(String goodsID) {
-        GoodsID = goodsID;
-    }
+    @JacksonXmlProperty(localName = "GoodsSpec")
+    private String goodsSpec;
 
-    public String getGoodsName() {
-        return GoodsName;
-    }
+    @JacksonXmlProperty(localName = "Count")
+    private int count;
 
-    public void setGoodsName(String goodsName) {
-        GoodsName = goodsName;
-    }
+    @JacksonXmlProperty(localName = "GoodsStatus")
+    private String goodsStatus;
 
-    public double getPrice() {
-        return Price;
-    }
+    @JacksonXmlProperty(localName = "Tax")
+    private double tax;
 
-    public void setPrice(double price) {
-        Price = price;
-    }
-
-    public String getGoodsSpec() {
-        return GoodsSpec;
-    }
-
-    public void setGoodsSpec(String goodsSpec) {
-        GoodsSpec = goodsSpec;
-    }
-
-    public int getCount() {
-        return Count;
-    }
-
-    public void setCount(int count) {
-        Count = count;
-    }
-
-    public String getGoodsStatus() {
-        return GoodsStatus;
-    }
-
-    public void setGoodsStatus(String goodsStatus) {
-        GoodsStatus = goodsStatus;
-    }
-
-    public double getTax() {
-        return Tax;
-    }
-
-    public void setTax(double tax) {
-        Tax = tax;
-    }
 }

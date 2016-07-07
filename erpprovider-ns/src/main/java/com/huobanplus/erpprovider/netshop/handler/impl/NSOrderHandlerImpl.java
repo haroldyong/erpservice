@@ -21,8 +21,8 @@ import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.ObtainOrderListEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailListEvent;
 import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -49,7 +49,7 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             if (erpUserHandler == null) {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.NO_DATA, "未找到数据源信息");
             }
-            ObtainOrderListEvent orderListEvent = new ObtainOrderListEvent();
+            GetOrderDetailListEvent orderListEvent = new GetOrderDetailListEvent();
             OrderSearchInfo orderSearchInfo = new OrderSearchInfo();
             orderListEvent.setErpUserInfo(erpUserInfo);
             orderSearchInfo.setPayStatus(orderStatus);
@@ -115,7 +115,7 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             orderDetailResult.setBuyerId(orderBean.getUserLoginName());
             orderDetailResult.setBuyerName(orderBean.getShipName());
             orderDetailResult.setCardType(1);// FIXME: 2016/7/4
-            orderDetailResult.setIDCard(orderBean.getBuyerPid());
+            orderDetailResult.setIdCard(orderBean.getBuyerPid());
             orderDetailResult.setCountry("中国");
             orderDetailResult.setProvince(orderBean.getProvince());
             orderDetailResult.setCity(orderBean.getCity());
@@ -144,6 +144,8 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
                 orderItemResult.setPrice(item.getAmount());
                 orderItemResults.add(orderItemResult);
             });
+
+            orderDetailResult.setOrderItemResults(orderItemResults);
             String resultXml = new XmlMapper().writeValueAsString(orderDetailResult);
             int firstIndex = resultXml.indexOf("<Item>");
             int lastIndex = resultXml.lastIndexOf("</Item>");

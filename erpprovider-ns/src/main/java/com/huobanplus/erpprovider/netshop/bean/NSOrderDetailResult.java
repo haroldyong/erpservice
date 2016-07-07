@@ -12,6 +12,7 @@ package com.huobanplus.erpprovider.netshop.bean;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import lombok.Data;
 
 import java.util.List;
 
@@ -19,287 +20,106 @@ import java.util.List;
  * 订单详细返回结果（用来转换为xml返回）
  * Created by liual on 2015-08-26.
  */
+@Data
 @JacksonXmlRootElement(localName = "Order")
 public class NSOrderDetailResult {
-    private int Result;
-    private String Cause;
-    private String OrderNo;
-    private String DateTime;
+
+    @JacksonXmlProperty(localName = "Result")
+    private int result;
+
+    @JacksonXmlProperty(localName = "Cause")
+    private String cause;
+
+    @JacksonXmlProperty(localName = "OrderNo")
+    private String orderNo;
+
+    @JacksonXmlProperty(localName = "DateTime")
+    private String dateTime;
 
     @JacksonXmlCData(value = true)
-    private String BuyerId;
+    @JacksonXmlProperty(localName = "BuyerId")
+    private String buyerId;
 
     @JacksonXmlCData(value = true)
-    private String BuyerName;
-    private int CardType;
+    @JacksonXmlProperty(localName = "BuyerName")
+    private String buyerName;
+
+    @JacksonXmlProperty(localName = "CardType")
+    private int cardType;
 
     @JacksonXmlCData(value = true)
-    private String IDCard;
+    @JacksonXmlProperty(localName = "IDCard")
+    private String idCard;
 
     @JacksonXmlCData(value = true)
-    private String Country;
+    @JacksonXmlProperty(localName = "Country")
+    private String country;
 
     @JacksonXmlCData(value = true)
-    private String Province;
+    @JacksonXmlProperty(localName = "Province")
+    private String province;
 
     @JacksonXmlCData(value = true)
-    private String City;
+    @JacksonXmlProperty(localName = "City")
+    private String city;
 
     @JacksonXmlCData(value = true)
-    private String Town;
+    @JacksonXmlProperty(localName = "Town")
+    private String town;
 
     @JacksonXmlCData(value = true)
-    private String Adr;
+    @JacksonXmlProperty(localName = "Adr")
+    private String adr;
 
     @JacksonXmlCData(value = true)
-    private String Zip;
+    @JacksonXmlProperty(localName = "Zip")
+    private String zip;
 
     @JacksonXmlCData(value = true)
-    private String Email;
+    @JacksonXmlProperty(localName = "Email")
+    private String email;
 
     @JacksonXmlCData(value = true)
-    private String Phone;
-    private double Total;
-    private String Currency;
-    private double Postage;
+    @JacksonXmlProperty(localName = "Phone")
+    private String phone;
+
+    @JacksonXmlProperty(localName = "Total")
+    private double total;
+
+    @JacksonXmlProperty(localName = "Currency")
+    private String currency;
+
+    @JacksonXmlProperty(localName = "Postage")
+    private double postage;
 
     @JacksonXmlCData(value = true)
-    private String PayAccount;
+    @JacksonXmlProperty(localName = "PayAccount")
+    private String payAccount;
 
     @JacksonXmlCData(value = true)
-    private String PayID;
+    @JacksonXmlProperty(localName = "PayID")
+    private String payID;
 
     @JacksonXmlCData(value = true)
+    @JacksonXmlProperty(localName = "logisticsName")
     private String logisticsName;
 
     @JacksonXmlCData(value = true)
+    @JacksonXmlProperty(localName = "chargetype")
     private String chargetype;
 
     @JacksonXmlCData(value = true)
-    private String CustomerRemark;
+    @JacksonXmlProperty(localName = "CustomerRemark")
+    private String customerRemark;
 
     @JacksonXmlCData(value = true)
-    private String Remark;
+    @JacksonXmlProperty(localName = "Remark")
+    private String remark;
 
     @JacksonXmlCData(value = true)
-    private String InvoiceTitle;
+    @JacksonXmlProperty(localName = "InvoiceTitle")
+    private String invoiceTitle;
 
     @JacksonXmlProperty(localName = "Item")
     private List<NSOrderItemResult> orderItemResults;
-
-    public int getResult() {
-        return Result;
-    }
-
-    public void setResult(int result) {
-        Result = result;
-    }
-
-    public String getCause() {
-        return Cause;
-    }
-
-    public void setCause(String cause) {
-        Cause = cause;
-    }
-
-    public String getOrderNo() {
-        return OrderNo;
-    }
-
-    public void setOrderNo(String orderNo) {
-        OrderNo = orderNo;
-    }
-
-    public String getDateTime() {
-        return DateTime;
-    }
-
-    public void setDateTime(String dateTime) {
-        DateTime = dateTime;
-    }
-
-    public String getBuyerId() {
-        return BuyerId;
-    }
-
-    public void setBuyerId(String buyerId) {
-        BuyerId = buyerId;
-    }
-
-    public String getBuyerName() {
-        return BuyerName;
-    }
-
-    public void setBuyerName(String buyerName) {
-        BuyerName = buyerName;
-    }
-
-    public int getCardType() {
-        return CardType;
-    }
-
-    public void setCardType(int cardType) {
-        CardType = cardType;
-    }
-
-    public String getIDCard() {
-        return IDCard;
-    }
-
-    public void setIDCard(String IDCard) {
-        this.IDCard = IDCard;
-    }
-
-    public String getCountry() {
-        return Country;
-    }
-
-    public void setCountry(String country) {
-        Country = country;
-    }
-
-    public String getProvince() {
-        return Province;
-    }
-
-    public void setProvince(String province) {
-        Province = province;
-    }
-
-    public String getCity() {
-        return City;
-    }
-
-    public void setCity(String city) {
-        City = city;
-    }
-
-    public String getTown() {
-        return Town;
-    }
-
-    public void setTown(String town) {
-        Town = town;
-    }
-
-    public String getAdr() {
-        return Adr;
-    }
-
-    public void setAdr(String adr) {
-        Adr = adr;
-    }
-
-    public String getZip() {
-        return Zip;
-    }
-
-    public void setZip(String zip) {
-        Zip = zip;
-    }
-
-    public String getEmail() {
-        return Email;
-    }
-
-    public void setEmail(String email) {
-        Email = email;
-    }
-
-    public String getPhone() {
-        return Phone;
-    }
-
-    public void setPhone(String phone) {
-        Phone = phone;
-    }
-
-    public double getTotal() {
-        return Total;
-    }
-
-    public void setTotal(double total) {
-        Total = total;
-    }
-
-    public String getCurrency() {
-        return Currency;
-    }
-
-    public void setCurrency(String currency) {
-        Currency = currency;
-    }
-
-    public double getPostage() {
-        return Postage;
-    }
-
-    public void setPostage(double postage) {
-        Postage = postage;
-    }
-
-    public String getPayAccount() {
-        return PayAccount;
-    }
-
-    public void setPayAccount(String payAccount) {
-        PayAccount = payAccount;
-    }
-
-    public String getPayID() {
-        return PayID;
-    }
-
-    public void setPayID(String payID) {
-        PayID = payID;
-    }
-
-    public String getLogisticsName() {
-        return logisticsName;
-    }
-
-    public void setLogisticsName(String logisticsName) {
-        this.logisticsName = logisticsName;
-    }
-
-    public String getChargetype() {
-        return chargetype;
-    }
-
-    public void setChargetype(String chargetype) {
-        this.chargetype = chargetype;
-    }
-
-    public String getCustomerRemark() {
-        return CustomerRemark;
-    }
-
-    public void setCustomerRemark(String customerRemark) {
-        CustomerRemark = customerRemark;
-    }
-
-    public String getRemark() {
-        return Remark;
-    }
-
-    public void setRemark(String remark) {
-        Remark = remark;
-    }
-
-    public String getInvoiceTitle() {
-        return InvoiceTitle;
-    }
-
-    public void setInvoiceTitle(String invoiceTitle) {
-        InvoiceTitle = invoiceTitle;
-    }
-
-    public List<NSOrderItemResult> getOrderItemResults() {
-        return orderItemResults;
-    }
-
-    public void setOrderItemResults(List<NSOrderItemResult> orderItemResults) {
-        this.orderItemResults = orderItemResults;
-    }
 }
