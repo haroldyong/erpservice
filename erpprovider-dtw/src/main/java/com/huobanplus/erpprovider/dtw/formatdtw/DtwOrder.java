@@ -233,7 +233,7 @@ public class DtwOrder {
      * 进口类型（0一般进口，1保税进口）(必填)
      */
     @JSONField(name = "importType")
-    private String importType;
+    private int importType;
 
     /**
      * 订单类型（1：普通订单：与快递已经完成对接，2：综合订单：委托大田与快递公司对接）

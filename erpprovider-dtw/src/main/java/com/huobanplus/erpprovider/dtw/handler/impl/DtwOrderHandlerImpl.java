@@ -58,27 +58,27 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwOrder.setPreEntryNumber("");
             dtwOrder.setECommerceCode(dtwSysData.getECommerceCode());//(必填)
             dtwOrder.setECommerceName(dtwSysData.getECommerceName());//(必填)
-            dtwOrder.setImportType("");//进口类型（0一般进口，1保税进口）(必填)
+            dtwOrder.setImportType(1);//进口类型（0一般进口，1保税进口）(必填)
             dtwOrder.setOrderType("");//订单类型（1：普通订单：与快递已经完成对接，2：综合订单：委托大田与快递公司对接）
 
-            dtwOrder.setMsgid("1");// TODO: 2016/6/16 //(必填)
+            dtwOrder.setMsgid("1");// TODO: 2016/6/16 //(必填) 电商企业发货单号(必填)
             dtwOrder.setPayType("");// TODO: 2016/6/17 //(必填)
             dtwOrder.setPayCompanyCode("001");// TODO: 2016/6/16//(必填)
             dtwOrder.setPayNumber("100001");// TODO: 2016/6/16//(必填)
-            dtwOrder.setOrderTotalAmount(1.0);// FIXME: 2016/6/17//(必填)
+            dtwOrder.setOrderTotalAmount(order.getFinalAmount());// FIXME: 2016/6/17//(必填)
             dtwOrder.setOrderGoodsAmount(1.0);// FIXME: 2016/6/17//(必填)
             dtwOrder.setOrderNo(order.getOrderId());//(必填)
             dtwOrder.setOrderTaxAmount(1.0);// FIXME: 2016/6/17//(必填)
             dtwOrder.setTotalCount(order.getItemNum());//(必填)
-            dtwOrder.setTotalAmount(1.0);// FIXME: 2016/6/17//(必填)
+            dtwOrder.setTotalAmount(order.getFinalAmount());// FIXME: 2016/6/17//(必填)
             dtwOrder.setLogisCompanyName(order.getLogiName());//(必填)
-            dtwOrder.setLogisCompanyCode("logisCompanyCode");// TODO: 2016/6/16//(必填)
+            dtwOrder.setLogisCompanyCode(order.getLogiCode());// TODO: 2016/6/16//(必填)
             dtwOrder.setPurchaserId(String.valueOf(order.getMemberId()));//(必填)
-            dtwOrder.setShipper("wuxiongliu");// TODO: 2016/6/16//(必填)
+            dtwOrder.setShipper("发货人姓名");// TODO: 2016/6/16//(必填)
             dtwOrder.setShipperPro("");
             dtwOrder.setShipperCity("");
             dtwOrder.setShipperDistrict("");
-            dtwOrder.setShipperAddress("");
+            dtwOrder.setShipperAddress("");//TODO 发货人地址（必填）
             dtwOrder.setShipperMobile("");
             dtwOrder.setShipperTel("");
             dtwOrder.setShipperCountry("china");// TODO: 2016/6/16//(必填)
@@ -101,11 +101,13 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             List<OrderItem> orderItemList = order.getOrderItems();
             orderItemList.forEach(orderItem -> {
                 DtwOrderItem dtwOrderItem = new DtwOrderItem();
+                dtwOrderItem.setMsgitem(10000);// FIXME: 2016-07-08 项次（行号，最大50）(必填)
                 dtwOrderItem.setPartno("test");orderItem.getProductBn();
                 dtwOrderItem.setPartName("testtt");orderItem.getName();
-                dtwOrderItem.setUnit("test");// TODO: 2016/6/16  
+                dtwOrderItem.setSpec(orderItem.getStandard());
+                dtwOrderItem.setUnit("test");// FIXME: 2016-07-08 计量单位，海关三字代码(必填)
                 dtwOrderItem.setCurrency(order.getCurrency());// FIXME: 2016/6/16 
-
+                dtwOrderItem.setAmount(orderItem.getAmount());
                 dtwOrderItemList.add(dtwOrderItem);
             });
 
@@ -179,11 +181,12 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     private EventResult pushPersonalDeclareOrder(Order order, DtwSysData dtwSysData) {
 
         DtwPersonalDelcareInfo dtwPersonalDelcareInfo = new DtwPersonalDelcareInfo();
+        dtwPersonalDelcareInfo.setPassKey(dtwSysData.getPassKey());
         dtwPersonalDelcareInfo.setMsgid("");
-        dtwPersonalDelcareInfo.setPreEntryNumber("");
+        dtwPersonalDelcareInfo.setCompanyName("");
+        dtwPersonalDelcareInfo.setCompanyCode("");
+//        dtwPersonalDelcareInfo.setPreEntryNumber("");
         dtwPersonalDelcareInfo.setImportType(0);// FIXME: 2016/7/4 进口类型（0一般进口，1保税进口）
-        dtwPersonalDelcareInfo.setECommerceCode("");
-        dtwPersonalDelcareInfo.setECommerceName("");
         dtwPersonalDelcareInfo.setOrderNo("");
         dtwPersonalDelcareInfo.setWayBill("");
         dtwPersonalDelcareInfo.setPackNo(0);// FIXME: 2016/7/4
@@ -195,18 +198,19 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwPersonalDelcareInfo.setSenderCity("");
         dtwPersonalDelcareInfo.setPaperType("");
         dtwPersonalDelcareInfo.setPaperNumber("");
-        dtwPersonalDelcareInfo.setWorth(0.0);
-        dtwPersonalDelcareInfo.setCurrCode("");
-        dtwPersonalDelcareInfo.setMainGName("");
-        dtwPersonalDelcareInfo.setSenderCountry("");
         dtwPersonalDelcareInfo.setPurchaserTelNumber("");
         dtwPersonalDelcareInfo.setBuyerIdType("");
+        dtwPersonalDelcareInfo.setBuyerIdNumber("");
         dtwPersonalDelcareInfo.setBuyerName("");
+        dtwPersonalDelcareInfo.setWorth(0.0);
         dtwPersonalDelcareInfo.setFeeAmount(0.0);
         dtwPersonalDelcareInfo.setInsureAmount(0.0);
-        dtwPersonalDelcareInfo.setCompanyName("");
-        dtwPersonalDelcareInfo.setCompanyCode("");
+        dtwPersonalDelcareInfo.setCurrCode("");
+        dtwPersonalDelcareInfo.setMainGName("");
         dtwPersonalDelcareInfo.setTradeCountry("");
+        dtwPersonalDelcareInfo.setSenderCountry("");
+        dtwPersonalDelcareInfo.setECommerceCode("");
+        dtwPersonalDelcareInfo.setECommerceName("");
 
         List<DtwGoodsDelcareItem> dtwItems = new ArrayList<>();
         DtwGoodsDelcareItem dtwGoodsDelcareItem = new DtwGoodsDelcareItem();
