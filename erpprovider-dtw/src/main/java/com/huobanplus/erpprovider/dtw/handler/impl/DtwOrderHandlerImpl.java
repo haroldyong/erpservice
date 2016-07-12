@@ -277,25 +277,34 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     }
 
     @Override
-    public EventResult stockQuery(DtwStockSearch dtwStockSearch, DtwSysData dtwSysData) {
-        Map<String,Object> requestMap = new HashMap<>();
-        requestMap.put("data",JSON.toJSONString(dtwStockSearch));
-        HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl()+"/QBStockQey",requestMap);
-        if(httpResult.getHttpStatus()==HttpStatus.SC_OK){
-            JSONObject result = JSON.parseObject(httpResult.getHttpContent());
-            if (result.getString("ErrCode").equals("000")) {
-                JSONArray jsonArray = result.getJSONArray("Items");
-                List<DtwStockItem> dtwStockItems = new ArrayList<>();
-                jsonArray.forEach(item->{
-                    DtwStockItem dtwStockItem = JSON.parseObject(item.toString(),DtwStockItem.class);
-                    dtwStockItems.add(dtwStockItem);
-                });
-                return EventResult.resultWith(EventResultEnum.SUCCESS,dtwStockItems);
-            } else {
-                return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
+    public EventResult stockQuery(List<DtwStockSearch> dtwStockSearchList, DtwSysData dtwSysData) {
+        try{
+//            List<DtwStockItem> dtwStockItems = new ArrayList<>();
+            for (DtwStockSearch stockSearch : dtwStockSearchList) {
+                Map<String,Object> requestMap = new HashMap<>();
+                requestMap.put("data",JSON.toJSONString(stockSearch));
+                HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl()+"/QBStockQey",requestMap);
+                if(httpResult.getHttpStatus()==HttpStatus.SC_OK){
+                    JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+                    if (result.getString("ErrCode").equals("000")) {
+                        JSONArray jsonArray = result.getJSONArray("Items");
+                        List<DtwStockItem> dtwStockItems = new ArrayList<>();
+                        jsonArray.forEach(item->{
+                            DtwStockItem dtwStockItem = JSON.parseObject(item.toString(),DtwStockItem.class);
+                            dtwStockItems.add(dtwStockItem);
+                        });
+                        return EventResult.resultWith(EventResultEnum.SUCCESS,dtwStockItems);
+                    } else {
+                        return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
+                    }
+                } else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,"服务器请求失败",null);
+                }
             }
-        } else{
-            return EventResult.resultWith(EventResultEnum.ERROR,"服务器请求失败",null);
+
+        } catch (Exception e){
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
         }
+        return null;
     }
 }
