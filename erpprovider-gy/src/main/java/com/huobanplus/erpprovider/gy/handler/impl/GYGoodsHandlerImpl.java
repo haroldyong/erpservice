@@ -1,6 +1,5 @@
 package com.huobanplus.erpprovider.gy.handler.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.gy.common.GYConstant;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
@@ -18,8 +17,6 @@ import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by wuxiongliu on 2016/6/17.
@@ -38,17 +35,23 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                System.out.println("\n************************************************");
+                System.out.println(result.toJSONString());
+                System.out.println("************************************************");
                 if(result.getBoolean("success")){
-                    List<GYResponseGoodsItem> gyResponseGoodsItems = new ArrayList<>();
 
-                    JSONArray jsonArray = result.getJSONArray("items");
-                    jsonArray.forEach(item->{
-                        System.out.println("********************");
-                        System.out.println(item);
-                        GYResponseGoodsItem gyResponseGoodsItem = JSONObject.parseObject(item.toString(),GYResponseGoodsItem.class);
-                        gyResponseGoodsItems.add(gyResponseGoodsItem);
-                    });
-                    return EventResult.resultWith(EventResultEnum.SUCCESS,gyResponseGoodsItems);
+                    GyRespGoodsSearch gyRespGoodsSearch = JSONObject.parseObject(httpResult.getHttpContent(),GyRespGoodsSearch.class);
+
+//                    List<GYResponseGoodsItem> gyResponseGoodsItems = new ArrayList<>();
+//
+//                    JSONArray jsonArray = result.getJSONArray("items");
+//                    jsonArray.forEach(item->{
+//                        System.out.println("********************");
+//                        System.out.println(item);
+//                        GYResponseGoodsItem gyResponseGoodsItem = JSONObject.parseObject(item.toString(),GYResponseGoodsItem.class);
+//                        gyResponseGoodsItems.add(gyResponseGoodsItem);
+//                    });
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,gyRespGoodsSearch);
                 }else{
                     log.info("错误信息："+result.getString("errorDesc"));
                     log.info("请求数据报文："+requestData);

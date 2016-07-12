@@ -5,9 +5,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.gy.common.GYConstant;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
+import com.huobanplus.erpprovider.gy.formatgy.stock.GYResponseStock;
+import com.huobanplus.erpprovider.gy.formatgy.stock.GyResponseStockSearch;
 import com.huobanplus.erpprovider.gy.handler.GYBaseHandler;
 import com.huobanplus.erpprovider.gy.handler.GYOrderHandler;
+import com.huobanplus.erpprovider.gy.handler.GYStockHandler;
 import com.huobanplus.erpprovider.gy.search.GYDeliveryOrderSearch;
+import com.huobanplus.erpprovider.gy.search.GYStockSearch;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
@@ -21,10 +25,12 @@ import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService
 import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.InventoryEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.model.InventoryInfo;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,9 +49,9 @@ import java.util.List;
  * Created by elvis on 2016/5/31.
  */
 @Service
-public class GYSyncDelivery extends GYBaseHandler {
+public class GYScheduledService extends GYBaseHandler {
 
-    private static final Log log = LogFactory.getLog(GYSyncDelivery.class);
+    private static final Log log = LogFactory.getLog(GYScheduledService.class);
 
     @Autowired
     private ERPDetailConfigService detailConfigService;
@@ -59,6 +65,9 @@ public class GYSyncDelivery extends GYBaseHandler {
 
     @Autowired
     private GYOrderHandler gyOrderHandler;
+
+    @Autowired
+    private GYStockHandler gyStockHandler;
 
 
     @Scheduled(cron = "0 */1 * * * ? ")
@@ -89,7 +98,7 @@ public class GYSyncDelivery extends GYBaseHandler {
                 GYDeliveryOrderSearch orderSearch = new GYDeliveryOrderSearch();
                 orderSearch.setPageNo(1);
                 orderSearch.setPageSize(GYConstant.PAGE_SIZE);
-                orderSearch.setStartDeliveryDate(StringUtil.DateFormat(beginTime,StringUtil.TIME_PATTERN));
+                orderSearch.setStartDeliveryDate(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
                 orderSearch.setEndDeliveryDate(nowStr);
                 orderSearch.setShopCode(sysData.getShopCode());// FIXME: 2016/6/22 eg:ruyi
                 orderSearch.setDelivery(1);// 已发货
@@ -104,7 +113,7 @@ public class GYSyncDelivery extends GYBaseHandler {
 
                     first = changeToSyncOrder(deliveryArray);
                 }
-                if(totalCount == 0){
+                if (totalCount == 0) {
                     syncFlag = false;
                 }
 
@@ -119,14 +128,14 @@ public class GYSyncDelivery extends GYBaseHandler {
                     BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
                     failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
                     successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
-                } else{
+                } else {
                     failedOrders.addAll(first);
                 }
 
                 int totalPage = 0;
                 // 后续几页同步
                 totalPage = totalCount / GYConstant.PAGE_SIZE;
-                if(totalCount%GYConstant.PAGE_SIZE != 0){
+                if (totalCount % GYConstant.PAGE_SIZE != 0) {
                     totalPage++;
                 }
                 if (totalPage > 1) {
@@ -145,13 +154,13 @@ public class GYSyncDelivery extends GYBaseHandler {
                             BatchDeliverResult nextBatchDeliverResult = (BatchDeliverResult) nextSyncResult.getData();
                             failedOrders.addAll(nextBatchDeliverResult.getFailedOrders());
                             successOrders.addAll(nextBatchDeliverResult.getSuccessOrders());
-                        } else{
+                        } else {
                             failedOrders.addAll(next);
                         }
                     }
                 }
-                if(syncFlag){// 轮询若无数据，则不记录日志
-                    syncLog(failedOrders,successOrders,totalCount,erpUserInfo,erpInfo);
+                if (syncFlag) {// 轮询若无数据，则不记录日志
+                    syncLog(failedOrders, successOrders, totalCount, erpUserInfo, erpInfo);
                 }
 
             } catch (Exception e) {
@@ -240,6 +249,88 @@ public class GYSyncDelivery extends GYBaseHandler {
         });
 
         return orderDeliveryInfoList;
+    }
+
+    @Scheduled(cron = "0 */1 * * * ? ")
+    @Transactional
+    public void syncGoodsStock() {
+        Date now = new Date();
+        String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
+        log.info("order ship sync for GY start!");
+        List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.GY);
+        for (ERPDetailConfigEntity detailConfig : detailConfigs) {
+
+            ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
+            ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
+            GYSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), GYSysData.class);
+
+            int currentIndex = 1;
+            int total = 0;
+            int totalPage = 0;
+
+            GYStockSearch gyStockSearch = new GYStockSearch();
+            gyStockSearch.setPageNo(currentIndex);
+            gyStockSearch.setPageSize(GYConstant.PAGE_SIZE);
+
+            InventoryEvent inventoryEvent = new InventoryEvent();
+            inventoryEvent.setErpUserInfo(erpUserInfo);
+            inventoryEvent.setErpInfo(erpInfo);
+            ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+
+
+
+            EventResult stockResult = gyStockHandler.stockQuery(gyStockSearch, sysData);
+            if (stockResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                GyResponseStockSearch gyResponseStockSearch = (GyResponseStockSearch) stockResult.getData();
+                total = gyResponseStockSearch.getTotal();
+                System.out.println("\n********************第1页同步结果\n");
+                System.out.println(gyResponseStockSearch.getStocks());
+                // 第一次推送
+
+                List<GYResponseStock> gyResponseStocks = gyResponseStockSearch.getStocks();
+                gyResponseStocks.forEach(gyResponseStock -> {
+                    InventoryInfo inventoryInfo = new InventoryInfo();
+                    inventoryInfo.setGoodBn(gyResponseStock.getItemCode());
+                    inventoryInfo.setProBn(gyResponseStock.getSkuCode());
+                    inventoryInfo.setStock(gyResponseStock.getQty());
+                    inventoryEvent.setInventoryInfo(inventoryInfo);
+                    erpUserHandler.handleEvent(inventoryEvent);
+                });
+
+
+            }
+
+            // 后续几页同步
+            totalPage = total / GYConstant.PAGE_SIZE;
+            if (total % GYConstant.PAGE_SIZE != 0) {
+                totalPage++;
+            }
+            if (totalPage > 1) {
+                for (currentIndex = 2; currentIndex <= totalPage; currentIndex++) {
+                    gyStockSearch.setPageNo(currentIndex);
+                    stockResult = gyStockHandler.stockQuery(gyStockSearch, sysData);
+
+                    if (stockResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        GyResponseStockSearch gyResponseStockSearch = (GyResponseStockSearch) stockResult.getData();
+                        System.out.println("\n********************第"+currentIndex+"页同步结果\n");
+                        System.out.println(gyResponseStockSearch.getStocks());
+                       // 推送平台
+
+                        List<GYResponseStock> gyResponseStocks = gyResponseStockSearch.getStocks();
+                        gyResponseStocks.forEach(gyResponseStock -> {
+                            InventoryInfo inventoryInfo = new InventoryInfo();
+                            inventoryInfo.setGoodBn(gyResponseStock.getItemCode());
+                            inventoryInfo.setProBn(gyResponseStock.getSkuCode());
+                            inventoryInfo.setStock(gyResponseStock.getQty());
+                            inventoryEvent.setInventoryInfo(inventoryInfo);
+                            erpUserHandler.handleEvent(inventoryEvent);
+                        });
+
+                    }
+                }
+            }
+        }
+
     }
 
 }
