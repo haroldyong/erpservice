@@ -251,12 +251,12 @@ public class GYScheduledService extends GYBaseHandler {
         return orderDeliveryInfoList;
     }
 
-    @Scheduled(cron = "0 */1 * * * ? ")
+    @Scheduled(cron = "0 0 0,1 * * ? ")
     @Transactional
     public void syncGoodsStock() {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
-        log.info("order ship sync for GY start!");
+        log.info("stock sync for GY start!");
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.GY);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
 
@@ -294,7 +294,7 @@ public class GYScheduledService extends GYBaseHandler {
                     inventoryInfo.setProBn(gyResponseStock.getSkuCode());
                     inventoryInfo.setStock(gyResponseStock.getQty());
                     inventoryEvent.setInventoryInfo(inventoryInfo);
-                    erpUserHandler.handleEvent(inventoryEvent);
+                    EventResult syncResult = erpUserHandler.handleEvent(inventoryEvent);
                 });
 
 
@@ -323,7 +323,7 @@ public class GYScheduledService extends GYBaseHandler {
                             inventoryInfo.setProBn(gyResponseStock.getSkuCode());
                             inventoryInfo.setStock(gyResponseStock.getQty());
                             inventoryEvent.setInventoryInfo(inventoryInfo);
-                            erpUserHandler.handleEvent(inventoryEvent);
+                            EventResult syncResult = erpUserHandler.handleEvent(inventoryEvent);
                         });
 
                     }
