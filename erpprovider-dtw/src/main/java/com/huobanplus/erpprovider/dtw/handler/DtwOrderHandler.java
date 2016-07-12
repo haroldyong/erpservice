@@ -6,8 +6,6 @@ import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
-import java.util.List;
-
 /**
  * Created by wuxiongliu on 2016/5/23.
  */
@@ -30,5 +28,5 @@ public interface DtwOrderHandler {
 
     EventResult deliverOrder(String Msgid,String wayBill, String weight,String state,ERPUserInfo erpUserInfo);
 
-    EventResult stockQuery(List<DtwStockSearch> dtwStockSearchList, DtwSysData dtwSysData);
+    EventResult stockQuery(DtwStockSearch dtwStockSearch, DtwSysData dtwSysData);
 }
