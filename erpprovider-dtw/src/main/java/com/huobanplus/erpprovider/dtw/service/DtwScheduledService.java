@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.dtw.service;
 
 import com.alibaba.fastjson.JSON;
@@ -23,6 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -31,6 +41,7 @@ import java.util.List;
 /**
  * Created by wuxiongliu on 2016-07-12.
  */
+@Service
 public class DtwScheduledService {
 
     private static final Log log = LogFactory.getLog(DtwScheduledService.class);
@@ -45,17 +56,17 @@ public class DtwScheduledService {
     @Autowired
     private ERPRegister erpRegister;
 
+    @Autowired
     private DtwOrderHandler dtwOrderHandler;
 
     @Scheduled(cron = "0 */1 * * * ? ")
     @Transactional
-    public synchronized void syncOrderShip() {
+    public synchronized void syncStock() {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
-        log.info("order ship sync for GY start!");
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.GY);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
-            log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync order ship");
+            log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync stock");
             try {
                 ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
                 ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
@@ -94,7 +105,7 @@ public class DtwScheduledService {
             } catch (Exception e) {
                 log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
             }
-            log.info("GY ship sync end");
+            log.info("DTW stock sync end");
         }
     }
 

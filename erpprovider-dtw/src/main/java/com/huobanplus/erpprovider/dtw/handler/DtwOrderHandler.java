@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.dtw.handler;
 
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
@@ -26,7 +35,22 @@ public interface DtwOrderHandler {
 //     */
 //    EventResult pushPersonalDeclareOrder(DtwPersonalDelcareInfo dtwPersonalDelcareInfo, DtwSysData dtwSysData);
 
+    /**
+     * 发货单推送
+     * @param Msgid  电商企业发货订单号\销售订单号
+     * @param wayBill 运单号
+     * @param weight 毛重
+     * @param state 状态
+     * @param erpUserInfo erp使用这信息
+     * @return
+     */
     EventResult deliverOrder(String Msgid,String wayBill, String weight,String state,ERPUserInfo erpUserInfo);
 
+    /**
+     *  商品库存查询
+     * @param dtwStockSearch 库存查询实体
+     * @param dtwSysData  大田系统参数
+     * @return
+     */
     EventResult stockQuery(DtwStockSearch dtwStockSearch, DtwSysData dtwSysData);
 }
