@@ -23,28 +23,28 @@ public class DtwOrder {
     @JSONField(name = "PassKey")
     private String passKey;
 
-    @JSONField(name = "eCommerceCode")
-    private String eCommerceCode;
-
-    @JSONField(name = "eCommerceName")
-    private String eCommerceName;
-
-    /**
-     * 电商企业发货单号(必填)
-     */
-    @JSONField(name = "Msgid")
-    private String msgid;
-
     /**
      * 预录入号 允许为空 自行推送个人物品申报信息时需要此选项
      */
     private String preEntryNumber;
 
     /**
-     * 订单号
+     * 进口类型（0一般进口，1保税进口）(必填)
      */
-    @JSONField(name = "orderNo")
-    private String orderNo;
+    @JSONField(name = "importType")
+    private int importType;
+
+    /**
+     * 订单类型（1：普通订单：与快递已经完成对接，2：综合订单：委托大田与快递公司对接）
+     */
+    @JSONField(name = "OrderType")
+    private int orderType;
+
+    /**
+     * 电商企业发货单号(必填)
+     */
+    @JSONField(name = "Msgid")
+    private String msgid;
 
     /**
      * 支付类型
@@ -77,6 +77,12 @@ public class DtwOrder {
     private double orderGoodsAmount;
 
     /**
+     * 订单号
+     */
+    @JSONField(name = "orderNo")
+    private String orderNo;
+
+    /**
      * 订单税款 交易过程中商家向用户征收的税款，免税模式填写0
      */
     @JSONField(name = "orderTaxAmount")
@@ -93,6 +99,18 @@ public class DtwOrder {
      */
     @JSONField(name = "totalAmount")
     private double totalAmount;
+
+    /**
+     * 物流企业编号(必填)
+     */
+    @JSONField(name = "logisCompanyCode")
+    private String logisCompanyCode;
+
+    /**
+     * 物流企业名称(必填)
+     */
+    @JSONField(name = "logisCompanyName")
+    private String logisCompanyName;
 
     /**
      * 购买人ID
@@ -137,7 +155,7 @@ public class DtwOrder {
     private String shipperMobile;
 
     /**
-     *允许为空
+     * 允许为空
      */
     @JSONField(name = "ShipperTel")
     private String shipperTel;
@@ -215,48 +233,38 @@ public class DtwOrder {
     private double weight;
 
     /**
-     * 净重
-     */
-    @JSONField(name = "NetWeight")
-    private double netWeight;
-
-    /**
      * 批次号
      */
     @JSONField(name = "LotNo")
     private String lotNo;
 
     /**
-     * 物流企业编号(必填)
+     * 净重
      */
-    @JSONField(name = "logisCompanyCode")
-    private String logisCompanyCode;
+    @JSONField(name = "NetWeight")
+    private double netWeight;
 
     /**
-     * 物流企业名称(必填)
+     * 进出口标记（I进口,O出口）
      */
-    @JSONField(name = "logisCompanyName")
-    private String logisCompanyName;
+    private int ieFlag;
 
     /**
-     * 进口类型（0一般进口，1保税进口）(必填)
+     * 订单明细
      */
-    @JSONField(name = "importType")
-    private int importType;
-
-    /**
-     * 订单类型（1：普通订单：与快递已经完成对接，2：综合订单：委托大田与快递公司对接）
-     */
-    @JSONField(name = "OrderType")
-    private String orderType;
-
-    /**
-     *
-     进出口标记（I进口,O出口）
-     */
-    private String ieFlag;
-
     @JSONField(name = "Items")
     List<DtwOrderItem> dtwOrderItems;
+
+    /**
+     * 电商企业编码(必填),电商企业在跨境平台备案编码
+     */
+    @JSONField(name = "eCommerceCode")
+    private String eCommerceCode;
+
+    /**
+     * 电商企业名称(必填),电商企业在跨境平台备名称
+     */
+    @JSONField(name = "eCommerceName")
+    private String eCommerceName;
 
 }

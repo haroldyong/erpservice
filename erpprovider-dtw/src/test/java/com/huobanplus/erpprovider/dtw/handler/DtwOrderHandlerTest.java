@@ -12,6 +12,7 @@ package com.huobanplus.erpprovider.dtw.handler;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.dtw.DtwTestBase;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
+import com.huobanplus.erpprovider.dtw.search.DtwStockSearch;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
@@ -19,6 +20,7 @@ import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,12 +56,13 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockDtwSysData.setPassKey("tesaa");
         mockDtwSysData.setECommerceName("testhot");
         mockDtwSysData.setECommerceCode("100");
-        mockDtwSysData.setRequestUrl("http://logistics.dtw.com.cn:8080/QBT/api");//http://thirdpart.kaola.com/api,http://223.252.220.85/api
+        mockDtwSysData.setRequestUrl("http://logistics.dtw.com.cn:8080/QBT/api");
 
         mockOrderItems = new ArrayList<>();
 
         OrderItem mockOrderItem = new OrderItem();
         mockOrderItem.setNum(5);
+        mockOrderItem.setName("奶粉");
         mockOrderItem.setOrderId("8070");
         mockOrderItem.setProductBn("3872824-ecc4090b639c47f89b453980923afb8e");
 
@@ -79,6 +82,10 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockOrder.setShipAddr("浙江省杭州市滨江区阡陌路智慧E谷B幢4楼火图科技");
         mockOrder.setBuyerPid("330682199006015217");
         mockOrder.setBuyerName("刘渠成");
+        mockOrder.setLogiCode("shunfeng");
+        mockOrder.setLogiName("顺丰快递");
+        mockOrder.setCurrency("RMB");
+
 
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         mockOrder.setOrderItems(mockOrderItems);
@@ -101,7 +108,10 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
         mockPushNewOrderEvent.setErpInfo(mockErpInfo);
         mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
-        dtwOrderHandler.pushOrder(mockPushNewOrderEvent);
+        EventResult result = dtwOrderHandler.pushOrder(mockPushNewOrderEvent);
+        System.out.println(result.getData());
+        System.out.println(result.getResultMsg());
+        System.out.println(result.getResultCode());
     }
 
 //    @Test
@@ -109,4 +119,17 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 //        DtwPersonalDelcareInfo dtwPersonalDelcareInfo = new DtwPersonalDelcareInfo();
 //        dtwOrderHandler.pushPersonalDeclareOrder(dtwPersonalDelcareInfo,mockDtwSysData);
 //    }
+
+    @Test
+    public void testStockQuery(){
+        DtwStockSearch dtwStockSearch = new DtwStockSearch();
+        dtwStockSearch.setPassKey(mockDtwSysData.getPassKey());
+        dtwStockSearch.setPartNo("test");
+        dtwStockSearch.setECommerceName(mockDtwSysData.getECommerceName());
+        dtwStockSearch.setECommerceCode(mockDtwSysData.getECommerceCode());
+        EventResult result = dtwOrderHandler.stockQuery(dtwStockSearch,mockDtwSysData);
+        System.out.println(result.getData());
+        System.out.println(result.getResultCode());
+        System.out.println(result.getResultMsg());
+    }
 }
