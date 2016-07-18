@@ -128,7 +128,9 @@ public interface OrderEnum {
         UNIONPAY(100, "银联在线支付"),
         BAIDUPAY(200, "百度钱包"),
         WEIXINPAY_APP(300, "微信APP支付"),
-        WEIFUTONG(500, "威富通");
+        WEIFUTONG(500, "威富通"),
+        HUIJINBAO(600, "汇金宝"),
+        AD_PAYMENT(700, "预付款");
 
         private int code;
         private String name;

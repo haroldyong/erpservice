@@ -80,17 +80,20 @@ public class GYConstant {
 
     public static GYEnum.PaymentOptions GYPaymentProvider(int payType) {
         OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, payType);
+        if (paymentOptions == null) {
+            return GYEnum.PaymentOptions.ZHIFUBAO;
+        }
         switch (paymentOptions) {
             case ALIPAY_MOBILE:
             case ALIPAY_PC:
-            default:
-                return GYEnum.PaymentOptions.ZHIFUBAO;
             case WEIXINPAY:
             case WEIXINPAY_APP:
             case WEIXINPAY_V3:
                 return GYEnum.PaymentOptions.WEIXIN;
             case UNIONPAY:
                 return GYEnum.PaymentOptions.YINLIAN;
+            default:
+                return GYEnum.PaymentOptions.ZHIFUBAO;
         }
     }
 }

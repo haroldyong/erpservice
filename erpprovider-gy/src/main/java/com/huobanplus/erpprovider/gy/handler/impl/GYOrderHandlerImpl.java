@@ -61,14 +61,16 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent, GYSysData sysData) {
+        ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
+        ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
+
         try {
             Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
             //如果不是已支付的单子.不需要推送（比如是售后单,有些ERP需要通过此事件标记,但是管易不行,所以过滤）
             if (order.getPayStatus() != OrderEnum.PayStatus.PAYED.getCode()) {
                 return EventResult.resultWith(EventResultEnum.ERROR, "无需进行推送", null);
             }
-            ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
-            ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
+
 
             GYOrder newOrder = OrderChange(order, sysData);
             Date now = new Date();
@@ -98,7 +100,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
             return eventResult;
 
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.info("管易推送失败," + erpUserInfo.getErpUserType().getName() + "商户号:" + erpUserInfo.getCustomerId() + "---" + e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
