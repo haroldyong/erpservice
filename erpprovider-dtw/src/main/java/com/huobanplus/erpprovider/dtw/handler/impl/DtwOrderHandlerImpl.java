@@ -307,4 +307,25 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
         }
     }
+
+    @Override
+    public EventResult wayBill(DtwWayBill dtwWayBill, DtwSysData dtwSysData) {
+        try{
+            Map<String,Object> requestMap = new HashMap<>();
+            requestMap.put("data",JSON.toJSONString(dtwWayBill));
+            HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl()+"/QBWaybill",requestMap);
+            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+                JSONObject result = JSON.parseObject(httpResult.getHttpContent());
+                if (result.getString("ErrCode").equals("000")) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                } else{
+                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("ErrMsg"),null);
+                }
+            } else{
+                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            }
+        } catch (Exception e){
+            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        }
+    }
 }

@@ -10,6 +10,7 @@
 package com.huobanplus.erpprovider.dtw.handler;
 
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
+import com.huobanplus.erpprovider.dtw.formatdtw.DtwWayBill;
 import com.huobanplus.erpprovider.dtw.search.DtwStockSearch;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -22,8 +23,8 @@ public interface DtwOrderHandler {
 
     /**
      *  推送订单
-     * @param pushNewOrderEvent
-     * @return
+     * @param pushNewOrderEvent 订单推送事件
+     * @return 请求响应结果
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
 
@@ -42,7 +43,7 @@ public interface DtwOrderHandler {
      * @param weight 毛重
      * @param state 状态
      * @param erpUserInfo erp使用这信息
-     * @return
+     * @return 请求响应结果
      */
     EventResult deliverOrder(String Msgid,String wayBill, String weight,String state,ERPUserInfo erpUserInfo);
 
@@ -50,7 +51,15 @@ public interface DtwOrderHandler {
      *  商品库存查询
      * @param dtwStockSearch 库存查询实体
      * @param dtwSysData  大田系统参数
-     * @return
+     * @return 请求响应结果
      */
     EventResult stockQuery(DtwStockSearch dtwStockSearch, DtwSysData dtwSysData);
+
+    /**
+     *  顾客面单
+     * @param dtwWayBill 顾客面单实体
+     * @param dtwSysData 大田系统参数
+     * @return 请求响应结果
+     */
+    EventResult wayBill(DtwWayBill dtwWayBill,DtwSysData dtwSysData);
 }

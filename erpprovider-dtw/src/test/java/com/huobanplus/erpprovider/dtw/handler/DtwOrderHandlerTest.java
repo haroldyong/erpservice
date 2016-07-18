@@ -12,6 +12,7 @@ package com.huobanplus.erpprovider.dtw.handler;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.dtw.DtwTestBase;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
+import com.huobanplus.erpprovider.dtw.formatdtw.DtwWayBill;
 import com.huobanplus.erpprovider.dtw.search.DtwStockSearch;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
@@ -128,6 +129,15 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         dtwStockSearch.setECommerceName(mockDtwSysData.getECommerceName());
         dtwStockSearch.setECommerceCode(mockDtwSysData.getECommerceCode());
         EventResult result = dtwOrderHandler.stockQuery(dtwStockSearch,mockDtwSysData);
+        System.out.println(result.getData());
+        System.out.println(result.getResultCode());
+        System.out.println(result.getResultMsg());
+    }
+
+    @Test
+    public void testWayBill(){
+        DtwWayBill dtwWayBill = new DtwWayBill();
+        EventResult result = dtwOrderHandler.wayBill(dtwWayBill,mockDtwSysData);
         System.out.println(result.getData());
         System.out.println(result.getResultCode());
         System.out.println(result.getResultMsg());
