@@ -56,7 +56,7 @@ public interface DtwOrderHandler {
     EventResult stockQuery(DtwStockSearch dtwStockSearch, DtwSysData dtwSysData);
 
     /**
-     *  顾客面单
+     *  顾客面单 (使用综合订单模式则不使用此接口)
      * @param dtwWayBill 顾客面单实体
      * @param dtwSysData 大田系统参数
      * @return 请求响应结果

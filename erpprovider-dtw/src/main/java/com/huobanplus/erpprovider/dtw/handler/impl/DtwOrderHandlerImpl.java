@@ -62,69 +62,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
             DtwSysData dtwSysData = JSON.parseObject(erpInfo.getSysDataJson(), DtwSysData.class);
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
-            Map<String, Object> requestMap = new HashMap<>();
-            DtwOrder dtwOrder = new DtwOrder();
-            dtwOrder.setPassKey(dtwSysData.getPassKey());//(必填)
-//            dtwOrder.setPreEntryNumber("");
-            dtwOrder.setECommerceCode(dtwSysData.getECommerceCode());//(必填)
-            dtwOrder.setECommerceName(dtwSysData.getECommerceName());//(必填)
-            dtwOrder.setImportType(1);//进口类型（0一般进口，1保税进口）(必填)
-            dtwOrder.setOrderType(2);//订单类型（1：普通订单：与快递已经完成对接，2：综合订单：委托大田与快递公司对接）
-
-            dtwOrder.setMsgid(order.getOrderId());//(必填)
-            dtwOrder.setPayType(3);// TODO: 2016/6/17 //(必填)
-            dtwOrder.setPayCompanyCode("001");//(必填) 支付公司在海关的备案码 // FIXME: 2016-07-13
-            dtwOrder.setPayNumber("100001");//(必填) 支付单号 // FIXME: 2016-07-13
-            dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
-            dtwOrder.setOrderGoodsAmount(order.getFinalAmount()-order.getCostFreight());//(必填)
-            dtwOrder.setOrderNo(order.getOrderId());//(必填)
-            dtwOrder.setOrderTaxAmount(1.0);// FIXME: 2016/6/17//(必填)
-            dtwOrder.setTotalCount(order.getItemNum());//(必填)
-            dtwOrder.setTotalAmount(order.getFinalAmount());//(必填)
-            dtwOrder.setLogisCompanyName(order.getLogiName());//(必填)
-            dtwOrder.setLogisCompanyCode(order.getLogiCode());//(必填) FIXME: 2016-07-13
-            dtwOrder.setPurchaserId(String.valueOf(order.getMemberId()));//(必填)
-            dtwOrder.setShipper("发货人姓名");// TODO: 2016/6/16//(必填)
-            dtwOrder.setShipperPro("");
-            dtwOrder.setShipperCity("");
-            dtwOrder.setShipperDistrict("");
-            dtwOrder.setShipperAddress("浙江杭州滨江区");//TODO 发货人地址（必填）
-            dtwOrder.setShipperMobile("");
-            dtwOrder.setShipperTel("");
-            dtwOrder.setShipperCountry(DtwEnum.CountryEnum.CHINA.getCode());// FIXME: 2016-07-13 (必填)
-            dtwOrder.setShipperZip("");
-            dtwOrder.setConsignee(order.getShipName());//(必填)
-            dtwOrder.setConsigneePro(order.getProvince());//(必填)
-            dtwOrder.setConsigneeCity(order.getCity());//(必填)
-            dtwOrder.setConsigneeDistrict(order.getDistrict());//(必填)
-            dtwOrder.setConsigneeAdd(order.getShipAddr());//(必填)
-            dtwOrder.setConsigneeMobile(order.getShipMobile());//收货人手机(手机与电话二选一)
-            dtwOrder.setConsigneeTel(order.getShipTel());//收货人手机(手机与电话二选一)
-            dtwOrder.setConsigneeCountry(DtwEnum.CountryEnum.CHINA.getCode());// FIXME: 2016-07-13 (必填)
-            dtwOrder.setConsigneeZip(order.getShipZip());//(必填)
-            dtwOrder.setWeight(order.getWeight());// FIXME: 2016/6/16//(必填) 毛重
-            dtwOrder.setLotNo("");
-            dtwOrder.setNetWeight(order.getWeight());// FIXME: 2016/6/16//(必填) 净重
-            dtwOrder.setIeFlag(73);//（(必填)// FIXME: 2016/6/16 73:进口 79:出口
-
-            List<DtwOrderItem> dtwOrderItemList = new ArrayList<>();
-            List<OrderItem> orderItemList = order.getOrderItems();
-            for (int i = 0; i < orderItemList.size(); i++) {
-                OrderItem orderItem = orderItemList.get(i);
-                DtwOrderItem dtwOrderItem = new DtwOrderItem();
-                dtwOrderItem.setMsgitem(i);//(必填)
-                dtwOrderItem.setPartno(orderItem.getProductBn());//(必填)
-                dtwOrderItem.setPartName(orderItem.getName());//(必填)
-                dtwOrderItem.setSpec(orderItem.getStandard());//(必填)
-                dtwOrderItem.setUnit("011");// FIXME: 2016-07-08 计量单位，海关三字代码(必填)  件
-                dtwOrderItem.setCurrency(order.getCurrency());// FIXME: 2016/6/16 (必填)
-                dtwOrderItem.setAmount(orderItem.getAmount());//(必填)
-                dtwOrderItemList.add(dtwOrderItem);
-            }
-
-
-            dtwOrder.setDtwOrderItems(dtwOrderItemList);//(必填)
-            requestMap.put("data", JSON.toJSONString(dtwOrder));
 
             Date now = new Date();
             OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
@@ -140,7 +77,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
             orderDetailSyncLog.setSyncTime(now);
 
-            EventResult orderPushEventResult = orderPush(requestMap, dtwSysData);
+            EventResult orderPushEventResult = orderPush(order, dtwSysData);
             if(orderPushEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
             } else{
@@ -154,7 +91,70 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         }
     }
 
-    private EventResult orderPush(Map<String, Object> requestMap, DtwSysData dtwSysData) {
+    private EventResult orderPush(Order order, DtwSysData dtwSysData) {
+
+        Map<String, Object> requestMap = new HashMap<>();
+        DtwOrder dtwOrder = new DtwOrder();
+        dtwOrder.setPassKey(dtwSysData.getPassKey());//(必填)
+//            dtwOrder.setPreEntryNumber("");
+        dtwOrder.setECommerceCode(dtwSysData.getECommerceCode());//(必填)
+        dtwOrder.setECommerceName(dtwSysData.getECommerceName());//(必填)
+        dtwOrder.setImportType(1);//进口类型（0一般进口，1保税进口）(必填)
+        dtwOrder.setOrderType(2);//订单类型（1：普通订单：与快递已经完成对接，2：综合订单：委托大田与快递公司对接）
+
+        dtwOrder.setMsgid(order.getOrderId());//(必填)
+        dtwOrder.setPayType(3);// TODO: 2016/6/17 //(必填)
+        dtwOrder.setPayCompanyCode("001");//(必填) 支付公司在海关的备案码 // FIXME: 2016-07-13
+        dtwOrder.setPayNumber("100001");//(必填) 支付单号 // FIXME: 2016-07-13
+        dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
+        dtwOrder.setOrderGoodsAmount(order.getFinalAmount()-order.getCostFreight());//(必填)
+        dtwOrder.setOrderNo(order.getOrderId());//(必填)
+        dtwOrder.setOrderTaxAmount(1.0);// FIXME: 2016/6/17//(必填)
+        dtwOrder.setTotalCount(order.getItemNum());//(必填)
+        dtwOrder.setTotalAmount(order.getFinalAmount());//(必填)
+        dtwOrder.setLogisCompanyName(order.getLogiName());//(必填)
+        dtwOrder.setLogisCompanyCode(order.getLogiCode());//(必填) FIXME: 2016-07-13
+        dtwOrder.setPurchaserId(String.valueOf(order.getMemberId()));//(必填)
+        dtwOrder.setShipper("发货人姓名");// TODO: 2016/6/16//(必填)
+        dtwOrder.setShipperPro("");
+        dtwOrder.setShipperCity("");
+        dtwOrder.setShipperDistrict("");
+        dtwOrder.setShipperAddress("浙江杭州滨江区");//TODO 发货人地址（必填）
+        dtwOrder.setShipperMobile("");
+        dtwOrder.setShipperTel("");
+        dtwOrder.setShipperCountry(DtwEnum.CountryEnum.CHINA.getCode());// FIXME: 2016-07-13 (必填)
+        dtwOrder.setShipperZip("");
+        dtwOrder.setConsignee(order.getShipName());//(必填)
+        dtwOrder.setConsigneePro(order.getProvince());//(必填)
+        dtwOrder.setConsigneeCity(order.getCity());//(必填)
+        dtwOrder.setConsigneeDistrict(order.getDistrict());//(必填)
+        dtwOrder.setConsigneeAdd(order.getShipAddr());//(必填)
+        dtwOrder.setConsigneeMobile(order.getShipMobile());//收货人手机(手机与电话二选一)
+        dtwOrder.setConsigneeTel(order.getShipTel());//收货人手机(手机与电话二选一)
+        dtwOrder.setConsigneeCountry(DtwEnum.CountryEnum.CHINA.getCode());// FIXME: 2016-07-13 (必填)
+        dtwOrder.setConsigneeZip(order.getShipZip());//(必填)
+        dtwOrder.setWeight(order.getWeight());// FIXME: 2016/6/16//(必填) 毛重
+        dtwOrder.setLotNo("");
+        dtwOrder.setNetWeight(order.getWeight());// FIXME: 2016/6/16//(必填) 净重
+        dtwOrder.setIeFlag(73);//(必填)// FIXME: 2016/6/16 73:进口 79:出口
+
+        List<DtwOrderItem> dtwOrderItemList = new ArrayList<>();
+        List<OrderItem> orderItemList = order.getOrderItems();
+        for (int i = 0; i < orderItemList.size(); i++) {
+            OrderItem orderItem = orderItemList.get(i);
+            DtwOrderItem dtwOrderItem = new DtwOrderItem();
+            dtwOrderItem.setMsgitem(i);//(必填)
+            dtwOrderItem.setPartno(orderItem.getProductBn());//(必填)
+            dtwOrderItem.setPartName(orderItem.getName());//(必填)
+            dtwOrderItem.setSpec(orderItem.getStandard());//(必填)
+            dtwOrderItem.setUnit("011");// FIXME: 2016-07-08 计量单位，海关三字代码(必填)  件
+            dtwOrderItem.setCurrency(order.getCurrency());// FIXME: 2016/6/16 (必填)
+            dtwOrderItem.setAmount(orderItem.getAmount());//(必填)
+            dtwOrderItemList.add(dtwOrderItem);
+        }
+
+        dtwOrder.setDtwOrderItems(dtwOrderItemList);//(必填)
+        requestMap.put("data", JSON.toJSONString(dtwOrder));
 
         HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl() + "/QBIntegratedOrder", requestMap);
         System.out.println("\n********************************");
