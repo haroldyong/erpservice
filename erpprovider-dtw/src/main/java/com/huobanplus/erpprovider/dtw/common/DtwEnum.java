@@ -9,6 +9,8 @@
 
 package com.huobanplus.erpprovider.dtw.common;
 
+import com.huobanplus.erpservice.common.ienum.ICommonEnum;
+
 /**
  * Created by wuxiongliu on 2016-07-13.
  */
@@ -67,6 +69,82 @@ public interface DtwEnum {
 
         public void setName(String name) {
             this.name = name;
+        }
+    }
+
+    enum UnitEnum {
+        JIAN("011", "件"),
+        GUAN("122","罐");
+
+        private String code;
+        private String name;
+
+        UnitEnum(String code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    enum PaytypeEnum implements ICommonEnum{
+        BankCard(1,"银行卡支付"),
+        Balance(2,"余额支付"),
+        Other(3,"其他");
+
+        private int code;
+        private String name;
+
+        PaytypeEnum(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        @Override
+        public int getCode() {
+            return 0;
+        }
+
+        @Override
+        public String getName() {
+            return null;
+        }
+    }
+
+    enum ImportTypeEnum implements ICommonEnum{
+        YIBAN(1,"一般进口"),
+        BAOSHUI(2,"保税进口");
+
+        private int code;
+        private String name;
+
+        ImportTypeEnum(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        @Override
+        public int getCode() {
+            return 0;
+        }
+
+        @Override
+        public String getName() {
+            return null;
         }
     }
 

@@ -99,17 +99,17 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 //            dtwOrder.setPreEntryNumber("");
         dtwOrder.setECommerceCode(dtwSysData.getECommerceCode());//(必填)
         dtwOrder.setECommerceName(dtwSysData.getECommerceName());//(必填)
-        dtwOrder.setImportType(1);//进口类型（0一般进口，1保税进口）(必填)
+        dtwOrder.setImportType(DtwEnum.ImportTypeEnum.BAOSHUI.getCode());//进口类型（0一般进口，1保税进口）(必填)
         dtwOrder.setOrderType(2);//订单类型（1：普通订单：与快递已经完成对接，2：综合订单：委托大田与快递公司对接）
 
         dtwOrder.setMsgid(order.getOrderId());//(必填)
-        dtwOrder.setPayType(3);// TODO: 2016/6/17 //(必填)
+        dtwOrder.setPayType(DtwEnum.PaytypeEnum.Other.getCode());// TODO: 2016/6/17 //(必填)
         dtwOrder.setPayCompanyCode("001");//(必填) 支付公司在海关的备案码 // FIXME: 2016-07-13
         dtwOrder.setPayNumber("100001");//(必填) 支付单号 // FIXME: 2016-07-13
         dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
         dtwOrder.setOrderGoodsAmount(order.getFinalAmount()-order.getCostFreight());//(必填)
         dtwOrder.setOrderNo(order.getOrderId());//(必填)
-        dtwOrder.setOrderTaxAmount(1.0);// FIXME: 2016/6/17//(必填)
+        dtwOrder.setOrderTaxAmount(0);// FIXME: 2016/6/17//(必填)
         dtwOrder.setTotalCount(order.getItemNum());//(必填)
         dtwOrder.setTotalAmount(order.getFinalAmount());//(必填)
         dtwOrder.setLogisCompanyName(order.getLogiName());//(必填)
@@ -147,7 +147,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwOrderItem.setPartno(orderItem.getProductBn());//(必填)
             dtwOrderItem.setPartName(orderItem.getName());//(必填)
             dtwOrderItem.setSpec(orderItem.getStandard());//(必填)
-            dtwOrderItem.setUnit("011");// FIXME: 2016-07-08 计量单位，海关三字代码(必填)  件
+            dtwOrderItem.setUnit(DtwEnum.UnitEnum.JIAN.getCode());// FIXME: 2016-07-08 计量单位，海关三字代码(必填)  件
             dtwOrderItem.setCurrency(order.getCurrency());// FIXME: 2016/6/16 (必填)
             dtwOrderItem.setAmount(orderItem.getAmount());//(必填)
             dtwOrderItemList.add(dtwOrderItem);
@@ -181,7 +181,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwPersonalDelcareInfo.setCompanyName("");// 必填
         dtwPersonalDelcareInfo.setCompanyCode("");// 必填
 //        dtwPersonalDelcareInfo.setPreEntryNumber("");
-        dtwPersonalDelcareInfo.setImportType(0);// FIXME: 2016/7/4 进口类型（0一般进口，1保税进口）
+        dtwPersonalDelcareInfo.setImportType(DtwEnum.ImportTypeEnum.BAOSHUI.getCode());// FIXME: 2016/7/4 进口类型（0一般进口，1保税进口）
         dtwPersonalDelcareInfo.setOrderNo(order.getOrderId());// 必填
         dtwPersonalDelcareInfo.setWayBill("");
         dtwPersonalDelcareInfo.setPackNo(order.getItemNum());// 必填// FIXME: 2016/7/4
@@ -200,7 +200,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwPersonalDelcareInfo.setWorth(order.getFinalAmount());// 必填
         dtwPersonalDelcareInfo.setFeeAmount(order.getCostFreight());// 必填
         dtwPersonalDelcareInfo.setInsureAmount(0.0);// 必填
-        dtwPersonalDelcareInfo.setCurrCode("142");
+        dtwPersonalDelcareInfo.setCurrCode(DtwEnum.CurrencyEnum.RMB.getCode());
         if(orderItems.size()>0){
             dtwPersonalDelcareInfo.setMainGName(orderItems.get(0).getName());// 必填
         }
@@ -227,9 +227,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwGoodsDelcareItem.setDeclTotalPrice(item.getAmount()*item.getNum());// 必填
 //            dtwGoodsDelcareItem.setUseTo("");
             dtwGoodsDelcareItem.setDeclareCount(item.getNum());// 必填
-            dtwGoodsDelcareItem.setGoodsUnit("011");// 必填
+            dtwGoodsDelcareItem.setGoodsUnit(DtwEnum.UnitEnum.JIAN.getCode());// 必填
 //            dtwGoodsDelcareItem.setGoodsGrossWeight("");
-            dtwGoodsDelcareItem.setFirstUnit("011");// 必填
+            dtwGoodsDelcareItem.setFirstUnit(DtwEnum.UnitEnum.JIAN.getCode());// 必填
             dtwGoodsDelcareItem.setFirstCount(item.getNum());// 必填
 //            dtwGoodsDelcareItem.setSecondUnit("");
 //            dtwGoodsDelcareItem.setSecondCount(0.0);
@@ -237,7 +237,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwItems.add(dtwGoodsDelcareItem);
         }
 
-        
         dtwPersonalDelcareInfo.setItems(dtwItems);
 
         Map<String,Object> requestMap = new HashMap<>();
