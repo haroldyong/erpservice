@@ -1,11 +1,10 @@
 package com.huobanplus.erpprovider.gy.handler.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.gy.common.GYConstant;
 import com.huobanplus.erpprovider.gy.common.GYSysData;
-import com.huobanplus.erpprovider.gy.formatgy.stock.GYResponseStock;
+import com.huobanplus.erpprovider.gy.formatgy.stock.GyResponseStockSearch;
 import com.huobanplus.erpprovider.gy.handler.GYBaseHandler;
 import com.huobanplus.erpprovider.gy.handler.GYStockHandler;
 import com.huobanplus.erpprovider.gy.search.GYStockSearch;
@@ -19,8 +18,6 @@ import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by wuxiongliu on 2016/6/17.
@@ -32,20 +29,25 @@ public class GYStockHandlerImpl extends GYBaseHandler implements GYStockHandler 
     @Override
     public EventResult stockQuery(GYStockSearch gyStockSearch, GYSysData gySysData) {
         try {
-            String requestData = getRequestData(gySysData, gyStockSearch, GYConstant.STOCK_QUERY);
+            String requestData = getRequestData(gySysData, gyStockSearch, GYConstant.NEW_STOCK_QUERY);
             HttpResult httpResult = HttpClientUtil.getInstance().post(gySysData.getRequestUrl(),requestData);
             if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
+                System.out.println("\n******************************");
+                System.out.println(result.toJSONString());
+                System.out.println("******************************");
                 if(result.getBoolean("success")){
 
-                    JSONArray jsonArray = result.getJSONArray("stocks");
-                    List<GYResponseStock> gyrStocks = new ArrayList<>();
-                    jsonArray.forEach(stock->{
-                        GYResponseStock gyrStock = JSON.parseObject(stock.toString(),GYResponseStock.class);
-                        gyrStocks.add(gyrStock);
-                    });
+                    GyResponseStockSearch gyResponseStockSearch = JSON.parseObject(httpResult.getHttpContent(),GyResponseStockSearch.class);
 
-                    return EventResult.resultWith(EventResultEnum.SUCCESS,gyrStocks);
+//                    JSONArray jsonArray = result.getJSONArray("stocks");
+//                    List<GYResponseStock> gyrStocks = new ArrayList<>();
+//                    jsonArray.forEach(stock->{
+//                        GYResponseStock gyrStock = JSON.parseObject(stock.toString(),GYResponseStock.class);
+//                        gyrStocks.add(gyrStock);
+//                    });
+
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,gyResponseStockSearch);
                 }else{
                     log.info("错误信息："+result.getString("errorDesc"));
                     log.info("请求数据报文："+requestData);

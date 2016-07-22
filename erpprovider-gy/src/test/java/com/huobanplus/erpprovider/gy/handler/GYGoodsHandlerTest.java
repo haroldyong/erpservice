@@ -1,11 +1,10 @@
 package com.huobanplus.erpprovider.gy.handler;
 
 import com.huobanplus.erpprovider.gy.GYTestBase;
-import com.huobanplus.erpprovider.gy.common.GYSysData;
+import com.huobanplus.erpprovider.gy.common.GYConstant;
 import com.huobanplus.erpprovider.gy.formatgy.goods.*;
 import com.huobanplus.erpprovider.gy.search.GYGoodsSearch;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,22 +20,12 @@ public class GYGoodsHandlerTest extends GYTestBase {
     @Autowired
     private GYGoodsHandler gyGoodsHandler;
 
-    private GYSysData mockGySysData;
-
-    @Before
-    public void setUp(){
-        mockGySysData = new GYSysData();
-
-        mockGySysData.setRequestUrl("https://demo.guanyierp.com/erpapi/rest/erp_open");
-        mockGySysData.setAppKey("143158");
-        mockGySysData.setSessionkey("58b9c91e195e4a28be107e1485264890");
-        mockGySysData.setSecret("a4384907606e435bbf594c420760d29a");
-    }
-
     @Test
     public void testGoodsQuery(){
         GYGoodsSearch gyGoodsSearch = new GYGoodsSearch();
-        gyGoodsSearch.setCode("1014hot");
+//        gyGoodsSearch.setCode("1014hot");
+        gyGoodsSearch.setPageSize(GYConstant.PAGE_SIZE);
+        gyGoodsSearch.setPageNo(1);
         EventResult eventResult = gyGoodsHandler.goodsQuery(gyGoodsSearch,mockGySysData);
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultMsg());

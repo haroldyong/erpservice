@@ -90,19 +90,21 @@
     </tr>
 
     <tr>
-        <th style="vertical-align: middle;">sessionKey：</th>
-        <td>
-            <input name="gy_sessionKey" type="text" value="" id="gy_sessionKey" class="input-normal"/>
-            （公钥，你申请的appkey， 以标识来源）
-        </td>
-    </tr>
-    <tr>
         <th style="vertical-align: middle;">appSecret：</th>
         <td>
             <input name="gy_appSecret" type="text" value="" id="gy_appSecret" class="input-normal"/>
             （可在GY开发者后台查看）
         </td>
     </tr>
+
+    <tr>
+        <th style="vertical-align: middle;">sessionKey：</th>
+        <td>
+            <input name="gy_sessionKey" type="text" value="" id="gy_sessionKey" class="input-normal"/>
+            （你申请的sessionKey,可在GY开发者后台查看）
+        </td>
+    </tr>
+
     <tr>
         <th style="vertical-align: middle;">店铺代码：</th>
         <td>

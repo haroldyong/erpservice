@@ -23,21 +23,21 @@ public class GYStockSearch {
     private Integer pageSize;
 
     /**
-     * 商品代码
+     *  修改时间开始段
      */
-    @JSONField(name = "item_code")
-    private String itemCode;
+    @JSONField(name = "start_date")
+    private String startDate;
 
     /**
-     * 规格代码
+     *  修改时间结束段
      */
-    @JSONField(name = "sku_code")
-    private String skuCode;
+    @JSONField(name = "end_date")
+    private String endDate;
 
     /**
-     * 仓库code
+     * 商品条码
      */
-    @JSONField(name = "warehouse_code")
-    private String earehouseCode;
+    @JSONField(name = "barcode")
+    private String barCode;
 
 }

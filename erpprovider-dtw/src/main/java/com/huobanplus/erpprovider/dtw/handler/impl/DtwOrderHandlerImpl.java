@@ -1,13 +1,16 @@
 package com.huobanplus.erpprovider.dtw.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpprovider.dtw.formatdtw.DtwOrder;
+import com.huobanplus.erpprovider.dtw.formatdtw.DtwPersonalDelcareInfo;
 import com.huobanplus.erpprovider.dtw.handler.DtwOrderHandler;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,4 +48,14 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
     }
 
+    @Override
+    public EventResult personalInfoDeclare(DtwPersonalDelcareInfo dtwPersonalDelcareInfo, DtwSysData dtwSysData) {
+        Map<String,Object> requestMap = new HashMap<>();
+        requestMap.put("data", JSON.toJSONString(dtwPersonalDelcareInfo));
+        HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl()+"/QBPresonal",requestMap);
+        if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+            System.out.println(httpResult);
+        }
+        return null;
+    }
 }
