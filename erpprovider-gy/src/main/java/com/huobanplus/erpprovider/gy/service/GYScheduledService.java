@@ -70,7 +70,7 @@ public class GYScheduledService extends GYBaseHandler {
     private GYStockHandler gyStockHandler;
 
 
-    @Scheduled(cron = "0 */1 * * * ? ")
+    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public synchronized void syncOrderShip() {
         Date now = new Date();
@@ -251,7 +251,10 @@ public class GYScheduledService extends GYBaseHandler {
         return orderDeliveryInfoList;
     }
 
-    @Scheduled(cron = "0 0 0,1 * * ? ")
+    /**
+     * 库存同步
+     */
+    @Scheduled(cron = "0 */30 * * * ? ")
     @Transactional
     public void syncGoodsStock() {
         Date now = new Date();
