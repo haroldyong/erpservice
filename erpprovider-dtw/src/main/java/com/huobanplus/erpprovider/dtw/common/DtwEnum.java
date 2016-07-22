@@ -116,12 +116,20 @@ public interface DtwEnum {
 
         @Override
         public int getCode() {
-            return 0;
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
 
         @Override
         public String getName() {
-            return null;
+            return name;
         }
     }
 
@@ -139,12 +147,20 @@ public interface DtwEnum {
 
         @Override
         public int getCode() {
-            return 0;
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
 
         @Override
         public String getName() {
-            return null;
+            return name;
         }
     }
 
