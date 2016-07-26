@@ -28,6 +28,12 @@ public interface DtwOrderHandler {
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
 
+    /**
+     *  推送支付单到海关
+     * @return
+     */
+    EventResult pushPayOrder();
+
 //    /**
 //     *  个人物品信息申报推送
 //     * @param dtwPersonalDelcareInfo

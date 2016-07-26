@@ -327,4 +327,26 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
         }
     }
+
+    @Override
+    public EventResult pushPayOrder() {
+        Map requestMap = new TreeMap<>();
+        requestMap.put("service","alipay.acquire.customs");
+        requestMap.put("partner","208821125154512");
+        requestMap.put("_input_charset","utf-8");
+        requestMap.put("sign_type","MD5");
+//        requestMap.put("sign","");
+        requestMap.put("out_request_no","201607261732");
+        requestMap.put("trade_no","2015051446800462000100020003");
+        requestMap.put("merchant_customs_code","hanguo");
+        requestMap.put("amount","100");
+        requestMap.put("customs_place","HANGZHOU");
+        requestMap.put("merchant_customs_name","test");
+        requestMap.put("is_split","n");
+        requestMap.put("sub_out_biz_no","2015080811223212345453");
+
+        HttpResult httpResult = HttpClientUtil.getInstance().get("https://mapi.alipay.com/gateway.do",requestMap);// 未申请报关接口
+        System.out.println(httpResult.getHttpContent());
+        return null;
+    }
 }

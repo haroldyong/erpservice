@@ -142,4 +142,9 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         System.out.println(result.getResultCode());
         System.out.println(result.getResultMsg());
     }
+
+    @Test
+    public void testPushPayOrder(){
+        dtwOrderHandler.pushPayOrder();
+    }
 }
