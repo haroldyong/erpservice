@@ -86,25 +86,25 @@ public class WeixinCustomer {
      * 子订单金额，以分为单位，不能超过原订单金额，order_fee=transport_fee+product_fee（应付金额=物流费+商品价格）
      */
     @JacksonXmlProperty(localName = "order_fee")
-    private String orderFee;
+    private int orderFee;
 
     /**
-     *物流费用，以分为单位
+     * 物流费用，以分为单位
      */
     @JacksonXmlProperty(localName = "transport_fee")
-    private String transportFee;
+    private int transportFee;
 
     /**
      * 商品费用，以分为单位，
      */
     @JacksonXmlProperty(localName = "product_fee")
-    private String productFee;
+    private int productFee;
 
     /**
      * 关税，以分为单位
      */
     @JacksonXmlProperty(localName = "duty")
-    private String duty;
+    private int duty;
 
     /**
      * 暂只支持身份证，该参数是指用户信息，商户若有用户信息，可上送，系统将以商户上传的数据为准，进行海关通关报备；
@@ -124,9 +124,4 @@ public class WeixinCustomer {
     @JacksonXmlProperty(localName = "name")
     private String name;
 
-    private String device_info;
-
-    private String body;
-
-    private String nonce_str;
 }

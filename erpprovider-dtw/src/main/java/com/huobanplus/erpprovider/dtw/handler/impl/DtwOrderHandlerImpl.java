@@ -38,6 +38,9 @@ import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -80,15 +83,16 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             orderDetailSyncLog.setSyncTime(now);
 
             EventResult orderPushEventResult = orderPush(order, dtwSysData);
-            if(orderPushEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+            if (orderPushEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-            } else{
+            } else {
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-                orderDetailSyncLog.setErrorMsg(orderPushEventResult.getResultMsg()+";"+orderPushEventResult.getResultCode());
+                orderDetailSyncLog.setErrorMsg(orderPushEventResult.getResultMsg() + ";" + orderPushEventResult.getResultCode());
             }
             orderDetailSyncLogService.save(orderDetailSyncLog);
             return orderPushEventResult;
         } catch (Exception e) {
+            log.error(e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
@@ -109,7 +113,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setPayCompanyCode("001");//(必填) 支付公司在海关的备案码 // FIXME: 2016-07-13
         dtwOrder.setPayNumber("100001");//(必填) 支付单号 // FIXME: 2016-07-13
         dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
-        dtwOrder.setOrderGoodsAmount(order.getFinalAmount()-order.getCostFreight());//(必填)
+        dtwOrder.setOrderGoodsAmount(order.getFinalAmount() - order.getCostFreight());//(必填)
         dtwOrder.setOrderNo(order.getOrderId());//(必填)
         dtwOrder.setOrderTaxAmount(0);// FIXME: 2016/6/17//(必填)
         dtwOrder.setTotalCount(order.getItemNum());//(必填)
@@ -170,6 +174,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
             }
         } else {
+            log.error("服务器请求失败:" + httpResult.getHttpContent());
             return EventResult.resultWith(EventResultEnum.ERROR, "服务器请求失败", null);
         }
     }
@@ -203,7 +208,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwPersonalDelcareInfo.setFeeAmount(order.getCostFreight());// 必填
         dtwPersonalDelcareInfo.setInsureAmount(0.0);// 必填
         dtwPersonalDelcareInfo.setCurrCode(DtwEnum.CurrencyEnum.RMB.getCode());
-        if(orderItems.size()>0){
+        if (orderItems.size() > 0) {
             dtwPersonalDelcareInfo.setMainGName(orderItems.get(0).getName());// 必填
         }
         dtwPersonalDelcareInfo.setTradeCountry("");// 必填
@@ -224,9 +229,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwGoodsDelcareItem.setGoodsModel(item.getStandard());// 必填
             dtwGoodsDelcareItem.setOriginCountry("");// 必填
             dtwGoodsDelcareItem.setTradeCurr(DtwEnum.CurrencyEnum.RMB.getCode());// FIXME: 2016-07-13
-            dtwGoodsDelcareItem.setTradeTotal(item.getAmount()*item.getNum());// 必填
+            dtwGoodsDelcareItem.setTradeTotal(item.getAmount() * item.getNum());// 必填
             dtwGoodsDelcareItem.setDeclPrice(item.getAmount());// 必填
-            dtwGoodsDelcareItem.setDeclTotalPrice(item.getAmount()*item.getNum());// 必填
+            dtwGoodsDelcareItem.setDeclTotalPrice(item.getAmount() * item.getNum());// 必填
 //            dtwGoodsDelcareItem.setUseTo("");
             dtwGoodsDelcareItem.setDeclareCount(item.getNum());// 必填
             dtwGoodsDelcareItem.setGoodsUnit(DtwEnum.UnitEnum.JIAN.getCode());// 必填
@@ -241,31 +246,32 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         dtwPersonalDelcareInfo.setItems(dtwItems);
 
-        Map<String,Object> requestMap = new HashMap<>();
-        requestMap.put("data",JSON.toJSONString(dtwPersonalDelcareInfo));
-        HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl()+"/QBPresonal",requestMap);
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("data", JSON.toJSONString(dtwPersonalDelcareInfo));
+        HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl() + "/QBPresonal", requestMap);
         System.out.println("\n********************************");
         System.out.println(httpResult.getHttpContent());
         System.out.println("********************************");
-        if(httpResult.getHttpStatus()==HttpStatus.SC_OK){
+        if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
             JSONObject result = JSON.parseObject(httpResult.getHttpContent());
             if (result.getString("ErrCode").equals("000")) {
                 return EventResult.resultWith(EventResultEnum.SUCCESS);
             } else {
                 return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
             }
-        } else{
-            return EventResult.resultWith(EventResultEnum.ERROR,"服务器请求失败",null);
+        } else {
+            log.error("服务器请求失败:" + httpResult.getHttpContent());
+            return EventResult.resultWith(EventResultEnum.ERROR, "服务器请求失败", null);
         }
 
     }
 
     @Override
-    public EventResult deliverOrder(String Msgid,String wayBill, String weight,String state,ERPUserInfo erpUserInfo) {
+    public EventResult deliverOrder(String Msgid, String wayBill, String weight, String state, ERPUserInfo erpUserInfo) {
         try {
             ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
             if (erpUserHandler == null) {
-                return EventResult.resultWith(EventResultEnum.NO_DATA,"未找到数据源信息",null);
+                return EventResult.resultWith(EventResultEnum.NO_DATA, "未找到数据源信息", null);
             }
             DeliveryInfoEvent deliveryInfoEvent = new DeliveryInfoEvent();
             deliveryInfoEvent.setErpUserInfo(erpUserInfo);
@@ -275,122 +281,173 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             deliveryInfo.setLogiNo(wayBill);
             deliveryInfoEvent.setDeliveryInfo(deliveryInfo);
             EventResult eventResult = erpUserHandler.handleEvent(deliveryInfoEvent);
-           return eventResult;
+            return eventResult;
         } catch (Exception e) {
-           return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+            log.error(e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
     @Override
     public EventResult stockQuery(DtwStockSearch dtwStockSearch, DtwSysData dtwSysData) {
-        try{
-            Map<String,Object> requestMap = new HashMap<>();
-            requestMap.put("data",JSON.toJSONString(dtwStockSearch));
-            HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl()+"/QBStockQey",requestMap);
-            if(httpResult.getHttpStatus()==HttpStatus.SC_OK){
+        try {
+            Map<String, Object> requestMap = new HashMap<>();
+            requestMap.put("data", JSON.toJSONString(dtwStockSearch));
+            HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl() + "/QBStockQey", requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                 if (result.getString("ErrCode").equals("000")) {
                     JSONArray jsonArray = result.getJSONArray("Items");
                     List<DtwStockItem> dtwStockItems = new ArrayList<>();
-                    jsonArray.forEach(item->{
-                        DtwStockItem dtwStockItem = JSON.parseObject(item.toString(),DtwStockItem.class);
+                    jsonArray.forEach(item -> {
+                        DtwStockItem dtwStockItem = JSON.parseObject(item.toString(), DtwStockItem.class);
                         dtwStockItems.add(dtwStockItem);
                     });
-                    return EventResult.resultWith(EventResultEnum.SUCCESS,dtwStockItems);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, dtwStockItems);
                 } else {
                     return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
                 }
-            } else{
-                return EventResult.resultWith(EventResultEnum.ERROR,"服务器请求失败",null);
+            } else {
+                log.error("服务器请求失败:" + httpResult.getHttpContent());
+                return EventResult.resultWith(EventResultEnum.ERROR, "服务器请求失败", null);
             }
 
-        } catch (Exception e){
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
     @Override
     public EventResult wayBill(DtwWayBill dtwWayBill, DtwSysData dtwSysData) {
-        try{
-            Map<String,Object> requestMap = new HashMap<>();
-            requestMap.put("data",JSON.toJSONString(dtwWayBill));
-            HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl()+"/QBWaybill",requestMap);
-            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+        try {
+            Map<String, Object> requestMap = new HashMap<>();
+            requestMap.put("data", JSON.toJSONString(dtwWayBill));
+            HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl() + "/QBWaybill", requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent());
                 if (result.getString("ErrCode").equals("000")) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
-                } else{
-                    return EventResult.resultWith(EventResultEnum.ERROR,result.getString("ErrMsg"),null);
+                } else {
+                    return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
                 }
-            } else{
-                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+            } else {
+                log.error("服务器请求失败:" + httpResult.getHttpContent());
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
-        } catch (Exception e){
-            return EventResult.resultWith(EventResultEnum.ERROR,e.getMessage(),null);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
     @Override
-    public EventResult pushAliPayOrder() {
+    public EventResult pushAliPayOrder(AliCustomer aliCustomer, DtwSysData dtwSysData) {
         try {
             Map requestMap = new TreeMap<>();
             requestMap.put("service", "alipay.acquire.customs");
-            requestMap.put("partner", "208821125154512");// FIXME: 2016-07-27 
             requestMap.put("_input_charset", "utf-8");
             requestMap.put("sign_type", "MD5");
-//        requestMap.put("sign","");
-            requestMap.put("out_request_no", "201607261732");
-            requestMap.put("trade_no", "2015051446800462000100020003");// FIXME: 2016-07-27 
-            requestMap.put("merchant_customs_code", "hanguo");
-            requestMap.put("amount", "100");// FIXME: 2016-07-27 
-            requestMap.put("customs_place", "HANGZHOU");// FIXME: 2016-07-27 
-            requestMap.put("merchant_customs_name", "test");// FIXME: 2016-07-27 
-            requestMap.put("is_split", "n");// FIXME: 2016-07-27 
-            requestMap.put("sub_out_biz_no", "2015080811223212345453");// FIXME: 2016-07-27
+
+            requestMap.put("partner", dtwSysData.getAliPartner());// FIXME: 2016-07-27
+            requestMap.put("out_request_no", aliCustomer.getOutRequestNo());
+            requestMap.put("trade_no", aliCustomer.getTradeNo());// FIXME: 2016-07-27
+            requestMap.put("merchant_customs_code", aliCustomer.getMerchantCustomsCode());
+            requestMap.put("amount", aliCustomer.getAmount());// FIXME: 2016-07-27
+            requestMap.put("customs_place", aliCustomer.getCustomsPlace());// FIXME: 2016-07-27
+            requestMap.put("merchant_customs_name", aliCustomer.getMerchantCustomsName());// FIXME: 2016-07-27
+//            requestMap.put("is_split", "n");
+//            requestMap.put("sub_out_biz_no", "2015080811223212345453");
             String sign = DtwUtil.aliBuildSign(requestMap);
-            requestMap.put("sign",sign);
+            requestMap.put("sign", sign);
 
-            HttpResult httpResult = HttpClientUtil.getInstance().get("https://mapi.alipay.com/gateway.do", requestMap);// 未申请报关接口
-            System.out.println(httpResult.getHttpContent());
-        } catch (Exception e){
+            HttpResult httpResult = HttpClientUtil.getInstance().get("https://mapi.alipay.com/gateway.do", requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                String xmlResp = httpResult.getHttpContent();
+                Document document = DocumentHelper.parseText(xmlResp);
+                Element root = document.getRootElement();
 
+                Element isSuccessElem = root.element("is_success");
+                if (isSuccessElem.getText().equals("T")) {
+                    Element resultCodeElem = root.element("result_code");
+                    if (resultCodeElem.equals("SUCCESS")) {
+                        log.info("大田推送支付宝支付单到海关");
+                        return EventResult.resultWith(EventResultEnum.SUCCESS);
+                    } else {
+                        Element errorElem = root.element("detail_error_des");
+                        log.error("推送支付宝支付单到海关失败:" + errorElem.getText());
+                        return EventResult.resultWith(EventResultEnum.ERROR, errorElem.getText(), null);
+                    }
+                } else {
+                    Element errorElem = root.element("error");
+                    log.error("推送支付宝支付单到海关失败:" + errorElem.getText());
+                    return EventResult.resultWith(EventResultEnum.ERROR, errorElem.getText(), null);
+                }
+            } else {
+                log.error("服务器请求失败:" + httpResult.getHttpContent());
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            }
+
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
-        return null;
     }
 
     @Override
-    public EventResult pushWeixinPayOrder(WeixinCustomer weixinCustomer) {
+    public EventResult pushWeixinPayOrder(WeixinCustomer weixinCustomer, DtwSysData dtwSysData) {
         try {
+            Map<String, Object> requestMap = new TreeMap<>();
+            requestMap.put("appid", weixinCustomer.getAppid());
+            requestMap.put("mch_id", weixinCustomer.getMchId());
+            requestMap.put("out_trade_no", weixinCustomer.getOutTradeNo());
+            requestMap.put("transaction_id", weixinCustomer.getTransactionId());
+            requestMap.put("customs", weixinCustomer.getCustoms());
+            requestMap.put("mch_customs_no", weixinCustomer.getMchCustomsNo());
+            requestMap.put("sub_order_no", weixinCustomer.getSubOrderNo());
+            requestMap.put("fee_type", weixinCustomer.getFeeType());
+            requestMap.put("order_fee", weixinCustomer.getOrderFee());
+            requestMap.put("transport_fee", weixinCustomer.getTransportFee());
+            requestMap.put("product_fee", weixinCustomer.getProductFee());
+            requestMap.put("duty", weixinCustomer.getDuty());
+            requestMap.put("cert_type", weixinCustomer.getCertType());
+            requestMap.put("cert_id", weixinCustomer.getCertId());
+            requestMap.put("name", weixinCustomer.getName());
 
-            Map<String,Object> requestMap = new TreeMap<>();
-            requestMap.put("appid",weixinCustomer.getAppid());
-            requestMap.put("mch_id",weixinCustomer.getMchId());
-            requestMap.put("out_trade_no",weixinCustomer.getOutTradeNo());
-            requestMap.put("transaction_id",weixinCustomer.getTransactionId());
-            requestMap.put("customs",weixinCustomer.getCustoms());
-            requestMap.put("mch_customs_no",weixinCustomer.getMchCustomsNo());
-            requestMap.put("sub_order_no",weixinCustomer.getSubOrderNo());
-            requestMap.put("fee_type",weixinCustomer.getFeeType());
-            requestMap.put("order_fee",weixinCustomer.getOrderFee());
-            requestMap.put("transport_fee",weixinCustomer.getTransportFee());
-            requestMap.put("product_fee",weixinCustomer.getProductFee());
-            requestMap.put("duty",weixinCustomer.getDuty());
-            requestMap.put("cert_type",weixinCustomer.getCertType());
-            requestMap.put("cert_id",weixinCustomer.getCertId());
-            requestMap.put("name",weixinCustomer.getName());
-
-            String sign = DtwUtil.weixinBuildSign(requestMap,"");
-            requestMap.put("sign",sign);
+            String sign = DtwUtil.weixinBuildSign(requestMap, dtwSysData.getWeixinKey());
+            requestMap.put("sign", sign);
+            weixinCustomer.setSign(sign);
 
             String requestData = new XmlMapper().writeValueAsString(weixinCustomer);
 
-            HttpResult httpResult = HttpClientUtil.getInstance().post("https://api.mch.weixin.qq.com/cgi-bin/mch/customs/customdeclareorder",null);
-
-
-            System.out.println("dfafa");
-        } catch (Exception e){
-            e.printStackTrace();
+            HttpResult httpResult = HttpClientUtil.getInstance().post("https://api.mch.weixin.qq.com/cgi-bin/mch/customs/customdeclareorder", requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                String xmlResp = httpResult.getHttpContent();
+                Document document = DocumentHelper.parseText(xmlResp);
+                Element root = document.getRootElement();
+                Element returnCodeElem = root.element("return_code");
+                if (returnCodeElem.getText().equals("SUCCESS")) {
+                    Element resultCode = root.element("result_code");
+                    if (resultCode.getText().equals("SUCCESS")) {
+                        return EventResult.resultWith(EventResultEnum.SUCCESS);
+                    } else {
+                        Element errorMsgElem = root.element("err_code_des");
+                        log.error("推送支付宝支付单到海关失败:" + errorMsgElem.getText());
+                        return EventResult.resultWith(EventResultEnum.ERROR, errorMsgElem.getText(), null);
+                    }
+                } else {
+                    Element returnMsg = root.element("return_msg");
+                    log.error("推送支付宝支付单到海关失败:" + returnMsg.getText());
+                    return EventResult.resultWith(EventResultEnum.ERROR, returnMsg.getText(), null);
+                }
+            } else {
+                log.error("服务器请求失败:" + httpResult.getHttpContent());
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
-        return null;
     }
 }

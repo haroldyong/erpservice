@@ -17,6 +17,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -62,6 +63,34 @@ public class HttpClientUtil {
             HttpEntity httpEntity = new UrlEncodedFormEntity(nameValuePairs, StringUtil.UTF8);
 
             httpPost.setEntity(httpEntity);
+            response = httpClient.execute(httpPost);
+            HttpResult httpResult = new HttpResult(response.getStatusLine().getStatusCode(), EntityUtils.toString(response.getEntity()));
+            EntityUtils.consume(response.getEntity());
+            return httpResult;
+        } catch (IOException e) {
+            msg = e.getMessage();
+        } finally {
+            try {
+                if (response != null) {
+                    response.close();
+                }
+                if (httpClient != null) {
+                    httpClient.close();
+                }
+            } catch (IOException e) {
+            }
+        }
+        return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, msg);
+    }
+
+    public HttpResult post(String url, String requestData) {
+        initHttpClient();
+        String msg = null;
+        CloseableHttpResponse response = null;
+        try {
+            StringEntity stringEntity = new StringEntity(requestData, "utf-8");
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setEntity(stringEntity);
             response = httpClient.execute(httpPost);
             HttpResult httpResult = new HttpResult(response.getStatusLine().getStatusCode(), EntityUtils.toString(response.getEntity()));
             EntityUtils.consume(response.getEntity());

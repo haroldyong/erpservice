@@ -37,4 +37,27 @@ public class DtwSysData {
      */
     private String eCommerceName;
 
+    /**
+     * 微信公众账号ID
+     */
+    private String weiXinAppId;
+
+    /**
+     * 微信 商户号
+     */
+    private String weixinMchId;
+
+    /**
+     * 微信秘钥
+     */
+    private String weixinKey;
+
+    /**
+     * 支付宝商户号
+     */
+    private String aliPartner;
+
+
+
+
 }

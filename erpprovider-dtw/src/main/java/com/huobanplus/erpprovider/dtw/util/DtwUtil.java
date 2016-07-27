@@ -25,18 +25,18 @@ public class DtwUtil {
 
     /**
      *  支付宝 MD5签名 剔除掉sign，sign_type
-     * @param parameterMap
+     * @param requestMap
      * @return
      * @throws UnsupportedEncodingException
      */
-    public static String aliBuildSign(Map<String,Object> parameterMap) throws UnsupportedEncodingException {
+    public static String aliBuildSign(Map<String, Object> requestMap) throws UnsupportedEncodingException {
         StringBuilder signStr = new StringBuilder();
-        Iterator iterator = parameterMap.entrySet().iterator();
+        Iterator<Map.Entry<String, Object>> iterator = requestMap.entrySet().iterator();
 
         while (iterator.hasNext()){
-            Map.Entry ent=(Map.Entry )iterator.next();
-            String key=ent.getKey().toString();
-            String value=ent.getValue().toString();
+            Map.Entry next = (Map.Entry) iterator.next();
+            String key = (String) next.getKey();
+            String value = (String) next.getValue();
             if(key.equals("sign")||key.equals("sign_type")){
                 continue;
             }
