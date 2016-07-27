@@ -11,6 +11,7 @@ package com.huobanplus.erpprovider.dtw.handler;
 
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpprovider.dtw.formatdtw.DtwWayBill;
+import com.huobanplus.erpprovider.dtw.formatdtw.WeixinCustomer;
 import com.huobanplus.erpprovider.dtw.search.DtwStockSearch;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -29,10 +30,16 @@ public interface DtwOrderHandler {
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
 
     /**
-     *  推送支付单到海关
+     *  推送支付宝支付单到海关
      * @return
      */
-    EventResult pushPayOrder();
+    EventResult pushAliPayOrder();
+
+    /**
+     *  推送微信支付单到海关
+     * @return
+     */
+    EventResult pushWeixinPayOrder(WeixinCustomer weixinCustomer);
 
 //    /**
 //     *  个人物品信息申报推送

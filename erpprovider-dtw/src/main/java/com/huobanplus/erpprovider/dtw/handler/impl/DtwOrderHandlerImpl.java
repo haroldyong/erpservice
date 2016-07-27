@@ -12,11 +12,13 @@ package com.huobanplus.erpprovider.dtw.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.dtw.common.DtwEnum;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpprovider.dtw.formatdtw.*;
 import com.huobanplus.erpprovider.dtw.handler.DtwOrderHandler;
 import com.huobanplus.erpprovider.dtw.search.DtwStockSearch;
+import com.huobanplus.erpprovider.dtw.util.DtwUtil;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
@@ -329,24 +331,66 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     }
 
     @Override
-    public EventResult pushPayOrder() {
-        Map requestMap = new TreeMap<>();
-        requestMap.put("service","alipay.acquire.customs");
-        requestMap.put("partner","208821125154512");
-        requestMap.put("_input_charset","utf-8");
-        requestMap.put("sign_type","MD5");
+    public EventResult pushAliPayOrder() {
+        try {
+            Map requestMap = new TreeMap<>();
+            requestMap.put("service", "alipay.acquire.customs");
+            requestMap.put("partner", "208821125154512");// FIXME: 2016-07-27 
+            requestMap.put("_input_charset", "utf-8");
+            requestMap.put("sign_type", "MD5");
 //        requestMap.put("sign","");
-        requestMap.put("out_request_no","201607261732");
-        requestMap.put("trade_no","2015051446800462000100020003");
-        requestMap.put("merchant_customs_code","hanguo");
-        requestMap.put("amount","100");
-        requestMap.put("customs_place","HANGZHOU");
-        requestMap.put("merchant_customs_name","test");
-        requestMap.put("is_split","n");
-        requestMap.put("sub_out_biz_no","2015080811223212345453");
+            requestMap.put("out_request_no", "201607261732");
+            requestMap.put("trade_no", "2015051446800462000100020003");// FIXME: 2016-07-27 
+            requestMap.put("merchant_customs_code", "hanguo");
+            requestMap.put("amount", "100");// FIXME: 2016-07-27 
+            requestMap.put("customs_place", "HANGZHOU");// FIXME: 2016-07-27 
+            requestMap.put("merchant_customs_name", "test");// FIXME: 2016-07-27 
+            requestMap.put("is_split", "n");// FIXME: 2016-07-27 
+            requestMap.put("sub_out_biz_no", "2015080811223212345453");// FIXME: 2016-07-27
+            String sign = DtwUtil.aliBuildSign(requestMap);
+            requestMap.put("sign",sign);
 
-        HttpResult httpResult = HttpClientUtil.getInstance().get("https://mapi.alipay.com/gateway.do",requestMap);// 未申请报关接口
-        System.out.println(httpResult.getHttpContent());
+            HttpResult httpResult = HttpClientUtil.getInstance().get("https://mapi.alipay.com/gateway.do", requestMap);// 未申请报关接口
+            System.out.println(httpResult.getHttpContent());
+        } catch (Exception e){
+
+        }
+        return null;
+    }
+
+    @Override
+    public EventResult pushWeixinPayOrder(WeixinCustomer weixinCustomer) {
+        try {
+
+            Map<String,Object> requestMap = new TreeMap<>();
+            requestMap.put("appid",weixinCustomer.getAppid());
+            requestMap.put("mch_id",weixinCustomer.getMchId());
+            requestMap.put("out_trade_no",weixinCustomer.getOutTradeNo());
+            requestMap.put("transaction_id",weixinCustomer.getTransactionId());
+            requestMap.put("customs",weixinCustomer.getCustoms());
+            requestMap.put("mch_customs_no",weixinCustomer.getMchCustomsNo());
+            requestMap.put("sub_order_no",weixinCustomer.getSubOrderNo());
+            requestMap.put("fee_type",weixinCustomer.getFeeType());
+            requestMap.put("order_fee",weixinCustomer.getOrderFee());
+            requestMap.put("transport_fee",weixinCustomer.getTransportFee());
+            requestMap.put("product_fee",weixinCustomer.getProductFee());
+            requestMap.put("duty",weixinCustomer.getDuty());
+            requestMap.put("cert_type",weixinCustomer.getCertType());
+            requestMap.put("cert_id",weixinCustomer.getCertId());
+            requestMap.put("name",weixinCustomer.getName());
+
+            String sign = DtwUtil.weixinBuildSign(requestMap,"");
+            requestMap.put("sign",sign);
+
+            String requestData = new XmlMapper().writeValueAsString(weixinCustomer);
+
+            HttpResult httpResult = HttpClientUtil.getInstance().post("https://api.mch.weixin.qq.com/cgi-bin/mch/customs/customdeclareorder",null);
+
+
+            System.out.println("dfafa");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return null;
     }
 }

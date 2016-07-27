@@ -13,7 +13,9 @@ import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.dtw.DtwTestBase;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpprovider.dtw.formatdtw.DtwWayBill;
+import com.huobanplus.erpprovider.dtw.formatdtw.WeixinCustomer;
 import com.huobanplus.erpprovider.dtw.search.DtwStockSearch;
+import com.huobanplus.erpprovider.dtw.util.DtwUtil;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
@@ -26,9 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 /**
  * Created by wuxiongliu on 2016/6/16.
@@ -144,7 +145,27 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     }
 
     @Test
-    public void testPushPayOrder(){
-        dtwOrderHandler.pushPayOrder();
+    public void testPushAliPayOrder(){
+        dtwOrderHandler.pushAliPayOrder();
+    }
+
+    @Test
+    public void testPushWeixinPayOrder(){
+        WeixinCustomer weixinCustomer = new WeixinCustomer();
+        dtwOrderHandler.pushWeixinPayOrder(weixinCustomer);
+    }
+
+    @Test
+    public void testSign() throws UnsupportedEncodingException {
+        Map<String,Object> map = new TreeMap<>();
+        map.put("appid","wxd930ea5d5a258f4f");
+        map.put("mch_id","10000100");
+        map.put("device_info","1000");
+        map.put("body","test");
+        map.put("nonce_str","ibuaiVcKdpRxkhJA");
+        map.put("test","");
+        map.put("test",null);
+
+        System.out.println(DtwUtil.weixinBuildSign(map,"192006250b4c09247ec02edce69f6a2d"));
     }
 }
