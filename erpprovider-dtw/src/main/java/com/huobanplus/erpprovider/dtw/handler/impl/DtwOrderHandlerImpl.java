@@ -67,34 +67,111 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
             DtwSysData dtwSysData = JSON.parseObject(erpInfo.getSysDataJson(), DtwSysData.class);
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
-
             Date now = new Date();
+
+            DtwThreeOrderStatus dtwThreeOrderStatus = new DtwThreeOrderStatus();
+            EventResult eventResult = null;
             OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
             if (orderDetailSyncLog == null) {
                 orderDetailSyncLog = new OrderDetailSyncLog();
                 orderDetailSyncLog.setCreateTime(now);
-            }
-            orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-            orderDetailSyncLog.setProviderType(erpInfo.getErpType());
-            orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
-            orderDetailSyncLog.setOrderId(order.getOrderId());
-            orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
-            orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
-            orderDetailSyncLog.setSyncTime(now);
+                orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+                orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+                orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+                orderDetailSyncLog.setOrderId(order.getOrderId());
+                orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+                orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+                orderDetailSyncLog.setSyncTime(now);
 
-            EventResult orderPushEventResult = orderPush(order, dtwSysData);
-            if (orderPushEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+                eventResult = pushThreeOrder(order, dtwSysData, dtwThreeOrderStatus);
+                if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+                } else {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                }
+
+                dtwThreeOrderStatus = (DtwThreeOrderStatus) eventResult.getData();
+                orderDetailSyncLog.setOrderSyncStatus(dtwThreeOrderStatus.isOrderSyncStatus());
+                orderDetailSyncLog.setPersonalSyncStatus(dtwThreeOrderStatus.isPersonalSyncStatus());
+                orderDetailSyncLog.setPayOrderSyncStatus(dtwThreeOrderStatus.isPayOrderSyncStatus());
+
+                orderDetailSyncLogService.save(orderDetailSyncLog);
+
             } else {
-                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-                orderDetailSyncLog.setErrorMsg(orderPushEventResult.getResultMsg() + ";" + orderPushEventResult.getResultCode());
+
+                dtwThreeOrderStatus.setPayOrderSyncStatus(orderDetailSyncLog.isPayOrderSyncStatus());
+                dtwThreeOrderStatus.setPersonalSyncStatus(orderDetailSyncLog.isPersonalSyncStatus());
+                dtwThreeOrderStatus.setOrderSyncStatus(orderDetailSyncLog.isOrderSyncStatus());
+                eventResult = pushThreeOrder(order, dtwSysData, dtwThreeOrderStatus);
+                if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+                } else {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                }
+                dtwThreeOrderStatus = (DtwThreeOrderStatus) eventResult.getData();
+                orderDetailSyncLog.setOrderSyncStatus(dtwThreeOrderStatus.isOrderSyncStatus());
+                orderDetailSyncLog.setPersonalSyncStatus(dtwThreeOrderStatus.isPersonalSyncStatus());
+                orderDetailSyncLog.setPayOrderSyncStatus(dtwThreeOrderStatus.isPayOrderSyncStatus());
+                orderDetailSyncLogService.save(orderDetailSyncLog);
             }
-            orderDetailSyncLogService.save(orderDetailSyncLog);
-            return orderPushEventResult;
+
+            return eventResult;
+
         } catch (Exception e) {
             log.error(e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
+    }
+
+
+    /**
+     * 推送综合订单，个人信息申报单，支付单
+     *
+     * @param order
+     * @param dtwSysData
+     * @return
+     */
+    private EventResult pushThreeOrder(Order order, DtwSysData dtwSysData, DtwThreeOrderStatus dtwThreeOrderStatus) {
+
+        if (!dtwThreeOrderStatus.isPayOrderSyncStatus()) {
+            EventResult payOrderEvent = null;
+            if (order.getPaymentName().equals("支付宝")) {// FIXME: 2016-07-27  可能空指针
+                payOrderEvent = pushAliPayOrder(order, dtwSysData);
+            } else if (order.getPaymentName().equals("微信")) {
+                payOrderEvent = pushWeixinPayOrder(order, dtwSysData);
+            }
+
+            if (payOrderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                dtwThreeOrderStatus.setPayOrderSyncStatus(true);
+            } else {
+                dtwThreeOrderStatus.setPayOrderSyncStatus(false);
+            }
+        }
+
+        if (!dtwThreeOrderStatus.isPersonalSyncStatus()) {
+            EventResult personalOrderEvent = pushPersonalDeclareOrder(order, dtwSysData);
+            if (personalOrderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                dtwThreeOrderStatus.setPersonalSyncStatus(true);
+            } else {
+                dtwThreeOrderStatus.setPersonalSyncStatus(false);
+            }
+        }
+
+        if (!dtwThreeOrderStatus.isOrderSyncStatus()) {
+            EventResult orderEvent = orderPush(order, dtwSysData);
+            if (orderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                dtwThreeOrderStatus.setOrderSyncStatus(true);
+            } else {
+                dtwThreeOrderStatus.setOrderSyncStatus(false);
+            }
+        }
+
+        if (dtwThreeOrderStatus.isOrderSyncStatus() && dtwThreeOrderStatus.isPersonalSyncStatus()
+                && dtwThreeOrderStatus.isPayOrderSyncStatus()) {
+            return EventResult.resultWith(EventResultEnum.SUCCESS, dtwThreeOrderStatus);
+        }
+
+        return EventResult.resultWith(EventResultEnum.ERROR, dtwThreeOrderStatus);
     }
 
     private EventResult orderPush(Order order, DtwSysData dtwSysData) {
@@ -342,7 +419,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     }
 
     @Override
-    public EventResult pushAliPayOrder(AliCustomer aliCustomer, DtwSysData dtwSysData) {
+    public EventResult pushAliPayOrder(Order order, DtwSysData dtwSysData) {
         try {
             Map requestMap = new TreeMap<>();
             requestMap.put("service", "alipay.acquire.customs");
@@ -350,12 +427,12 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             requestMap.put("sign_type", "MD5");
 
             requestMap.put("partner", dtwSysData.getAliPartner());// FIXME: 2016-07-27
-            requestMap.put("out_request_no", aliCustomer.getOutRequestNo());
-            requestMap.put("trade_no", aliCustomer.getTradeNo());// FIXME: 2016-07-27
-            requestMap.put("merchant_customs_code", aliCustomer.getMerchantCustomsCode());
-            requestMap.put("amount", aliCustomer.getAmount());// FIXME: 2016-07-27
-            requestMap.put("customs_place", aliCustomer.getCustomsPlace());// FIXME: 2016-07-27
-            requestMap.put("merchant_customs_name", aliCustomer.getMerchantCustomsName());// FIXME: 2016-07-27
+            requestMap.put("out_request_no", order.getOrderId());
+            requestMap.put("trade_no", order.getPayOrder());// FIXME: 2016-07-27
+            requestMap.put("merchant_customs_code", dtwSysData.getECommerceCode());
+            requestMap.put("amount", order.getFinalAmount());// FIXME: 2016-07-27
+            requestMap.put("customs_place", "杭州");// FIXME: 2016-07-27
+            requestMap.put("merchant_customs_name", dtwSysData.getECommerceName());// FIXME: 2016-07-27
 //            requestMap.put("is_split", "n");
 //            requestMap.put("sub_out_biz_no", "2015080811223212345453");
             String sign = DtwUtil.aliBuildSign(requestMap);
@@ -396,8 +473,23 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     }
 
     @Override
-    public EventResult pushWeixinPayOrder(WeixinCustomer weixinCustomer, DtwSysData dtwSysData) {
+    public EventResult pushWeixinPayOrder(Order order, DtwSysData dtwSysData) {
         try {
+            WeixinCustomer weixinCustomer = new WeixinCustomer();
+            weixinCustomer.setAppid(dtwSysData.getWeiXinAppId());
+            weixinCustomer.setMchId(dtwSysData.getWeixinMchId());
+            weixinCustomer.setOutTradeNo(order.getOrderId());
+            weixinCustomer.setTransactionId(order.getPayOrder());
+            weixinCustomer.setCustoms("HANGZHOU");// FIXME: 2016-07-27
+            weixinCustomer.setMchCustomsNo(dtwSysData.getECommerceCode());
+            weixinCustomer.setSubOrderNo("");
+            weixinCustomer.setFeeType("CNY");
+            weixinCustomer.setOrderFee((int) (order.getFinalAmount() * 100));
+            weixinCustomer.setTransportFee((int) (order.getCostFreight() * 100));
+//            weixinCustomer.setProductFee(order.get);// FIXME: 2016-07-27
+            weixinCustomer.setDuty(0);
+
+
             Map<String, Object> requestMap = new TreeMap<>();
             requestMap.put("appid", weixinCustomer.getAppid());
             requestMap.put("mch_id", weixinCustomer.getMchId());

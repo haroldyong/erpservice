@@ -28,6 +28,7 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -92,6 +93,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockOrder.setLogiCode("shunfeng");
         mockOrder.setLogiName("顺丰快递");
         mockOrder.setCurrency("RMB");
+        mockOrder.setPaymentName("支付宝");
 
 
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
@@ -108,6 +110,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     }
 
 
+    @Rollback(value = false)
     @Test
     public void testPushOrder() {
 
@@ -159,7 +162,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         aliCustomer.setMerchantCustomsCode("hangzhou");
         aliCustomer.setMerchantCustomsName("hangzhou");
         aliCustomer.setTradeNo("tradNo");
-        EventResult eventResult = dtwOrderHandler.pushAliPayOrder(aliCustomer, mockDtwSysData);
+        EventResult eventResult = dtwOrderHandler.pushAliPayOrder(mockOrder, mockDtwSysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultMsg());
@@ -176,7 +179,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         weixinCustomer.setCustoms("HANGZHOU");
         weixinCustomer.setOutTradeNo("201623021562");
         weixinCustomer.setTransactionId("1111111111111111111111111111");
-        EventResult eventResult = dtwOrderHandler.pushWeixinPayOrder(weixinCustomer, mockDtwSysData);
+        EventResult eventResult = dtwOrderHandler.pushWeixinPayOrder(mockOrder, mockDtwSysData);
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultMsg());
         System.out.println(eventResult.getResultCode());

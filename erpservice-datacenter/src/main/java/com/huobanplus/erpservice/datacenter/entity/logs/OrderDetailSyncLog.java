@@ -70,4 +70,19 @@ public class OrderDetailSyncLog {
      */
     @Lob
     private String errorMsg;
+
+    /**
+     * 订单推送状态
+     */
+    private boolean orderSyncStatus;
+
+    /**
+     * 支付单推送状态
+     */
+    private boolean payOrderSyncStatus;
+
+    /**
+     * 个人信息申报推送状态
+     */
+    private boolean personalSyncStatus;
 }

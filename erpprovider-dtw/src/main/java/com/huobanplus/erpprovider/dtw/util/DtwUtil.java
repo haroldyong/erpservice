@@ -37,11 +37,10 @@ public class DtwUtil {
         while (iterator.hasNext()) {
             Map.Entry next = (Map.Entry) iterator.next();
             String key = (String) next.getKey();
-            String value = (String) next.getValue();
             if (key.equals("sign") || key.equals("sign_type")) {
                 continue;
             }
-            signStr.append(key).append(value);
+            signStr.append(key).append(next.getValue());
         }
         return DigestUtils.md5Hex(signStr.toString().getBytes("utf-8")).toUpperCase();
     }
