@@ -44,6 +44,7 @@ public interface DtwEnum {
             this.name = name;
         }
     }
+
     enum CurrencyEnum {
         RMB("142", "人民币");
 
@@ -74,7 +75,7 @@ public interface DtwEnum {
 
     enum UnitEnum {
         JIAN("011", "件"),
-        GUAN("122","罐");
+        GUAN("122", "罐");
 
         private String code;
         private String name;
@@ -101,10 +102,10 @@ public interface DtwEnum {
         }
     }
 
-    enum PaytypeEnum implements ICommonEnum{
-        BankCard(1,"银行卡支付"),
-        Balance(2,"余额支付"),
-        Other(3,"其他");
+    enum PaytypeEnum implements ICommonEnum {
+        BankCard(1, "银行卡支付"),
+        Balance(2, "余额支付"),
+        Other(3, "其他");
 
         private int code;
         private String name;
@@ -133,9 +134,9 @@ public interface DtwEnum {
         }
     }
 
-    enum ImportTypeEnum implements ICommonEnum{
-        YIBAN(1,"一般进口"),
-        BAOSHUI(2,"保税进口");
+    enum ImportTypeEnum implements ICommonEnum {
+        YIBAN(1, "一般进口"),
+        BAOSHUI(2, "保税进口");
 
         private int code;
         private String name;

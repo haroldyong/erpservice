@@ -18,7 +18,7 @@ import lombok.Data;
 public class DtwSysData {
 
     /**
-     *  请求地址
+     * 请求地址
      */
     private String requestUrl;
 
@@ -56,8 +56,6 @@ public class DtwSysData {
      * 支付宝商户号
      */
     private String aliPartner;
-
-
 
 
 }

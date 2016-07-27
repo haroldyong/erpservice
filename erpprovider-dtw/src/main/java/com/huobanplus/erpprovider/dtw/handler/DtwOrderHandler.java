@@ -24,20 +24,23 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
 public interface DtwOrderHandler {
 
     /**
-     *  推送订单
+     * 推送订单
+     *
      * @param pushNewOrderEvent 订单推送事件
      * @return 请求响应结果
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
 
     /**
-     *  推送支付宝支付单到海关
+     * 推送支付宝支付单到海关
+     *
      * @return
      */
     EventResult pushAliPayOrder(AliCustomer aliCustomer, DtwSysData dtwSysData);
 
     /**
-     *  推送微信支付单到海关
+     * 推送微信支付单到海关
+     *
      * @return
      */
     EventResult pushWeixinPayOrder(WeixinCustomer weixinCustomer, DtwSysData dtwSysData);
@@ -52,28 +55,31 @@ public interface DtwOrderHandler {
 
     /**
      * 发货单推送
-     * @param Msgid  电商企业发货订单号\销售订单号
-     * @param wayBill 运单号
-     * @param weight 毛重
-     * @param state 状态
+     *
+     * @param Msgid       电商企业发货订单号\销售订单号
+     * @param wayBill     运单号
+     * @param weight      毛重
+     * @param state       状态
      * @param erpUserInfo erp使用这信息
      * @return 请求响应结果
      */
-    EventResult deliverOrder(String Msgid,String wayBill, String weight,String state,ERPUserInfo erpUserInfo);
+    EventResult deliverOrder(String Msgid, String wayBill, String weight, String state, ERPUserInfo erpUserInfo);
 
     /**
-     *  商品库存查询
+     * 商品库存查询
+     *
      * @param dtwStockSearch 库存查询实体
-     * @param dtwSysData  大田系统参数
+     * @param dtwSysData     大田系统参数
      * @return 请求响应结果
      */
     EventResult stockQuery(DtwStockSearch dtwStockSearch, DtwSysData dtwSysData);
 
     /**
-     *  顾客面单 (使用综合订单模式则不使用此接口)
+     * 顾客面单 (使用综合订单模式则不使用此接口)
+     *
      * @param dtwWayBill 顾客面单实体
      * @param dtwSysData 大田系统参数
      * @return 请求响应结果
      */
-    EventResult wayBill(DtwWayBill dtwWayBill,DtwSysData dtwSysData);
+    EventResult wayBill(DtwWayBill dtwWayBill, DtwSysData dtwSysData);
 }

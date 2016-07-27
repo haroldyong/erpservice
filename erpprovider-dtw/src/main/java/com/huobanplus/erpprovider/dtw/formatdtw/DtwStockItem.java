@@ -21,37 +21,37 @@ public class DtwStockItem {
     /**
      * 产品编码，实物外包装应该标注的产品编码(最长50个字符)。
      */
-    @JSONField(name= "Partno")
+    @JSONField(name = "Partno")
     private String partNo;
 
     /**
      * 货物名称
      */
-    @JSONField(name= "PartName")
+    @JSONField(name = "PartName")
     private String partName;
 
     /**
      * 数量
      */
-    @JSONField(name= "Qty")
+    @JSONField(name = "Qty")
     private int qty;
 
     /**
      * 批次
      */
-    @JSONField(name= "Batch")
+    @JSONField(name = "Batch")
     private String batch;
 
     /**
      * 发票号
      */
-    @JSONField(name= "InvoiceNo")
+    @JSONField(name = "InvoiceNo")
     private String invoiceNo;
 
     /**
      * 供应商编码
      */
-    @JSONField(name= "Supplier")
+    @JSONField(name = "Supplier")
     private String supplier;
 
 }

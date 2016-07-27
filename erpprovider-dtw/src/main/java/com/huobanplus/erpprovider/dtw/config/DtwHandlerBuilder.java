@@ -76,13 +76,13 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
             @Override
             public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
                 String method = request.getParameter("method");
-                try{
+                try {
                     String requestSign = request.getParameter("sign");
                     if (StringUtils.isEmpty(requestSign)) {
-                        return EventResult.resultWith(EventResultEnum.NO_SIGN,"签名参数未传",null);
+                        return EventResult.resultWith(EventResultEnum.NO_SIGN, "签名参数未传", null);
                     }
                     // 签名验证
-                    Map<String,String[]> paramMap = request.getParameterMap();
+                    Map<String, String[]> paramMap = request.getParameterMap();
                     Map<String, Object> signMap = new TreeMap<>();
                     paramMap.forEach((key, value) -> {
                         if (!"sign".equals(key.toLowerCase())) {
@@ -98,21 +98,21 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
                     try {
                         sign = SignBuilder.buildSignIgnoreEmpty(signMap, passKey, passKey);
                     } catch (UnsupportedEncodingException e) {
-                        return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(),null);
+                        return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
                     }
-                    if(sign.toUpperCase().equals(requestSign)){
+                    if (sign.toUpperCase().equals(requestSign)) {
                         ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
-                        if(method.equals("sendDeliver")){
-                            String msgId =  request.getParameter("Msgid");
+                        if (method.equals("sendDeliver")) {
+                            String msgId = request.getParameter("Msgid");
                             String wayBill = request.getParameter("wayBill");
                             String weight = request.getParameter("Weight");
                             String state = request.getParameter("State");
-                            return dtwOrderHandler.deliverOrder(msgId,wayBill,weight,state,erpUserInfo);
+                            return dtwOrderHandler.deliverOrder(msgId, wayBill, weight, state, erpUserInfo);
                         }
                     }
 
-                } catch (Exception ex){
-                    return EventResult.resultWith(EventResultEnum.ERROR, ex.getMessage(),null);
+                } catch (Exception ex) {
+                    return EventResult.resultWith(EventResultEnum.ERROR, ex.getMessage(), null);
                 }
                 return null;
             }

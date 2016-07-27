@@ -53,7 +53,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     private PushNewOrderEvent mockPushNewOrderEvent;
 
     @Before
-    public void setUp(){
+    public void setUp() {
 
         mockDtwSysData = new DtwSysData();
         mockDtwSysData.setPassKey("tesaa");
@@ -94,7 +94,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockOrder.setCurrency("RMB");
 
 
-        mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
+        mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         mockOrder.setOrderItems(mockOrderItems);
 
         mockErpInfo = new ERPInfo();
@@ -109,7 +109,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 
 
     @Test
-    public void testPushOrder(){
+    public void testPushOrder() {
 
         mockPushNewOrderEvent = new PushNewOrderEvent();
         mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
@@ -128,29 +128,29 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 //    }
 
     @Test
-    public void testStockQuery(){
+    public void testStockQuery() {
         DtwStockSearch dtwStockSearch = new DtwStockSearch();
         dtwStockSearch.setPassKey(mockDtwSysData.getPassKey());
         dtwStockSearch.setPartNo("test");
         dtwStockSearch.setECommerceName(mockDtwSysData.getECommerceName());
         dtwStockSearch.setECommerceCode(mockDtwSysData.getECommerceCode());
-        EventResult result = dtwOrderHandler.stockQuery(dtwStockSearch,mockDtwSysData);
+        EventResult result = dtwOrderHandler.stockQuery(dtwStockSearch, mockDtwSysData);
         System.out.println(result.getData());
         System.out.println(result.getResultCode());
         System.out.println(result.getResultMsg());
     }
 
     @Test
-    public void testWayBill(){
+    public void testWayBill() {
         DtwWayBill dtwWayBill = new DtwWayBill();
-        EventResult result = dtwOrderHandler.wayBill(dtwWayBill,mockDtwSysData);
+        EventResult result = dtwOrderHandler.wayBill(dtwWayBill, mockDtwSysData);
         System.out.println(result.getData());
         System.out.println(result.getResultCode());
         System.out.println(result.getResultMsg());
     }
 
     @Test
-    public void testPushAliPayOrder(){
+    public void testPushAliPayOrder() {
         AliCustomer aliCustomer = new AliCustomer();
         aliCustomer.setOutRequestNo("2016102510252");
         aliCustomer.setAmount("100");
@@ -166,7 +166,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     }
 
     @Test
-    public void testPushWeixinPayOrder(){
+    public void testPushWeixinPayOrder() {
         WeixinCustomer weixinCustomer = new WeixinCustomer();
         weixinCustomer.setMchId("1220397601");
         weixinCustomer.setOrderFee(1000);
@@ -184,15 +184,15 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 
     @Test
     public void testSign() throws UnsupportedEncodingException {
-        Map<String,Object> map = new TreeMap<>();
-        map.put("appid","wxd930ea5d5a258f4f");
-        map.put("mch_id","10000100");
-        map.put("device_info","1000");
-        map.put("body","test");
-        map.put("nonce_str","ibuaiVcKdpRxkhJA");
-        map.put("test","");
-        map.put("test",null);
+        Map<String, Object> map = new TreeMap<>();
+        map.put("appid", "wxd930ea5d5a258f4f");
+        map.put("mch_id", "10000100");
+        map.put("device_info", "1000");
+        map.put("body", "test");
+        map.put("nonce_str", "ibuaiVcKdpRxkhJA");
+        map.put("test", "");
+        map.put("test", null);
 
-        System.out.println(DtwUtil.weixinBuildSign(map,"192006250b4c09247ec02edce69f6a2d"));
+        System.out.println(DtwUtil.weixinBuildSign(map, "192006250b4c09247ec02edce69f6a2d"));
     }
 }

@@ -82,13 +82,13 @@ public class DtwScheduledService {
                 stockSearch.setPartNo("");
                 stockSearch.setPassKey(sysData.getPassKey());
 
-                EventResult stockResult = dtwOrderHandler.stockQuery(stockSearch,sysData);
+                EventResult stockResult = dtwOrderHandler.stockQuery(stockSearch, sysData);
                 InventoryEvent inventoryEvent = new InventoryEvent();
                 inventoryEvent.setErpInfo(erpInfo);
                 inventoryEvent.setErpUserInfo(erpUserInfo);
 
                 ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-                if(stockResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()){
+                if (stockResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                     // 推送回给平台
                     InventoryInfo inventoryInfo = new InventoryInfo();
                     inventoryInfo.setGoodBn("");// FIXME: 2016-07-12

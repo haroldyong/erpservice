@@ -24,7 +24,8 @@ import java.util.TreeMap;
 public class DtwUtil {
 
     /**
-     *  支付宝 MD5签名 剔除掉sign，sign_type
+     * 支付宝 MD5签名 剔除掉sign，sign_type
+     *
      * @param requestMap
      * @return
      * @throws UnsupportedEncodingException
@@ -33,11 +34,11 @@ public class DtwUtil {
         StringBuilder signStr = new StringBuilder();
         Iterator<Map.Entry<String, Object>> iterator = requestMap.entrySet().iterator();
 
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Map.Entry next = (Map.Entry) iterator.next();
             String key = (String) next.getKey();
             String value = (String) next.getValue();
-            if(key.equals("sign")||key.equals("sign_type")){
+            if (key.equals("sign") || key.equals("sign_type")) {
                 continue;
             }
             signStr.append(key).append(value);
@@ -46,17 +47,18 @@ public class DtwUtil {
     }
 
     /**
-     *  微信支付 MD5签名
+     * 微信支付 MD5签名
+     *
      * @param requestMap
      * @param key
      * @return
      * @throws UnsupportedEncodingException
      */
-    public static String weixinBuildSign(Map<String,Object> requestMap,String key) throws UnsupportedEncodingException {
+    public static String weixinBuildSign(Map<String, Object> requestMap, String key) throws UnsupportedEncodingException {
         StringBuilder signStr = new StringBuilder();
         Iterator<Map.Entry<String, Object>> iterator = requestMap.entrySet().iterator();
 
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Map.Entry<String, Object> next = iterator.next();
             if (!StringUtils.isEmpty(next.getValue())) {
                 signStr.append(next.getKey())
@@ -69,14 +71,14 @@ public class DtwUtil {
         return DigestUtils.md5Hex(stringSignTemp.getBytes("utf-8")).toUpperCase();
     }
 
-    public static Map<String,Object> convertBeanToMap(Object object) throws IllegalAccessException {
+    public static Map<String, Object> convertBeanToMap(Object object) throws IllegalAccessException {
         Class cls = object.getClass();
         Field[] fields = cls.getDeclaredFields();
-        Map<String,Object> result = new TreeMap<>();
-        for(int i=0;i<fields.length;i++){
+        Map<String, Object> result = new TreeMap<>();
+        for (int i = 0; i < fields.length; i++) {
             Field field = fields[i];
             field.setAccessible(true);
-            result.put(field.getName(),field.get(object));
+            result.put(field.getName(), field.get(object));
         }
         return result;
     }
