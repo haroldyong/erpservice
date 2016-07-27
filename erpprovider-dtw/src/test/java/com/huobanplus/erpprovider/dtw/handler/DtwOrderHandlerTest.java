@@ -65,6 +65,8 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockDtwSysData.setAliPartner("2088211251545121");
 
         mockDtwSysData.setWeixinKey("0db0d6908d6ae6a09b0a3727888f0da6");
+        mockDtwSysData.setWeixinMchId("1220397601");
+        mockDtwSysData.setWeiXinAppId("wxd8c58460d0199dd5");
 
         mockOrderItems = new ArrayList<>();
 
