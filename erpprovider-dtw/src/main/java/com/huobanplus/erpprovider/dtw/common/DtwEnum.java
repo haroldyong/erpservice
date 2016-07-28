@@ -165,4 +165,19 @@ public interface DtwEnum {
         }
     }
 
+    enum CustomerEnum {
+        HANGZHOU,
+        ZHENGZHOU,
+        GUANGZHOU,
+        CHONGQING,
+        NINGBO,
+        SHENZHEN,
+        HENAN,
+        SHANGHAI,
+        XIAN,
+        FUJIAN,
+        TIANJIN,
+        NANSHAGJ
+    }
+
 }

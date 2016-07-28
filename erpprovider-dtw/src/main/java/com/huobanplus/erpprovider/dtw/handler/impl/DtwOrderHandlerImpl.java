@@ -186,17 +186,17 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setOrderType(2);//订单类型（1：普通订单：与快递已经完成对接，2：综合订单：委托大田与快递公司对接）
 
         dtwOrder.setMsgid(order.getOrderId());//(必填)
-        dtwOrder.setPayType(DtwEnum.PaytypeEnum.Other.getCode());// TODO: 2016/6/17 //(必填)
+        dtwOrder.setPayType(DtwEnum.PaytypeEnum.Other.getCode());
         dtwOrder.setPayCompanyCode("001");//(必填) 支付公司在海关的备案码 // FIXME: 2016-07-13
-        dtwOrder.setPayNumber("100001");//(必填) 支付单号 // FIXME: 2016-07-13
+        dtwOrder.setPayNumber(order.getPayOrder());//(必填) 支付单号
         dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
         dtwOrder.setOrderGoodsAmount(order.getFinalAmount() - order.getCostFreight());//(必填)
         dtwOrder.setOrderNo(order.getOrderId());//(必填)
         dtwOrder.setOrderTaxAmount(0);// FIXME: 2016/6/17//(必填)
         dtwOrder.setTotalCount(order.getItemNum());//(必填)
         dtwOrder.setTotalAmount(order.getFinalAmount());//(必填)
-        dtwOrder.setLogisCompanyName(order.getLogiName());//(必填)
-        dtwOrder.setLogisCompanyCode(order.getLogiCode());//(必填) FIXME: 2016-07-13
+        dtwOrder.setLogisCompanyName("百世物流科技");//(必填)
+        dtwOrder.setLogisCompanyCode("WL15041401");//(必填) FIXME: 2016-07-13
         dtwOrder.setPurchaserId(String.valueOf(order.getMemberId()));//(必填)
         dtwOrder.setShipper("发货人姓名");// TODO: 2016/6/16//(必填)
         dtwOrder.setShipperPro("");
@@ -205,7 +205,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setShipperAddress("浙江杭州滨江区");//TODO 发货人地址（必填）
         dtwOrder.setShipperMobile("");
         dtwOrder.setShipperTel("");
-        dtwOrder.setShipperCountry(DtwEnum.CountryEnum.CHINA.getCode());// FIXME: 2016-07-13 (必填)
+        dtwOrder.setShipperCountry(DtwEnum.CountryEnum.CHINA.getCode());
         dtwOrder.setShipperZip("");
         dtwOrder.setConsignee(order.getShipName());//(必填)
         dtwOrder.setConsigneePro(order.getProvince());//(必填)
@@ -214,7 +214,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setConsigneeAdd(order.getShipAddr());//(必填)
         dtwOrder.setConsigneeMobile(order.getShipMobile());//收货人手机(手机与电话二选一)
         dtwOrder.setConsigneeTel(order.getShipTel());//收货人手机(手机与电话二选一)
-        dtwOrder.setConsigneeCountry(DtwEnum.CountryEnum.CHINA.getCode());// FIXME: 2016-07-13 (必填)
+        dtwOrder.setConsigneeCountry(DtwEnum.CountryEnum.CHINA.getCode());
         dtwOrder.setConsigneeZip(order.getShipZip());//(必填)
         dtwOrder.setWeight(order.getWeight());// FIXME: 2016/6/16//(必填) 毛重
         dtwOrder.setLotNo("");
@@ -231,7 +231,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwOrderItem.setPartName(orderItem.getName());//(必填)
             dtwOrderItem.setSpec(orderItem.getStandard());//(必填)
             dtwOrderItem.setUnit(DtwEnum.UnitEnum.JIAN.getCode());// FIXME: 2016-07-08 计量单位，海关三字代码(必填)  件
-            dtwOrderItem.setCurrency(order.getCurrency());// FIXME: 2016/6/16 (必填)
+            dtwOrderItem.setCurrency(DtwEnum.CurrencyEnum.RMB.getCode());
             dtwOrderItem.setAmount(orderItem.getAmount());//(必填)
             dtwOrderItemList.add(dtwOrderItem);
         }
@@ -240,9 +240,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         requestMap.put("data", JSON.toJSONString(dtwOrder));
 
         HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl() + "/QBIntegratedOrder", requestMap);
-        System.out.println("\n********************************");
-        System.out.println(httpResult.getHttpContent());
-        System.out.println("********************************");
         if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
             JSONObject result = JSON.parseObject(httpResult.getHttpContent());
             if (result.getString("ErrCode").equals("000")) {
@@ -262,13 +259,13 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         DtwPersonalDelcareInfo dtwPersonalDelcareInfo = new DtwPersonalDelcareInfo();
         dtwPersonalDelcareInfo.setPassKey(dtwSysData.getPassKey());// 必填
         dtwPersonalDelcareInfo.setMsgid(order.getOrderId());// 必填
-        dtwPersonalDelcareInfo.setCompanyName("");// 必填
-        dtwPersonalDelcareInfo.setCompanyCode("");// 必填
+        dtwPersonalDelcareInfo.setCompanyName(dtwSysData.getCompanyName());// 必填
+        dtwPersonalDelcareInfo.setCompanyCode(dtwSysData.getCompanyCode());// 必填
 //        dtwPersonalDelcareInfo.setPreEntryNumber("");
         dtwPersonalDelcareInfo.setImportType(DtwEnum.ImportTypeEnum.BAOSHUI.getCode());// FIXME: 2016/7/4 进口类型（0一般进口，1保税进口）
         dtwPersonalDelcareInfo.setOrderNo(order.getOrderId());// 必填
         dtwPersonalDelcareInfo.setWayBill("");
-        dtwPersonalDelcareInfo.setPackNo(order.getItemNum());// 必填// FIXME: 2016/7/4
+        dtwPersonalDelcareInfo.setPackNo(order.getItemNum());// 必填
         dtwPersonalDelcareInfo.setGrossWeight(order.getWeight());// 必填
         dtwPersonalDelcareInfo.setNetWeight(order.getWeight());// 必填
         dtwPersonalDelcareInfo.setRemark(order.getMemo());
@@ -288,8 +285,8 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         if (orderItems.size() > 0) {
             dtwPersonalDelcareInfo.setMainGName(orderItems.get(0).getName());// 必填
         }
-        dtwPersonalDelcareInfo.setTradeCountry("");// 必填
-        dtwPersonalDelcareInfo.setSenderCountry("");// 必填
+        dtwPersonalDelcareInfo.setTradeCountry(DtwEnum.CountryEnum.CHINA.getCode());// 必填
+        dtwPersonalDelcareInfo.setSenderCountry(DtwEnum.CountryEnum.CHINA.getCode());// 必填
         dtwPersonalDelcareInfo.setECommerceCode(dtwSysData.getECommerceCode());// 必填
         dtwPersonalDelcareInfo.setECommerceName(dtwSysData.getECommerceName());// 必填
 
@@ -305,7 +302,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwGoodsDelcareItem.setGoodsName(item.getName());// 必填
             dtwGoodsDelcareItem.setGoodsModel(item.getStandard());// 必填
             dtwGoodsDelcareItem.setOriginCountry("");// 必填
-            dtwGoodsDelcareItem.setTradeCurr(DtwEnum.CurrencyEnum.RMB.getCode());// FIXME: 2016-07-13
+            dtwGoodsDelcareItem.setTradeCurr(DtwEnum.CurrencyEnum.RMB.getCode());
             dtwGoodsDelcareItem.setTradeTotal(item.getAmount() * item.getNum());// 必填
             dtwGoodsDelcareItem.setDeclPrice(item.getAmount());// 必填
             dtwGoodsDelcareItem.setDeclTotalPrice(item.getAmount() * item.getNum());// 必填
@@ -326,9 +323,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("data", JSON.toJSONString(dtwPersonalDelcareInfo));
         HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl() + "/QBPresonal", requestMap);
-        System.out.println("\n********************************");
-        System.out.println(httpResult.getHttpContent());
-        System.out.println("********************************");
         if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
             JSONObject result = JSON.parseObject(httpResult.getHttpContent());
             if (result.getString("ErrCode").equals("000")) {
@@ -426,12 +420,12 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             requestMap.put("_input_charset", "utf-8");
             requestMap.put("sign_type", "MD5");
 
-            requestMap.put("partner", dtwSysData.getAliPartner());// FIXME: 2016-07-27
+            requestMap.put("partner", dtwSysData.getAliPartner());
             requestMap.put("out_request_no", order.getOrderId());
-            requestMap.put("trade_no", order.getPayOrder());// FIXME: 2016-07-27
-            requestMap.put("merchant_customs_code", dtwSysData.getECommerceCode());
-            requestMap.put("amount", order.getFinalAmount());// FIXME: 2016-07-27
-            requestMap.put("customs_place", "杭州");// FIXME: 2016-07-27
+            requestMap.put("trade_no", order.getPayOrder());
+            requestMap.put("merchant_customs_code", dtwSysData.getECommerceCode());// FIXME: 2016-07-28 
+            requestMap.put("amount", order.getFinalAmount());
+            requestMap.put("customs_place", DtwEnum.CustomerEnum.HANGZHOU);
             requestMap.put("merchant_customs_name", dtwSysData.getECommerceName());// FIXME: 2016-07-27
 //            requestMap.put("is_split", "n");
 //            requestMap.put("sub_out_biz_no", "2015080811223212345453");
@@ -480,8 +474,8 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             weixinCustomer.setMchId(dtwSysData.getWeixinMchId());
             weixinCustomer.setOutTradeNo(order.getOrderId());
             weixinCustomer.setTransactionId(order.getPayOrder());
-            weixinCustomer.setCustoms("HANGZHOU");// FIXME: 2016-07-27
-            weixinCustomer.setMchCustomsNo(dtwSysData.getECommerceCode());
+            weixinCustomer.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.name());
+            weixinCustomer.setMchCustomsNo(dtwSysData.getECommerceCode());// FIXME: 2016-07-28
             weixinCustomer.setSubOrderNo("");
             weixinCustomer.setFeeType("CNY");
             weixinCustomer.setOrderFee((int) (order.getFinalAmount() * 100));
@@ -525,12 +519,12 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                         return EventResult.resultWith(EventResultEnum.SUCCESS);
                     } else {
                         Element errorMsgElem = root.element("err_code_des");
-                        log.error("推送支付宝支付单到海关失败:" + errorMsgElem.getText());
+                        log.error("推送微信支付单到海关失败:" + errorMsgElem.getText());
                         return EventResult.resultWith(EventResultEnum.ERROR, errorMsgElem.getText(), null);
                     }
                 } else {
                     Element returnMsg = root.element("return_msg");
-                    log.error("推送支付宝支付单到海关失败:" + returnMsg.getText());
+                    log.error("推送微信支付单到海关失败:" + returnMsg.getText());
                     return EventResult.resultWith(EventResultEnum.ERROR, returnMsg.getText(), null);
                 }
             } else {
