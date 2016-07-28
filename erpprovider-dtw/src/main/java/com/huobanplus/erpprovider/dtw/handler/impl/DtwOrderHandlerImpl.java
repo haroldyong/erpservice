@@ -133,6 +133,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
      */
     private EventResult pushThreeOrder(Order order, DtwSysData dtwSysData, DtwThreeOrderStatus dtwThreeOrderStatus) {
 
+        StringBuilder errorMsg = new StringBuilder();
         if (!dtwThreeOrderStatus.isPayOrderSyncStatus()) {
             EventResult payOrderEvent = null;
             if (order.getPaymentName().equals("支付宝")) {// FIXME: 2016-07-27  可能空指针
@@ -145,6 +146,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 dtwThreeOrderStatus.setPayOrderSyncStatus(true);
             } else {
                 dtwThreeOrderStatus.setPayOrderSyncStatus(false);
+                errorMsg.append(payOrderEvent.getResultMsg()).append(",");
             }
         }
 
@@ -154,6 +156,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 dtwThreeOrderStatus.setPersonalSyncStatus(true);
             } else {
                 dtwThreeOrderStatus.setPersonalSyncStatus(false);
+                errorMsg.append(personalOrderEvent.getResultMsg()).append(",");
             }
         }
 
@@ -163,6 +166,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 dtwThreeOrderStatus.setOrderSyncStatus(true);
             } else {
                 dtwThreeOrderStatus.setOrderSyncStatus(false);
+                errorMsg.append(orderEvent.getResultMsg());
             }
         }
 
@@ -171,7 +175,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             return EventResult.resultWith(EventResultEnum.SUCCESS, dtwThreeOrderStatus);
         }
 
-        return EventResult.resultWith(EventResultEnum.ERROR, dtwThreeOrderStatus);
+        return EventResult.resultWith(EventResultEnum.ERROR, errorMsg.toString(), dtwThreeOrderStatus);
     }
 
     private EventResult orderPush(Order order, DtwSysData dtwSysData) {
