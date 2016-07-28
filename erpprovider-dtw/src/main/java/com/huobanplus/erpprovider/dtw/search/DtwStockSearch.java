@@ -7,16 +7,17 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huobanplus.erpprovider.dtw.formatdtw;
+package com.huobanplus.erpprovider.dtw.search;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 /**
- * Created by wuxiongliu on 2016/6/30.
+ * Created by wuxiongliu on 2016-07-06.
  */
 @Data
-public class DtwStockReqInfo {
+public class DtwStockSearch {
+
     /**
      * 身份认证Key(必填)
      */
@@ -27,7 +28,7 @@ public class DtwStockReqInfo {
      * 产品编码，实物外包装应该标注的产品编码(最长50个字符)。(必填)
      */
     @JSONField(name = "Partno")
-    private String partno;
+    private String partNo;
 
     /**
      * 电商企业编码(必填),电商企业在跨境平台备案编码

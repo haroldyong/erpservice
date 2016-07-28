@@ -88,7 +88,7 @@ public class HttpClientUtil {
         String msg = null;
         CloseableHttpResponse response = null;
         try {
-            StringEntity stringEntity = new StringEntity(requestData,"utf-8");
+            StringEntity stringEntity = new StringEntity(requestData, "utf-8");
             HttpPost httpPost = new HttpPost(url);
             httpPost.setEntity(stringEntity);
             response = httpClient.execute(httpPost);

@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.dtw.formatdtw;
 
 import com.alibaba.fastjson.annotation.JSONField;
@@ -15,27 +24,33 @@ public class DtwOrder {
     private String passKey;
 
     /**
+     * 预录入号 允许为空 自行推送个人物品申报信息时需要此选项
+     */
+    private String preEntryNumber;
+
+    /**
+     * 进口类型（0一般进口，1保税进口）(必填)
+     */
+    @JSONField(name = "importType")
+    private int importType;
+
+    /**
+     * 订单类型（1：普通订单：与快递已经完成对接，2：综合订单：委托大田与快递公司对接）
+     */
+    @JSONField(name = "OrderType")
+    private int orderType;
+
+    /**
      * 电商企业发货单号(必填)
      */
     @JSONField(name = "Msgid")
     private String msgid;
 
     /**
-     * 预录入号 允许为空 自行推送个人物品申报信息时需要此选项
-     */
-    private String preEntryNumber;
-
-    /**
-     * 订单号
-     */
-    @JSONField(name = "orderNo")
-    private String orderNo;
-
-    /**
      * 支付类型
      */
     @JSONField(name = "payType")
-    private String payType;
+    private int payType;
 
     /**
      * 支付公司编码
@@ -53,13 +68,19 @@ public class DtwOrder {
      * 订单总金额
      */
     @JSONField(name = "orderTotalAmount")
-    private String orderTotalAmount;
+    private double orderTotalAmount;
 
     /**
      * 订单货款
      */
     @JSONField(name = "orderGoodsAmount")
-    private String orderGoodsAmount;
+    private double orderGoodsAmount;
+
+    /**
+     * 订单号
+     */
+    @JSONField(name = "orderNo")
+    private String orderNo;
 
     /**
      * 订单税款 交易过程中商家向用户征收的税款，免税模式填写0
@@ -78,6 +99,18 @@ public class DtwOrder {
      */
     @JSONField(name = "totalAmount")
     private double totalAmount;
+
+    /**
+     * 物流企业编号(必填)
+     */
+    @JSONField(name = "logisCompanyCode")
+    private String logisCompanyCode;
+
+    /**
+     * 物流企业名称(必填)
+     */
+    @JSONField(name = "logisCompanyName")
+    private String logisCompanyName;
 
     /**
      * 购买人ID
@@ -122,7 +155,7 @@ public class DtwOrder {
     private String shipperMobile;
 
     /**
-     *允许为空
+     * 允许为空
      */
     @JSONField(name = "ShipperTel")
     private String shipperTel;
@@ -200,48 +233,38 @@ public class DtwOrder {
     private double weight;
 
     /**
+     * 批次号
+     */
+    @JSONField(name = "LotNo")
+    private String lotNo;
+
+    /**
      * 净重
      */
     @JSONField(name = "NetWeight")
     private double netWeight;
 
     /**
-     * 物流企业编号
+     * 进出口标记（I进口,O出口）
      */
-    @JSONField(name = "LotNo")
-    private String logNo;
+    private int ieFlag;
 
     /**
-     * 物流企业名称
+     * 订单明细
      */
-    @JSONField(name = "logisCompanyCode ")
-    private String logisCompanyCode;
-
-    /**
-     * 进口类型（0一般进口，1保税进口）(必填)
-     */
-    @JSONField(name = "logisCompanyName")
-    private String logisCompanyName;
-
-    /**
-     *
-     */
-    @JSONField(name = "importType")
-    private String importType;
-
-    /**
-     * 订单类型（1：普通订单：与快递已经完成对接，2：综合订单：委托大田与快递公司对接）
-     */
-    @JSONField(name = "OrderType")
-    private String orderType;
-
-    /**
-     *
-     进出口标记（I进口,O出口）
-     */
-    private String ieFlag;
-
     @JSONField(name = "Items")
     List<DtwOrderItem> dtwOrderItems;
+
+    /**
+     * 电商企业编码(必填),电商企业在跨境平台备案编码
+     */
+    @JSONField(name = "eCommerceCode")
+    private String eCommerceCode;
+
+    /**
+     * 电商企业名称(必填),电商企业在跨境平台备名称
+     */
+    @JSONField(name = "eCommerceName")
+    private String eCommerceName;
 
 }

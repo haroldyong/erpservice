@@ -103,10 +103,6 @@ public class Order extends BaseInfo {
      */
     private String paymentName;
     /**
-     * 支付方式 {@link com.huobanplus.erpservice.common.ienum.OrderEnum.PaymentOptions}
-     */
-    private int payType;
-    /**
      * 分销商id
      */
     private int customerId;
@@ -158,5 +154,15 @@ public class Order extends BaseInfo {
      */
     private String buyerName;
 
+    /**
+     * 支付成功后支付平台返回的支付单号
+     */
+    private String payOrder;
+
+    /**
+     * 订单明细
+     */
     private List<OrderItem> orderItems;
+
+
 }
