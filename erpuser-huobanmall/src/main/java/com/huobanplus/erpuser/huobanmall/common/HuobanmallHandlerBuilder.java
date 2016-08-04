@@ -16,9 +16,11 @@ import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushOrderListInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncInventoryEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandlerBuilder;
+import com.huobanplus.erpuser.huobanmall.handler.HBGoodHandler;
 import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +32,8 @@ import org.springframework.stereotype.Component;
 public class HuobanmallHandlerBuilder implements ERPUserHandlerBuilder {
     @Autowired
     private HBOrderHandler orderHandler;
-
+    @Autowired
+    private HBGoodHandler goodHandler;
 
     @Override
     @SuppressWarnings("Duplicates")
@@ -51,6 +54,10 @@ public class HuobanmallHandlerBuilder implements ERPUserHandlerBuilder {
                 } else if (erpBaseEvent instanceof BatchDeliverEvent) {
                     BatchDeliverEvent batchDeliverEvent = (BatchDeliverEvent) erpBaseEvent;
                     return orderHandler.batchDeliver(batchDeliverEvent.getOrderDeliveryInfoList(), batchDeliverEvent.getErpUserInfo());
+                } else if (erpBaseEvent instanceof SyncInventoryEvent) {
+                    SyncInventoryEvent syncInventoryEvent = (SyncInventoryEvent) erpBaseEvent;
+
+                    return goodHandler.syncProInventory(syncInventoryEvent.getInventoryInfoList(), syncInventoryEvent.getErpUserInfo());
                 }
                 return null;
             };

@@ -16,7 +16,9 @@ import com.huobanplus.erpprovider.edb.common.EDBEnum;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
 import com.huobanplus.erpprovider.edb.service.EDBScheduledService;
+import com.huobanplus.erpprovider.edb.service.EDBSyncInventory;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
+import com.huobanplus.erpprovider.gy.service.GYSyncInventory;
 import com.huobanplus.erpprovider.kaola.service.KaolaScheduledService;
 import com.huobanplus.erpprovider.kjyg.service.KjygScheduledService;
 import com.huobanplus.erpservice.SpringWebTest;
@@ -50,6 +52,10 @@ public class OrderSyncTest extends SpringWebTest {
     private KaolaScheduledService kaolaScheduledService;
     @Autowired
     private KjygScheduledService kjygScheduledService;
+    @Autowired
+    private GYSyncInventory gySyncInventory;
+    @Autowired
+    private EDBSyncInventory edbSyncInventory;
 
     @Test
     public void orderShipSyncForEdb() throws Exception {
@@ -148,5 +154,15 @@ public class OrderSyncTest extends SpringWebTest {
         }
 
         System.out.println(111);
+    }
+
+    @Test
+    public void gyInventorySyncTest() throws Exception {
+        gySyncInventory.syncInventoryForGy();
+    }
+
+    @Test
+    public void edbInventorySyncTest() throws Exception {
+        edbSyncInventory.syncInventoryForEDB();
     }
 }

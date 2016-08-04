@@ -7,8 +7,16 @@
  * 2013-2016. All rights reserved.
  */
 
+package com.huobanplus.erpprovider.edb.search;
+
+import lombok.Data;
+
 /**
- * ERP数据服务平台标准数据传输格式
- * Created by liual on 2015-12-07.
+ * Created by allan on 8/4/16.
  */
-package com.huobanplus.erpservice.datacenter.model;
+@Data
+public class EDBStockSearch {
+    private int pageIndex;
+    private int pageSize;
+    private String storeId;
+}

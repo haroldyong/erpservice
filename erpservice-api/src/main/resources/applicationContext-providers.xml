@@ -20,7 +20,7 @@
     <!--erp-provider-->
     <context:component-scan base-package="com.huobanplus.erpprovider.edb"/>
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.netshop"/>-->
-    <context:component-scan base-package="com.huobanplus.erpprovider.sap"/>
+    <!--<context:component-scan base-package="com.huobanplus.erpprovider.sap"/>-->
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.iscs"/>-->
     <!-- <context:component-scan base-package="com.huobanplus.erpprovider.lgj"/>-->
     <context:component-scan base-package="com.huobanplus.erpprovider.gy"/>

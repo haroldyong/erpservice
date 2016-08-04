@@ -12,6 +12,7 @@ package com.huobanplus.erpservice.datacenter.service.logs;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 发货同步日志
@@ -24,6 +25,7 @@ public interface OrderShipSyncLogService {
      * @param orderShipSyncLog
      * @return
      */
+    @Transactional
     OrderShipSyncLog save(OrderShipSyncLog orderShipSyncLog);
 
     /**

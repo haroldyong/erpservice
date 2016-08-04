@@ -57,7 +57,12 @@ public class GYConstant {
 //库存接口
 
     // 库存查询接口
-    public static final String STOCK_QUERY = "gy.erp.stock.get";
+    public static final String STOCK_QUERY = "gy.erp.new.stock.get";
+
+    /**
+     * 库存查询接口（新）
+     */
+    public static final String STOCK_QUERY_NEW = "gy.erp.new.stock.get";
 
 // 商品接口
 

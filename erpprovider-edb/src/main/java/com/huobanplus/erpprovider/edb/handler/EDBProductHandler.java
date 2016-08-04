@@ -10,6 +10,7 @@
 package com.huobanplus.erpprovider.edb.handler;
 
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
+import com.huobanplus.erpprovider.edb.search.EDBStockSearch;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 import java.io.IOException;
@@ -26,5 +27,5 @@ public interface EDBProductHandler {
      * @return 返回结果
      * @throws IOException IO 异常
      */
-    EventResult getProInventoryInfo(EDBSysData sysData, String productNo) throws IOException;
+    EventResult getProInventoryInfo(EDBSysData sysData, EDBStockSearch storeSearch) throws IOException;
 }

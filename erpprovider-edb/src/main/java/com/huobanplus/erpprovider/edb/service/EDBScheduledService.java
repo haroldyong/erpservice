@@ -287,7 +287,6 @@ public class EDBScheduledService {
                     }
 
                     orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
-                    log.info("EDB日志已保存" + nowStr);
 
                     List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
 

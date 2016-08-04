@@ -82,4 +82,40 @@ public interface OrderSyncStatus {
             this.name = name;
         }
     }
+
+    /**
+     * 库存同步日志状态
+     */
+    enum InventorySyncStatus implements ICommonEnum {
+        SYNC_SUCCESS(0, "同步成功"),
+        SYNC_PARTY_SUCCESS(1, "同步部分成功"),
+        SYNC_FAILURE(2, "同步失败"),
+        NO_DATA(3, "未获取到同步数据");
+
+        private int code;
+        private String name;
+
+        InventorySyncStatus(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 }

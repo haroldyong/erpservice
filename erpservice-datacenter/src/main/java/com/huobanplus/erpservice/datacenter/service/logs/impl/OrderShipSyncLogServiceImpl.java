@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Predicate;
@@ -36,6 +37,7 @@ public class OrderShipSyncLogServiceImpl implements OrderShipSyncLogService {
     private OrderShipSyncLogRepository orderShipSyncLogRepository;
 
     @Override
+    @Transactional
     public OrderShipSyncLog save(OrderShipSyncLog orderShipSyncLog) {
         return orderShipSyncLogRepository.save(orderShipSyncLog);
     }
@@ -46,6 +48,7 @@ public class OrderShipSyncLogServiceImpl implements OrderShipSyncLogService {
     }
 
     @Override
+    @SuppressWarnings("Duplicates")
     public Page<OrderShipSyncLog> findAll(int pageIndex, int pageSize, String beginTime, String endTime, int customerId) {
         Specification<OrderShipSyncLog> specification = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
