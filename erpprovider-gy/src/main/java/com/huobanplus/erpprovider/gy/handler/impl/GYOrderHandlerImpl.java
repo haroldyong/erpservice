@@ -164,13 +164,15 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
 
         // 一笔订单对应一条发票信息
         List<GYInvoice> invoices = new ArrayList<>();
-        GYInvoice gyInvoice = new GYInvoice();
+        if (order.getIsTax() == 1) {
+            GYInvoice gyInvoice = new GYInvoice();
 //        gyInvoice.setInvoiceAmount(100.0);// FIXME: 2016/6/21
 //        gyInvoice.setInvoiceContent("test");// FIXME: 2016/6/21
-        gyInvoice.setInvoiceTitle(order.getTaxCompany());//发票抬头
-        gyInvoice.setInvoiceType(1);// FIXME: 2016/6/21 1-普通发票；2-增值发票
-        invoices.add(gyInvoice);
-        newOrder.setInvoices(invoices);
+            gyInvoice.setInvoiceTitle(order.getTaxCompany());//发票抬头
+            gyInvoice.setInvoiceType(1);// FIXME: 2016/6/21 1-普通发票；2-增值发票
+            invoices.add(gyInvoice);
+            newOrder.setInvoices(invoices);
+        }
 
 
         //一笔订单支付信息
