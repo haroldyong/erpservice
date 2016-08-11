@@ -44,7 +44,7 @@
             <div class="h">
                 <span class="icon-sprite icon-magnifier"></span>
 
-                <h3>订单信息同步记录</h3>
+                <h3>库存信息同步记录</h3>
             </div>
             <div class="tl corner">
             </div>
@@ -74,7 +74,7 @@
                                     <span>查询</span>
                                 </a>
                                 <a class="btn-lit btn-middle"
-                                   href="<c:url value="/erpService/platform/orderShipSyncs?erpUserType=${erpUserType}" />"
+                                   href="<c:url value="/erpService/platform/inventorySyncLogs?erpUserType=${erpUserType}" />"
                                    style="margin-bottom: 3px;">
                                     <span>显示全部</span>
                                 </a>
@@ -106,8 +106,6 @@
                             </th>
                             <th scope="col">同步总数
                             </th>
-                            <th scope="col">成功数量
-                            </th>
                             <th scope="col">失败数量
                             </th>
                             <th scope="col">同步状态
@@ -119,17 +117,16 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="log" items="${orderShipSyncLogs.getContent()}">
+                        <c:forEach var="log" items="${inventorySyncLogs.getContent()}">
                             <tr>
                                 <td class="txt40 c">${log.providerType.name}</td>
                                 <td class="txt40 c">${log.totalCount}</td>
-                                <td class="txt40 c">${log.successCount}</td>
                                 <td class="txt40 c">${log.failedCount}</td>
-                                <td class="txt40 c">${log.shipSyncStatus.name}</td>
+                                <td class="txt40 c">${log.inventorySyncStatus.name}</td>
                                 <td class="txt40 c"><fmt:formatDate value="${log.syncTime}"
                                                                     pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                 <td class="txt80 c">
-                                    <a href="<c:url value="/erpService/platform/shipSyncInfoList?erpUserType=${erpUserType}&shipSyncId=${log.id}" />">查看同步日志</a>
+                                        <%--<a href="<c:url value="/erpService/platform/shipSyncInfoList?erpUserType=${erpUserType}&shipSyncId=${log.id}" />">查看同步日志</a>--%>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -142,8 +139,8 @@
                 <script type="text/javascript">
                     var pageSize = ${pageSize};
                     var pageIndex = ${pageIndex};
-                    var pageCount = ${orderShipSyncLogs.getTotalPages()};
-                    var recordCount = ${orderShipSyncLogs.getTotalElements()};
+                    var pageCount = ${inventorySyncLogs.getTotalPages()};
+                    var recordCount = ${inventorySyncLogs.getTotalElements()};
                     var formName = 'searchForm';
                     Pager.Output(formName, 'pageIndex', pageSize, pageIndex, pageCount, recordCount);
                 </script>
