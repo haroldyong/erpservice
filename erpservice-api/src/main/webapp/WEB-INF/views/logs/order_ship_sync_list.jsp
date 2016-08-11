@@ -74,7 +74,7 @@
                                     <span>查询</span>
                                 </a>
                                 <a class="btn-lit btn-middle"
-                                   href="<c:url value="/erpService/platform/orderDetailSyncs?erpUserType=${erpUserType}" />"
+                                   href="<c:url value="/erpService/platform/orderShipSyncs?erpUserType=${erpUserType}" />"
                                    style="margin-bottom: 3px;">
                                     <span>显示全部</span>
                                 </a>
