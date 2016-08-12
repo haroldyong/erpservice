@@ -10,6 +10,7 @@
 package com.huobanplus.erpprovider.edb.common;
 
 import com.huobanplus.erpservice.common.ienum.ICommonEnum;
+import com.huobanplus.erpservice.common.ienum.ICommonEnumV2;
 
 /**
  * Created by liual on 2015-10-23.
@@ -239,6 +240,46 @@ public interface EDBEnum {
 
         public void setDateType(String dateType) {
             this.dateType = dateType;
+        }
+    }
+
+    /**
+     * EDB对应火图的快递编码
+     */
+    enum ExpressCompanyCode implements ICommonEnumV2 {
+        TIANTIAN("TTKDEX", "TTKD"),
+        TIANDIHUAYU("HOAU", "TDHY");
+
+        /**
+         * EDB的快递编码
+         */
+        private String code;
+        /**
+         * 火图的编码
+         */
+        private String name;
+
+        ExpressCompanyCode(String code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        @Override
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
     }
 }
