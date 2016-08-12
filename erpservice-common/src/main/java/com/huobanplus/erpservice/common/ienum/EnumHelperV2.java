@@ -24,7 +24,7 @@ public class EnumHelperV2 {
 //                return "";
 //            }
         }
-        return "";
+        return null;
     }
 
     public static <T extends ICommonEnumV2> T getEnumType(Class<T> cls, Object code) {

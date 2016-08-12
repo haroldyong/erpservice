@@ -17,6 +17,7 @@ import com.huobanplus.erpprovider.edb.common.EDBEnum;
 import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
+import com.huobanplus.erpservice.common.ienum.EnumHelperV2;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
@@ -324,6 +325,12 @@ public class EDBScheduledService {
                     orderDeliveryInfo.setOrderId(originOrderId);
                     orderDeliveryInfo.setLogiName(orderInfoJson.getString("express"));
                     orderDeliveryInfo.setLogiNo(orderInfoJson.getString("express_no"));
+                    String edbLogiCode = orderInfoJson.getString("express_coding");
+                    String logiCode = (String) EnumHelperV2.getEnumName(EDBEnum.ExpressCompanyCode.class, edbLogiCode);
+                    if (StringUtils.isEmpty(logiCode)) {
+                        logiCode = edbLogiCode;
+                    }
+                    orderDeliveryInfo.setLogiCode(logiCode);
                     orderDeliveryInfo.setDeliverItemsStr(productBn + "," + proNum);
                     splitOrderDelivers.add(orderDeliveryInfo);
                     splitOrderIdList.add(originOrderId);//加入到已分配订单号列表中
