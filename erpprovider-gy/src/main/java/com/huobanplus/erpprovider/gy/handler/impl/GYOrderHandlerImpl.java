@@ -115,11 +115,11 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         }
         newOrder.setCod(false);// FIXME: 2016/5/9 非货到付款
         newOrder.setPlatformCode(order.getOrderId());
-        newOrder.setShopCode(gySysData.getShopCode());// FIXME: 2016/6/21   店铺code
-        newOrder.setExpressCode(gySysData.getDefaultLogiCode());// FIXME: 2016/5/9 物流公司code 必填 eg:QFKD
-        newOrder.setWarehouseCode(gySysData.getWarehouseCode());// FIXME: 2016/5/9 仓库code 必填  指定一个默认的eg:tk01
-        newOrder.setVipCode(order.getUserLoginName());// FIXME: 2016/5/9 会员code 必填 
-        newOrder.setVipName(order.getBuyerName());// FIXME: 2016/6/21
+        newOrder.setShopCode(gySysData.getShopCode());
+        newOrder.setExpressCode(gySysData.getDefaultLogiCode());
+        newOrder.setWarehouseCode(gySysData.getWarehouseCode());
+        newOrder.setVipCode(order.getUserLoginName());
+        newOrder.setVipName(order.getBuyerName());
 
         newOrder.setReceiverAddress(order.getShipAddr());
         newOrder.setReceiverZip(order.getShipZip());
@@ -134,9 +134,9 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         newOrder.setPayDatetime(order.getPayTime());
         newOrder.setBusinessManCode(null);// FIXME: 2016/5/9
 //        newOrder.setPostFee(order.getCostFreight());// FIXME: 2016/5/9
-//        newOrder.setCodFee(0.0);// FIXME: 2016/5/9  到付服务费
+//        newOrder.setCodFee(0.0);
         newOrder.setDiscountFee(order.getPmtAmount());// 让利金额
-//        newOrder.setPlanDeliveryDate(null);//// FIXME: 2016/5/9 预计发货日期，可能有格式问题
+//        newOrder.setPlanDeliveryDate(null);
         newOrder.setBuyerMemo(order.getMemo());
         newOrder.setSellerMemo(order.getRemark());
 //        newOrder.setSellerMemoLate(null);// FIXME: 2016/5/9 二次备注
@@ -156,7 +156,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
             detail.setQty(item.getNum());
 
             if (item.getItemId() != null) {
-                detail.setOid(String.valueOf(item.getItemId()));// FIXME: 2016/6/21  子订单ID 用于后续订单状态修改的查询
+                detail.setOid(String.valueOf(item.getItemId()));
             }
             details.add(detail);
         });
@@ -166,10 +166,10 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         List<GYInvoice> invoices = new ArrayList<>();
         if (order.getIsTax() == 1) {
             GYInvoice gyInvoice = new GYInvoice();
-//        gyInvoice.setInvoiceAmount(100.0);// FIXME: 2016/6/21
-//        gyInvoice.setInvoiceContent("test");// FIXME: 2016/6/21
+//        gyInvoice.setInvoiceAmount(100.0);
+//        gyInvoice.setInvoiceContent("test");
             gyInvoice.setInvoiceTitle(order.getTaxCompany());//发票抬头
-            gyInvoice.setInvoiceType(1);// FIXME: 2016/6/21 1-普通发票；2-增值发票
+            gyInvoice.setInvoiceType(1);
             invoices.add(gyInvoice);
             newOrder.setInvoices(invoices);
         }
@@ -181,7 +181,7 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
         payment.setPayTypeCode(GYConstant.GYPaymentProvider(order.getPayType()).getCode());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         payment.setPayTime(dateFormat.parse(order.getPayTime()));// 支付时间 时间戳类型
-        payment.setPayment(order.getOnlinePayAmount()); // FIXME: 6/29/16 应为线上支付金额
+        payment.setPayment(order.getOnlinePayAmount());
         payments.add(payment);
         newOrder.setPayments(payments);
 
