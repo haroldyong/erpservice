@@ -310,7 +310,6 @@ public class GYOrderHandlerImpl extends GYBaseHandler implements GYOrderHandler 
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSONObject.parseObject(httpResult.getHttpContent());
                 if (result.getBoolean("success")) {
-                    // TODO: 2016/6/17
                     return EventResult.resultWith(EventResultEnum.SUCCESS, result);
                 } else {
                     log.info("错误信息：" + result.getString("errorDesc"));

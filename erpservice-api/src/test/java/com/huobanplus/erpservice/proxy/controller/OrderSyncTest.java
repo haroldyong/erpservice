@@ -17,6 +17,7 @@ import com.huobanplus.erpprovider.edb.handler.EDBOrderHandler;
 import com.huobanplus.erpprovider.edb.search.EDBOrderSearch;
 import com.huobanplus.erpprovider.edb.service.EDBScheduledService;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
+import com.huobanplus.erpprovider.gy.service.GYSyncDelivery;
 import com.huobanplus.erpprovider.kaola.service.KaolaScheduledService;
 import com.huobanplus.erpprovider.kjyg.service.KjygScheduledService;
 import com.huobanplus.erpservice.SpringWebTest;
@@ -50,6 +51,8 @@ public class OrderSyncTest extends SpringWebTest {
     private KaolaScheduledService kaolaScheduledService;
     @Autowired
     private KjygScheduledService kjygScheduledService;
+    @Autowired
+    private GYSyncDelivery gySyncDelivery;
 
     @Test
     public void orderShipSyncForEdb() throws Exception {
@@ -148,5 +151,25 @@ public class OrderSyncTest extends SpringWebTest {
         }
 
         System.out.println(111);
+    }
+
+    @Test
+    public void testGyDelivery() throws Exception {
+        JSONArray deliveries = new JSONArray();
+        JSONObject delivery = new JSONObject();
+        delivery.put("express_name", "韵达快递");
+        delivery.put("express_code", "YunDa");
+        delivery.put("express_no", "741741741");
+        delivery.put("platform_code", "719982163660619;719982163660611");
+        delivery.put("post_fee", 0);
+        JSONArray details = new JSONArray();
+
+        delivery.put("details", details);
+        JSONObject stateInfo = new JSONObject();
+        stateInfo.put("delivery", 2);
+        delivery.put("delivery_statusInfo", stateInfo);
+        deliveries.add(delivery);
+
+        gySyncDelivery.changeToSyncOrder(deliveries);
     }
 }
