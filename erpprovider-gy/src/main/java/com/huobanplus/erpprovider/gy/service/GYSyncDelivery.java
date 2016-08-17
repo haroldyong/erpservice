@@ -225,10 +225,11 @@ public class GYSyncDelivery extends GYBaseHandler {
             JSONObject deliveryStatusInfo = jsonObject.getJSONObject("delivery_statusInfo");
             int deliveryStatus = deliveryStatusInfo.getInteger("delivery");
             if (deliveryStatus == 1 || deliveryStatus == 2) {// 发货中 发货成功
-                OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
-                orderDeliveryInfo.setLogiName(jsonObject.getString("express_name"));
-                orderDeliveryInfo.setOrderId(jsonObject.getString("platform_code"));
-                orderDeliveryInfo.setLogiNo(jsonObject.getString("express_no"));
+                String logiName = jsonObject.getString("express_name");
+                String logiNo = jsonObject.getString("express_no");
+                double freight = jsonObject.getDouble("post_fee");
+                String remark = jsonObject.getString("seller_memo");
+                String logiCode = jsonObject.getString("express_code");
                 // 序列化商品明细
                 JSONArray detailsArray = jsonObject.getJSONArray("details");
                 String itemStr = "";
@@ -238,11 +239,22 @@ public class GYSyncDelivery extends GYBaseHandler {
                     int qty = obj.getInteger("qty");
                     itemStr += productBn + "," + qty + "|";
                 }
-                orderDeliveryInfo.setDeliverItemsStr(itemStr);
-                orderDeliveryInfo.setFreight(jsonObject.getDouble("post_fee"));
-                orderDeliveryInfo.setRemark(jsonObject.getString("seller_memo"));
-                orderDeliveryInfo.setLogiCode(jsonObject.getString("express_code"));
-                orderDeliveryInfoList.add(orderDeliveryInfo);
+
+                //管易会把相同的地址合并发货,此时要进行拆分
+                String gyOrderInfo = jsonObject.getString("platform_code");
+                String[] gyOrderInfoArray = gyOrderInfo.split(";");
+                for (String orderId : gyOrderInfoArray) {
+                    OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
+                    orderDeliveryInfo.setLogiName(logiName);
+                    orderDeliveryInfo.setOrderId(orderId);
+                    orderDeliveryInfo.setLogiNo(logiNo);
+
+                    orderDeliveryInfo.setDeliverItemsStr(itemStr);
+                    orderDeliveryInfo.setFreight(freight);
+                    orderDeliveryInfo.setRemark(remark);
+                    orderDeliveryInfo.setLogiCode(logiCode);
+                    orderDeliveryInfoList.add(orderDeliveryInfo);
+                }
             }
         });
 
