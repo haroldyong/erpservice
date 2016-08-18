@@ -10,13 +10,15 @@
 package com.huobanplus.erpprovider.dtw.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.dtw.DtwTestBase;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
-import com.huobanplus.erpprovider.dtw.formatdtw.AliCustomer;
-import com.huobanplus.erpprovider.dtw.formatdtw.DtwWayBill;
-import com.huobanplus.erpprovider.dtw.formatdtw.WeixinCustomer;
+import com.huobanplus.erpprovider.dtw.formatdtw.*;
 import com.huobanplus.erpprovider.dtw.search.DtwStockSearch;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
+import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
+import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
@@ -30,7 +32,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
+import javax.xml.rpc.ServiceException;
 import java.io.UnsupportedEncodingException;
+import java.rmi.RemoteException;
 import java.util.*;
 
 /**
@@ -188,6 +192,11 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     }
 
     @Test
+    public void testPushCustomOrder() {
+        dtwOrderHandler.pushCustomOrder(mockOrder, mockDtwSysData);
+    }
+
+    @Test
     public void testSign() throws UnsupportedEncodingException {
         Map<String, Object> map = new TreeMap<>();
         map.put("appid", "wxd930ea5d5a258f4f");
@@ -200,4 +209,66 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 
         System.out.println(DtwUtil.weixinBuildSign(map, "192006250b4c09247ec02edce69f6a2d"));
     }
+
+    @Test
+    public void testWebservice() {
+        String param = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ws=\"http://ws.newyork.zjport.gov.cn/\">\n" +
+                "   <soapenv:Header/>\n" +
+                "   <soapenv:Body>\n" +
+                "      <ws:receive>\n" +
+                "         <!--Optional:-->\n" +
+                "         <content>?</content>\n" +
+                "         <!--Optional:-->\n" +
+                "         <msgType>PERSONAL_GOODS_DECLAR</msgType>\n" +
+                "         <!--Optional:-->\n" +
+                "         <dataDigest>?</dataDigest>\n" +
+                "         <!--Optional:-->\n" +
+                "         <sendCode>9133010832821677XM</sendCode>\n" +
+                "      </ws:receive>\n" +
+                "   </soapenv:Body>\n" +
+                "</soapenv:Envelope>";
+
+        HttpResult result = HttpClientUtil.getInstance().webServicePost("http://122.224.230.4:18003/newyorkWS/ws/ReceiveEncryptDeclare?wsdl", param);
+        System.out.println("\n*********************");
+        System.out.println(result.getHttpContent());
+        System.out.println(result.getHttpStatus());
+        System.out.println("\n*********************");
+    }
+
+    @Test
+    public void testXml() throws JsonProcessingException {
+        CustomOrder customOrder = new CustomOrder();
+        CustomHead customHead = new CustomHead();
+        CustomBody customBody = new CustomBody();
+        customOrder.setHead(customHead);
+        customOrder.setBody(customBody);
+
+        CustomOrderInfo customOrderInfo = new CustomOrderInfo();
+        CustomSign customSign = new CustomSign();
+        CustomOrderHead customOrderHead = new CustomOrderHead();
+        CustomOrderDetail customOrderDetail = new CustomOrderDetail();
+        List<CustomOrderDetail> customOrderDetails = new ArrayList<>();
+        customOrderDetails.add(customOrderDetail);
+        customOrderInfo.setCustomSign(customSign);
+        customOrderInfo.setCustomOrderHead(customOrderHead);
+        customOrderInfo.setCustomOrderDetails(customOrderDetails);
+        CustomOrderInfoList customOrderInfoList = new CustomOrderInfoList();
+        customOrderInfoList.setCustomOrderInfo(customOrderInfo);
+
+
+        customBody.setOrerInfoList(customOrderInfoList);
+
+
+        String xmlResult = new XmlMapper().writeValueAsString(customOrderInfo);
+        System.out.println("\n*********************");
+        System.out.println(xmlResult);
+        System.out.println("\n*********************");
+    }
+
+    @Test
+    public void testAxisWebservice() throws ServiceException, RemoteException {
+
+
+    }
+
 }

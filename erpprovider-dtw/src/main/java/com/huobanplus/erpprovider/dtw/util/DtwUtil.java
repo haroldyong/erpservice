@@ -9,9 +9,13 @@
 
 package com.huobanplus.erpprovider.dtw.util;
 
+import com.huobanplus.erpprovider.dtw.common.DtwConstant;
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.util.StringUtils;
 
+import javax.xml.namespace.QName;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.Iterator;
@@ -80,5 +84,20 @@ public class DtwUtil {
             result.put(field.getName(), field.get(object));
         }
         return result;
+    }
+
+    public static String requestCustomWebService(String content, String msgType, String dataDigest, String sendCode) throws Exception {
+        Service service = new Service();
+
+        Call call = (Call) service.createCall();
+//        call.setTimeout(500000);
+        call.setTargetEndpointAddress(DtwConstant.CUSTOM_WEBSERVICE_URL);
+        call.setOperationName(new QName(DtwConstant.CUSTOM_TARGET_NAMESPACE, "receive"));
+        call.addParameter("content", org.apache.axis.encoding.XMLType.XSD_STRING, javax.xml.rpc.ParameterMode.IN);//报文密文
+        call.addParameter("msgType", org.apache.axis.encoding.XMLType.XSD_STRING, javax.xml.rpc.ParameterMode.IN);//报文类型
+        call.addParameter("dataDigest", org.apache.axis.encoding.XMLType.XSD_STRING, javax.xml.rpc.ParameterMode.IN);//签名
+        call.addParameter("sendCode", org.apache.axis.encoding.XMLType.XSD_STRING, javax.xml.rpc.ParameterMode.IN);//发送方代码
+        call.setReturnType(org.apache.axis.encoding.XMLType.XSD_STRING);
+        return (String) call.invoke(new Object[]{content, msgType, dataDigest, sendCode});
     }
 }

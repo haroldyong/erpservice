@@ -157,7 +157,7 @@ public class Order extends BaseInfo {
     /**
      * 支付成功后支付平台返回的支付单号
      */
-    private String payOrder;
+    private String payNumber;
 
     /**
      * 订单明细

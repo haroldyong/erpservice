@@ -44,6 +44,15 @@ public interface DtwOrderHandler {
      */
     EventResult pushWeixinPayOrder(Order order, DtwSysData dtwSysData);
 
+    /**
+     * 推送订单到海关
+     *
+     * @param order      订单实体
+     * @param dtwSysData 系统参数
+     * @return
+     */
+    EventResult pushCustomOrder(Order order, DtwSysData dtwSysData);
+
 //    /**
 //     *  个人物品信息申报推送
 //     * @param dtwPersonalDelcareInfo

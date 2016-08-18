@@ -52,22 +52,23 @@ public class KjygOrderHandlerTest extends KjygTestBase {
     @Before
     public void setUp(){
         kjygSysData = new KjygSysData();
-        kjygSysData.setRequestUrl("http://www.kjygb2c.com/api/service.aspx");
+        kjygSysData.setRequestUrl("http://kjygb2c.com/api/service.aspx");
         kjygSysData.setClientKey("daa48d8a2a77c13ad11a6a4cf7e25531");
-        kjygSysData.setClientCode("K-0008");
-        kjygSysData.setWebsite("0001");
+        kjygSysData.setClientCode("K-0020");
 
         mockOrderItems = new ArrayList<>();
         for(int i=0;i<5;i++){
             OrderItem mockOrderItem = new OrderItem();
             mockOrderItem.setNum(i+5);
             mockOrderItem.setItemId(980001234);
+            mockOrderItem.setProductBn("productBn" + i);
             mockOrderItems.add(mockOrderItem);
+
             mockOrderItem.setPrice(120.00);
         }
 
         mockOrder = new Order();
-        mockOrder.setOrderId("123456789XXX");
+        mockOrder.setOrderId("10000000123");
         mockOrder.setMemberId(1);
         mockOrder.setShipName("wuxiongliu");
         mockOrder.setShipMobile("13211112222");
@@ -77,7 +78,7 @@ public class KjygOrderHandlerTest extends KjygTestBase {
         mockOrder.setDistrict("binjiang");
         mockOrder.setShipAddr("zhihuiegu");
         mockOrder.setUserLoginName("18705153967");
-        mockOrder.setBuyerPid("362322199411050053");
+        mockOrder.setBuyerPid("362322199411dd");
         mockOrder.setBuyerName("wuxiongliu");
         mockOrder.setShipZip("310000");
         mockOrder.setShipArea("滨江区");

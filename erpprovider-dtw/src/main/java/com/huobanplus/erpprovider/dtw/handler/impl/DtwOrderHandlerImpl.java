@@ -13,12 +13,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.huobanplus.erpprovider.dtw.common.DtwConstant;
 import com.huobanplus.erpprovider.dtw.common.DtwEnum;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpprovider.dtw.formatdtw.*;
 import com.huobanplus.erpprovider.dtw.handler.DtwOrderHandler;
 import com.huobanplus.erpprovider.dtw.search.DtwStockSearch;
+import com.huobanplus.erpprovider.dtw.util.AESUtil;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
+import com.huobanplus.erpprovider.dtw.util.RSAUtil;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
@@ -192,7 +195,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setMsgid(order.getOrderId());//(必填)
         dtwOrder.setPayType(DtwEnum.PaytypeEnum.Other.getCode());
         dtwOrder.setPayCompanyCode("001");//(必填) 支付公司在海关的备案码 // FIXME: 2016-07-13
-        dtwOrder.setPayNumber(order.getPayOrder());//(必填) 支付单号
+        dtwOrder.setPayNumber(order.getPayNumber());//(必填) 支付单号
         dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
         dtwOrder.setOrderGoodsAmount(order.getFinalAmount() - order.getCostFreight());//(必填)
         dtwOrder.setOrderNo(order.getOrderId());//(必填)
@@ -426,7 +429,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
             requestMap.put("partner", dtwSysData.getAliPartner());
             requestMap.put("out_request_no", order.getOrderId());
-            requestMap.put("trade_no", order.getPayOrder());
+            requestMap.put("trade_no", order.getPayNumber());
             requestMap.put("merchant_customs_code", dtwSysData.getECommerceCode());// FIXME: 2016-07-28 
             requestMap.put("amount", order.getFinalAmount());
             requestMap.put("customs_place", DtwEnum.CustomerEnum.HANGZHOU);
@@ -436,7 +439,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             String sign = DtwUtil.aliBuildSign(requestMap);
             requestMap.put("sign", sign);
 
-            HttpResult httpResult = HttpClientUtil.getInstance().get("https://mapi.alipay.com/gateway.do", requestMap);
+            HttpResult httpResult = HttpClientUtil.getInstance().get(DtwConstant.ALI_PAY_URL, requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 String xmlResp = httpResult.getHttpContent();
                 Document document = DocumentHelper.parseText(xmlResp);
@@ -477,7 +480,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             weixinCustomer.setAppid(dtwSysData.getWeiXinAppId());
             weixinCustomer.setMchId(dtwSysData.getWeixinMchId());
             weixinCustomer.setOutTradeNo(order.getOrderId());
-            weixinCustomer.setTransactionId(order.getPayOrder());
+            weixinCustomer.setTransactionId(order.getPayNumber());
             weixinCustomer.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.name());
             weixinCustomer.setMchCustomsNo(dtwSysData.getECommerceCode());// FIXME: 2016-07-28
             weixinCustomer.setSubOrderNo("");
@@ -511,7 +514,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
             String requestData = new XmlMapper().writeValueAsString(weixinCustomer);
 
-            HttpResult httpResult = HttpClientUtil.getInstance().post("https://api.mch.weixin.qq.com/cgi-bin/mch/customs/customdeclareorder", requestData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(DtwConstant.WEIXIN_PAY_URL, requestData);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 String xmlResp = httpResult.getHttpContent();
                 Document document = DocumentHelper.parseText(xmlResp);
@@ -539,5 +542,167 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             log.error(e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
+    }
+
+    @Override
+    public EventResult pushCustomOrder(Order order, DtwSysData dtwSysData) {
+        try {
+
+            CustomOrder customOrder = convertToCustomOrder(order, dtwSysData);
+            String requestXml = new XmlMapper().writeValueAsString(customOrder);
+            requestXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" + requestXml;
+            // rsa 加密
+            String privateKey = "MIIBUwIBADANBgkqhkiG9w0BAQEFAASCAT0wggE5AgEAAkEAlFs+R0NKXS6SZs5EwRDHRdi41lN/KrWBpU3ZPStg7+OzCch5guHDurzgcvPtcj0adkobpt1BUgA5lRWNNwM8MwIDAQABAkAhaPb6h33sxDs2Kce0DvpBkY/2vHEMBjo/JuwAaY94FmA87NhW2wctbosAbQUNlFPRBeFz1ez4EDZdAZGud2RBAiEA06xzkallIIzfbXzr/n32tmX53phWhc1GyHxru2Vd+eECIQCzbHAiHiaWKYQlzzqklZSB6LOwQIsxkjLVoE4ewyTAkwIgKimJg5QYPpmQz4A4iaKRh9dcJAh4A4LV/I078EHKrEECIC3H02zBKLNT8IX9NEdea0Aicgbc0Sda2GGtv4EV5cDFAiB8T0QOg11mVTnMcxVDLQLE7YAlyoGBqGRsbHCkMwlpOQ==";
+            String aesKey = "eHQzzQ/pmyddSkhFFwX4Ig==";
+            byte[] data = requestXml.getBytes("utf-8");
+            byte[] privateKeyCode = Base64.getDecoder().decode(privateKey.getBytes("utf-8"));
+            byte[] aesKeyCode = Base64.getDecoder().decode(aesKey.getBytes("utf-8"));
+
+            String encData = new String(Base64.getEncoder().encode(AESUtil.encrypt(data, aesKeyCode)), "utf-8");
+            String sign = new String(Base64.getEncoder().encode(RSAUtil.sign(data, privateKeyCode)), "utf-8");
+            String requestData = buildSoapXml(encData, "IMPORTORDER", sign, dtwSysData.getCompanyCode());
+
+            String result = DtwUtil.requestCustomWebService(requestData, "IMPORTORDER", sign, dtwSysData.getCompanyCode());
+
+            System.out.println("\n**************Data pane begin*******************");
+            System.out.println("请求数据：" + requestXml);
+            System.out.println("加密后的数据：" + encData);
+            System.out.println("AES秘钥：" + aesKey);
+            System.out.println("RSA秘钥：" + privateKey);
+            System.out.println("请求结果：" + result);
+            System.out.println("\n**************Data pane end*******************");
+
+
+//            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
+//                String xmlResp = httpResult.getHttpContent();
+//                Document document = DocumentHelper.parseText(xmlResp);
+//                Element root = document.getRootElement();
+//                // 如何判断请求处理结果是成功了还是失败了？
+//
+//
+//            } else{
+//
+//
+//                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
+//            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    private String buildSoapXml(String content, String msgType, String dataDigest, String sendCode) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ws=\"http://ws.newyork.zjport.gov.cn/\">")
+                .append("<soapenv:Header/>")
+                .append("<soapenv:Body>")
+                .append("<ws:receive>")
+                .append("<content>").append(content).append("</content>")
+                .append("<msgType>").append(msgType).append("</msgType>")
+                .append("<dataDigest>").append(dataDigest).append("</dataDigest>")
+                .append("<sendCode>").append(sendCode).append("</sendCode>")
+                .append("</ws:receive>")
+                .append("</soapenv:Body>")
+                .append("</soapenv:Envelope>");
+        return sb.toString();
+    }
+
+    private CustomOrder convertToCustomOrder(Order order, DtwSysData dtwSysData) {
+        CustomOrder customOrder = new CustomOrder();
+        CustomHead customHead = new CustomHead();
+        customHead.setBusinessType("IMPORTORDER");
+
+        CustomBody customBody = new CustomBody();
+        CustomOrderInfoList customOrderInfoList = new CustomOrderInfoList();
+        CustomOrderInfo customOrderInfo = new CustomOrderInfo();
+
+        CustomSign customSign = new CustomSign();
+        customSign.setCompanyCode(dtwSysData.getCompanyCode());
+        customSign.setBusinessNo(order.getOrderId());
+        customSign.setBusinessType("IMPORTORDER");
+        customSign.setDeclareType("1");// 固定填写1
+        customSign.setNote("");
+
+        CustomOrderHead customOrderHead = new CustomOrderHead();
+        customOrderHead.setECommerceCode(dtwSysData.getECommerceCode());
+        customOrderHead.setECommerceName(dtwSysData.getECommerceName());
+        customOrderHead.setIeFlag("I");
+        customOrderHead.setPayType("03");
+        customOrderHead.setPayCompanyCode("");// FIXME: 2016-08-18
+        customOrderHead.setPayNumber(order.getPayNumber());
+        customOrderHead.setOrderTotalAmount(order.getFinalAmount());
+        customOrderHead.setOrderNo(order.getOrderId());
+        customOrderHead.setOrderTaxAmount(0.0);// FIXME: 2016-08-18
+        customOrderHead.setOrderGoodsAmount(order.getFinalAmount());
+        customOrderHead.setFeeAmount(order.getCostFreight());
+        customOrderHead.setInsureAmount(0.0);
+        customOrderHead.setCompanyCode(dtwSysData.getCompanyCode());
+        customOrderHead.setCompanyName(dtwSysData.getCompanyName());
+        customOrderHead.setTradeTime(order.getPayTime());
+        customOrderHead.setCurrCode(DtwEnum.CurrencyEnum.RMB.getCode());
+        customOrderHead.setTotalAmount(order.getFinalAmount());
+        customOrderHead.setConsigneeEmail(order.getShipEmail());
+        customOrderHead.setConsigneeTel(order.getShipMobile());
+        customOrderHead.setConsignee(order.getShipName());
+        customOrderHead.setConsigneeAddress(order.getShipAddr());
+        customOrderHead.setTotalCount(order.getItemNum());
+//        customOrderHead.setPostMode();
+        customOrderHead.setSenderCountry(DtwEnum.CountryEnum.CHINA.getCode());
+        customOrderHead.setSenderName("发件人姓名");// FIXME: 2016-08-18
+        customOrderHead.setPurchaserId(String.valueOf(order.getMemberId()));
+        customOrderHead.setLogisCompanyCode("WL15041401");
+        customOrderHead.setLogisCompanyName("百世物流科技");
+        customOrderHead.setZipCode(order.getShipZip());
+        customOrderHead.setNote(order.getMemo());
+//        customOrderHead.setWayBills("");
+        customOrderHead.setRate("1");//人民币，统一填写1
+        customOrderHead.setUserProcotol("本人承诺所购买商品系个人合理自用，" +
+                "现委托商家代理申报、代缴税款等通关事宜，" +
+                "本人保证遵守《海关法》和国家相关法律法规，保证所提供的身份信息和收货信息真实完整，" +
+                "无侵犯他人权益的行为，以上委托关系系如实填写，本人愿意接受海关、" +
+                "检验检疫机构及其他监管部门的监管，并承担相应法律责任.");
+
+        List<CustomOrderDetail> customOrderDetails = new ArrayList<>();
+        List<OrderItem> orderItems = order.getOrderItems();
+        for (int i = 0; i < orderItems.size(); i++) {
+            OrderItem orderItem = orderItems.get(i);
+            CustomOrderDetail customOrderDetail = new CustomOrderDetail();
+            customOrderDetail.setGoodsOrder(i);
+            customOrderDetail.setGoodsName(orderItem.getName());
+            customOrderDetail.setGoodsModel(orderItem.getStandard());
+            customOrderDetail.setCodeTs(orderItem.getProductBn());
+            customOrderDetail.setOriginCountry(DtwEnum.CountryEnum.CHINA.getCode());
+            customOrderDetail.setUnitPrice(orderItem.getPrice());
+            customOrderDetail.setGoodsCount(orderItem.getNum());
+            customOrderDetail.setGoodsUnit(DtwEnum.UnitEnum.JIAN.getCode());
+//            customOrderDetail.setGrossWeight(0.0);//商品毛重 非必填
+            customOrderDetails.add(customOrderDetail);
+        }
+
+        CustomGoodsPurchaser customGoodsPurchaser = new CustomGoodsPurchaser();
+        customGoodsPurchaser.setId(String.valueOf(order.getMemberId()));
+        customGoodsPurchaser.setName(order.getBuyerName());
+        customGoodsPurchaser.setEmail("");//注册邮箱 非必填
+        customGoodsPurchaser.setTelNumber(order.getUserLoginName());
+        customGoodsPurchaser.setPaperType("01");
+        customGoodsPurchaser.setPaperNumber(order.getBuyerPid());
+//        customGoodsPurchaser.setAddress("");//地址 非必填
+
+
+        customOrderInfo.setCustomSign(customSign);
+        customOrderInfo.setCustomOrderHead(customOrderHead);
+        customOrderInfo.setCustomOrderDetails(customOrderDetails);
+        customOrderInfo.setCustomGoodsPurchaser(customGoodsPurchaser);
+
+        customOrderInfoList.setCustomOrderInfo(customOrderInfo);
+        customBody.setOrerInfoList(customOrderInfoList);
+
+        customOrder.setBody(customBody);
+        customOrder.setHead(customHead);
+
+        return customOrder;
     }
 }
