@@ -608,11 +608,11 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             } else {
                 String xpath = "/mo/body/list/jkfResult/resultList/jkfResultDetail/resultInfo";
                 List<Element> resultInfo = document.selectNodes(xpath);
-                String errorMsg = "";
+                StringBuffer errorMsg = new StringBuffer();
                 for (Element element : resultInfo) {
-                    errorMsg += element.getText();
+                    errorMsg.append(element.getText()).append(";");
                 }
-                return EventResult.resultWith(EventResultEnum.ERROR, errorMsg);
+                return EventResult.resultWith(EventResultEnum.ERROR, errorMsg.toString(), null);
             }
 
         } catch (Exception e) {

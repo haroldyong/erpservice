@@ -292,6 +292,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         EventResult eventResult = dtwOrderHandler.pushCustomOrder(mockOrder, mockDtwSysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
+
     }
 
 }
