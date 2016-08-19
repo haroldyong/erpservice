@@ -31,6 +31,21 @@ public interface DtwOrderHandler {
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
 
     /**
+     *  推送平台订单
+     * @param order
+     * @param dtwSysData
+     * @return
+     */
+    EventResult pushPlatformOrder(Order order, DtwSysData dtwSysData);
+
+    /**
+     * @param order
+     * @param dtwSysData
+     * @return
+     */
+    EventResult pushPersonalDeclareOrder(Order order, DtwSysData dtwSysData);
+
+    /**
      * 推送支付宝支付单到海关
      *
      * @return

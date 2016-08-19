@@ -54,7 +54,7 @@ public class DtwPersonalDelcareInfo {
      * 进口类型（0一般进口，1保税进口）(必填)
      */
     @JSONField(name = "importType")
-    private int importType;
+    private String importType;
 
     /**
      * 订单编号(必填)

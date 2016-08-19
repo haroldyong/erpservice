@@ -97,6 +97,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 orderDetailSyncLog.setOrderSyncStatus(dtwThreeOrderStatus.isOrderSyncStatus());
                 orderDetailSyncLog.setPersonalSyncStatus(dtwThreeOrderStatus.isPersonalSyncStatus());
                 orderDetailSyncLog.setPayOrderSyncStatus(dtwThreeOrderStatus.isPayOrderSyncStatus());
+                orderDetailSyncLog.setCustomOrderSyncStatus(dtwThreeOrderStatus.isCustomOrderSyncStatus());
 
                 orderDetailSyncLogService.save(orderDetailSyncLog);
 
@@ -115,6 +116,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 orderDetailSyncLog.setOrderSyncStatus(dtwThreeOrderStatus.isOrderSyncStatus());
                 orderDetailSyncLog.setPersonalSyncStatus(dtwThreeOrderStatus.isPersonalSyncStatus());
                 orderDetailSyncLog.setPayOrderSyncStatus(dtwThreeOrderStatus.isPayOrderSyncStatus());
+                orderDetailSyncLog.setCustomOrderSyncStatus(dtwThreeOrderStatus.isCustomOrderSyncStatus());
                 orderDetailSyncLogService.save(orderDetailSyncLog);
             }
 
@@ -128,7 +130,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
 
     /**
-     * 推送综合订单，个人信息申报单，支付单
+     * 推送综合订单，个人信息申报单，支付单，商品订单到通关服务平台
      *
      * @param order
      * @param dtwSysData
@@ -137,6 +139,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     private EventResult pushThreeOrder(Order order, DtwSysData dtwSysData, DtwThreeOrderStatus dtwThreeOrderStatus) {
 
         StringBuilder errorMsg = new StringBuilder();
+        // 支付单推送
         if (!dtwThreeOrderStatus.isPayOrderSyncStatus()) {
             EventResult payOrderEvent = null;
             if (order.getPaymentName().equals("支付宝")) {// FIXME: 2016-07-27  可能空指针
@@ -153,6 +156,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             }
         }
 
+        // 个人信息申报单
         if (!dtwThreeOrderStatus.isPersonalSyncStatus()) {
             EventResult personalOrderEvent = pushPersonalDeclareOrder(order, dtwSysData);
             if (personalOrderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -163,8 +167,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             }
         }
 
+        // 综合订单推送
         if (!dtwThreeOrderStatus.isOrderSyncStatus()) {
-            EventResult orderEvent = orderPush(order, dtwSysData);
+            EventResult orderEvent = pushPlatformOrder(order, dtwSysData);
             if (orderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 dtwThreeOrderStatus.setOrderSyncStatus(true);
             } else {
@@ -173,15 +178,25 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             }
         }
 
-        if (dtwThreeOrderStatus.isOrderSyncStatus() && dtwThreeOrderStatus.isPersonalSyncStatus()
-                && dtwThreeOrderStatus.isPayOrderSyncStatus()) {
+        // 海关订单推送
+        if (!dtwThreeOrderStatus.isCustomOrderSyncStatus()) {
+            EventResult customOrderEvent = pushCustomOrder(order, dtwSysData);
+            if (customOrderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                dtwThreeOrderStatus.setCustomOrderSyncStatus(true);
+            } else {
+                dtwThreeOrderStatus.setCustomOrderSyncStatus(false);
+                errorMsg.append(customOrderEvent.getResultMsg());
+            }
+        }
+
+        if (dtwThreeOrderStatus.isSyncSuccess()) {
             return EventResult.resultWith(EventResultEnum.SUCCESS, dtwThreeOrderStatus);
         }
 
         return EventResult.resultWith(EventResultEnum.ERROR, errorMsg.toString(), dtwThreeOrderStatus);
     }
 
-    private EventResult orderPush(Order order, DtwSysData dtwSysData) {
+    public EventResult pushPlatformOrder(Order order, DtwSysData dtwSysData) {
 
         Map<String, Object> requestMap = new HashMap<>();
         DtwOrder dtwOrder = new DtwOrder();
@@ -260,7 +275,8 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         }
     }
 
-    private EventResult pushPersonalDeclareOrder(Order order, DtwSysData dtwSysData) {
+    @Override
+    public EventResult pushPersonalDeclareOrder(Order order, DtwSysData dtwSysData) {
         List<OrderItem> orderItems = order.getOrderItems();
 
         DtwPersonalDelcareInfo dtwPersonalDelcareInfo = new DtwPersonalDelcareInfo();
@@ -551,64 +567,77 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             CustomOrder customOrder = convertToCustomOrder(order, dtwSysData);
             String requestXml = new XmlMapper().writeValueAsString(customOrder);
             requestXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" + requestXml;
+
+            int start = requestXml.indexOf("<jkfOrderDetail>");
+
+            int end = requestXml.lastIndexOf("</jkfOrderDetail>");
+            requestXml = requestXml.substring(0, start) + "<jkfOrderDetailList>" + requestXml.substring(start + 16, end)
+                    + "</jkfOrderDetailList>"
+                    + requestXml.substring(end + 17);
+
             // rsa 加密
-            String privateKey = "MIIBUwIBADANBgkqhkiG9w0BAQEFAASCAT0wggE5AgEAAkEAlFs+R0NKXS6SZs5EwRDHRdi41lN/KrWBpU3ZPStg7+OzCch5guHDurzgcvPtcj0adkobpt1BUgA5lRWNNwM8MwIDAQABAkAhaPb6h33sxDs2Kce0DvpBkY/2vHEMBjo/JuwAaY94FmA87NhW2wctbosAbQUNlFPRBeFz1ez4EDZdAZGud2RBAiEA06xzkallIIzfbXzr/n32tmX53phWhc1GyHxru2Vd+eECIQCzbHAiHiaWKYQlzzqklZSB6LOwQIsxkjLVoE4ewyTAkwIgKimJg5QYPpmQz4A4iaKRh9dcJAh4A4LV/I078EHKrEECIC3H02zBKLNT8IX9NEdea0Aicgbc0Sda2GGtv4EV5cDFAiB8T0QOg11mVTnMcxVDLQLE7YAlyoGBqGRsbHCkMwlpOQ==";
-            String aesKey = "eHQzzQ/pmyddSkhFFwX4Ig==";
             byte[] data = requestXml.getBytes("utf-8");
-            byte[] privateKeyCode = Base64.getDecoder().decode(privateKey.getBytes("utf-8"));
-            byte[] aesKeyCode = Base64.getDecoder().decode(aesKey.getBytes("utf-8"));
+            byte[] privateKeyCode = Base64.getDecoder().decode(DtwConstant.RSA_PRIVATE_KEY.getBytes("utf-8"));
+            byte[] aesKeyCode = Base64.getDecoder().decode(DtwConstant.AES_KEY.getBytes("utf-8"));
 
             String encData = new String(Base64.getEncoder().encode(AESUtil.encrypt(data, aesKeyCode)), "utf-8");
             String sign = new String(Base64.getEncoder().encode(RSAUtil.sign(data, privateKeyCode)), "utf-8");
-            String requestData = buildSoapXml(encData, "IMPORTORDER", sign, dtwSysData.getCompanyCode());
 
-            String result = DtwUtil.requestCustomWebService(requestData, "IMPORTORDER", sign, dtwSysData.getCompanyCode());
+            String result = DtwUtil.requestCustomWebService(encData, "IMPORTORDER", sign, dtwSysData.getCompanyCode());
+
+            Document document = DocumentHelper.parseText(result);
+            Element root = document.getRootElement();
+            Element chkMark = root.element("body")
+                    .element("list")
+                    .element("jkfResult")
+                    .element("chkMark");
 
             System.out.println("\n**************Data pane begin*******************");
-            System.out.println("请求数据：" + requestXml);
+            System.out.println("请求数据xml：" + requestXml);
             System.out.println("加密后的数据：" + encData);
-            System.out.println("AES秘钥：" + aesKey);
-            System.out.println("RSA秘钥：" + privateKey);
+            System.out.println("签名：" + sign);
+            System.out.println("AES秘钥：" + DtwConstant.AES_KEY);
+            System.out.println("RSA秘钥：" + DtwConstant.RSA_PRIVATE_KEY);
             System.out.println("请求结果：" + result);
+            System.out.println("请求业务处理结果：" + chkMark.getText());
             System.out.println("\n**************Data pane end*******************");
 
+            if (chkMark.getText().equals("1")) {// 业务处理成功
 
-//            if(httpResult.getHttpStatus() == HttpStatus.SC_OK){
-//                String xmlResp = httpResult.getHttpContent();
-//                Document document = DocumentHelper.parseText(xmlResp);
-//                Element root = document.getRootElement();
-//                // 如何判断请求处理结果是成功了还是失败了？
-//
-//
-//            } else{
-//
-//
-//                return EventResult.resultWith(EventResultEnum.ERROR,httpResult.getHttpContent(),null);
-//            }
-
+                return EventResult.resultWith(EventResultEnum.SUCCESS);
+            } else {
+                String xpath = "/mo/body/list/jkfResult/resultList/jkfResultDetail/resultInfo";
+                List<Element> resultInfo = document.selectNodes(xpath);
+                String errorMsg = "";
+                for (Element element : resultInfo) {
+                    errorMsg += element.getText();
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, errorMsg);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+
         }
-        return null;
 
     }
 
-    private String buildSoapXml(String content, String msgType, String dataDigest, String sendCode) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ws=\"http://ws.newyork.zjport.gov.cn/\">")
-                .append("<soapenv:Header/>")
-                .append("<soapenv:Body>")
-                .append("<ws:receive>")
-                .append("<content>").append(content).append("</content>")
-                .append("<msgType>").append(msgType).append("</msgType>")
-                .append("<dataDigest>").append(dataDigest).append("</dataDigest>")
-                .append("<sendCode>").append(sendCode).append("</sendCode>")
-                .append("</ws:receive>")
-                .append("</soapenv:Body>")
-                .append("</soapenv:Envelope>");
-        return sb.toString();
-    }
+//    private String buildSoapXml(String content, String msgType, String dataDigest, String sendCode) {
+//        StringBuffer sb = new StringBuffer();
+//        sb.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ws=\"http://ws.newyork.zjport.gov.cn/\">")
+//                .append("<soapenv:Header/>")
+//                .append("<soapenv:Body>")
+//                .append("<ws:receive>")
+//                .append("<content>").append(content).append("</content>")
+//                .append("<msgType>").append(msgType).append("</msgType>")
+//                .append("<dataDigest>").append(dataDigest).append("</dataDigest>")
+//                .append("<sendCode>").append(sendCode).append("</sendCode>")
+//                .append("</ws:receive>")
+//                .append("</soapenv:Body>")
+//                .append("</soapenv:Envelope>");
+//        return sb.toString();
+//    }
 
     private CustomOrder convertToCustomOrder(Order order, DtwSysData dtwSysData) {
         CustomOrder customOrder = new CustomOrder();
@@ -627,8 +656,8 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customSign.setNote("");
 
         CustomOrderHead customOrderHead = new CustomOrderHead();
-        customOrderHead.setECommerceCode(dtwSysData.getECommerceCode());
-        customOrderHead.setECommerceName(dtwSysData.getECommerceName());
+        customOrderHead.setCommerceCode(dtwSysData.getECommerceCode());
+        customOrderHead.setCommerceName(dtwSysData.getECommerceName());
         customOrderHead.setIeFlag("I");
         customOrderHead.setPayType("03");
         customOrderHead.setPayCompanyCode("");// FIXME: 2016-08-18
@@ -659,11 +688,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrderHead.setNote(order.getMemo());
 //        customOrderHead.setWayBills("");
         customOrderHead.setRate("1");//人民币，统一填写1
-        customOrderHead.setUserProcotol("本人承诺所购买商品系个人合理自用，" +
-                "现委托商家代理申报、代缴税款等通关事宜，" +
-                "本人保证遵守《海关法》和国家相关法律法规，保证所提供的身份信息和收货信息真实完整，" +
-                "无侵犯他人权益的行为，以上委托关系系如实填写，本人愿意接受海关、" +
-                "检验检疫机构及其他监管部门的监管，并承担相应法律责任.");
+        customOrderHead.setUserProcotol(DtwConstant.USER_PROCOTOL);
 
         List<CustomOrderDetail> customOrderDetails = new ArrayList<>();
         List<OrderItem> orderItems = order.getOrderItems();
@@ -694,7 +719,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         customOrderInfo.setCustomSign(customSign);
         customOrderInfo.setCustomOrderHead(customOrderHead);
-        customOrderInfo.setCustomOrderDetails(customOrderDetails);
+        customOrderInfo.setCustomOrderDetailList(customOrderDetails);
         customOrderInfo.setCustomGoodsPurchaser(customGoodsPurchaser);
 
         customOrderInfoList.setCustomOrderInfo(customOrderInfo);

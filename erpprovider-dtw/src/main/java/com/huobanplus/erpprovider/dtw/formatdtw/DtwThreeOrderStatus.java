@@ -23,5 +23,11 @@ public class DtwThreeOrderStatus {
 
     private boolean payOrderSyncStatus;
 
-    private String name;
+    private boolean customOrderSyncStatus;
+
+    public boolean isSyncSuccess() {
+        return orderSyncStatus && personalSyncStatus
+                && payOrderSyncStatus && customOrderSyncStatus;
+    }
+
 }

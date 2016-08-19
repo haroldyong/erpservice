@@ -28,8 +28,8 @@ public class CustomOrderInfo {
     @JacksonXmlProperty(localName = "jkfOrderImportHead")
     private CustomOrderHead customOrderHead;
 
-    @JacksonXmlProperty(localName = "jkfOrderDetailList")
-    private List<CustomOrderDetail> customOrderDetails;
+    @JacksonXmlProperty(localName = "jkfOrderDetail")
+    private List<CustomOrderDetail> customOrderDetailList;
 
     @JacksonXmlProperty(localName = "jkfGoodsPurchaser")
     private CustomGoodsPurchaser customGoodsPurchaser;

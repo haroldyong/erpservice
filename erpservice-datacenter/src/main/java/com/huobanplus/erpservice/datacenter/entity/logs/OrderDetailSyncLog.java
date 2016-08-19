@@ -85,4 +85,9 @@ public class OrderDetailSyncLog {
      * 个人信息申报推送状态
      */
     private boolean personalSyncStatus;
+
+    /**
+     * 海关订单推送状态
+     */
+    private boolean customOrderSyncStatus;
 }

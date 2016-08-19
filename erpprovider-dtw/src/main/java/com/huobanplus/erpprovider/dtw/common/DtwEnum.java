@@ -134,24 +134,23 @@ public interface DtwEnum {
         }
     }
 
-    enum ImportTypeEnum implements ICommonEnum {
-        YIBAN(1, "一般进口"),
-        BAOSHUI(2, "保税进口");
+    enum ImportTypeEnum {
+        YIBAN("1", "一般进口"),
+        BAOSHUI("2", "保税进口");
 
-        private int code;
+        private String code;
         private String name;
 
-        ImportTypeEnum(int code, String name) {
+        ImportTypeEnum(String code, String name) {
             this.code = code;
             this.name = name;
         }
 
-        @Override
-        public int getCode() {
+        public String getCode() {
             return code;
         }
 
-        public void setCode(int code) {
+        public void setCode(String code) {
             this.code = code;
         }
 
@@ -159,7 +158,6 @@ public interface DtwEnum {
             this.name = name;
         }
 
-        @Override
         public String getName() {
             return name;
         }

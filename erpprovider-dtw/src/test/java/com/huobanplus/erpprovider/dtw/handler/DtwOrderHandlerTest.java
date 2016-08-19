@@ -32,9 +32,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
-import javax.xml.rpc.ServiceException;
 import java.io.UnsupportedEncodingException;
-import java.rmi.RemoteException;
 import java.util.*;
 
 /**
@@ -62,15 +60,19 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 
         mockDtwSysData = new DtwSysData();
         mockDtwSysData.setPassKey("tesaa");
-        mockDtwSysData.setECommerceName("testhot");
-        mockDtwSysData.setECommerceCode("100");
+        mockDtwSysData.setECommerceName("kdian.co.ltd");
+        mockDtwSysData.setECommerceCode("9133010832821677XM");
+
+        mockDtwSysData.setCompanyCode("330196T018");
+        mockDtwSysData.setCompanyName("杭州美伴网络科技有限公司");
         mockDtwSysData.setRequestUrl("http://logistics.dtw.com.cn:8080/QBT/api");
+
 
         mockDtwSysData.setAliPartner("2088211251545121");
 
-        mockDtwSysData.setWeixinKey("0db0d6908d6ae6a09b0a3727888f0da6");
-        mockDtwSysData.setWeixinMchId("1220397601");
-        mockDtwSysData.setWeiXinAppId("wxd8c58460d0199dd5");
+        mockDtwSysData.setWeixinKey("hzmeibanwangluokejiyouxiangongsi");
+        mockDtwSysData.setWeixinMchId("1342661701");
+        mockDtwSysData.setWeiXinAppId("gh_4dbf09a0a18e");
 
         mockOrderItems = new ArrayList<>();
 
@@ -94,8 +96,8 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockOrder.setCity("杭州市");
         mockOrder.setDistrict("滨江区");
         mockOrder.setShipAddr("浙江省杭州市滨江区阡陌路智慧E谷B幢4楼火图科技");
-        mockOrder.setBuyerPid("330682199006015217");
-        mockOrder.setBuyerName("刘渠成");
+        mockOrder.setBuyerPid("362322199411050053");
+        mockOrder.setBuyerName("吴雄琉");
         mockOrder.setLogiCode("shunfeng");
         mockOrder.setLogiName("顺丰快递");
         mockOrder.setCurrency("RMB");
@@ -108,33 +110,12 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockErpInfo = new ERPInfo();
         mockErpInfo.setSysDataJson(JSON.toJSONString(mockDtwSysData));
 
-
         mockErpUserInfo = new ERPUserInfo();
         mockErpUserInfo.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);
         mockErpUserInfo.setCustomerId(23347);
 
     }
 
-
-    @Rollback(value = false)
-    @Test
-    public void testPushOrder() {
-
-        mockPushNewOrderEvent = new PushNewOrderEvent();
-        mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
-        mockPushNewOrderEvent.setErpInfo(mockErpInfo);
-        mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
-        EventResult result = dtwOrderHandler.pushOrder(mockPushNewOrderEvent);
-        System.out.println(result.getData());
-        System.out.println(result.getResultMsg());
-        System.out.println(result.getResultCode());
-    }
-
-//    @Test
-//    public void testPushPersonalDeclareOrder(){
-//        DtwPersonalDelcareInfo dtwPersonalDelcareInfo = new DtwPersonalDelcareInfo();
-//        dtwOrderHandler.pushPersonalDeclareOrder(dtwPersonalDelcareInfo,mockDtwSysData);
-//    }
 
     @Test
     public void testStockQuery() {
@@ -158,43 +139,9 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         System.out.println(result.getResultMsg());
     }
 
-    @Test
-    public void testPushAliPayOrder() {
-        AliCustomer aliCustomer = new AliCustomer();
-        aliCustomer.setOutRequestNo("2016102510252");
-        aliCustomer.setAmount("100");
-        aliCustomer.setCustomsPlace("hangzhou");
-        aliCustomer.setIsSplit("no");
-        aliCustomer.setMerchantCustomsCode("hangzhou");
-        aliCustomer.setMerchantCustomsName("hangzhou");
-        aliCustomer.setTradeNo("tradNo");
-        EventResult eventResult = dtwOrderHandler.pushAliPayOrder(mockOrder, mockDtwSysData);
-        System.out.println(eventResult.getResultCode());
-        System.out.println(eventResult.getData());
-        System.out.println(eventResult.getResultMsg());
-    }
 
-    @Test
-    public void testPushWeixinPayOrder() {
-        WeixinCustomer weixinCustomer = new WeixinCustomer();
-        weixinCustomer.setMchId("1220397601");
-        weixinCustomer.setOrderFee(1000);
-        weixinCustomer.setMchCustomsNo("huoban");
-        weixinCustomer.setFeeType("CNY");
-        weixinCustomer.setAppid("wxd8c58460d0199dd5");
-        weixinCustomer.setCustoms("HANGZHOU");
-        weixinCustomer.setOutTradeNo("201623021562");
-        weixinCustomer.setTransactionId("1111111111111111111111111111");
-        EventResult eventResult = dtwOrderHandler.pushWeixinPayOrder(mockOrder, mockDtwSysData);
-        System.out.println(eventResult.getData());
-        System.out.println(eventResult.getResultMsg());
-        System.out.println(eventResult.getResultCode());
-    }
 
-    @Test
-    public void testPushCustomOrder() {
-        dtwOrderHandler.pushCustomOrder(mockOrder, mockDtwSysData);
-    }
+
 
     @Test
     public void testSign() throws UnsupportedEncodingException {
@@ -251,7 +198,9 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         customOrderDetails.add(customOrderDetail);
         customOrderInfo.setCustomSign(customSign);
         customOrderInfo.setCustomOrderHead(customOrderHead);
-        customOrderInfo.setCustomOrderDetails(customOrderDetails);
+
+
+        customOrderInfo.setCustomOrderDetailList(customOrderDetails);
         CustomOrderInfoList customOrderInfoList = new CustomOrderInfoList();
         customOrderInfoList.setCustomOrderInfo(customOrderInfo);
 
@@ -259,16 +208,90 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         customBody.setOrerInfoList(customOrderInfoList);
 
 
-        String xmlResult = new XmlMapper().writeValueAsString(customOrderInfo);
+        String xmlResult = new XmlMapper().writeValueAsString(customOrder);
+        int start = xmlResult.indexOf("<jkfOrderDetail>");
+
+        int end = xmlResult.lastIndexOf("</jkfOrderDetail>");
+        String firstPane = xmlResult.substring(0, start);
+        String middlePane = xmlResult.substring(start + 16, end);
+        String lastPane = xmlResult.substring(end + 17);
+
         System.out.println("\n*********************");
-        System.out.println(xmlResult);
+        System.out.println(firstPane);
+        System.out.println(middlePane);
+        System.out.println(lastPane);
         System.out.println("\n*********************");
     }
 
+
+    @Rollback(value = false)
     @Test
-    public void testAxisWebservice() throws ServiceException, RemoteException {
+    public void testPushOrder() {
 
+        mockPushNewOrderEvent = new PushNewOrderEvent();
+        mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
+        mockPushNewOrderEvent.setErpInfo(mockErpInfo);
+        mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
+        EventResult result = dtwOrderHandler.pushOrder(mockPushNewOrderEvent);
+        System.out.println(result.getData());
+        System.out.println(result.getResultMsg());
+        System.out.println(result.getResultCode());
+    }
 
+    @Test
+    public void testPushPersonalDeclareOrder() {
+
+        EventResult eventResult = dtwOrderHandler.pushPersonalDeclareOrder(mockOrder, mockDtwSysData);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
+    }
+
+    @Test
+    public void testPushPlatformOrder() {
+        EventResult eventResult = dtwOrderHandler.pushPlatformOrder(mockOrder, mockDtwSysData);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
+    }
+
+    @Test
+    public void testPushAliPayOrder() {
+        AliCustomer aliCustomer = new AliCustomer();
+        aliCustomer.setOutRequestNo("2016102510252");
+        aliCustomer.setAmount("100");
+        aliCustomer.setCustomsPlace("hangzhou");
+        aliCustomer.setIsSplit("no");
+        aliCustomer.setMerchantCustomsCode("hangzhou");
+        aliCustomer.setMerchantCustomsName("hangzhou");
+        aliCustomer.setTradeNo("tradNo");
+        EventResult eventResult = dtwOrderHandler.pushAliPayOrder(mockOrder, mockDtwSysData);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getData());
+        System.out.println(eventResult.getResultMsg());
+    }
+
+    @Test
+    public void testPushWeixinPayOrder() {
+        WeixinCustomer weixinCustomer = new WeixinCustomer();
+        weixinCustomer.setMchId(mockDtwSysData.getWeixinMchId());
+        weixinCustomer.setOrderFee(1000);
+        weixinCustomer.setMchCustomsNo("huoban");
+        weixinCustomer.setFeeType("CNY");
+        weixinCustomer.setAppid(mockDtwSysData.getWeiXinAppId());
+        weixinCustomer.setCustoms("HANGZHOU");
+        weixinCustomer.setOutTradeNo("201623021562");
+        weixinCustomer.setTransactionId("1111111111111111111111111111");
+        weixinCustomer.setTransactionId("uuid");
+        EventResult eventResult = dtwOrderHandler.pushWeixinPayOrder(mockOrder, mockDtwSysData);
+        System.out.println(eventResult.getData());
+        System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getResultCode());
+    }
+
+    @Test
+    public void testPushCustomOrder() {
+        EventResult eventResult = dtwOrderHandler.pushCustomOrder(mockOrder, mockDtwSysData);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
     }
 
 }

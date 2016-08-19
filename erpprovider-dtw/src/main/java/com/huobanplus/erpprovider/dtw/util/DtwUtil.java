@@ -90,7 +90,7 @@ public class DtwUtil {
         Service service = new Service();
 
         Call call = (Call) service.createCall();
-//        call.setTimeout(500000);
+        call.setTimeout(100000);
         call.setTargetEndpointAddress(DtwConstant.CUSTOM_WEBSERVICE_URL);
         call.setOperationName(new QName(DtwConstant.CUSTOM_TARGET_NAMESPACE, "receive"));
         call.addParameter("content", org.apache.axis.encoding.XMLType.XSD_STRING, javax.xml.rpc.ParameterMode.IN);//报文密文
