@@ -80,9 +80,9 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                                 return str1.toUpperCase().compareTo(str2.toUpperCase());
                             }
                         });
-                        signMap.put("uCode",paramMap.get("uCode")[0]);
-                        signMap.put("mType",paramMap.get("mType")[0]);
-                        signMap.put("TimeStamp",paramMap.get("TimeStamp")[0]);
+                        signMap.put("uCode", paramMap.get("uCode")[0]);
+                        signMap.put("mType", paramMap.get("mType")[0]);
+                        signMap.put("TimeStamp", paramMap.get("TimeStamp")[0]);
 
 
                         //通过uCode得到指定erp配置信息
@@ -111,7 +111,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                                     if (!StringUtils.isEmpty(pageIndexStr)) {
                                         pageIndex = Integer.valueOf(pageIndexStr);
                                     }
-                                    return nsOrderHandler.obtainOrderInfoList(orderStatus, pageSize, pageIndex, erpUserInfo, method,startUpdateTime,endUpdateTime);
+                                    return nsOrderHandler.obtainOrderInfoList(orderStatus, pageSize, pageIndex, erpUserInfo, method, startUpdateTime, endUpdateTime);
                                 case Constant.OBTAIN_ORDER_DETAIL:
                                     String orderId = request.getParameter("OrderNO");
                                     if (StringUtils.isEmpty(orderId)) {

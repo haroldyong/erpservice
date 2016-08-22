@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.gy.handler.impl;
 
 import com.alibaba.fastjson.JSONObject;
@@ -40,7 +49,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
                 System.out.println("************************************************");
                 if(result.getBoolean("success")){
 
-                    GyRespGoodsSearch gyRespGoodsSearch = JSONObject.parseObject(httpResult.getHttpContent(),GyRespGoodsSearch.class);
+                    GyRespGoodsSearch gyRespGoodsSearch = JSONObject.parseObject(httpResult.getHttpContent(), GyRespGoodsSearch.class);
 
 //                    List<GYResponseGoodsItem> gyResponseGoodsItems = new ArrayList<>();
 //
@@ -51,7 +60,7 @@ public class GYGoodsHandlerImpl extends GYBaseHandler implements GYGoodsHandler 
 //                        GYResponseGoodsItem gyResponseGoodsItem = JSONObject.parseObject(item.toString(),GYResponseGoodsItem.class);
 //                        gyResponseGoodsItems.add(gyResponseGoodsItem);
 //                    });
-                    return EventResult.resultWith(EventResultEnum.SUCCESS,gyRespGoodsSearch);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, gyRespGoodsSearch);
                 }else{
                     log.info("错误信息："+result.getString("errorDesc"));
                     log.info("请求数据报文："+requestData);

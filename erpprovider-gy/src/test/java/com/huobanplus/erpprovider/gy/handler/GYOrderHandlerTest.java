@@ -44,7 +44,7 @@ public class GYOrderHandlerTest extends GYTestBase {
     private GYOrderHandler gyOrderHandler;
 
     @Test
-    public void testPushOrder(){
+    public void testPushOrder() {
 
         mockOrderItems = new ArrayList<>();
         OrderItem mockOrderItem = new OrderItem();
@@ -85,7 +85,7 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockOrder.setLogiCode("QFKD");
         mockOrder.setPaymentName("支付宝");
         mockOrder.setCostFreight(5);
-        mockOrder.setFinalAmount(20.0*10);
+        mockOrder.setFinalAmount(20.0 * 10);
 
         mockOrder.setCreateTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));

@@ -31,7 +31,8 @@ public interface DtwOrderHandler {
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
 
     /**
-     *  推送平台订单
+     * 推送平台订单
+     *
      * @param order
      * @param dtwSysData
      * @return

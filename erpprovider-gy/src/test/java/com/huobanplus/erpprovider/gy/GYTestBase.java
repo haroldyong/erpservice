@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.gy;
 
 import com.alibaba.fastjson.JSON;
@@ -30,8 +39,8 @@ public class GYTestBase {
     protected ERPUserInfo mockErpUserInfo;
 
     @Before
-    public void setUp(){
-        String requestUrl  = "http://v2.api.guanyierp.com/rest/erp_open";
+    public void setUp() {
+        String requestUrl = "http://v2.api.guanyierp.com/rest/erp_open";
         String appKey = "112194";
         String secret = "7d3330562019420da7f3098aa630556b";
         String sessionKey = "50b24306aacf479a9a5651f0fc7cabc3";

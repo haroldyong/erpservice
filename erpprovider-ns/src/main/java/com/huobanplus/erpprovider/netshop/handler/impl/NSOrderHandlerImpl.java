@@ -43,7 +43,7 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
     private ERPRegister erpRegister;
 
     @Override
-    public EventResult obtainOrderInfoList(int orderStatus, int pageSize, Integer pageIndex, ERPUserInfo erpUserInfo, String mType,String startUpdateTime,String endUpdateTime) {
+    public EventResult obtainOrderInfoList(int orderStatus, int pageSize, Integer pageIndex, ERPUserInfo erpUserInfo, String mType, String startUpdateTime, String endUpdateTime) {
         try {
             //得到erp使用者的事件处理器
             ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
@@ -115,7 +115,7 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             orderDetailResult.setDateTime(orderBean.getPayTime());
             orderDetailResult.setBuyerId(orderBean.getUserLoginName());
             orderDetailResult.setBuyerName(orderBean.getShipName());
-            if(StringUtil.isEmpty(orderBean.getBuyerPid())){
+            if (StringUtil.isEmpty(orderBean.getBuyerPid())) {
                 orderDetailResult.setCardType(1);
                 orderDetailResult.setIdCard(orderBean.getBuyerPid());
             }
@@ -155,7 +155,7 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             String firstPanel = resultXml.substring(0, firstIndex);
             String orderItemPanel = resultXml.substring(firstIndex + 6, lastIndex);
             String lastPanel = resultXml.substring(lastIndex + 7);
-            String xmlResult = firstPanel  + orderItemPanel + lastPanel;
+            String xmlResult = firstPanel + orderItemPanel + lastPanel;
             return EventResult.resultWith(EventResultEnum.SUCCESS, xmlResult);
         } catch (Exception e) {
             return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, "服务器错误--" + e.getMessage());
