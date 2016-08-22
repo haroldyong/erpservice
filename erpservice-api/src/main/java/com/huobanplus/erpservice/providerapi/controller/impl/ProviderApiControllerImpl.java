@@ -53,4 +53,24 @@ public class ProviderApiControllerImpl implements ProviderApiController {
         return eventResult.getData().toString();
     }
 
+    @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/{backType}", method = RequestMethod.POST)
+    @ResponseBody
+    public String index(
+            @PathVariable("erpProviderType") int providerType,
+            @PathVariable("erpUserType") int erpUserType,
+            @PathVariable("backType") int backType,
+            HttpServletRequest request) {
+        ERPTypeEnum.ProviderType providerTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, providerType);
+        ERPTypeEnum.UserType userTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
+        ERPInfo erpInfo = new ERPInfo();
+        erpInfo.setErpType(providerTypeEnum);
+        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
+        if (erpHandler == null) {
+            return "未找到相关erp处理器";
+        }
+
+        request.setAttribute("backType", backType);
+        EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
+        return eventResult.getData().toString();
+    }
 }

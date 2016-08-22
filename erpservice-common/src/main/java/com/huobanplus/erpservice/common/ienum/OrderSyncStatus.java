@@ -19,7 +19,8 @@ public interface OrderSyncStatus {
      */
     enum DetailSyncStatus implements ICommonEnum {
         SYNC_FAILURE(0, "同步失败"),
-        SYNC_SUCCESS(1, "同步成功");
+        SYNC_SUCCESS(1, "同步成功"),
+        CUSTOM_BACK(2, "等待海关回执");
         private int code;
         private String name;
 

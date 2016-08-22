@@ -135,8 +135,8 @@ public interface DtwEnum {
     }
 
     enum ImportTypeEnum {
-        YIBAN("1", "一般进口"),
-        BAOSHUI("2", "保税进口");
+        YIBAN("0", "一般进口"),
+        BAOSHUI("1", "保税进口");
 
         private String code;
         private String name;

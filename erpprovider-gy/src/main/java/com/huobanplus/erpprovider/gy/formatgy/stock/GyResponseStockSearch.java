@@ -30,5 +30,5 @@ public class GyResponseStockSearch {
      * 库存明细
      */
     @JSONField(name = "stocks")
-    private List<GYResponseStock> stocks;
+    private List<GYStockResponse> stocks;
 }

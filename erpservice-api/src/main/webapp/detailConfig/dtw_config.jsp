@@ -23,10 +23,15 @@
             var passKey = $.trim($("#passKey").val());
             var eCommerceCode = $.trim($("#eCommerceCode").val());
             var eCommerceName = $.trim($("#eCommerceName").val());
+            var companyCode = $.trim($("#companyCode").val());
+            var companyName = $.trim($("#companyName").val());
             var weiXinAppId = $.trim($("#weiXinAppId").val());
             var weixinMchId = $.trim($("#weixinMchId").val());
             var weixinKey = $.trim($("#weixinKey").val());
             var aliPartner = $.trim($("#aliPartner").val());
+            var senderName = $.trim($("#senderName").val());
+            var senderAddr = $.trim($("#senderAddr").val());
+
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入大田接口地址");
                 return null;
@@ -43,6 +48,14 @@
                 $.jBox.tip("请输入电商企业名称");
                 return null;
             }
+            if (companyCode.length == 0) {
+                $.jBox.tip("请输入电商平台代码");
+                return null;
+            }
+            if (companyName.length == 0) {
+                $.jBox.tip("请输入电商平台名称");
+                return null;
+            }
             if (weiXinAppId.length == 0) {
                 $.jBox.tip("请输入微信公众账号ID");
                 return null;
@@ -55,19 +68,34 @@
                 $.jBox.tip("请输入微信秘钥");
                 return null;
             }
-            if (aliPartner.length == 0) {
-                $.jBox.tip("请输入支付宝商户号");
+//            if (aliPartner.length == 0) {
+//                $.jBox.tip("请输入支付宝商户号");
+//                return null;
+//            }
+            if (senderName.length == 0) {
+                $.jBox.tip("请输入发货人姓名");
                 return null;
             }
+
+            if (senderAddr.length == 0) {
+                $.jBox.tip("请输入发货人地址");
+                return null;
+            }
+
+
             var dtwConfig = {
                 requestUrl: requestUrl,
                 passKey: passKey,
                 eCommerceCode: eCommerceCode,
                 eCommerceName: eCommerceName,
+                companyCode: companyCode,
+                companyName: companyName,
                 weiXinAppId: weiXinAppId,
                 weixinMchId: weixinMchId,
                 weixinKey: weixinKey,
-                aliPartner: aliPartner
+                aliPartner: aliPartner,
+                senderName: senderName,
+                senderAddr: senderAddr
             };
             return JSON.stringify(dtwConfig);
         },
@@ -76,10 +104,15 @@
             $("#passKey").val(jsonData.passKey);
             $("#eCommerceCode").val(jsonData.eCommerceCode);
             $("#eCommerceName").val(jsonData.eCommerceName);
+            $("#companyCode").val(jsonData.companyCode);
+            $("#companyName").val(jsonData.companyName);
             $("#weiXinAppId").val(jsonData.weiXinAppId);
             $("#weixinMchId").val(jsonData.weixinMchId);
             $("#weixinKey").val(jsonData.weixinKey);
             $("#aliPartner").val(jsonData.aliPartner);
+            $("#senderName").val(jsonData.senderName);
+            $("#senderAddr").val(jsonData.senderAddr);
+
         }
     };
 </script>
@@ -109,6 +142,19 @@
             <input name="eCommerceName" type="text" value="" id="eCommerceName" class="input-normal"/>
         </td>
     </tr>
+
+    <tr>
+        <th style="vertical-align: middle;">companyCode(电商平台代码)：</th>
+        <td>
+            <input name="companyCode" type="text" value="" id="companyCode" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">companyName(电商平台名称)：</th>
+        <td>
+            <input name="companyName" type="text" value="" id="companyName" class="input-normal"/>
+        </td>
+    </tr>
     <tr>
         <th style="vertical-align: middle;">weiXinAppId(微信公众账号ID)：</th>
         <td>
@@ -131,6 +177,18 @@
         <th style="vertical-align: middle;">aliPartner(支付宝商户号)：</th>
         <td>
             <input name="aliPartner" type="text" value="" id="aliPartner" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">发货人姓名：</th>
+        <td>
+            <input name="senderName" type="text" value="" id="senderName" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">发货人地址：</th>
+        <td>
+            <input name="senderAddr" type="text" value="" id="senderAddr" class="input-normal"/>
         </td>
     </tr>
     </tbody>
