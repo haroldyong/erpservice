@@ -12,21 +12,16 @@ package com.huobanplus.erpprovider.gy.handler;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.gy.GYTestBase;
 import com.huobanplus.erpprovider.gy.common.GYConstant;
-import com.huobanplus.erpprovider.gy.common.GYSysData;
 import com.huobanplus.erpprovider.gy.formatgy.order.*;
 import com.huobanplus.erpprovider.gy.search.GYDeliveryOrderSearch;
 import com.huobanplus.erpprovider.gy.search.GYOrderSearch;
 import com.huobanplus.erpprovider.gy.search.GYRefundOrderSearch;
 import com.huobanplus.erpprovider.gy.search.GYReturnOrderSearch;
 import com.huobanplus.erpservice.common.util.StringUtil;
-import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
-import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
-import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,34 +34,17 @@ import java.util.List;
  */
 public class GYOrderHandlerTest extends GYTestBase {
 
-    private GYSysData mockGySysData;
-
     private PushNewOrderEvent mockPushNewOrderEvent;
 
     private Order mockOrder;
 
     private List<OrderItem> mockOrderItems;
 
-    private ERPInfo mockErpInfo;
-
-    private ERPUserInfo mockErpUserInfo;
-
     @Autowired
     private GYOrderHandler gyOrderHandler;
 
-    @Before
-    public void setUp(){
-
-        mockGySysData = new GYSysData();
-
-        mockGySysData.setRequestUrl("https://demo.guanyierp.com/erpapi/rest/erp_open");
-        mockGySysData.setAppKey("143158");
-        mockGySysData.setSessionkey("58b9c91e195e4a28be107e1485264890");
-        mockGySysData.setSecret("a4384907606e435bbf594c420760d29a");
-        mockGySysData.setShopCode("ruyi");
-        mockGySysData.setWarehouseCode("tk01");
-
-
+    @Test
+    public void testPushOrder(){
 
         mockOrderItems = new ArrayList<>();
         OrderItem mockOrderItem = new OrderItem();
@@ -78,6 +56,7 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockOrderItem.setStandard("test1");
         mockOrderItem.setGoodBn("1014hot");
         mockOrderItem.setItemId(123456);
+
 
 //        OrderItem mockOrderItem2 = new OrderItem();
 //        mockOrderItem2.setNum(5);
@@ -91,7 +70,7 @@ public class GYOrderHandlerTest extends GYTestBase {
 //        mockOrderItems.add(mockOrderItem2);
 
         mockOrder = new Order();
-        mockOrder.setOrderId("2016102546654222");
+        mockOrder.setOrderId("1111111");
         mockOrder.setUserLoginName("18705153967");
         mockOrder.setMemberId(1761390);
         mockOrder.setShipName("wuxiongliu");
@@ -105,23 +84,13 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockOrder.setBuyerName("testName");
         mockOrder.setLogiCode("QFKD");
         mockOrder.setPaymentName("支付宝");
+        mockOrder.setCostFreight(5);
+        mockOrder.setFinalAmount(20.0*10);
 
         mockOrder.setCreateTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
         mockOrder.setOrderItems(mockOrderItems);
 
-
-        mockErpInfo = new ERPInfo();
-        mockErpInfo.setSysDataJson(JSON.toJSONString(mockGySysData));
-
-
-        mockErpUserInfo = new ERPUserInfo();
-        mockErpUserInfo.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);
-        mockErpUserInfo.setCustomerId(23347);
-    }
-
-    @Test
-    public void testPushOrder(){
 
         mockPushNewOrderEvent = new PushNewOrderEvent();
         mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));

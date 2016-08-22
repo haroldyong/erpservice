@@ -127,6 +127,8 @@
                         return kjygConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.GY.getCode()%>:
                         return gyConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.DTW.getCode()%>:
+                        return dtwConfigHandler;
                 }
                 return null;
             }
@@ -293,6 +295,9 @@
                                 </div>
                                 <div id="detailConfig_<%=ERPTypeEnum.ProviderType.GY.getCode()%>">
                                     <%@include file="/detailConfig/gy_config.jsp" %>
+                                </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.DTW.getCode()%>">
+                                    <%@include file="/detailConfig/dtw_config.jsp" %>
                                 </div>
                             </div>
                         </div>

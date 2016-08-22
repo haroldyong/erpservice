@@ -33,6 +33,7 @@
         <module>erpprovider-gy</module>
         <module>erpprovider-kaola</module>
         <module>erpprovider-kjyg</module>
+        <module>erpprovider-dtw</module>
     </modules>
 
     <properties>

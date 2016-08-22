@@ -19,6 +19,12 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
  */
 public interface GYStockHandler {
 
+    /**
+     *  库存查询
+     * @param gyStockSearch 库存查询实体
+     * @param gySysData 管易系统参数
+     * @return
+     */
     EventResult stockQuery(GYStockSearch gyStockSearch, GYSysData gySysData);
 
     EventResult stockQueryNew(GYStockSearchNew stockSearchNew, GYSysData gySysData);

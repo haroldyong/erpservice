@@ -34,6 +34,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -65,19 +66,25 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                 public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
                     String method = request.getParameter("mType");
                     try {
-                        String requestSign = request.getParameter("sign");
+                        String requestSign = request.getParameter("Sign");
                         if (StringUtils.isEmpty(requestSign)) {
                             return NSExceptionHandler.handleException(method, EventResultEnum.NO_SIGN, "签名参数未传");
                         }
                         //签名验证
                         Map<String, String[]> paramMap = request.getParameterMap();
-                        Map<String, Object> signMap = new TreeMap<>();
-                        paramMap.forEach((key, value) -> {
-                            if (!"sign".equals(key.toLowerCase())) {
-                                if (value != null && value.length > 0)
-                                    signMap.put(key, value[0]);
+                        Map<String, Object> signMap = new TreeMap<>(new Comparator() {
+                            @Override
+                            public int compare(Object o1, Object o2) {
+                                String str1 = (String) o1;
+                                String str2 = (String) o2;
+                                return str1.toUpperCase().compareTo(str2.toUpperCase());
                             }
                         });
+                        signMap.put("uCode",paramMap.get("uCode")[0]);
+                        signMap.put("mType",paramMap.get("mType")[0]);
+                        signMap.put("TimeStamp",paramMap.get("TimeStamp")[0]);
+
+
                         //通过uCode得到指定erp配置信息
                         List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserType(providerType, erpUserType);
                         ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
@@ -89,7 +96,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                         } catch (UnsupportedEncodingException e) {
                             return NSExceptionHandler.handleException(method, EventResultEnum.ERROR, e.getMessage());
                         }
-                        if (sign.equals(requestSign)) {
+                        if (sign.toUpperCase().equals(requestSign)) {
                             //开始处理
                             //得到erpUserInfo
                             ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
@@ -99,10 +106,12 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                                     int pageSize = Integer.parseInt(request.getParameter("PageSize"));
                                     Integer pageIndex = null;
                                     String pageIndexStr = request.getParameter("Page");
+                                    String startUpdateTime = request.getParameter("Start_Modified");
+                                    String endUpdateTime = request.getParameter("End_Modified");
                                     if (!StringUtils.isEmpty(pageIndexStr)) {
                                         pageIndex = Integer.valueOf(pageIndexStr);
                                     }
-                                    return nsOrderHandler.obtainOrderInfoList(orderStatus, pageSize, pageIndex, erpUserInfo, method);
+                                    return nsOrderHandler.obtainOrderInfoList(orderStatus, pageSize, pageIndex, erpUserInfo, method,startUpdateTime,endUpdateTime);
                                 case Constant.OBTAIN_ORDER_DETAIL:
                                     String orderId = request.getParameter("OrderNO");
                                     if (StringUtils.isEmpty(orderId)) {

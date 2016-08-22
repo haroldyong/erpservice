@@ -13,6 +13,7 @@ import com.huobanplus.erpservice.common.util.StringUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -21,6 +22,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -88,7 +90,7 @@ public class HttpClientUtil {
         String msg = null;
         CloseableHttpResponse response = null;
         try {
-            StringEntity stringEntity = new StringEntity(requestData,"utf-8");
+            StringEntity stringEntity = new StringEntity(requestData, "utf-8");
             HttpPost httpPost = new HttpPost(url);
             httpPost.setEntity(stringEntity);
             response = httpClient.execute(httpPost);
@@ -110,6 +112,42 @@ public class HttpClientUtil {
         }
         return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, msg);
     }
+
+    public HttpResult webServicePost(String url, String requestData) {
+        initHttpClient();
+        RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(10000)
+                .setConnectTimeout(10000).build();//设置请求和传输超时时间
+
+        String msg = null;
+        CloseableHttpResponse response = null;
+        try {
+            HttpPost httppost = new HttpPost(url);
+            httppost.setConfig(requestConfig);
+            HttpEntity re = new StringEntity(requestData, HTTP.UTF_8);
+            httppost.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+            httppost.setEntity(re);
+            response = httpClient.execute(httppost);
+            HttpResult httpResult = new HttpResult(response.getStatusLine().getStatusCode(),
+                    EntityUtils.toString(response.getEntity()));
+            EntityUtils.consume(response.getEntity());
+            return httpResult;
+        } catch (Exception e) {
+            msg = e.getMessage();
+        } finally {
+            try {
+                if (response != null) {
+                    response.close();
+                }
+                if (httpClient != null) {
+                    httpClient.close();
+                }
+            } catch (IOException e) {
+            }
+        }
+
+        return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, msg);
+    }
+
 
     public HttpResult get(String url, Map requestMap) {
         initHttpClient();
