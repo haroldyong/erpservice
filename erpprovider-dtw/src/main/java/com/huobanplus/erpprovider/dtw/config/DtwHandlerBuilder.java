@@ -19,7 +19,6 @@ import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPSysDataInfoService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
@@ -53,17 +52,6 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
         return new ERPHandler() {
-            @Override
-            public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
-                if (baseEventClass == PushNewOrderEvent.class) {
-                    return true;
-                }
-                if (baseEventClass == DeliveryInfoEvent.class) {
-                    return true;
-                }
-                return false;
-            }
-
             @Override
             public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                 if (erpBaseEvent instanceof PushNewOrderEvent) {
