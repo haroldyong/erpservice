@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class GYScheduledServiceTest extends GYTestBase {
 
     @Autowired
-    private GYSyncDelivery gySyncDelivery;
+    private GYScheduledService gySyncDelivery;
 
     @Test
     public void testSyncOrderShip() {
