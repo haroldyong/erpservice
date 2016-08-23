@@ -20,7 +20,6 @@ import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -119,7 +118,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     }
 
 
-    @Rollback(value = false)
+    //    @Rollback(value = false)
     @Test
     public void testPushOrder() {
 
@@ -127,10 +126,13 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
         mockPushNewOrderEvent.setErpInfo(mockErpInfo);
         mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
-        EventResult result = dtwOrderHandler.pushOrder(mockPushNewOrderEvent);
-        System.out.println(result.getData());
-        System.out.println(result.getResultMsg());
-        System.out.println(result.getResultCode());
+        for (int i = 0; i < 10; i++) {
+
+            EventResult result = dtwOrderHandler.pushOrder(mockPushNewOrderEvent);
+            System.out.println(result.getData());
+            System.out.println(result.getResultMsg());
+            System.out.println(result.getResultCode());
+        }
     }
 
     @Test
@@ -150,14 +152,6 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 
     @Test
     public void testPushAliPayOrder() {
-        AliCustomer aliCustomer = new AliCustomer();
-        aliCustomer.setOutRequestNo("2016102510252");
-        aliCustomer.setAmount("100");
-        aliCustomer.setCustomsPlace("hangzhou");
-        aliCustomer.setIsSplit("no");
-        aliCustomer.setMerchantCustomsCode("hangzhou");
-        aliCustomer.setMerchantCustomsName("hangzhou");
-        aliCustomer.setTradeNo("tradNo");
         EventResult eventResult = dtwOrderHandler.pushAliPayOrder(mockOrder, mockDtwSysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getData());
@@ -166,16 +160,6 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 
     @Test
     public void testPushWeixinPayOrder() {
-        WeixinCustomer weixinCustomer = new WeixinCustomer();
-        weixinCustomer.setMchId(mockDtwSysData.getWeixinMchId());
-        weixinCustomer.setOrderFee(1000);
-        weixinCustomer.setMchCustomsNo("huoban");
-        weixinCustomer.setFeeType("CNY");
-        weixinCustomer.setAppid(mockDtwSysData.getWeiXinAppId());
-        weixinCustomer.setCustoms("HANGZHOU");
-        weixinCustomer.setOutTradeNo("201623021562");
-        weixinCustomer.setTransactionId("1111111111111111111111111111");
-        weixinCustomer.setTransactionId("uuid");
         EventResult eventResult = dtwOrderHandler.pushWeixinPayOrder(mockOrder, mockDtwSysData);
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultMsg());
@@ -184,9 +168,12 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 
     @Test
     public void testPushCustomOrder() {
-        EventResult eventResult = dtwOrderHandler.pushCustomOrder(mockOrder, mockDtwSysData);
-        System.out.println(eventResult.getResultCode());
-        System.out.println(eventResult.getResultMsg());
+        for (int i = 0; i < 10; i++) {
+
+            EventResult eventResult = dtwOrderHandler.pushCustomOrder(mockOrder, mockDtwSysData);
+            System.out.println(eventResult.getResultCode());
+            System.out.println(eventResult.getResultMsg());
+        }
 
     }
 
