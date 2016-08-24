@@ -168,7 +168,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 
     @Test
     public void testPushCustomOrder() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
 
             EventResult eventResult = dtwOrderHandler.pushCustomOrder(mockOrder, mockDtwSysData);
             System.out.println(eventResult.getResultCode());

@@ -340,11 +340,11 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwGoodsDelcareItem.setGoodsItemNo(item.getProductBn());// 必填
             dtwGoodsDelcareItem.setGoodsName(item.getName());// 必填
             dtwGoodsDelcareItem.setGoodsModel(item.getStandard());// 必填
-            dtwGoodsDelcareItem.setOriginCountry("");// 必填
+            dtwGoodsDelcareItem.setOriginCountry(DtwEnum.CountryEnum.SKOREA.getCode());// 必填
             dtwGoodsDelcareItem.setTradeCurr(DtwEnum.CurrencyEnum.RMB.getCode());
-            dtwGoodsDelcareItem.setTradeTotal(item.getAmount() * item.getNum());// 必填
-            dtwGoodsDelcareItem.setDeclPrice(item.getAmount());// 必填
-            dtwGoodsDelcareItem.setDeclTotalPrice(item.getAmount() * item.getNum());// 必填
+            dtwGoodsDelcareItem.setTradeTotal(item.getPrice() * item.getNum());// 必填
+            dtwGoodsDelcareItem.setDeclPrice(item.getPrice());// 必填
+            dtwGoodsDelcareItem.setDeclTotalPrice(item.getPrice() * item.getNum());// 必填
 //            dtwGoodsDelcareItem.setUseTo("");
             dtwGoodsDelcareItem.setDeclareCount(item.getNum());// 必填
             dtwGoodsDelcareItem.setGoodsUnit(DtwEnum.UnitEnum.JIAN.getCode());// 必填

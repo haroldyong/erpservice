@@ -60,7 +60,7 @@ public class DtwTestBase {
         mockOrderNo = create();
 
         mockDtwSysData = new DtwSysData();
-        mockDtwSysData.setPassKey("tesaa");
+        mockDtwSysData.setPassKey("e9af47d2-962b-470b-8306-08a8471d0ce0");
         mockDtwSysData.setECommerceName("kdian.co.ltd");
         mockDtwSysData.setECommerceCode("9133010832821677XM");
 
