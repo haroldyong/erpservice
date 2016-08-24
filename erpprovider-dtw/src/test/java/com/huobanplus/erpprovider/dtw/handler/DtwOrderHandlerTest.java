@@ -20,6 +20,7 @@ import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     }
 
 
-    //    @Rollback(value = false)
+    @Rollback(value = false)
     @Test
     public void testPushOrder() {
 
@@ -126,7 +127,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
         mockPushNewOrderEvent.setErpInfo(mockErpInfo);
         mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
 
             EventResult result = dtwOrderHandler.pushOrder(mockPushNewOrderEvent);
             System.out.println(result.getData());
@@ -175,6 +176,15 @@ public class DtwOrderHandlerTest extends DtwTestBase {
             System.out.println(eventResult.getResultMsg());
         }
 
+    }
+
+    @Test
+    public void testJson() {
+        String json = "{\n" +
+                "    \"ErrorMsg\": \"StatementCallback; bad SQL grammar [SELECT * FROM ERP_DetailConfig WHERE ISDEFAULT=1 AND ERPTYPE=8 AND ERPUSERTYPE=0 AND CUSTOMERID IN ()]; nested exception is java.sql.SQLException: ')' 附近有语法错误\",\n" +
+                "    \"ErrorCode\": 997\n" +
+                "}";
+        JSON.parseObject(json);
     }
 
 }

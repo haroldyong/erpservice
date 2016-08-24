@@ -178,4 +178,37 @@ public interface DtwEnum {
         NANSHAGJ
     }
 
+    enum ErrorCode {
+        SUCCESS("000", "成功"),
+        CHECK_ERROR("983", "数据验证错误"),
+        ERROR_REPUSH("997", "系统发生错误需要重传"),
+        ERROR_NO_REPUSH("999", "系统发生错误不需要重传");
+
+
+        private String code;
+        private String name;
+
+        ErrorCode(String code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+    }
+
 }

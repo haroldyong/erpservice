@@ -31,9 +31,7 @@ import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -59,8 +57,8 @@ public class DtwScheduledService {
     @Autowired
     private DtwOrderHandler dtwOrderHandler;
 
-    @Scheduled(cron = "0 */1 * * * ? ")
-    @Transactional
+    //    @Scheduled(cron = "0 */1 * * * ? ")
+//    @Transactional
     public synchronized void syncStock() {
         Date now = new Date();
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);

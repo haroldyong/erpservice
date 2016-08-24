@@ -11,6 +11,8 @@ package com.huobanplus.erpprovider.dtw.config;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.dtw.common.DtwConstant;
+import com.huobanplus.erpprovider.dtw.common.DtwEnum;
+import com.huobanplus.erpprovider.dtw.common.DtwEventResult;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpprovider.dtw.handler.DtwOrderHandler;
 import com.huobanplus.erpprovider.dtw.util.AESUtil;
@@ -139,16 +141,20 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
                                 "</response>");
                     }
 
-                } else {
+                } else {// 大田运单回执
 
                     try {
+                        DtwEventResult dtwEventResult = new DtwEventResult();
+
                         List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserType(providerType, erpUserType);
                         ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
                         DtwSysData dtwSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), DtwSysData.class);
                         String passKey = dtwSysData.getPassKey();
                         String requestKey = request.getParameter("PassKey");
                         if (!passKey.equals(requestKey)) {
-                            return EventResult.resultWith(EventResultEnum.ERROR, "PassKey 不一致", null);
+                            dtwEventResult.setErrorCode(DtwEnum.ErrorCode.CHECK_ERROR.getCode());
+                            dtwEventResult.setErrMsg("PassKey 不一致");
+                            return EventResult.resultWith(EventResultEnum.ERROR, JSON.toJSONString(dtwEventResult));
                         }
                         ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
 
@@ -156,10 +162,23 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
                         String wayBill = request.getParameter("wayBill");
                         String weight = request.getParameter("Weight");
                         String state = request.getParameter("State");
-                        return dtwOrderHandler.deliverOrder(msgId, wayBill, weight, state, erpUserInfo);
+                        EventResult eventResult = dtwOrderHandler.deliverOrder(msgId, wayBill, weight, state, erpUserInfo);
+                        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+
+                            dtwEventResult.setErrorCode(DtwEnum.ErrorCode.ERROR_REPUSH.getCode());
+                            dtwEventResult.setErrMsg("");
+                            return EventResult.resultWith(EventResultEnum.SUCCESS, JSON.toJSONString(dtwEventResult));
+                        } else {
+                            dtwEventResult.setErrorCode("997");
+                            dtwEventResult.setErrMsg(eventResult.getResultMsg());
+                            return EventResult.resultWith(EventResultEnum.ERROR, JSON.toJSONString(dtwEventResult));
+                        }
 
                     } catch (Exception ex) {
-                        return EventResult.resultWith(EventResultEnum.ERROR, ex.getMessage(), null);
+                        DtwEventResult dtwEventResult = new DtwEventResult();
+                        dtwEventResult.setErrorCode(DtwEnum.ErrorCode.ERROR_REPUSH.getCode());
+                        dtwEventResult.setErrMsg(ex.getMessage());
+                        return EventResult.resultWith(EventResultEnum.ERROR, JSON.toJSONString(dtwEventResult));
                     }
                 }
             }

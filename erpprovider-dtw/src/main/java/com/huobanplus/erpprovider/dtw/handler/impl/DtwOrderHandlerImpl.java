@@ -29,13 +29,13 @@ import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
-import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -383,13 +383,13 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             if (erpUserHandler == null) {
                 return EventResult.resultWith(EventResultEnum.NO_DATA, "未找到数据源信息", null);
             }
-            DeliveryInfoEvent deliveryInfoEvent = new DeliveryInfoEvent();
+            PushDeliveryInfoEvent deliveryInfoEvent = new PushDeliveryInfoEvent();
             deliveryInfoEvent.setErpUserInfo(erpUserInfo);
-            DeliveryInfo deliveryInfo = new DeliveryInfo();
-            deliveryInfo.setOrderId(Msgid);
-//            deliveryInfo.setLogiName(logiName);
-            deliveryInfo.setLogiNo(wayBill);
-            deliveryInfoEvent.setDeliveryInfo(deliveryInfo);
+            OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
+            orderDeliveryInfo.setOrderId(Msgid);
+            orderDeliveryInfo.setLogiName("百世物流");
+            orderDeliveryInfo.setLogiNo(wayBill);
+            deliveryInfoEvent.setDeliveryInfo(orderDeliveryInfo);
             EventResult eventResult = erpUserHandler.handleEvent(deliveryInfoEvent);
             return eventResult;
         } catch (Exception e) {
