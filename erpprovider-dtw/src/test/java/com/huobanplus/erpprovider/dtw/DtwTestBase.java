@@ -54,6 +54,8 @@ public class DtwTestBase {
 
     private String mockOrderNo;
 
+    private double taxRate = 0.3;
+
     @Before
     public void setUp() {
 
@@ -76,6 +78,8 @@ public class DtwTestBase {
 
         mockDtwSysData.setSenderName("吴雄琉");
         mockDtwSysData.setSenderAddr("浙江省杭州市滨江区");
+
+        mockDtwSysData.setTaxRate(11);
 
         mockOrderItems = new ArrayList<>();
 
@@ -119,9 +123,9 @@ public class DtwTestBase {
         mockOrder.setShipMobile("18705153967");
         mockOrder.setCostItem(10);
 //        mockOrder.setOnlinePayAmount();
-        mockOrder.setCostFreight(0.0);
+        mockOrder.setCostFreight(3.0);
         mockOrder.setCurrency("CYN");
-        mockOrder.setFinalAmount(5);
+        mockOrder.setFinalAmount(5 + 3);// 商品费用+运费
 
         mockOrder.setPaymentName("微信");
         mockOrder.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());//微信支付V3

@@ -52,5 +52,6 @@ public class ERPDetailConfigEntity {
     private String p9;
     private String p10;
     private String p11;
+    private String p12;
 }
 

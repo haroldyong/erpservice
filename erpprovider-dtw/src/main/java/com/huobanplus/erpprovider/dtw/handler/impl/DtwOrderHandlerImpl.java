@@ -206,8 +206,31 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
     public EventResult pushPlatformOrder(Order order, DtwSysData dtwSysData) {
 
+        double taxPrice = 0.0;
+
+
         Map<String, Object> requestMap = new HashMap<>();
         DtwOrder dtwOrder = new DtwOrder();
+
+        List<DtwOrderItem> dtwOrderItemList = new ArrayList<>();
+        List<OrderItem> orderItemList = order.getOrderItems();
+        for (int i = 0; i < orderItemList.size(); i++) {
+            OrderItem orderItem = orderItemList.get(i);
+            taxPrice += orderItem.getPrice() * dtwSysData.getTaxRate() * orderItem.getNum();
+            DtwOrderItem dtwOrderItem = new DtwOrderItem();
+            dtwOrderItem.setMsgitem(i);//(必填)
+            dtwOrderItem.setPartno(orderItem.getProductBn());//(必填)
+            dtwOrderItem.setPartName(orderItem.getName());//(必填)
+            dtwOrderItem.setSpec(orderItem.getStandard());//(必填)
+            dtwOrderItem.setUnit(DtwEnum.UnitEnum.JIAN.getCode());
+            dtwOrderItem.setCurrency(DtwEnum.CurrencyEnum.RMB.getCode());
+            dtwOrderItem.setAmount(orderItem.getPrice() * orderItem.getNum());//(必填)
+            dtwOrderItemList.add(dtwOrderItem);
+        }
+
+        dtwOrder.setDtwOrderItems(dtwOrderItemList);//(必填)
+
+
         dtwOrder.setPassKey(dtwSysData.getPassKey());//(必填)
 //            dtwOrder.setPreEntryNumber("");
         dtwOrder.setECommerceCode(dtwSysData.getECommerceCode());//(必填)
@@ -230,9 +253,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
         dtwOrder.setOrderGoodsAmount(order.getFinalAmount() - order.getCostFreight());//(必填)
         dtwOrder.setOrderNo(order.getOrderId());//(必填)
-        dtwOrder.setOrderTaxAmount(0);// FIXME: 2016/6/17//(必填)
+        dtwOrder.setOrderTaxAmount(taxPrice);
         dtwOrder.setTotalCount(order.getItemNum());//(必填)
-        dtwOrder.setTotalAmount(order.getFinalAmount());//(必填)
+        dtwOrder.setTotalAmount(order.getFinalAmount() - order.getCostFreight());//(必填)
         dtwOrder.setLogisCompanyName("百世物流科技");//(必填)
         dtwOrder.setLogisCompanyCode("WL15041401");//(必填)
         dtwOrder.setPurchaserId(String.valueOf(order.getMemberId()));//(必填)
@@ -254,27 +277,12 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setConsigneeTel(order.getShipTel());//收货人手机(手机与电话二选一)
         dtwOrder.setConsigneeCountry(DtwEnum.CountryEnum.CHINA.getCode());
         dtwOrder.setConsigneeZip(order.getShipZip());//(必填)
-        dtwOrder.setWeight(order.getWeight());// FIXME: 2016/6/16//(必填) 毛重
+        dtwOrder.setWeight(order.getWeight());
         dtwOrder.setLotNo("");
-        dtwOrder.setNetWeight(order.getWeight());// FIXME: 2016/6/16//(必填) 净重
+        dtwOrder.setNetWeight(order.getWeight());
         dtwOrder.setIeFlag(73);//(必填) 73:进口 79:出口
 
-        List<DtwOrderItem> dtwOrderItemList = new ArrayList<>();
-        List<OrderItem> orderItemList = order.getOrderItems();
-        for (int i = 0; i < orderItemList.size(); i++) {
-            OrderItem orderItem = orderItemList.get(i);
-            DtwOrderItem dtwOrderItem = new DtwOrderItem();
-            dtwOrderItem.setMsgitem(i);//(必填)
-            dtwOrderItem.setPartno(orderItem.getProductBn());//(必填)
-            dtwOrderItem.setPartName(orderItem.getName());//(必填)
-            dtwOrderItem.setSpec(orderItem.getStandard());//(必填)
-            dtwOrderItem.setUnit(DtwEnum.UnitEnum.JIAN.getCode());
-            dtwOrderItem.setCurrency(DtwEnum.CurrencyEnum.RMB.getCode());
-            dtwOrderItem.setAmount(orderItem.getAmount());//(必填)
-            dtwOrderItemList.add(dtwOrderItem);
-        }
 
-        dtwOrder.setDtwOrderItems(dtwOrderItemList);//(必填)
         requestMap.put("data", JSON.toJSONString(dtwOrder));
 
         HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl() + "/QBIntegratedOrder", requestMap);
@@ -342,7 +350,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwGoodsDelcareItem.setGoodsModel(item.getStandard());// 必填
             dtwGoodsDelcareItem.setOriginCountry(DtwEnum.CountryEnum.SKOREA.getCode());// 必填
             dtwGoodsDelcareItem.setTradeCurr(DtwEnum.CurrencyEnum.RMB.getCode());
-            dtwGoodsDelcareItem.setTradeTotal(item.getPrice() * item.getNum());// 必填
+            dtwGoodsDelcareItem.setTradeTotal(order.getFinalAmount());// 必填
             dtwGoodsDelcareItem.setDeclPrice(item.getPrice());// 必填
             dtwGoodsDelcareItem.setDeclTotalPrice(item.getPrice() * item.getNum());// 必填
 //            dtwGoodsDelcareItem.setUseTo("");
@@ -519,9 +527,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             weixinCustomer.setFeeType("CNY");
 
             //order_fee=transport_fee+product_fee  应付金额=物流费+商品价格
-            weixinCustomer.setOrderFee((int) (order.getFinalAmount() * 100 + order.getCostFreight() * 100));
+            weixinCustomer.setOrderFee((int) (order.getFinalAmount() * 100));
             weixinCustomer.setTransportFee((int) (order.getCostFreight() * 100));
-            weixinCustomer.setProductFee((int) (order.getFinalAmount() * 100));
+            weixinCustomer.setProductFee((int) (order.getFinalAmount() * 100 - order.getCostFreight() * 100));
             weixinCustomer.setDuty(0);
 
 
@@ -642,6 +650,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     }
 
     private CustomOrder convertToCustomOrder(Order order, DtwSysData dtwSysData) {
+
+        double taxPrice = 0.0;
+
         CustomOrder customOrder = new CustomOrder();
         CustomHead customHead = new CustomHead();
         customHead.setBusinessType("IMPORTORDER");
@@ -672,15 +683,15 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrderHead.setPayNumber(order.getPayNumber());
         customOrderHead.setOrderTotalAmount(order.getFinalAmount());
         customOrderHead.setOrderNo(order.getOrderId());
-        customOrderHead.setOrderTaxAmount(0.0);// FIXME: 2016-08-18
-        customOrderHead.setOrderGoodsAmount(order.getFinalAmount());
+//        customOrderHead.setOrderTaxAmount(taxPrice);
+        customOrderHead.setOrderGoodsAmount(order.getFinalAmount() - order.getCostFreight());
         customOrderHead.setFeeAmount(order.getCostFreight());
-        customOrderHead.setInsureAmount(0.0);// FIXME: 2016-08-22
+        customOrderHead.setInsureAmount(0.0);
         customOrderHead.setCompanyCode(dtwSysData.getCompanyCode());
         customOrderHead.setCompanyName(dtwSysData.getCompanyName());
         customOrderHead.setTradeTime(order.getPayTime());
         customOrderHead.setCurrCode(DtwEnum.CurrencyEnum.RMB.getCode());
-        customOrderHead.setTotalAmount(order.getFinalAmount());
+        customOrderHead.setTotalAmount(order.getFinalAmount() - order.getCostFreight());
         customOrderHead.setConsigneeEmail(order.getShipEmail());
         customOrderHead.setConsigneeTel(order.getShipMobile());
         customOrderHead.setConsignee(order.getShipName());
@@ -701,7 +712,10 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         List<CustomOrderDetail> customOrderDetails = new ArrayList<>();
         List<OrderItem> orderItems = order.getOrderItems();
         for (int i = 0; i < orderItems.size(); i++) {
+
             OrderItem orderItem = orderItems.get(i);
+            taxPrice += orderItem.getPrice() * dtwSysData.getTaxRate() * orderItem.getNum();
+
             CustomOrderDetail customOrderDetail = new CustomOrderDetail();
             customOrderDetail.setGoodsOrder(i);
             customOrderDetail.setGoodsName(orderItem.getName());
@@ -715,6 +729,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             customOrderDetails.add(customOrderDetail);
         }
 
+
         CustomGoodsPurchaser customGoodsPurchaser = new CustomGoodsPurchaser();
         customGoodsPurchaser.setId(String.valueOf(order.getMemberId()));
         customGoodsPurchaser.setName(order.getBuyerName());
@@ -725,6 +740,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 //        customGoodsPurchaser.setAddress("");//地址 非必填
 
 
+        customOrderHead.setOrderTaxAmount(taxPrice);
         customOrderInfo.setCustomSign(customSign);
         customOrderInfo.setCustomOrderHead(customOrderHead);
         customOrderInfo.setCustomOrderDetailList(customOrderDetails);

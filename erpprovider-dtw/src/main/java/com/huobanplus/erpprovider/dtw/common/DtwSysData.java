@@ -77,5 +77,10 @@ public class DtwSysData {
      */
     private String senderAddr;
 
+    /**
+     * 商品税率
+     */
+    private double taxRate;
+
 
 }
