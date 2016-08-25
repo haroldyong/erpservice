@@ -121,6 +121,11 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
                                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
                             } else {
                                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+                                // 是否重推其他所有的单子有待解决
+//                                orderDetailSyncLog.setCustomOrderSyncStatus(false);
+//                                orderDetailSyncLog.setOrderSyncStatus(false);
+//                                orderDetailSyncLog.setPayOrderSyncStatus(false);
+//                                orderDetailSyncLog.setPersonalSyncStatus(false);
                             }
 
                             orderDetailSyncLogService.save(orderDetailSyncLog);

@@ -196,7 +196,7 @@
                                         <a href="javascript:showErrorMsg(${log.id})">查看错误信息</a>
                                     </c:if>
                                     <c:if test="${log.detailSyncStatus.code==2}">
-                                        <span style="display:none;" id="errorMsg${log.id}">等待海关回执</span>
+                                        <span id="errorMsg${log.id}">等待海关回执</span>
                                     </c:if>
 
                                 </td>

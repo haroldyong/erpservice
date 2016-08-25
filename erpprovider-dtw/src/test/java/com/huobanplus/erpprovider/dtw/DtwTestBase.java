@@ -12,6 +12,7 @@ package com.huobanplus.erpprovider.dtw;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpprovider.dtw.config.DtwTestConfig;
+import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
@@ -54,15 +55,13 @@ public class DtwTestBase {
 
     private String mockOrderNo;
 
-    private double taxRate = 0.3;
-
     @Before
     public void setUp() {
 
-        mockOrderNo = create();
+        mockOrderNo = "20160825113538530780";
 
         mockDtwSysData = new DtwSysData();
-        mockDtwSysData.setPassKey("e9af47d2-962b-470b-8306-08a8471d0ce0");
+        mockDtwSysData.setPassKey("1c78cac2-b8b7-4764-9045-4810d3ef20e9");
         mockDtwSysData.setECommerceName("kdian.co.ltd");
         mockDtwSysData.setECommerceCode("9133010832821677XM");
 
@@ -81,23 +80,19 @@ public class DtwTestBase {
 
         mockDtwSysData.setTaxRate(11);
 
-        mockOrderItems = new ArrayList<>();
+        int[] number = {1, 2, 3, 4};
+        double[] price = {3, 4, 5, 3};
+        double costFreight = 5;
+        double finalAmount = 0.0;
+        for (int i = 0; i < number.length; i++) {
+            double goodPrice = Arith.mul(price[i], number[i]);
+            double taxPrice = Arith.mul(goodPrice, mockDtwSysData.getTaxRate() / 100);
+            double tempPrice = Arith.add(goodPrice, taxPrice);
+            finalAmount = Arith.add(finalAmount, tempPrice);
+        }
+        finalAmount = Arith.add(finalAmount, costFreight);
 
-        OrderItem mockOrderItem = new OrderItem();
-        mockOrderItem.setItemId(178770);
-        mockOrderItem.setOrderId(mockOrderNo);
-        mockOrderItem.setUnionOrderId("2016062455965373");
-        mockOrderItem.setProductBn("2969cC2hC4");
-        mockOrderItem.setName("跨境商品(蓝色,42码)(10)");
-        mockOrderItem.setCost(0.5);
-        mockOrderItem.setPrice(1);
-        mockOrderItem.setAmount(10);
-        mockOrderItem.setNum(5);
-        mockOrderItem.setStandard("蓝色,42码");
-        mockOrderItem.setCustomerId(296);
-
-        mockOrderItems.add(mockOrderItem);
-
+        mockOrderItems = createOrderItem(price, number);
 
         mockOrder = new Order();
         mockOrder.setOrderId(mockOrderNo);
@@ -109,7 +104,7 @@ public class DtwTestBase {
         mockOrder.setShipStatus(0);
         mockOrder.setWeight(100);
         mockOrder.setOrderName("跨境商品(蓝色,42码)(10)(×10)");
-        mockOrder.setItemNum(5);
+        mockOrder.setItemNum(12);
         mockOrder.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN));
         mockOrder.setShipName("吴雄琉");
         mockOrder.setShipArea("浙江省/杭州市/滨江区");
@@ -123,9 +118,9 @@ public class DtwTestBase {
         mockOrder.setShipMobile("18705153967");
         mockOrder.setCostItem(10);
 //        mockOrder.setOnlinePayAmount();
-        mockOrder.setCostFreight(3.0);
+        mockOrder.setCostFreight(costFreight);
         mockOrder.setCurrency("CYN");
-        mockOrder.setFinalAmount(5 + 3);// 商品费用+运费
+        mockOrder.setFinalAmount(finalAmount);// 商品费用+商品费用*税率+运费
 
         mockOrder.setPaymentName("微信");
         mockOrder.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());//微信支付V3
@@ -134,7 +129,7 @@ public class DtwTestBase {
         mockOrder.setBuyerPid("362322199411050053");
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
 
-        mockOrder.setPayNumber("fdsafasfsfasfs");
+        mockOrder.setPayNumber("1000039301521608242043325704");
 
         mockOrder.setOrderItems(mockOrderItems);
 
@@ -159,5 +154,26 @@ public class DtwTestBase {
             code += rand;
         }
         return date + code;
+    }
+
+    public List<OrderItem> createOrderItem(double[] prices, int[] number) {
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (int i = 0; i < prices.length; i++) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setItemId(178770);
+            orderItem.setOrderId(mockOrderNo);
+            orderItem.setUnionOrderId("2016062455965373");
+            orderItem.setProductBn("CSXJ0001");
+            orderItem.setName("婴儿配方奶粉0001");
+            orderItem.setCost(0.5);
+            orderItem.setPrice(prices[i]);
+            orderItem.setAmount(10);
+            orderItem.setNum(number[i]);
+            orderItem.setStandard("测试");
+            orderItem.setCustomerId(296);
+            orderItem.setGoodBn("1901101000");
+            orderItems.add(orderItem);
+        }
+        return orderItems;
     }
 }

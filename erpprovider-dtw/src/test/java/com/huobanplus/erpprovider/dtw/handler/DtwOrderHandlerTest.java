@@ -13,9 +13,12 @@ import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.dtw.DtwTestBase;
+import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpprovider.dtw.formatdtw.*;
 import com.huobanplus.erpprovider.dtw.search.DtwStockSearch;
+import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
+import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Test;
@@ -185,6 +188,19 @@ public class DtwOrderHandlerTest extends DtwTestBase {
                 "    \"ErrorCode\": 997\n" +
                 "}";
         JSON.parseObject(json);
+    }
+
+    private double caculateTaxPrice(List<OrderItem> orderItems, DtwSysData dtwSysData) {
+        double taxPrice = 0.0;
+        for (OrderItem orderItem : orderItems) {
+            taxPrice = Arith.add(taxPrice, Arith.mul(orderItem.getPrice() * orderItem.getNum(), dtwSysData.getTaxRate() / 100));
+        }
+        return taxPrice;
+    }
+
+    @Test
+    public void testCaculateTaxPrice() {
+        System.out.println("\n" + caculateTaxPrice(mockOrderItems, mockDtwSysData));
     }
 
 }
