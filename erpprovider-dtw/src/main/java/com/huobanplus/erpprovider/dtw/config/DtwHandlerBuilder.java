@@ -83,7 +83,7 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
 
             @Override
             public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
-                if (request.getAttribute("backType") != null) {//海关回执
+                if (request.getAttribute("backType").equals(1)) {//海关回执
                     try {
                         String content = request.getParameter("content");
                         String msgType = request.getParameter("msg_type");
