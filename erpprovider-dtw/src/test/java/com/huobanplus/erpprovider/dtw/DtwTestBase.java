@@ -80,15 +80,14 @@ public class DtwTestBase {
 
         mockDtwSysData.setTaxRate(11);
 
-        int[] number = {1, 2, 3, 4};
-        double[] price = {3, 4, 5, 3};
+        int[] number = {1, 2, 3, 4, 5};
+        double[] price = {3, 4, 5, 6, 7};
         double costFreight = 5;
         double finalAmount = 0.0;
         for (int i = 0; i < number.length; i++) {
             double goodPrice = Arith.mul(price[i], number[i]);
-            double taxPrice = Arith.mul(goodPrice, mockDtwSysData.getTaxRate() / 100);
-            double tempPrice = Arith.add(goodPrice, taxPrice);
-            finalAmount = Arith.add(finalAmount, tempPrice);
+//            double taxPrice = Arith.mul(goodPrice, mockDtwSysData.getTaxRate() / 100);
+            finalAmount = Arith.add(finalAmount, goodPrice);
         }
         finalAmount = Arith.add(finalAmount, costFreight);
 

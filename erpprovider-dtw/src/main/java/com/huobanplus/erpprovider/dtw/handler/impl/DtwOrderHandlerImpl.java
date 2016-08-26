@@ -102,8 +102,8 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 orderDetailSyncLog.setPayOrderSyncStatus(dtwThreeOrderStatus.isPayOrderSyncStatus());
                 orderDetailSyncLog.setCustomOrderSyncStatus(dtwThreeOrderStatus.isCustomOrderSyncStatus());
                 orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
-
                 orderDetailSyncLogService.save(orderDetailSyncLog);
+
 
             } else {
 
@@ -112,6 +112,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 dtwThreeOrderStatus.setOrderSyncStatus(orderDetailSyncLog.isOrderSyncStatus());
                 dtwThreeOrderStatus.setCustomOrderSyncStatus(orderDetailSyncLog.isCustomOrderSyncStatus());
                 eventResult = pushThreeOrder(order, dtwSysData, dtwThreeOrderStatus);
+
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                     orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.CUSTOM_BACK);
                 } else {
@@ -124,12 +125,13 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 orderDetailSyncLog.setCustomOrderSyncStatus(dtwThreeOrderStatus.isCustomOrderSyncStatus());
                 orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
                 orderDetailSyncLogService.save(orderDetailSyncLog);
+
             }
 
             return eventResult;
 
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.info("Exception：" + e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
@@ -152,6 +154,8 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 payOrderEvent = pushAliPayOrder(order, dtwSysData);
             } else if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType()) == OrderEnum.PaymentOptions.WEIXINPAY_V3) {
                 payOrderEvent = pushWeixinPayOrder(order, dtwSysData);
+            } else {
+                payOrderEvent = EventResult.resultWith(EventResultEnum.ERROR, "不支持该支付", null);
             }
 
             if (payOrderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -160,6 +164,18 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 dtwThreeOrderStatus.setPayOrderSyncStatus(false);
                 errorMsg.append("支付单:");
                 errorMsg.append(payOrderEvent.getResultMsg()).append("|");
+            }
+        }
+
+        // 综合订单推送
+        if (!dtwThreeOrderStatus.isOrderSyncStatus()) {
+            EventResult orderEvent = pushPlatformOrder(order, dtwSysData);
+            if (orderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                dtwThreeOrderStatus.setOrderSyncStatus(true);
+            } else {
+                dtwThreeOrderStatus.setOrderSyncStatus(false);
+                errorMsg.append("综合订单:");
+                errorMsg.append(orderEvent.getResultMsg()).append("|");
             }
         }
 
@@ -175,17 +191,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             }
         }
 
-        // 综合订单推送
-        if (!dtwThreeOrderStatus.isOrderSyncStatus()) {
-            EventResult orderEvent = pushPlatformOrder(order, dtwSysData);
-            if (orderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                dtwThreeOrderStatus.setOrderSyncStatus(true);
-            } else {
-                dtwThreeOrderStatus.setOrderSyncStatus(false);
-                errorMsg.append("综合订单:");
-                errorMsg.append(orderEvent.getResultMsg()).append("|");
-            }
-        }
 
         // 海关订单推送
         if (!dtwThreeOrderStatus.isCustomOrderSyncStatus()) {
@@ -208,8 +213,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
     public EventResult pushPlatformOrder(Order order, DtwSysData dtwSysData) {
 
-        double taxPrice = calculateTaxPrice(order.getOrderItems(), dtwSysData);
-        double orderGoodsAmount = Arith.sub(Arith.sub(order.getFinalAmount(), order.getCostFreight()), taxPrice);
+        double taxRate = Arith.div(dtwSysData.getTaxRate(), 100);
+        double taxPrice = calculateTaxPrice(order.getOrderItems(), taxRate);
+        double orderGoodsAmount = Arith.sub(order.getFinalAmount(), order.getCostFreight());
 
 
         Map<String, Object> requestMap = new HashMap<>();
@@ -226,7 +232,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwOrderItem.setSpec(orderItem.getStandard());//(必填)
             dtwOrderItem.setUnit(DtwEnum.UnitEnum.GUAN.getCode());
             dtwOrderItem.setCurrency(DtwEnum.CurrencyEnum.RMB.getCode());
+//            double goodsPirce = Arith.sub(orderItem.getPrice(),Arith.mul(orderItem.getPrice(),taxRate));
             dtwOrderItem.setAmount(orderItem.getPrice() * orderItem.getNum());//(必填)
+            System.out.println("表体金额Item：" + orderItem.getPrice() * orderItem.getNum());
             dtwOrderItem.setQty(orderItem.getNum());
             dtwOrderItemList.add(dtwOrderItem);
         }
@@ -249,8 +257,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         } else if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType())
                 == OrderEnum.PaymentOptions.WEIXINPAY_V3) {
-
             dtwOrder.setPayCompanyCode(DtwConstant.WEIXIN_PAY_CUSTOM_CODE);//(必填) 支付公司在海关的备案码
+        } else {
+            return EventResult.resultWith(EventResultEnum.ERROR, "支付方式不支持", null);
         }
         dtwOrder.setPayNumber(order.getPayNumber());//(必填) 支付单号
         dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
@@ -660,8 +669,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
     private CustomOrder convertToCustomOrder(Order order, DtwSysData dtwSysData) {
 
-        double taxPrice = calculateTaxPrice(order.getOrderItems(), dtwSysData);
-        double orderGoodsAmount = Arith.sub(Arith.sub(order.getFinalAmount(), order.getCostFreight()), taxPrice);
+        double taxRate = Arith.div(dtwSysData.getTaxRate(), 100);
+        double taxPrice = calculateTaxPrice(order.getOrderItems(), taxRate);
+        double orderGoodsAmount = caculateGoodsPrice(order.getOrderItems(), taxRate);
 
 
         CustomOrder customOrder = new CustomOrder();
@@ -731,13 +741,14 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             customOrderDetail.setGoodsModel(orderItem.getStandard());
             customOrderDetail.setCodeTs(orderItem.getGoodBn());
             customOrderDetail.setOriginCountry(DtwEnum.CountryEnum.CHINA.getCode());
-            customOrderDetail.setUnitPrice(orderItem.getPrice());
+            double goodsPrice = Arith.sub(orderItem.getPrice(), Arith.mul(orderItem.getPrice(), taxRate));
+            customOrderDetail.setUnitPrice(goodsPrice);
             customOrderDetail.setGoodsCount(orderItem.getNum());
             customOrderDetail.setGoodsUnit(DtwEnum.UnitEnum.JIAN.getCode());
 //            customOrderDetail.setGrossWeight(0.0);//商品毛重 非必填
             customOrderDetails.add(customOrderDetail);
-        }
 
+        }
 
         CustomGoodsPurchaser customGoodsPurchaser = new CustomGoodsPurchaser();
         customGoodsPurchaser.setId(String.valueOf(order.getMemberId()));
@@ -777,14 +788,23 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
      * 计算税款
      *
      * @param orderItems 订单明细
-     * @param dtwSysData 系统参数
+     * @param taxRate 税率
      * @return 税款
      */
-    private double calculateTaxPrice(List<OrderItem> orderItems, DtwSysData dtwSysData) {
+    private double calculateTaxPrice(List<OrderItem> orderItems, double taxRate) {
         double taxPrice = 0.0;
         for (OrderItem orderItem : orderItems) {
-            taxPrice = Arith.add(taxPrice, Arith.mul(orderItem.getPrice() * orderItem.getNum(), dtwSysData.getTaxRate() / 100));
+            taxPrice = Arith.add(taxPrice, Arith.mul(orderItem.getPrice() * orderItem.getNum(), taxRate));
         }
         return taxPrice;
+    }
+
+    private double caculateGoodsPrice(List<OrderItem> orderItems, double taxRate) {
+        double goodPrice = 0.0;
+        for (OrderItem orderItem : orderItems) {
+            double itemPrice = Arith.sub(orderItem.getPrice(), Arith.mul(orderItem.getPrice(), taxRate));
+            goodPrice = Arith.add(goodPrice, Arith.mul(itemPrice, orderItem.getNum()));
+        }
+        return goodPrice;
     }
 }

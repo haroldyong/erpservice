@@ -31,6 +31,7 @@
             var aliPartner = $.trim($("#aliPartner").val());
             var senderName = $.trim($("#senderName").val());
             var senderAddr = $.trim($("#senderAddr").val());
+            var taxRate = $.trim($("#taxRate").val());
 
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入大田接口地址");
@@ -81,6 +82,10 @@
                 $.jBox.tip("请输入发货人地址");
                 return null;
             }
+            if (taxRate.length == 0) {
+                $.jBox.tip("请输入税率");
+                return null;
+            }
 
 
             var dtwConfig = {
@@ -95,7 +100,8 @@
                 weixinKey: weixinKey,
                 aliPartner: aliPartner,
                 senderName: senderName,
-                senderAddr: senderAddr
+                senderAddr: senderAddr,
+                taxRate: taxRate
             };
             return JSON.stringify(dtwConfig);
         },
@@ -112,6 +118,7 @@
             $("#aliPartner").val(jsonData.aliPartner);
             $("#senderName").val(jsonData.senderName);
             $("#senderAddr").val(jsonData.senderAddr);
+            $("#taxRate").val(jsonData.taxRate);
 
         }
     };
@@ -189,6 +196,12 @@
         <th style="vertical-align: middle;">发货人地址：</th>
         <td>
             <input name="senderAddr" type="text" value="" id="senderAddr" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">税率：</th>
+        <td>
+            <input name="taxRate" type="text" value="" id="taxRate" class="input-normal"/>%
         </td>
     </tr>
     </tbody>
