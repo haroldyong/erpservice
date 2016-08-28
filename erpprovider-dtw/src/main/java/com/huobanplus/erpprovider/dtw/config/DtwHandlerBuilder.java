@@ -33,6 +33,8 @@ import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -48,6 +50,8 @@ import java.util.List;
  */
 @Component
 public class DtwHandlerBuilder implements ERPHandlerBuilder {
+
+    private static final Log log = LogFactory.getLog(DtwHandlerBuilder.class);
 
     @Autowired
     private DtwOrderHandler dtwOrderHandler;
@@ -91,7 +95,7 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
 
                         //解密
                         byte[] inputContent = Base64.getDecoder().decode(content.getBytes("utf-8"));
-                        byte[] aesKey = Base64.getDecoder().decode(DtwConstant.AES_KEY.getBytes("utf-8"));
+                        byte[] aesKey = Base64.getDecoder().decode(DtwConstant.CUSTOM_DEFAULT_AES_KEY.getBytes("utf-8"));
                         String orignalContent = new String(AESUtil.decrypt(inputContent, aesKey), "utf-8");
 
                         // 验签
@@ -116,31 +120,33 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
                             OrderDetailSyncLog orderDetailSyncLog = null;
                             orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderNo.getText());
 
-                            if (chkMark.equals("2")) {// 处理失败，订单没有问题
-                                orderDetailSyncLog.setCustomOrderSyncStatus(false);
+                            if (chkMark.equals("2")) {// 处理失败，订单有问题
                                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+//                                重推其他所有的单子有待解决
+                                orderDetailSyncLog.setCustomOrderSyncStatus(false);
+                                orderDetailSyncLog.setOrderSyncStatus(false);
+                                orderDetailSyncLog.setPayOrderSyncStatus(false);
+                                orderDetailSyncLog.setPersonalSyncStatus(false);
                             } else {
-                                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-                                // 是否重推其他所有的单子有待解决
-//                                orderDetailSyncLog.setCustomOrderSyncStatus(false);
-//                                orderDetailSyncLog.setOrderSyncStatus(false);
-//                                orderDetailSyncLog.setPayOrderSyncStatus(false);
-//                                orderDetailSyncLog.setPersonalSyncStatus(false);
+                                if (orderDetailSyncLog.isOrderSyncStatus() && orderDetailSyncLog.isPayOrderSyncStatus()
+                                        && orderDetailSyncLog.isPersonalSyncStatus() && orderDetailSyncLog.isCustomOrderSyncStatus()) {
+                                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+                                }
                             }
 
                             orderDetailSyncLogService.save(orderDetailSyncLog);
-
+                            log.info("Dtw Custom Back:" + orignalContent);
                             return EventResult.resultWith(EventResultEnum.SUCCESS,
-                                    "<?xml version='1.0' encoding='utf-8'?><response><success>true</success></response>");
+                                    "<response><success>true</success></response>");
                         } else {
                             return EventResult.resultWith(EventResultEnum.ERROR,
-                                    "<?xml version='1.0' encoding='utf-8'?><response><success>false</success>" +
+                                    "<response><success>false</success>" +
                                             "<errorCode>S02</errorCode>" +
                                             "<errorMsg>非法的数字签名</errorMsg>" +
                                             "</response>");
                         }
                     } catch (Exception e) {
-                        return EventResult.resultWith(EventResultEnum.ERROR, "<?xml version='1.0' encoding='utf-8'?><response><success>false</success>" +
+                        return EventResult.resultWith(EventResultEnum.ERROR, "<response><success>false</success>" +
                                 "<errorCode>S07</errorCode>" +
                                 "<errorMsg>" + e.getMessage() + "</errorMsg>" +
                                 "</response>");

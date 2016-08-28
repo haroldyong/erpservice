@@ -38,5 +38,9 @@ public class DtwConstant {
 
     public static final String CUSTOM_DEFAULT_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCffOeIVYut9jW5w1L5uKX4aDvd837a8JhaWm5S8YqNQfgEmfD9T+rDknXLqMT+DXeQAqGo4hBmcbej1aoMzn6hIJHk3/TfTAToNN8fgwDotHewsTCBbVkQWtDTby3GouWToVsRi1i/A0Vfb0+xM8MnF46DdhhrnZrycERBSbyrcwIDAQAB";
 
+    public static final String CUSTOM_DEFAULT_AES_KEY = "qZe60QZFxuirub2ey4+7+Q==";
+
     public static final String AES_KEY = "kI0/zRegCAZXytz0XV/G/w==";
+
+
 }

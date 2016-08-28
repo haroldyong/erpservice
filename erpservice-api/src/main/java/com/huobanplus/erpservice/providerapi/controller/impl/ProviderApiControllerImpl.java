@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Created by liual on 2015-10-21.
@@ -55,22 +58,27 @@ public class ProviderApiControllerImpl implements ProviderApiController {
 
     @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/{backType}", method = RequestMethod.POST)
     @ResponseBody
-    public String index(
+    public void index(
             @PathVariable("erpProviderType") int providerType,
             @PathVariable("erpUserType") int erpUserType,
             @PathVariable("backType") int backType,
-            HttpServletRequest request) {
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
         ERPTypeEnum.ProviderType providerTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, providerType);
         ERPTypeEnum.UserType userTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
         ERPInfo erpInfo = new ERPInfo();
         erpInfo.setErpType(providerTypeEnum);
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
-        if (erpHandler == null) {
-            return "未找到相关erp处理器";
-        }
 
+        response.setCharacterEncoding("utf-8");
+        PrintWriter writer = response.getWriter();
+
+        if (erpHandler == null) {
+            writer.write("未找到相关erp处理器");
+        }
         request.setAttribute("backType", backType);
         EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
-        return eventResult.getData().toString();
+        String resultData = (String) eventResult.getData();
+        writer.write(resultData);
+//        return new String(resultData.getBytes("utf-8"),"utf-8");
     }
 }

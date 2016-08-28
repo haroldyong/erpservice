@@ -18,7 +18,7 @@ import lombok.Data;
  */
 @Data
 @JacksonXmlRootElement(localName = "xml")
-public class WeixinCustomer {
+public class WeixinCustom {
 
     /**
      * 签名

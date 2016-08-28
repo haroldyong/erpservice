@@ -70,6 +70,8 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
         try {
             Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+            order.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());
+            order.setPayNumber("123456789");
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
             DtwSysData dtwSysData = JSON.parseObject(erpInfo.getSysDataJson(), DtwSysData.class);
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
@@ -215,7 +217,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         double taxRate = Arith.div(dtwSysData.getTaxRate(), 100);
         double taxPrice = calculateTaxPrice(order.getOrderItems(), taxRate);
-        double orderGoodsAmount = Arith.sub(order.getFinalAmount(), order.getCostFreight());
+        double orderGoodsAmount = caculateGoodsPrice(order.getOrderItems(), taxRate);
 
 
         Map<String, Object> requestMap = new HashMap<>();
@@ -230,11 +232,10 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwOrderItem.setPartno(orderItem.getProductBn());//(必填)
             dtwOrderItem.setPartName(orderItem.getName());//(必填)
             dtwOrderItem.setSpec(orderItem.getStandard());//(必填)
-            dtwOrderItem.setUnit(DtwEnum.UnitEnum.GUAN.getCode());
+            dtwOrderItem.setUnit(DtwEnum.UnitEnum.JIAN.getCode());
             dtwOrderItem.setCurrency(DtwEnum.CurrencyEnum.RMB.getCode());
-//            double goodsPirce = Arith.sub(orderItem.getPrice(),Arith.mul(orderItem.getPrice(),taxRate));
-            dtwOrderItem.setAmount(orderItem.getPrice() * orderItem.getNum());//(必填)
-            System.out.println("表体金额Item：" + orderItem.getPrice() * orderItem.getNum());
+            double goodsPirce = Arith.sub(orderItem.getPrice(), Arith.mul(orderItem.getPrice(), taxRate));
+            dtwOrderItem.setAmount(Arith.mul(goodsPirce, orderItem.getNum()));//(必填)
             dtwOrderItem.setQty(orderItem.getNum());
             dtwOrderItemList.add(dtwOrderItem);
         }
@@ -534,47 +535,57 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     @Override
     public EventResult pushWeixinPayOrder(Order order, DtwSysData dtwSysData) {
         try {
-            WeixinCustomer weixinCustomer = new WeixinCustomer();
-            weixinCustomer.setAppid(dtwSysData.getWeiXinAppId());
-            weixinCustomer.setMchId(dtwSysData.getWeixinMchId());
-            weixinCustomer.setOutTradeNo(order.getOrderId());
-            weixinCustomer.setTransactionId(order.getPayNumber());
-            weixinCustomer.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.name());
-            weixinCustomer.setMchCustomsNo(dtwSysData.getCompanyCode());
-            weixinCustomer.setSubOrderNo("");
-            weixinCustomer.setFeeType("CNY");
+
+            double taxRate = Arith.div(dtwSysData.getTaxRate(), 100);
+            double taxPrice = calculateTaxPrice(order.getOrderItems(), taxRate);
+
+            WeixinCustom weixinCustom = new WeixinCustom();
+            weixinCustom.setAppid(dtwSysData.getWeiXinAppId());
+            weixinCustom.setMchId(dtwSysData.getWeixinMchId());
+            weixinCustom.setOutTradeNo(order.getOrderId());
+            weixinCustom.setTransactionId(order.getPayNumber());
+            weixinCustom.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.name());
+            weixinCustom.setMchCustomsNo(dtwSysData.getCompanyCode());
+            weixinCustom.setSubOrderNo("");
+            weixinCustom.setFeeType("CNY");
 
             //order_fee=transport_fee+product_fee  应付金额=物流费+商品价格
-            weixinCustomer.setOrderFee((int) (order.getFinalAmount() * 100));// 单位转换成分
-            weixinCustomer.setTransportFee((int) (order.getCostFreight() * 100));// 单位转换成分
-            weixinCustomer.setProductFee((int) (order.getFinalAmount() * 100 - order.getCostFreight() * 100));// 单位转换成分
-            weixinCustomer.setDuty(0);
+            weixinCustom.setOrderFee((int) (order.getFinalAmount() * 100));// 单位转换成分
+            weixinCustom.setTransportFee((int) (order.getCostFreight() * 100));// 单位转换成分
+            weixinCustom.setProductFee((int) (order.getFinalAmount() * 100 - order.getCostFreight() * 100));// 单位转换成分
+            weixinCustom.setDuty((int) (taxPrice * 100));
 
 
             Map<String, Object> requestMap = new TreeMap<>();
-            requestMap.put("appid", weixinCustomer.getAppid());
-            requestMap.put("mch_id", weixinCustomer.getMchId());
-            requestMap.put("out_trade_no", weixinCustomer.getOutTradeNo());
-            requestMap.put("transaction_id", weixinCustomer.getTransactionId());
-            requestMap.put("customs", weixinCustomer.getCustoms());
-            requestMap.put("mch_customs_no", weixinCustomer.getMchCustomsNo());
-            requestMap.put("sub_order_no", weixinCustomer.getSubOrderNo());
-            requestMap.put("fee_type", weixinCustomer.getFeeType());
-            requestMap.put("order_fee", weixinCustomer.getOrderFee());
-            requestMap.put("transport_fee", weixinCustomer.getTransportFee());
-            requestMap.put("product_fee", weixinCustomer.getProductFee());
-            requestMap.put("duty", weixinCustomer.getDuty());
-            requestMap.put("cert_type", weixinCustomer.getCertType());
-            requestMap.put("cert_id", weixinCustomer.getCertId());
-            requestMap.put("name", weixinCustomer.getName());
+            requestMap.put("appid", weixinCustom.getAppid());
+            requestMap.put("mch_id", weixinCustom.getMchId());
+            requestMap.put("out_trade_no", weixinCustom.getOutTradeNo());
+            requestMap.put("transaction_id", weixinCustom.getTransactionId());
+            requestMap.put("customs", weixinCustom.getCustoms());
+            requestMap.put("mch_customs_no", weixinCustom.getMchCustomsNo());
+            requestMap.put("sub_order_no", weixinCustom.getSubOrderNo());
+            requestMap.put("fee_type", weixinCustom.getFeeType());
+            requestMap.put("order_fee", weixinCustom.getOrderFee());
+            requestMap.put("transport_fee", weixinCustom.getTransportFee());
+            requestMap.put("product_fee", weixinCustom.getProductFee());
+            requestMap.put("duty", weixinCustom.getDuty());
+            requestMap.put("cert_type", weixinCustom.getCertType());
+            requestMap.put("cert_id", weixinCustom.getCertId());
+            requestMap.put("name", weixinCustom.getName());
 
             String sign = DtwUtil.weixinBuildSign(requestMap, dtwSysData.getWeixinKey());
             requestMap.put("sign", sign);
-            weixinCustomer.setSign(sign);
+            weixinCustom.setSign(sign);
 
-            String requestData = new XmlMapper().writeValueAsString(weixinCustomer);
+            String requestData = new XmlMapper().writeValueAsString(weixinCustom);
+
 
             HttpResult httpResult = HttpClientUtil.getInstance().post(DtwConstant.WEIXIN_PAY_URL, requestData);
+
+            System.out.println("\n*********Weixin Request & Response Data******************");
+            System.out.println("request:" + requestData);
+            System.out.println("response:" + httpResult.getHttpContent());
+            System.out.println("\n*********Weixin Request & Response Data******************");
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 String xmlResp = httpResult.getHttpContent();
                 Document document = DocumentHelper.parseText(xmlResp);

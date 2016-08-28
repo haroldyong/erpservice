@@ -55,15 +55,17 @@ public class DtwTestBase {
 
     private String mockOrderNo;
 
+    private int itemNumber = 5;
+
     @Before
     public void setUp() {
 
-        mockOrderNo = "20160825113538530780";
+        mockOrderNo = createOrderNo();//"20160825113538530780";
 
         mockDtwSysData = new DtwSysData();
         mockDtwSysData.setPassKey("1c78cac2-b8b7-4764-9045-4810d3ef20e9");
-        mockDtwSysData.setECommerceName("kdian.co.ltd");
-        mockDtwSysData.setECommerceCode("9133010832821677XM");
+        mockDtwSysData.setECommerceName("杭州美伴网络科技有限公司");
+        mockDtwSysData.setECommerceCode("330196T018");
 
         mockDtwSysData.setCompanyCode("330196T018");
         mockDtwSysData.setCompanyName("杭州美伴网络科技有限公司");
@@ -80,7 +82,7 @@ public class DtwTestBase {
 
         mockDtwSysData.setTaxRate(11);
 
-        int[] number = {1, 2, 3, 4, 5};
+        int[] number = createRandomNum();
         double[] price = {3, 4, 5, 6, 7};
         double costFreight = 5;
         double finalAmount = 0.0;
@@ -142,7 +144,7 @@ public class DtwTestBase {
 
     }
 
-    public static String create() {
+    public static String createOrderNo() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         String date = sdf.format(new Date());
         Random random = new Random();
@@ -174,5 +176,14 @@ public class DtwTestBase {
             orderItems.add(orderItem);
         }
         return orderItems;
+    }
+
+    public int[] createRandomNum() {
+        Random random = new Random();
+        int[] num = new int[itemNumber];
+        for (int i = 0; i < itemNumber; i++) {
+            num[i] = random.nextInt(5) + 1;
+        }
+        return num;
     }
 }
