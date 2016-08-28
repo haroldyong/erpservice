@@ -91,7 +91,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
                 orderDetailSyncLog.setSyncTime(now);
 
-                eventResult = pushThreeOrder(order, dtwSysData, dtwThreeOrderStatus);
+                eventResult = pushFourOrder(order, dtwSysData, dtwThreeOrderStatus);
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                     orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.CUSTOM_BACK);
                 } else {
@@ -103,6 +103,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 orderDetailSyncLog.setPersonalSyncStatus(dtwThreeOrderStatus.isPersonalSyncStatus());
                 orderDetailSyncLog.setPayOrderSyncStatus(dtwThreeOrderStatus.isPayOrderSyncStatus());
                 orderDetailSyncLog.setCustomOrderSyncStatus(dtwThreeOrderStatus.isCustomOrderSyncStatus());
+                orderDetailSyncLog.setCustomBackStatus(false);
                 orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
                 orderDetailSyncLogService.save(orderDetailSyncLog);
 
@@ -113,10 +114,16 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 dtwThreeOrderStatus.setPersonalSyncStatus(orderDetailSyncLog.isPersonalSyncStatus());
                 dtwThreeOrderStatus.setOrderSyncStatus(orderDetailSyncLog.isOrderSyncStatus());
                 dtwThreeOrderStatus.setCustomOrderSyncStatus(orderDetailSyncLog.isCustomOrderSyncStatus());
-                eventResult = pushThreeOrder(order, dtwSysData, dtwThreeOrderStatus);
+                dtwThreeOrderStatus.setCustomBackStatus(orderDetailSyncLog.isCustomBackStatus());
+                eventResult = pushFourOrder(order, dtwSysData, dtwThreeOrderStatus);
 
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.CUSTOM_BACK);
+                    if (dtwThreeOrderStatus.isSyncSuccess()) {
+                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+                    } else {
+                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.CUSTOM_BACK);
+                    }
+
                 } else {
                     orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
                 }
@@ -146,7 +153,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
      * @param dtwSysData
      * @return
      */
-    private EventResult pushThreeOrder(Order order, DtwSysData dtwSysData, DtwThreeOrderStatus dtwThreeOrderStatus) {
+    private EventResult pushFourOrder(Order order, DtwSysData dtwSysData, DtwThreeOrderStatus dtwThreeOrderStatus) {
 
         StringBuilder errorMsg = new StringBuilder();
         // 支付单推送

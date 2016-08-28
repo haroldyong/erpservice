@@ -120,14 +120,25 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
                             OrderDetailSyncLog orderDetailSyncLog = null;
                             orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderNo.getText());
 
-                            if (chkMark.equals("2")) {// 处理失败，订单有问题
+                            if (chkMark.getText().equals("2")) {// 处理失败，订单有问题
                                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-//                                重推其他所有的单子有待解决
+                                //需要重推其他所有的单子
                                 orderDetailSyncLog.setCustomOrderSyncStatus(false);
                                 orderDetailSyncLog.setOrderSyncStatus(false);
                                 orderDetailSyncLog.setPayOrderSyncStatus(false);
                                 orderDetailSyncLog.setPersonalSyncStatus(false);
+
+                                // 设置错误信息
+                                String xpath = "/mo/body/list/jkfResult/resultList/jkfResultDetail/resultInfo";
+                                List<Element> resultInfo = document.selectNodes(xpath);
+                                StringBuffer errorMsg = new StringBuffer();
+                                for (Element element : resultInfo) {
+                                    errorMsg.append(element.getText()).append(";");
+                                }
+                                String newErrorMsg = orderDetailSyncLog.getErrorMsg() + errorMsg + "|";
+                                orderDetailSyncLog.setErrorMsg(newErrorMsg);
                             } else {
+                                orderDetailSyncLog.setCustomBackStatus(true);
                                 if (orderDetailSyncLog.isOrderSyncStatus() && orderDetailSyncLog.isPayOrderSyncStatus()
                                         && orderDetailSyncLog.isPersonalSyncStatus() && orderDetailSyncLog.isCustomOrderSyncStatus()) {
                                     orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);

@@ -91,4 +91,9 @@ public class OrderDetailSyncLog {
      */
     private boolean customOrderSyncStatus;
 
+    /**
+     * 海关回执状态
+     */
+    private boolean customBackStatus;
+
 }
