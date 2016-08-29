@@ -184,7 +184,16 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
                         String wayBill = request.getParameter("wayBill");
                         String weight = request.getParameter("Weight");
                         String state = request.getParameter("State");
+
+                        log.info("Dtw back:");
+                        log.info("MsgId:" + msgId);
+                        log.info("wayBill" + wayBill);
+                        log.info("weight:" + weight);
+                        log.info("state:" + state);
+
                         EventResult eventResult = dtwOrderHandler.deliverOrder(msgId, wayBill, weight, state, erpUserInfo);
+
+
                         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
 
                             dtwEventResult.setErrorCode(DtwEnum.ErrorCode.ERROR_REPUSH.getCode());

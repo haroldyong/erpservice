@@ -77,7 +77,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
             Date now = new Date();
 
-            DtwThreeOrderStatus dtwThreeOrderStatus = new DtwThreeOrderStatus();
+            DtwAllOrderStatus dtwAllOrderStatus = new DtwAllOrderStatus();
             EventResult eventResult = null;
             OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
             if (orderDetailSyncLog == null) {
@@ -91,18 +91,18 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
                 orderDetailSyncLog.setSyncTime(now);
 
-                eventResult = pushFourOrder(order, dtwSysData, dtwThreeOrderStatus);
+                eventResult = pushFourOrder(order, dtwSysData, dtwAllOrderStatus);
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                     orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.CUSTOM_BACK);
                 } else {
                     orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
                 }
 
-                dtwThreeOrderStatus = (DtwThreeOrderStatus) eventResult.getData();
-                orderDetailSyncLog.setOrderSyncStatus(dtwThreeOrderStatus.isOrderSyncStatus());
-                orderDetailSyncLog.setPersonalSyncStatus(dtwThreeOrderStatus.isPersonalSyncStatus());
-                orderDetailSyncLog.setPayOrderSyncStatus(dtwThreeOrderStatus.isPayOrderSyncStatus());
-                orderDetailSyncLog.setCustomOrderSyncStatus(dtwThreeOrderStatus.isCustomOrderSyncStatus());
+                dtwAllOrderStatus = (DtwAllOrderStatus) eventResult.getData();
+                orderDetailSyncLog.setOrderSyncStatus(dtwAllOrderStatus.isOrderSyncStatus());
+                orderDetailSyncLog.setPersonalSyncStatus(dtwAllOrderStatus.isPersonalSyncStatus());
+                orderDetailSyncLog.setPayOrderSyncStatus(dtwAllOrderStatus.isPayOrderSyncStatus());
+                orderDetailSyncLog.setCustomOrderSyncStatus(dtwAllOrderStatus.isCustomOrderSyncStatus());
                 orderDetailSyncLog.setCustomBackStatus(false);
                 orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
                 orderDetailSyncLogService.save(orderDetailSyncLog);
@@ -110,15 +110,15 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
             } else {
 
-                dtwThreeOrderStatus.setPayOrderSyncStatus(orderDetailSyncLog.isPayOrderSyncStatus());
-                dtwThreeOrderStatus.setPersonalSyncStatus(orderDetailSyncLog.isPersonalSyncStatus());
-                dtwThreeOrderStatus.setOrderSyncStatus(orderDetailSyncLog.isOrderSyncStatus());
-                dtwThreeOrderStatus.setCustomOrderSyncStatus(orderDetailSyncLog.isCustomOrderSyncStatus());
-                dtwThreeOrderStatus.setCustomBackStatus(orderDetailSyncLog.isCustomBackStatus());
-                eventResult = pushFourOrder(order, dtwSysData, dtwThreeOrderStatus);
+                dtwAllOrderStatus.setPayOrderSyncStatus(orderDetailSyncLog.isPayOrderSyncStatus());
+                dtwAllOrderStatus.setPersonalSyncStatus(orderDetailSyncLog.isPersonalSyncStatus());
+                dtwAllOrderStatus.setOrderSyncStatus(orderDetailSyncLog.isOrderSyncStatus());
+                dtwAllOrderStatus.setCustomOrderSyncStatus(orderDetailSyncLog.isCustomOrderSyncStatus());
+                dtwAllOrderStatus.setCustomBackStatus(orderDetailSyncLog.isCustomBackStatus());
+                eventResult = pushFourOrder(order, dtwSysData, dtwAllOrderStatus);
 
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                    if (dtwThreeOrderStatus.isSyncSuccess()) {
+                    if (dtwAllOrderStatus.isSyncSuccess() && dtwAllOrderStatus.isBackSuccess()) {
                         orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
                     } else {
                         orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.CUSTOM_BACK);
@@ -127,11 +127,11 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 } else {
                     orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
                 }
-                dtwThreeOrderStatus = (DtwThreeOrderStatus) eventResult.getData();
-                orderDetailSyncLog.setOrderSyncStatus(dtwThreeOrderStatus.isOrderSyncStatus());
-                orderDetailSyncLog.setPersonalSyncStatus(dtwThreeOrderStatus.isPersonalSyncStatus());
-                orderDetailSyncLog.setPayOrderSyncStatus(dtwThreeOrderStatus.isPayOrderSyncStatus());
-                orderDetailSyncLog.setCustomOrderSyncStatus(dtwThreeOrderStatus.isCustomOrderSyncStatus());
+                dtwAllOrderStatus = (DtwAllOrderStatus) eventResult.getData();
+                orderDetailSyncLog.setOrderSyncStatus(dtwAllOrderStatus.isOrderSyncStatus());
+                orderDetailSyncLog.setPersonalSyncStatus(dtwAllOrderStatus.isPersonalSyncStatus());
+                orderDetailSyncLog.setPayOrderSyncStatus(dtwAllOrderStatus.isPayOrderSyncStatus());
+                orderDetailSyncLog.setCustomOrderSyncStatus(dtwAllOrderStatus.isCustomOrderSyncStatus());
                 orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
                 orderDetailSyncLogService.save(orderDetailSyncLog);
 
@@ -153,11 +153,11 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
      * @param dtwSysData
      * @return
      */
-    private EventResult pushFourOrder(Order order, DtwSysData dtwSysData, DtwThreeOrderStatus dtwThreeOrderStatus) {
+    private EventResult pushFourOrder(Order order, DtwSysData dtwSysData, DtwAllOrderStatus dtwAllOrderStatus) {
 
         StringBuilder errorMsg = new StringBuilder();
         // 支付单推送
-        if (!dtwThreeOrderStatus.isPayOrderSyncStatus()) {
+        if (!dtwAllOrderStatus.isPayOrderSyncStatus()) {
             EventResult payOrderEvent = null;
             if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType()) == OrderEnum.PaymentOptions.ALIPAY_PC) {// FIXME: 2016-07-27  可能空指针
                 payOrderEvent = pushAliPayOrder(order, dtwSysData);
@@ -168,56 +168,55 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             }
 
             if (payOrderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                dtwThreeOrderStatus.setPayOrderSyncStatus(true);
+                dtwAllOrderStatus.setPayOrderSyncStatus(true);
             } else {
-                dtwThreeOrderStatus.setPayOrderSyncStatus(false);
+                dtwAllOrderStatus.setPayOrderSyncStatus(false);
                 errorMsg.append("支付单:");
                 errorMsg.append(payOrderEvent.getResultMsg()).append("|");
             }
         }
 
         // 综合订单推送
-        if (!dtwThreeOrderStatus.isOrderSyncStatus()) {
+        if (!dtwAllOrderStatus.isOrderSyncStatus()) {
             EventResult orderEvent = pushPlatformOrder(order, dtwSysData);
             if (orderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                dtwThreeOrderStatus.setOrderSyncStatus(true);
+                dtwAllOrderStatus.setOrderSyncStatus(true);
             } else {
-                dtwThreeOrderStatus.setOrderSyncStatus(false);
+                dtwAllOrderStatus.setOrderSyncStatus(false);
                 errorMsg.append("综合订单:");
                 errorMsg.append(orderEvent.getResultMsg()).append("|");
             }
         }
 
         // 个人信息申报单
-        if (!dtwThreeOrderStatus.isPersonalSyncStatus()) {
+        if (!dtwAllOrderStatus.isPersonalSyncStatus()) {
             EventResult personalOrderEvent = pushPersonalDeclareOrder(order, dtwSysData);
             if (personalOrderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                dtwThreeOrderStatus.setPersonalSyncStatus(true);
+                dtwAllOrderStatus.setPersonalSyncStatus(true);
             } else {
-                dtwThreeOrderStatus.setPersonalSyncStatus(false);
+                dtwAllOrderStatus.setPersonalSyncStatus(false);
                 errorMsg.append("个人申报单:");
                 errorMsg.append(personalOrderEvent.getResultMsg()).append("|");
             }
         }
 
-
         // 海关订单推送
-        if (!dtwThreeOrderStatus.isCustomOrderSyncStatus()) {
+        if (!dtwAllOrderStatus.isCustomOrderSyncStatus()) {
             EventResult customOrderEvent = pushCustomOrder(order, dtwSysData);
             if (customOrderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                dtwThreeOrderStatus.setCustomOrderSyncStatus(true);
+                dtwAllOrderStatus.setCustomOrderSyncStatus(true);
             } else {
-                dtwThreeOrderStatus.setCustomOrderSyncStatus(false);
+                dtwAllOrderStatus.setCustomOrderSyncStatus(false);
                 errorMsg.append("海关订单:");
                 errorMsg.append(customOrderEvent.getResultMsg()).append("|");
             }
         }
 
-        if (dtwThreeOrderStatus.isSyncSuccess()) {
-            return EventResult.resultWith(EventResultEnum.SUCCESS, dtwThreeOrderStatus);
+        if (dtwAllOrderStatus.isSyncSuccess()) {
+            return EventResult.resultWith(EventResultEnum.SUCCESS, dtwAllOrderStatus);
         }
 
-        return EventResult.resultWith(EventResultEnum.ERROR, errorMsg.toString(), dtwThreeOrderStatus);
+        return EventResult.resultWith(EventResultEnum.ERROR, errorMsg.toString(), dtwAllOrderStatus);
     }
 
     public EventResult pushPlatformOrder(Order order, DtwSysData dtwSysData) {
@@ -249,7 +248,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         dtwOrder.setDtwOrderItems(dtwOrderItemList);//(必填)
 
-
         dtwOrder.setPassKey(dtwSysData.getPassKey());//(必填)
 //            dtwOrder.setPreEntryNumber("");
         dtwOrder.setECommerceCode(dtwSysData.getECommerceCode());//(必填)
@@ -276,7 +274,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setOrderTaxAmount(taxPrice);
         dtwOrder.setTotalCount(order.getItemNum());//(必填)
         dtwOrder.setTotalAmount(orderGoodsAmount);//(必填)
-        dtwOrder.setLogisCompanyName("百世物流科技");//(必填)
+        dtwOrder.setLogisCompanyName("百世物流科技（中国）有限公司");//(必填)
         dtwOrder.setLogisCompanyCode("WL15041401");//(必填)
         dtwOrder.setPurchaserId(String.valueOf(order.getMemberId()));//(必填)
         dtwOrder.setShipper(dtwSysData.getSenderName());
@@ -722,8 +720,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrderHead.setPayNumber(order.getPayNumber());
         customOrderHead.setOrderTotalAmount(order.getFinalAmount());
         customOrderHead.setOrderNo(order.getOrderId());
-//        customOrderHead.setOrderTaxAmount(taxPrice);
-//        customOrderHead.setOrderGoodsAmount(order.getFinalAmount() - order.getCostFreight());
         customOrderHead.setFeeAmount(order.getCostFreight());
         customOrderHead.setInsureAmount(0.0);
         customOrderHead.setCompanyCode(dtwSysData.getCompanyCode());
@@ -741,7 +737,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrderHead.setSenderName(dtwSysData.getSenderName());
         customOrderHead.setPurchaserId(String.valueOf(order.getMemberId()));
         customOrderHead.setLogisCompanyCode("WL15041401");
-        customOrderHead.setLogisCompanyName("百世物流科技");
+        customOrderHead.setLogisCompanyName("百世物流科技（中国）有限公司");
         customOrderHead.setZipCode(order.getShipZip());
         customOrderHead.setNote(order.getMemo());
 //        customOrderHead.setWayBills("");
@@ -801,6 +797,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         return customOrder;
     }
+
 
     /**
      * 计算税款

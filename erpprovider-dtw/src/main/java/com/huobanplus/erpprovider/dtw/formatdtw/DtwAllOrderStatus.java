@@ -15,7 +15,7 @@ import lombok.Data;
  * Created by wuxiongliu on 2016-07-27.
  */
 @Data
-public class DtwThreeOrderStatus {
+public class DtwAllOrderStatus {
 
     private boolean orderSyncStatus;
 
@@ -29,7 +29,11 @@ public class DtwThreeOrderStatus {
 
     public boolean isSyncSuccess() {
         return orderSyncStatus && personalSyncStatus
-                && payOrderSyncStatus && customOrderSyncStatus && customBackStatus;
+                && payOrderSyncStatus && customOrderSyncStatus;
+    }
+
+    public boolean isBackSuccess() {
+        return customBackStatus;
     }
 
 }

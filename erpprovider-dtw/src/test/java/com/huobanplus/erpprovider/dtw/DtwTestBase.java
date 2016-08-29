@@ -130,7 +130,7 @@ public class DtwTestBase {
         mockOrder.setBuyerPid("362322199411050053");
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
 
-        mockOrder.setPayNumber("1000039301521608242043325704");
+        mockOrder.setPayNumber(createOrderNo());
 
         mockOrder.setOrderItems(mockOrderItems);
 
