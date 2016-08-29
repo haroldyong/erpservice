@@ -83,7 +83,7 @@ public class DtwTestBase {
         mockDtwSysData.setTaxRate(11);
 
         int[] number = createRandomNum();
-        double[] price = {3, 4, 5, 6, 7};
+        double[] price = {0.100, 0.100, 0.100, 0.100, 0.100};
         double costFreight = 5;
         double finalAmount = 0.0;
         for (int i = 0; i < number.length; i++) {

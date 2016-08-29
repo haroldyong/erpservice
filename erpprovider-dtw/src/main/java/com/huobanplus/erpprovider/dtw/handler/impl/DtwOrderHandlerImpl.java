@@ -70,6 +70,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
         try {
             Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+            log.info(pushNewOrderEvent.getOrderInfoJson());
             order.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());
             order.setPayNumber("123456789");
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
@@ -343,7 +344,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwPersonalDelcareInfo.setRemark(order.getMemo());
         dtwPersonalDelcareInfo.setSenderName(dtwSysData.getSenderAddr());// 必填
         dtwPersonalDelcareInfo.setConsignee(order.getShipName());// 必填
-        dtwPersonalDelcareInfo.setSenderCity("发件人城市");//非必填
+        dtwPersonalDelcareInfo.setSenderCity("");//非必填
         dtwPersonalDelcareInfo.setPaperType("");// 非必填
         dtwPersonalDelcareInfo.setPaperNumber("");// 非必填
         dtwPersonalDelcareInfo.setPurchaserTelNumber(order.getUserLoginName());// 必填
@@ -376,7 +377,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwGoodsDelcareItem.setTradeCurr(DtwEnum.CurrencyEnum.RMB.getCode());
             dtwGoodsDelcareItem.setTradeTotal(order.getFinalAmount());// 必填
             dtwGoodsDelcareItem.setDeclPrice(item.getPrice());// 必填
-            dtwGoodsDelcareItem.setDeclTotalPrice(item.getPrice() * item.getNum());// 必填
+            dtwGoodsDelcareItem.setDeclTotalPrice(Arith.mul(item.getPrice(), item.getNum()));// 必填
 //            dtwGoodsDelcareItem.setUseTo("");
             dtwGoodsDelcareItem.setDeclareCount(item.getNum());// 必填
             dtwGoodsDelcareItem.setGoodsUnit(DtwEnum.UnitEnum.JIAN.getCode());// 必填
@@ -788,12 +789,19 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrder.setBody(customBody);
         customOrder.setHead(customHead);
 
-        System.out.println("\n**************费用**********************");
+        System.out.println("\n**************海关订单费用**********************");
         System.out.println("税费:" + taxPrice);
         System.out.println("贷款：" + customOrderHead.getOrderGoodsAmount());
         System.out.println("成交总价：" + customOrderHead.getTotalAmount());
         System.out.println("订单总金额:" + customOrderHead.getOrderTotalAmount());
         System.out.println("\n**************费用**********************");
+
+        log.info("\n**************海关订单费用**********************");
+        log.info("税费:" + taxPrice);
+        log.info("贷款：" + customOrderHead.getOrderGoodsAmount());
+        log.info("成交总价：" + customOrderHead.getTotalAmount());
+        log.info("订单总金额:" + customOrderHead.getOrderTotalAmount());
+        log.info("\n**************费用**********************");
 
         return customOrder;
     }
@@ -803,13 +811,13 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
      * 计算税款
      *
      * @param orderItems 订单明细
-     * @param taxRate 税率
+     * @param taxRate    税率
      * @return 税款
      */
     private double calculateTaxPrice(List<OrderItem> orderItems, double taxRate) {
         double taxPrice = 0.0;
         for (OrderItem orderItem : orderItems) {
-            taxPrice = Arith.add(taxPrice, Arith.mul(orderItem.getPrice() * orderItem.getNum(), taxRate));
+            taxPrice = Arith.add(taxPrice, Arith.mul(Arith.mul(orderItem.getPrice(), orderItem.getNum()), taxRate));
         }
         return taxPrice;
     }

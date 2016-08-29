@@ -20,6 +20,7 @@ import com.huobanplus.erpprovider.dtw.util.AESUtil;
 import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
 import com.huobanplus.erpprovider.dtw.util.RSAUtil;
+import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -42,7 +43,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 
     private PushNewOrderEvent mockPushNewOrderEvent;
 
-    private String orderInfoJson = "{\"orderId\":\"2016082682778787\",\"memberId\":17423,\"userLoginName\":\"15868807873\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":200.000,\"orderName\":\"????????(??,42?)(1)(?1)\",\"itemNum\":1,\"lastUpdateTime\":\"2016-08-26 14:40:08\",\"createTime\":\"2016-08-26 14:40:08\",\"shipName\":\"???\",\"shipArea\":\"???/???/???\",\"province\":\"???\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"????????????????????e?\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"15868807873\",\"costItem\":5.000,\"onlinePayAmount\":0.00,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":5.000,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"???\",\"payType\":700,\"customerId\":296,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2016-08-26 14:40:08\",\"unionOrderId\":\"2016082692988419\",\"receiveStatus\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"362322199411050053\",\"buyerName\":\"???\",\"orderItems\":[{\"itemId\":14631,\"orderId\":\"2016082682778787\",\"unionOrderId\":\"2016082692988419\",\"productBn\":\"CSXJ0001\",\"name\":\"????????(??,42?)(1)\",\"cost\":3.000,\"price\":5.000,\"amount\":5.000,\"num\":1,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":296,\"goodBn\":\"1901101000\",\"standard\":\"??,42?\",\"brief\":null,\"shipStatus\":0}]}";
+    private String orderInfoJson = "{\"orderId\":\"2016082966169442\",\"memberId\":17423,\"userLoginName\":\"15868807873\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":3500.000,\"orderName\":\"??????2(??,42?)(7)(?7)\",\"itemNum\":7,\"lastUpdateTime\":\"2016-08-29 17:09:49\",\"createTime\":\"2016-08-29 17:09:49\",\"shipName\":\"???\",\"shipArea\":\"???/???/???\",\"province\":\"???\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"????????????????????e?\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"15868807873\",\"costItem\":0.700,\"onlinePayAmount\":0.00,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":0.700,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"???\",\"payType\":700,\"customerId\":296,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2016-08-29 17:09:49\",\"unionOrderId\":\"2016082976823811\",\"receiveStatus\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"362322199411050053\",\"buyerName\":\"???\",\"orderItems\":[{\"itemId\":14701,\"orderId\":\"2016082966169442\",\"unionOrderId\":\"2016082976823811\",\"productBn\":\"CSXJ0005\",\"name\":\"??????2(??,42?)(7)\",\"cost\":5.000,\"price\":0.100,\"amount\":0.700,\"num\":7,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":296,\"goodBn\":\"0402210000\",\"standard\":\"??,42?\",\"brief\":null,\"shipStatus\":0}]}";
 
 
     @Test
@@ -144,7 +145,8 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     @Test
     public void testPushPersonalDeclareOrder() {
 
-        EventResult eventResult = dtwOrderHandler.pushPersonalDeclareOrder(mockOrder, mockDtwSysData);
+        Order order = JSON.parseObject(orderInfoJson, Order.class);
+        EventResult eventResult = dtwOrderHandler.pushPersonalDeclareOrder(order, mockDtwSysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
     }
@@ -176,9 +178,11 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 
     @Test
     public void testPushCustomOrder() {
+
+        Order order = JSON.parseObject(orderInfoJson, Order.class);
         for (int i = 0; i < 1; i++) {
 
-            EventResult eventResult = dtwOrderHandler.pushCustomOrder(mockOrder, mockDtwSysData);
+            EventResult eventResult = dtwOrderHandler.pushCustomOrder(order, mockDtwSysData);
             System.out.println(eventResult.getResultCode());
             System.out.println(eventResult.getResultMsg());
         }
@@ -190,7 +194,8 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     private double calculateTaxPrice(List<OrderItem> orderItems, double taxRate) {
         double taxPrice = 0.0;
         for (OrderItem orderItem : orderItems) {
-            taxPrice = Arith.add(taxPrice, Arith.mul(orderItem.getPrice() * orderItem.getNum(), taxRate));
+            taxPrice = Arith.add(taxPrice, Arith.mul(Arith.mul(orderItem.getPrice(), orderItem.getNum()), taxRate));
+            System.out.println(taxPrice);
         }
         return taxPrice;
     }
@@ -208,12 +213,15 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     @Test
     public void testCaculateTaxPrice() {
         double taxRate = Arith.div(mockDtwSysData.getTaxRate(), 100);
-        System.out.println("\n" + calculateTaxPrice(mockOrderItems, taxRate));
+        Order order = JSON.parseObject(orderInfoJson, Order.class);
+        List<OrderItem> orderItems = order.getOrderItems();
+        System.out.println("\n" + calculateTaxPrice(orderItems, taxRate));
     }
 
     @Test
     public void testCaculateGoodsPrice() {
         double r = Arith.div(mockDtwSysData.getTaxRate(), 100);
+
         System.out.println("\n" + caculateGoodsPrice(mockOrderItems, r));
     }
 
