@@ -24,7 +24,8 @@ public interface ERPTypeEnum {
         KAOLA(5, "考拉"),
         KJYG(6, "跨境易购"),
         GY(7, "管易云ERP"),
-        DTW(8, "大田跨境");
+        DTW(8, "大田跨境"),
+        SURSUNG(9, "聚水潭ERP");
 
         private int code;
         private String name;
