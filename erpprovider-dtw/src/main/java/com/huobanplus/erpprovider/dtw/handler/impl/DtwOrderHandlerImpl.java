@@ -226,7 +226,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         double taxPrice = calculateTaxPrice(order.getOrderItems(), taxRate);
         double orderGoodsAmount = caculateGoodsPrice(order.getOrderItems(), taxRate);
 
-
         Map<String, Object> requestMap = new HashMap<>();
         DtwOrder dtwOrder = new DtwOrder();
 
@@ -495,10 +494,10 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             requestMap.put("partner", dtwSysData.getAliPartner());
             requestMap.put("out_request_no", order.getOrderId());
             requestMap.put("trade_no", order.getPayNumber());
-            requestMap.put("merchant_customs_code", dtwSysData.getECommerceCode());// FIXME: 2016-07-28
+            requestMap.put("merchant_customs_code", dtwSysData.getECommerceCode());
             requestMap.put("amount", order.getFinalAmount());
             requestMap.put("customs_place", DtwEnum.CustomerEnum.HANGZHOU);
-            requestMap.put("merchant_customs_name", dtwSysData.getECommerceName());// FIXME: 2016-07-27
+            requestMap.put("merchant_customs_name", dtwSysData.getECommerceName());
 //            requestMap.put("is_split", "n");
 //            requestMap.put("sub_out_biz_no", "2015080811223212345453");
             String sign = DtwUtil.aliBuildSign(requestMap);
@@ -530,8 +529,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 log.error("服务器请求失败:" + httpResult.getHttpContent());
                 return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
-
-
         } catch (Exception e) {
             log.error(e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
@@ -817,11 +814,18 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     private double calculateTaxPrice(List<OrderItem> orderItems, double taxRate) {
         double taxPrice = 0.0;
         for (OrderItem orderItem : orderItems) {
-            taxPrice = Arith.add(taxPrice, Arith.mul(Arith.mul(orderItem.getPrice(), orderItem.getNum()), taxRate));
+            taxPrice = Arith.add(taxPrice, Arith.mul(orderItem.getAmount(), taxRate));
         }
         return taxPrice;
     }
 
+    /**
+     * 计算商品除税后的价格
+     *
+     * @param orderItems
+     * @param taxRate
+     * @return
+     */
     private double caculateGoodsPrice(List<OrderItem> orderItems, double taxRate) {
         double goodPrice = 0.0;
         for (OrderItem orderItem : orderItems) {

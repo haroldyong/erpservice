@@ -168,7 +168,7 @@ public class DtwTestBase {
             orderItem.setName("婴儿配方奶粉0001");
             orderItem.setCost(0.5);
             orderItem.setPrice(prices[i]);
-            orderItem.setAmount(10);
+            orderItem.setAmount(Arith.mul(prices[i], number[i]));
             orderItem.setNum(number[i]);
             orderItem.setStandard("测试");
             orderItem.setCustomerId(296);
