@@ -12,6 +12,7 @@ package com.huobanplus.erpprovider.sursung.handler;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.sursung.SurSungTestBase;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
+import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -71,6 +72,15 @@ public class SurSungHandlerTest extends SurSungTestBase {
         pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
         pushNewOrderEvent.setErpInfo(mockErpInfo);
         EventResult eventResult = surSungOrderHandler.pushOrder(pushNewOrderEvent);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getData());
+    }
+
+    @Test
+    public void testLogisticSearch() {
+        SurSungLogisticSearch surSungLogisticSearch = new SurSungLogisticSearch();
+        surSungSysData.setShopId(surSungSysData.getShopId());
+        EventResult eventResult = surSungOrderHandler.logisticSearch(surSungLogisticSearch, surSungSysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getData());
     }

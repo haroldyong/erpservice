@@ -9,7 +9,12 @@
 
 package com.huobanplus.erpprovider.sursung.handler;
 
+import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
+import com.huobanplus.erpprovider.sursung.formatdata.SurSungLogistic;
+import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
 /**
@@ -24,5 +29,16 @@ public interface SurSungOrderHandler {
      * @return
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
+
+    /**
+     * 发货查询
+     *
+     * @param surSungDeliverySearch 发货查询model
+     * @return
+     */
+    EventResult logisticSearch(SurSungLogisticSearch surSungDeliverySearch, SurSungSysData surSungSysData);
+
+
+    EventResult logisticUpload(SurSungLogistic surSungLogistic, ERPUserInfo erpUserInfo, ERPInfo erpInfo);
 
 }

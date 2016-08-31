@@ -11,26 +11,35 @@ package com.huobanplus.erpprovider.sursung.handler.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.huobanplus.erpprovider.sursung.common.SurSungConstant;
 import com.huobanplus.erpprovider.sursung.common.SurSungEnum;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
-import com.huobanplus.erpprovider.sursung.formatdata.SurSungOrder;
-import com.huobanplus.erpprovider.sursung.formatdata.SurSungOrderItem;
-import com.huobanplus.erpprovider.sursung.formatdata.SursungPay;
+import com.huobanplus.erpprovider.sursung.formatdata.*;
 import com.huobanplus.erpprovider.sursung.handler.SurSungOrderHandler;
+import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
 import com.huobanplus.erpprovider.sursung.util.SurSungUtil;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
+import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by wuxiongliu on 2016/5/23.
@@ -38,8 +47,12 @@ import java.util.*;
 @Component
 public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
 
+    private static final Log log = LogFactory.getLog(SurSungOrderHandlerImpl.class);
+
     @Autowired
     private OrderDetailSyncLogService orderDetailSyncLogService;
+    @Autowired
+    private ERPRegister erpRegister;
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
@@ -60,15 +73,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
         try {
 
             String requestData = JSON.toJSONString(jsonArray);
-            String requestUrl = SurSungUtil.createRequestUrl("orders.upload", time, surSungSysData);
-
-            Map<String, Object> requestMap = new HashMap<>();
-            requestMap.put("partnerid", surSungSysData.getPartnerId());
-            requestMap.put("ts", now.getTime());
-            requestMap.put("token", surSungSysData.getToken());
-            requestMap.put("method", "logistic.query");
-            requestMap.put("sign", SurSungUtil.buildSign("orders.upload", time, surSungSysData));
-            requestMap.put("json", requestData);
+            String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.ORDER_PUSH, time, surSungSysData);
 
             HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
 
@@ -138,4 +143,60 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
         return surSungOrder;
     }
 
+    @Override
+    public EventResult logisticSearch(SurSungLogisticSearch surSungDeliverySearch, SurSungSysData surSungSysData) {
+        try {
+
+            int time = (int) (new Date().getTime() / 1000);
+            String requestData = JSON.toJSONString(surSungDeliverySearch);
+            String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.LOGISTIC_QUERY, time, surSungSysData);
+
+            HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                String result = httpResult.getHttpContent();
+                SurSungLogisticSearchResult surSungLogistic = JSON.parseObject(result, SurSungLogisticSearchResult.class);
+                return EventResult.resultWith(EventResultEnum.SUCCESS, surSungLogistic);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            }
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public EventResult logisticUpload(SurSungLogistic surSungLogistic, ERPUserInfo erpUserInfo, ERPInfo erpInfo) {
+        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+        if (erpUserHandler == null) {
+            return EventResult.resultWith(EventResultEnum.ERROR);
+        }
+
+        List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
+
+        OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
+        orderDeliveryInfo.setOrderId(surSungLogistic.getSoId());
+//            orderDeliveryInfo.setLogiCode(surSungLogistic.getLogiNo());
+        orderDeliveryInfo.setLogiName(surSungLogistic.getLogisticsCompany());
+//            orderDeliveryInfo.setFreight(0.0);
+        orderDeliveryInfo.setLogiNo(surSungLogistic.getLogiNo());
+
+        List<SurSungLogisticItem> items = surSungLogistic.getItems();
+        StringBuilder sb = new StringBuilder();
+        items.forEach(item -> {
+            sb.append(item.getSku_id()).append(",").append(item.getQty()).append("|");
+        });
+        orderDeliveryInfo.setDeliverItemsStr(sb.toString());
+        orderDeliveryInfoList.add(orderDeliveryInfo);
+
+        BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
+        batchDeliverEvent.setErpInfo(erpInfo);
+        batchDeliverEvent.setErpUserInfo(erpUserInfo);
+        batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
+
+
+        return erpUserHandler.handleEvent(batchDeliverEvent);
+
+    }
 }

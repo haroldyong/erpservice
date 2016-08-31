@@ -19,27 +19,29 @@ import java.io.UnsupportedEncodingException;
  */
 public class SurSungUtil {
 
-    public static String buildSign(String method, int time, SurSungSysData surSungSysData) throws UnsupportedEncodingException {
+    public static String buildSign(String method, int time, String partnerId, String token, String partnerKey) throws UnsupportedEncodingException {
 
         StringBuilder sb = new StringBuilder();
         sb.append(method)
-                .append(surSungSysData.getPartnerId())
+                .append(partnerId)
                 .append("ts").append(time)
-                .append("token").append(surSungSysData.getToken())
-                .append(surSungSysData.getPartnerKey());
+                .append("token").append(token)
+                .append(partnerKey);
 
         System.out.println("source：" + sb.toString());
         return DigestUtils.md5Hex(sb.toString().getBytes("utf-8"));
     }
 
-    public static String createRequestUrl(String method, int time, SurSungSysData surSungSysData) throws UnsupportedEncodingException {
+    public static String createRequestUrl(String method, int time, SurSungSysData surSungSysData)
+            throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
         sb.append(surSungSysData.getRequestUrl()).append("?")
                 .append("ts=").append(time).append("&")
                 .append("partnerid=").append(surSungSysData.getPartnerId()).append("&")
                 .append("method=").append(method).append("&")
                 .append("token=").append(surSungSysData.getToken()).append("&")
-                .append("sign=").append(buildSign(method, time, surSungSysData));
+                .append("sign=").append(buildSign(method, time, surSungSysData.getPartnerId(),
+                surSungSysData.getToken(), surSungSysData.getPartnerKey()));
         return sb.toString();
     }
 }
