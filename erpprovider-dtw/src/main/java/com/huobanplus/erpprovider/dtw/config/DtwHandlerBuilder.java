@@ -64,7 +64,8 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        return new ERPHandler() {
+        if (info.getErpType() == ERPTypeEnum.ProviderType.DTW) {
+            return new ERPHandler() {
 //            @Override
 //            public boolean eventSupported(Class<? extends ERPBaseEvent> baseEventClass) {
 //                if (baseEventClass == PushNewOrderEvent.class) {
@@ -76,143 +77,145 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
 //                return false;
 //            }
 
-            @Override
-            public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
-                if (erpBaseEvent instanceof PushNewOrderEvent) {
-                    PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                    return dtwOrderHandler.pushOrder(pushNewOrderEvent);
+                @Override
+                public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
+                    if (erpBaseEvent instanceof PushNewOrderEvent) {
+                        PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
+                        return dtwOrderHandler.pushOrder(pushNewOrderEvent);
+                    }
+                    return null;
                 }
-                return null;
-            }
 
-            @Override
-            public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
-                if (request.getAttribute("backType").equals(1)) {//海关回执
-                    try {
-                        String content = request.getParameter("content");
-                        String msgType = request.getParameter("msg_type");
-                        String dataDigest = request.getParameter("data_digest");
+                @Override
+                public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
+                    if (request.getAttribute("backType").equals(1)) {//海关回执
+                        try {
+                            String content = request.getParameter("content");
+                            String msgType = request.getParameter("msg_type");
+                            String dataDigest = request.getParameter("data_digest");
 
-                        //解密
-                        byte[] inputContent = Base64.getDecoder().decode(content.getBytes("utf-8"));
-                        byte[] aesKey = Base64.getDecoder().decode(DtwConstant.CUSTOM_DEFAULT_AES_KEY.getBytes("utf-8"));
-                        String orignalContent = new String(AESUtil.decrypt(inputContent, aesKey), "utf-8");
+                            //解密
+                            byte[] inputContent = Base64.getDecoder().decode(content.getBytes("utf-8"));
+                            byte[] aesKey = Base64.getDecoder().decode(DtwConstant.CUSTOM_DEFAULT_AES_KEY.getBytes("utf-8"));
+                            String orignalContent = new String(AESUtil.decrypt(inputContent, aesKey), "utf-8");
 
-                        // 验签
-                        byte[] inputData = orignalContent.getBytes("utf-8");
-                        byte[] publicKey = Base64.getDecoder().decode(DtwConstant.CUSTOM_DEFAULT_PUBLIC_KEY);
-                        byte[] sign = Base64.getDecoder().decode(dataDigest);
-                        Boolean signSuccess = RSAUtil.verify(inputData, publicKey, sign);
-                        if (signSuccess) {
+                            // 验签
+                            byte[] inputData = orignalContent.getBytes("utf-8");
+                            byte[] publicKey = Base64.getDecoder().decode(DtwConstant.CUSTOM_DEFAULT_PUBLIC_KEY);
+                            byte[] sign = Base64.getDecoder().decode(dataDigest);
+                            Boolean signSuccess = RSAUtil.verify(inputData, publicKey, sign);
+                            if (signSuccess) {
 
-                            Document document = DocumentHelper.parseText(orignalContent);
-                            Element root = document.getRootElement();
-                            Element chkMark = root.element("body")
-                                    .element("list")
-                                    .element("jkfResult")
-                                    .element("chkMark");
+                                Document document = DocumentHelper.parseText(orignalContent);
+                                Element root = document.getRootElement();
+                                Element chkMark = root.element("body")
+                                        .element("list")
+                                        .element("jkfResult")
+                                        .element("chkMark");
 
-                            Element orderNo = root.element("body")
-                                    .element("list")
-                                    .element("jkfResult")
-                                    .element("businessNo");
+                                Element orderNo = root.element("body")
+                                        .element("list")
+                                        .element("jkfResult")
+                                        .element("businessNo");
 
-                            OrderDetailSyncLog orderDetailSyncLog = null;
-                            orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderNo.getText());
+                                OrderDetailSyncLog orderDetailSyncLog = null;
+                                orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderNo.getText());
 
-                            if (chkMark.getText().equals("2")) {// 处理失败，订单有问题
-                                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
-                                //需要重推其他所有的单子
-                                orderDetailSyncLog.setCustomOrderSyncStatus(false);
-                                orderDetailSyncLog.setOrderSyncStatus(false);
-                                orderDetailSyncLog.setPayOrderSyncStatus(false);
-                                orderDetailSyncLog.setPersonalSyncStatus(false);
+                                if (chkMark.getText().equals("2")) {// 处理失败，订单有问题
+                                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                                    //需要重推其他所有的单子
+                                    orderDetailSyncLog.setCustomOrderSyncStatus(false);
+                                    orderDetailSyncLog.setOrderSyncStatus(false);
+                                    orderDetailSyncLog.setPayOrderSyncStatus(false);
+                                    orderDetailSyncLog.setPersonalSyncStatus(false);
 
-                                // 设置错误信息
-                                String xpath = "/mo/body/list/jkfResult/resultList/jkfResultDetail/resultInfo";
-                                List<Element> resultInfo = document.selectNodes(xpath);
-                                StringBuffer errorMsg = new StringBuffer();
-                                for (Element element : resultInfo) {
-                                    errorMsg.append(element.getText()).append(";");
+                                    // 设置错误信息
+                                    String xpath = "/mo/body/list/jkfResult/resultList/jkfResultDetail/resultInfo";
+                                    List<Element> resultInfo = document.selectNodes(xpath);
+                                    StringBuffer errorMsg = new StringBuffer();
+                                    for (Element element : resultInfo) {
+                                        errorMsg.append(element.getText()).append(";");
+                                    }
+                                    String newErrorMsg = orderDetailSyncLog.getErrorMsg() + errorMsg + "|";
+                                    orderDetailSyncLog.setErrorMsg(newErrorMsg);
+                                } else {
+                                    orderDetailSyncLog.setCustomBackStatus(true);
+                                    if (orderDetailSyncLog.isOrderSyncStatus() && orderDetailSyncLog.isPayOrderSyncStatus()
+                                            && orderDetailSyncLog.isPersonalSyncStatus() && orderDetailSyncLog.isCustomOrderSyncStatus()) {
+                                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+                                    }
                                 }
-                                String newErrorMsg = orderDetailSyncLog.getErrorMsg() + errorMsg + "|";
-                                orderDetailSyncLog.setErrorMsg(newErrorMsg);
+
+                                orderDetailSyncLogService.save(orderDetailSyncLog);
+                                log.info("Dtw Custom Back:" + orignalContent);
+                                return EventResult.resultWith(EventResultEnum.SUCCESS,
+                                        "<response><success>true</success></response>");
                             } else {
-                                orderDetailSyncLog.setCustomBackStatus(true);
-                                if (orderDetailSyncLog.isOrderSyncStatus() && orderDetailSyncLog.isPayOrderSyncStatus()
-                                        && orderDetailSyncLog.isPersonalSyncStatus() && orderDetailSyncLog.isCustomOrderSyncStatus()) {
-                                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-                                }
+                                return EventResult.resultWith(EventResultEnum.ERROR,
+                                        "<response><success>false</success>" +
+                                                "<errorCode>S02</errorCode>" +
+                                                "<errorMsg>非法的数字签名</errorMsg>" +
+                                                "</response>");
+                            }
+                        } catch (Exception e) {
+                            return EventResult.resultWith(EventResultEnum.ERROR, "<response><success>false</success>" +
+                                    "<errorCode>S07</errorCode>" +
+                                    "<errorMsg>" + e.getMessage() + "</errorMsg>" +
+                                    "</response>");
+                        }
+
+                    } else {// 大田运单回执
+
+                        try {
+                            DtwEventResult dtwEventResult = new DtwEventResult();
+
+                            List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserType(providerType, erpUserType);
+                            ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
+                            DtwSysData dtwSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), DtwSysData.class);
+                            String passKey = dtwSysData.getPassKey();
+                            String requestKey = request.getParameter("PassKey");
+                            if (!passKey.equals(requestKey)) {
+                                dtwEventResult.setErrorCode(DtwEnum.ErrorCode.CHECK_ERROR.getCode());
+                                dtwEventResult.setErrMsg("PassKey 不一致");
+                                return EventResult.resultWith(EventResultEnum.ERROR, JSON.toJSONString(dtwEventResult));
+                            }
+                            ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
+
+                            String msgId = request.getParameter("Msgid");
+                            String wayBill = request.getParameter("wayBill");
+                            String weight = request.getParameter("Weight");
+                            String state = request.getParameter("State");
+
+                            log.info("Dtw back:");
+                            log.info("MsgId:" + msgId);
+                            log.info("wayBill" + wayBill);
+                            log.info("weight:" + weight);
+                            log.info("state:" + state);
+
+                            EventResult eventResult = dtwOrderHandler.deliverOrder(msgId, wayBill, weight, state, erpUserInfo);
+
+
+                            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+
+                                dtwEventResult.setErrorCode(DtwEnum.ErrorCode.ERROR_REPUSH.getCode());
+                                dtwEventResult.setErrMsg("");
+                                return EventResult.resultWith(EventResultEnum.SUCCESS, JSON.toJSONString(dtwEventResult));
+                            } else {
+                                dtwEventResult.setErrorCode("997");
+                                dtwEventResult.setErrMsg(eventResult.getResultMsg());
+                                return EventResult.resultWith(EventResultEnum.ERROR, JSON.toJSONString(dtwEventResult));
                             }
 
-                            orderDetailSyncLogService.save(orderDetailSyncLog);
-                            log.info("Dtw Custom Back:" + orignalContent);
-                            return EventResult.resultWith(EventResultEnum.SUCCESS,
-                                    "<response><success>true</success></response>");
-                        } else {
-                            return EventResult.resultWith(EventResultEnum.ERROR,
-                                    "<response><success>false</success>" +
-                                            "<errorCode>S02</errorCode>" +
-                                            "<errorMsg>非法的数字签名</errorMsg>" +
-                                            "</response>");
-                        }
-                    } catch (Exception e) {
-                        return EventResult.resultWith(EventResultEnum.ERROR, "<response><success>false</success>" +
-                                "<errorCode>S07</errorCode>" +
-                                "<errorMsg>" + e.getMessage() + "</errorMsg>" +
-                                "</response>");
-                    }
-
-                } else {// 大田运单回执
-
-                    try {
-                        DtwEventResult dtwEventResult = new DtwEventResult();
-
-                        List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserType(providerType, erpUserType);
-                        ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
-                        DtwSysData dtwSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), DtwSysData.class);
-                        String passKey = dtwSysData.getPassKey();
-                        String requestKey = request.getParameter("PassKey");
-                        if (!passKey.equals(requestKey)) {
-                            dtwEventResult.setErrorCode(DtwEnum.ErrorCode.CHECK_ERROR.getCode());
-                            dtwEventResult.setErrMsg("PassKey 不一致");
-                            return EventResult.resultWith(EventResultEnum.ERROR, JSON.toJSONString(dtwEventResult));
-                        }
-                        ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
-
-                        String msgId = request.getParameter("Msgid");
-                        String wayBill = request.getParameter("wayBill");
-                        String weight = request.getParameter("Weight");
-                        String state = request.getParameter("State");
-
-                        log.info("Dtw back:");
-                        log.info("MsgId:" + msgId);
-                        log.info("wayBill" + wayBill);
-                        log.info("weight:" + weight);
-                        log.info("state:" + state);
-
-                        EventResult eventResult = dtwOrderHandler.deliverOrder(msgId, wayBill, weight, state, erpUserInfo);
-
-
-                        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-
+                        } catch (Exception ex) {
+                            DtwEventResult dtwEventResult = new DtwEventResult();
                             dtwEventResult.setErrorCode(DtwEnum.ErrorCode.ERROR_REPUSH.getCode());
-                            dtwEventResult.setErrMsg("");
-                            return EventResult.resultWith(EventResultEnum.SUCCESS, JSON.toJSONString(dtwEventResult));
-                        } else {
-                            dtwEventResult.setErrorCode("997");
-                            dtwEventResult.setErrMsg(eventResult.getResultMsg());
+                            dtwEventResult.setErrMsg(ex.getMessage());
                             return EventResult.resultWith(EventResultEnum.ERROR, JSON.toJSONString(dtwEventResult));
                         }
-
-                    } catch (Exception ex) {
-                        DtwEventResult dtwEventResult = new DtwEventResult();
-                        dtwEventResult.setErrorCode(DtwEnum.ErrorCode.ERROR_REPUSH.getCode());
-                        dtwEventResult.setErrMsg(ex.getMessage());
-                        return EventResult.resultWith(EventResultEnum.ERROR, JSON.toJSONString(dtwEventResult));
                     }
                 }
-            }
-        };
+            };
+        }
+        return null;
     }
 }

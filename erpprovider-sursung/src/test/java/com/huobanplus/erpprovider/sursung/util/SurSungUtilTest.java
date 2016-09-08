@@ -33,11 +33,6 @@ public class SurSungUtilTest {
         surSungSysData.setRequestUrl("http://b.sursung.com/api/open/query.aspx");
     }
 
-    @Test
-    public void testSign() throws UnsupportedEncodingException {
-        System.out.println(SurSungUtil.buildSign("logistic.query", (int) (new Date().getTime() / 1000), surSungSysData));
-
-    }
 
     @Test
     public void testCreateRequestUrl() throws UnsupportedEncodingException {

@@ -10,12 +10,16 @@
 package com.huobanplus.erpprovider.sursung.handler;
 
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
+import com.huobanplus.erpprovider.sursung.formatdata.SurSungInventory;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungLogistic;
+import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefund;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+
+import java.util.List;
 
 /**
  * Created by wuxiongliu on 2016/5/23.
@@ -38,7 +42,27 @@ public interface SurSungOrderHandler {
      */
     EventResult logisticSearch(SurSungLogisticSearch surSungDeliverySearch, SurSungSysData surSungSysData);
 
-
+    /**
+     * 发货单由erp推送至平台
+     *
+     * @param surSungLogistic
+     * @param erpUserInfo
+     * @param erpInfo
+     * @return
+     */
     EventResult logisticUpload(SurSungLogistic surSungLogistic, ERPUserInfo erpUserInfo, ERPInfo erpInfo);
+
+
+    /**
+     * 库存由erp推送至平台
+     *
+     * @param surSungInventoryList
+     * @param erpUserInfo
+     * @param erpInfo
+     * @return
+     */
+    EventResult inventoryUpload(List<SurSungInventory> surSungInventoryList, ERPUserInfo erpUserInfo, ERPInfo erpInfo);
+
+    EventResult returnRefundUpload(SurSungReturnRefund surSungReturnRefund, SurSungSysData surSungSysData);
 
 }

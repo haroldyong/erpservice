@@ -11,6 +11,7 @@ package com.huobanplus.erpprovider.sursung.handler.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.sursung.common.SurSungConstant;
 import com.huobanplus.erpprovider.sursung.common.SurSungEnum;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
@@ -20,13 +21,16 @@ import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
 import com.huobanplus.erpprovider.sursung.util.SurSungUtil;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
-import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
+import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncInventoryEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -56,9 +60,9 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
-        Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-        orderInfo.setLogiCode("201111111111");
-        orderInfo.setLogiName("圆通速递");
+        com.huobanplus.erpservice.datacenter.model.Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), com.huobanplus.erpservice.datacenter.model.Order.class);
+//        orderInfo.setLogiCode("201111111111");
+//        orderInfo.setLogiName("圆通速递");
         Date now = new Date();
         int time = (int) (now.getTime() / 1000);
 
@@ -70,26 +74,40 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(surSungOrder);
 
+
+        OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
+        if (orderDetailSyncLog == null) {
+            orderDetailSyncLog = new OrderDetailSyncLog();
+            orderDetailSyncLog.setCreateTime(now);
+        }
+        orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+        orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+        orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+        orderDetailSyncLog.setOrderId(orderInfo.getOrderId());
+        orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+        orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+        orderDetailSyncLog.setSyncTime(now);
+
         try {
 
             String requestData = JSON.toJSONString(jsonArray);
             String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.ORDER_PUSH, time, surSungSysData);
+            EventResult eventResult = orderPush(requestUrl, requestData);
+            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+            } else {
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
+            }
+            orderDetailSyncLogService.save(orderDetailSyncLog);
+            return eventResult;
 
-            HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
-
-            System.out.println("\n********************************");
-            System.out.println("请求地址:" + requestUrl);
-            System.out.println("请求数据：" + requestData);
-            System.out.println("\n********************************");
-
-
-            return EventResult.resultWith(EventResultEnum.SUCCESS, httpResult.getHttpContent());
         } catch (Exception e) {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
-    private SurSungOrder convertOrder(Order order, int shopId) {
+    private SurSungOrder convertOrder(com.huobanplus.erpservice.datacenter.model.Order order, int shopId) {
         SurSungOrder surSungOrder = new SurSungOrder();
         surSungOrder.setShopId(shopId);
         surSungOrder.setSoId(order.getOrderId());
@@ -132,15 +150,36 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
 
         SursungPay sursungPay = new SursungPay();
         sursungPay.setAmount(order.getFinalAmount());
-        sursungPay.setOuterPayId("1111111");// FIXME: 2016-08-30
+        sursungPay.setOuterPayId(order.getPayNumber());
         sursungPay.setPayDate(order.getPayTime());
         sursungPay.setPayment(order.getPaymentName());
-        sursungPay.setSellerAccount("wuxiongliu");
-        sursungPay.setBuyerAccount("wuxiongliu2");
-
+//        sursungPay.setSellerAccount("wuxiongliu");
+//        sursungPay.setBuyerAccount("wuxiongliu2");
         surSungOrder.setPay(sursungPay);
+
         surSungOrder.setSurSungOrderItems(surSungOrderItems);
         return surSungOrder;
+    }
+
+    private EventResult orderPush(String requestUrl, String requestData) {
+        HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
+
+        System.out.println("\n********************************");
+        System.out.println("请求地址:" + requestUrl);
+        System.out.println("请求数据：" + requestData);
+        System.out.println("\n********************************");
+
+        if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+            JSONObject respJson = JSONObject.parseObject(httpResult.getHttpContent());
+            if (respJson.getBoolean("issuccess")) {
+                return EventResult.resultWith(EventResultEnum.SUCCESS);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, respJson.getString("msg"), null);
+            }
+
+        } else {
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+        }
     }
 
     @Override
@@ -168,35 +207,99 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
 
     @Override
     public EventResult logisticUpload(SurSungLogistic surSungLogistic, ERPUserInfo erpUserInfo, ERPInfo erpInfo) {
-        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-        if (erpUserHandler == null) {
-            return EventResult.resultWith(EventResultEnum.ERROR);
+        try {
+            ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+            if (erpUserHandler == null) {
+                return EventResult.resultWith(EventResultEnum.ERROR);
+            }
+
+            List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
+
+            OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
+            orderDeliveryInfo.setOrderId(surSungLogistic.getSoId());
+//            orderDeliveryInfo.setLogiCode(surSungLogistic.getLogiNo());
+            orderDeliveryInfo.setLogiName(surSungLogistic.getLogisticsCompany());
+//            orderDeliveryInfo.setFreight(0.0);
+            orderDeliveryInfo.setLogiNo(surSungLogistic.getLogiNo());
+
+            List<SurSungLogisticItem> items = surSungLogistic.getItems();
+            StringBuilder sb = new StringBuilder();
+            items.forEach(item -> {
+                sb.append(item.getSku_id()).append(",").append(item.getQty()).append("|");
+            });
+            orderDeliveryInfo.setDeliverItemsStr(sb.toString());
+            orderDeliveryInfoList.add(orderDeliveryInfo);
+
+            BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
+            batchDeliverEvent.setErpInfo(erpInfo);
+            batchDeliverEvent.setErpUserInfo(erpUserInfo);
+            batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
+            EventResult eventResult = erpUserHandler.handleEvent(batchDeliverEvent);
+            if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + eventResult.getResultMsg() + " }");
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":0,\"msg\":\"同步成功\" }");
+
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + e.getMessage() + " }");
         }
 
-        List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
+    }
 
-        OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
-        orderDeliveryInfo.setOrderId(surSungLogistic.getSoId());
-//            orderDeliveryInfo.setLogiCode(surSungLogistic.getLogiNo());
-        orderDeliveryInfo.setLogiName(surSungLogistic.getLogisticsCompany());
-//            orderDeliveryInfo.setFreight(0.0);
-        orderDeliveryInfo.setLogiNo(surSungLogistic.getLogiNo());
+    @Override
+    public EventResult inventoryUpload(List<SurSungInventory> surSungInventoryList, ERPUserInfo erpUserInfo, ERPInfo erpInfo) {
+        try {
+            ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+            if (erpUserHandler == null) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":0,\"msg\":\"未找到数据源信息\" }");
+            }
 
-        List<SurSungLogisticItem> items = surSungLogistic.getItems();
-        StringBuilder sb = new StringBuilder();
-        items.forEach(item -> {
-            sb.append(item.getSku_id()).append(",").append(item.getQty()).append("|");
-        });
-        orderDeliveryInfo.setDeliverItemsStr(sb.toString());
-        orderDeliveryInfoList.add(orderDeliveryInfo);
+            SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
+            List<ProInventoryInfo> inventoryInfoList = new ArrayList<>();
+            surSungInventoryList.forEach(surSungInventory -> {
+                ProInventoryInfo proInventoryInfo = new ProInventoryInfo();
+                proInventoryInfo.setProductBn(surSungInventory.getSkuId());
+                proInventoryInfo.setInventory(surSungInventory.getQty());
+                inventoryInfoList.add(proInventoryInfo);
+            });
+            syncInventoryEvent.setErpUserInfo(erpUserInfo);
+            syncInventoryEvent.setErpInfo(erpInfo);
+            syncInventoryEvent.setInventoryInfoList(inventoryInfoList);
+            EventResult eventResult = erpUserHandler.handleEvent(syncInventoryEvent);
+            if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + eventResult.getResultMsg() + " }");
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":0,\"msg\":\"同步成功\" }");
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + e.getMessage() + " }");
+        }
+    }
 
-        BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
-        batchDeliverEvent.setErpInfo(erpInfo);
-        batchDeliverEvent.setErpUserInfo(erpUserInfo);
-        batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
+    @Override
+    public EventResult returnRefundUpload(SurSungReturnRefund surSungReturnRefund, SurSungSysData surSungSysData) {
+        try {
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.add(surSungReturnRefund);
+            Date now = new Date();
+            int time = (int) (now.getTime() / 1000);
 
+            String requestData = JSON.toJSONString(jsonArray);
+            String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.AFTERSALE_UPLOAD, time, surSungSysData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject respJson = JSONObject.parseObject(httpResult.getHttpContent());
+                if (respJson.getBoolean("issuccess")) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                } else {
+                    return EventResult.resultWith(EventResultEnum.ERROR, respJson.getString("msg"), null);
+                }
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            }
 
-        return erpUserHandler.handleEvent(batchDeliverEvent);
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
 
     }
 }

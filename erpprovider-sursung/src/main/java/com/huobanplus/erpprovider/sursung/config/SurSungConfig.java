@@ -25,10 +25,10 @@ public class SurSungConfig {
     private ERPRegister erpRegister;
 
     @Autowired
-    private SurSungHandlerBuilder kjygHandlerBuilder;
+    private SurSungHandlerBuilder surSungHandlerBuilder;
 
     @PostConstruct
     public void init() {
-        erpRegister.addBuilders(kjygHandlerBuilder);
+        erpRegister.addBuilders(surSungHandlerBuilder);
     }
 }
