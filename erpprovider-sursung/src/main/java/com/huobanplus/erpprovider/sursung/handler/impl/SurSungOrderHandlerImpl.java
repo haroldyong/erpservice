@@ -61,8 +61,6 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
         com.huobanplus.erpservice.datacenter.model.Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), com.huobanplus.erpservice.datacenter.model.Order.class);
-//        orderInfo.setLogiCode("201111111111");
-//        orderInfo.setLogiName("圆通速递");
         Date now = new Date();
         int time = (int) (now.getTime() / 1000);
 
@@ -100,9 +98,11 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
                 orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
             }
             orderDetailSyncLogService.save(orderDetailSyncLog);
+            log.info("SurSungOrderHandlerImpl-pushOrder: 推送订单完成");
             return eventResult;
 
         } catch (Exception e) {
+            log.error("SurSungOrderHandlerImpl-pushOrder:" + e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
@@ -163,17 +163,13 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
 
     private EventResult orderPush(String requestUrl, String requestData) {
         HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
-
-        System.out.println("\n********************************");
-        System.out.println("请求地址:" + requestUrl);
-        System.out.println("请求数据：" + requestData);
-        System.out.println("\n********************************");
-
         if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
             JSONObject respJson = JSONObject.parseObject(httpResult.getHttpContent());
             if (respJson.getBoolean("issuccess")) {
+                log.info("SurSungOrderHandlerImpl-orderPush:推送订单成功");
                 return EventResult.resultWith(EventResultEnum.SUCCESS);
             } else {
+                log.info("SurSungOrderHandlerImpl-orderPush:推送订单失败 " + respJson.getString("msg"));
                 return EventResult.resultWith(EventResultEnum.ERROR, respJson.getString("msg"), null);
             }
 
@@ -200,7 +196,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             }
 
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("SurSungOrderHandlerImpl-logisticSearch: " + e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
@@ -236,11 +232,14 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
             EventResult eventResult = erpUserHandler.handleEvent(batchDeliverEvent);
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
+                log.info("SurSungOrderHandlerImpl-logisticUpload: 发货同步失败 " + eventResult.getResultMsg());
                 return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + eventResult.getResultMsg() + " }");
             }
-            return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":0,\"msg\":\"同步成功\" }");
+            log.info("SurSungOrderHandlerImpl-logisticUpload: 发货同步成功");
+            return EventResult.resultWith(EventResultEnum.SUCCESS, "{\"code\":0,\"msg\":\"同步成功\" }");
 
         } catch (Exception e) {
+            log.error("SurSungOrderHandlerImpl-logisticUpload: " + e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + e.getMessage() + " }");
         }
 
@@ -267,10 +266,13 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             syncInventoryEvent.setInventoryInfoList(inventoryInfoList);
             EventResult eventResult = erpUserHandler.handleEvent(syncInventoryEvent);
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
+                log.info("SurSungOrderHandlerImpl-inventoryUpload: 库存同步失败" + eventResult.getResultMsg());
                 return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + eventResult.getResultMsg() + " }");
             }
-            return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":0,\"msg\":\"同步成功\" }");
+            log.info("SurSungOrderHandlerImpl-inventoryUpload: 库存同步成功");
+            return EventResult.resultWith(EventResultEnum.SUCCESS, "{\"code\":0,\"msg\":\"同步成功\" }");
         } catch (Exception e) {
+            log.error("SurSungOrderHandlerImpl-inventoryUpload: " + e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + e.getMessage() + " }");
         }
     }
@@ -289,15 +291,19 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject respJson = JSONObject.parseObject(httpResult.getHttpContent());
                 if (respJson.getBoolean("issuccess")) {
+                    log.info("SurSungOrderHandlerImpl-returnRefundUpload: 退货退款成功");
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 } else {
+                    log.info("SurSungOrderHandlerImpl-returnRefundUpload: 退货退款失败" + respJson.getString("msg"));
                     return EventResult.resultWith(EventResultEnum.ERROR, respJson.getString("msg"), null);
                 }
             } else {
+                log.info("SurSungOrderHandlerImpl-returnRefundUpload: 请求服务器失败" + httpResult.getHttpContent());
                 return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
 
         } catch (Exception e) {
+            log.error("SurSungOrderHandlerImpl-returnRefundUpload: " + e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
 
