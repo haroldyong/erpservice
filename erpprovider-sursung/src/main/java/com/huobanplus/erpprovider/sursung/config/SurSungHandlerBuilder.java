@@ -59,7 +59,6 @@ public class SurSungHandlerBuilder implements ERPHandlerBuilder {
         if (info.getErpType() == ERPTypeEnum.ProviderType.SURSUNG) {
             return new ERPHandler() {
 
-
                 @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
