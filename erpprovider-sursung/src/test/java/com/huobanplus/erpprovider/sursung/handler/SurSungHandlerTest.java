@@ -12,12 +12,15 @@ package com.huobanplus.erpprovider.sursung.handler;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.sursung.SurSungTestBase;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefund;
+import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefundItem;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wuxiongliu on 2016-08-30.
@@ -29,7 +32,6 @@ public class SurSungHandlerTest extends SurSungTestBase {
     @Autowired
     private SurSungOrderHandler surSungOrderHandler;
 
-    @Rollback(value = false)
     @Test
     public void testPushOrder() {
         com.huobanplus.erpservice.datacenter.model.Order order = JSON.parseObject(orderInfoJson, com.huobanplus.erpservice.datacenter.model.Order.class);
@@ -56,7 +58,33 @@ public class SurSungHandlerTest extends SurSungTestBase {
 
     @Test
     public void testReturnRefund() {
+
+        List<SurSungReturnRefundItem> surSungReturnRefundItems = new ArrayList<>();
+        SurSungReturnRefundItem surSungReturnRefundItem = new SurSungReturnRefundItem();
+        surSungReturnRefundItem.setOuterOiId("0987654321");
+        surSungReturnRefundItem.setSkuId("123");
+        surSungReturnRefundItem.setQty(2);
+        surSungReturnRefundItem.setAmount(50);
+        surSungReturnRefundItem.setType("退货");
+        surSungReturnRefundItem.setName("奶粉");
+        surSungReturnRefundItem.setPropertiesValue("红色");
+        surSungReturnRefundItems.add(surSungReturnRefundItem);
+
         SurSungReturnRefund surSungReturnRefund = new SurSungReturnRefund();
+        surSungReturnRefund.setShopId(14670);
+        surSungReturnRefund.setOuterAsId("1234567890");
+        surSungReturnRefund.setSoId("20160908145050387283");
+        surSungReturnRefund.setType("普通退货");
+        surSungReturnRefund.setLogiCompany("顺丰快递");
+        surSungReturnRefund.setLogiNo("12345logino");
+        surSungReturnRefund.setShopStatus("WAIT_SELLER_AGREE");
+        surSungReturnRefund.setRemark("不喜欢");
+        surSungReturnRefund.setGoodStatus("BUYER_RETURNED_GOODS");
+        surSungReturnRefund.setQuestionType("测试");
+        surSungReturnRefund.setTotalAmount(100);
+        surSungReturnRefund.setRefund(100);
+        surSungReturnRefund.setPayment(0);
+        surSungReturnRefund.setItems(surSungReturnRefundItems);
         EventResult eventResult = surSungOrderHandler.returnRefundUpload(surSungReturnRefund, mockSurSungSysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getData());

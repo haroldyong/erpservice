@@ -23,7 +23,7 @@ public class SurSungReturnRefund {
      * 店铺编号
      */
     @JSONField(name = "shop_id")
-    private String shopId;
+    private int shopId;
 
     /**
      * 退货退款单号，平台唯一
