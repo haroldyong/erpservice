@@ -47,7 +47,7 @@ public class SurSungConstant {
     /**
      *  库存信息erp推送到平台
      */
-    public static final String INVENTORY_UPLOAD = "inventory. upload";
+    public static final String INVENTORY_UPLOAD = "inventory.upload";
 
     /**
      * 商品上传接口
