@@ -79,6 +79,24 @@ public class ProviderApiControllerImpl implements ProviderApiController {
         EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
         String resultData = (String) eventResult.getData();
         writer.write(resultData);
-//        return new String(resultData.getBytes("utf-8"),"utf-8");
+    }
+
+    @RequestMapping(value = "/rest/json/{erpProviderType}/{erpUserType}", method = RequestMethod.POST)
+    @ResponseBody
+    public Object index2(
+            @PathVariable("erpProviderType") int providerType,
+            @PathVariable("erpUserType") int erpUserType,
+            HttpServletRequest request) {
+        ERPTypeEnum.ProviderType providerTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, providerType);
+        ERPTypeEnum.UserType userTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
+        ERPInfo erpInfo = new ERPInfo();
+        erpInfo.setErpType(providerTypeEnum);
+        ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
+        if (erpHandler == null) {
+            return "未找到相关erp处理器";
+        }
+
+        EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
+        return eventResult.getData();
     }
 }

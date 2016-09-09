@@ -40,7 +40,7 @@ public class SurSungSysData {
     /**
      * 版本号
      */
-    private String version;
+    private String version = "1.0";
 
     /**
      * 店铺id

@@ -129,6 +129,8 @@
                         return gyConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.DTW.getCode()%>:
                         return dtwConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.SURSUNG.getCode()%>:
+                        return sursungConfigHandler;
                 }
                 return null;
             }
@@ -298,6 +300,9 @@
                                 </div>
                                 <div id="detailConfig_<%=ERPTypeEnum.ProviderType.DTW.getCode()%>">
                                     <%@include file="/detailConfig/dtw_config.jsp" %>
+                                </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.SURSUNG.getCode()%>">
+                                    <%@include file="/detailConfig/sursung_config.jsp" %>
                                 </div>
                             </div>
                         </div>

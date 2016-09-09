@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.sursung.common.SurSungConstant;
 import com.huobanplus.erpprovider.sursung.common.SurSungEnum;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
+import com.huobanplus.erpprovider.sursung.exceptionhandler.SurSungExceptionHandler;
 import com.huobanplus.erpprovider.sursung.formatdata.*;
 import com.huobanplus.erpprovider.sursung.handler.SurSungOrderHandler;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
@@ -23,6 +24,7 @@ import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
+import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
@@ -60,7 +62,9 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
-        com.huobanplus.erpservice.datacenter.model.Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), com.huobanplus.erpservice.datacenter.model.Order.class);
+
+        Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+        log.info("order:" + pushNewOrderEvent.getOrderInfoJson());
         Date now = new Date();
         int time = (int) (now.getTime() / 1000);
 
@@ -231,16 +235,19 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             batchDeliverEvent.setErpUserInfo(erpUserInfo);
             batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
             EventResult eventResult = erpUserHandler.handleEvent(batchDeliverEvent);
+
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
+
                 log.info("SurSungOrderHandlerImpl-logisticUpload: 发货同步失败 " + eventResult.getResultMsg());
-                return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + eventResult.getResultMsg() + " }");
+                return SurSungExceptionHandler.handleException(false, eventResult.getResultMsg());
             }
+
             log.info("SurSungOrderHandlerImpl-logisticUpload: 发货同步成功");
-            return EventResult.resultWith(EventResultEnum.SUCCESS, "{\"code\":0,\"msg\":\"同步成功\" }");
+            return SurSungExceptionHandler.handleException(true, null);
 
         } catch (Exception e) {
             log.error("SurSungOrderHandlerImpl-logisticUpload: " + e.getMessage());
-            return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + e.getMessage() + " }");
+            return SurSungExceptionHandler.handleException(false, e.getMessage());
         }
 
     }
@@ -265,15 +272,20 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             syncInventoryEvent.setErpInfo(erpInfo);
             syncInventoryEvent.setInventoryInfoList(inventoryInfoList);
             EventResult eventResult = erpUserHandler.handleEvent(syncInventoryEvent);
+
+
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
+
                 log.info("SurSungOrderHandlerImpl-inventoryUpload: 库存同步失败" + eventResult.getResultMsg());
-                return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + eventResult.getResultMsg() + " }");
+                return SurSungExceptionHandler.handleException(false, eventResult.getResultMsg());
             }
+
             log.info("SurSungOrderHandlerImpl-inventoryUpload: 库存同步成功");
-            return EventResult.resultWith(EventResultEnum.SUCCESS, "{\"code\":0,\"msg\":\"同步成功\" }");
+            return SurSungExceptionHandler.handleException(true, null);
         } catch (Exception e) {
+
             log.error("SurSungOrderHandlerImpl-inventoryUpload: " + e.getMessage());
-            return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + e.getMessage() + " }");
+            return SurSungExceptionHandler.handleException(false, e.getMessage());
         }
     }
 

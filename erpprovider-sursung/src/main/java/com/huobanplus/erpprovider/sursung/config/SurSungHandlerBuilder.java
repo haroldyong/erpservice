@@ -12,6 +12,7 @@ package com.huobanplus.erpprovider.sursung.config;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.sursung.common.SurSungConstant;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
+import com.huobanplus.erpprovider.sursung.exceptionhandler.SurSungExceptionHandler;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungInventory;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungLogistic;
 import com.huobanplus.erpprovider.sursung.handler.SurSungOrderHandler;
@@ -20,7 +21,6 @@ import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPSysDataInfoService;
-import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
@@ -83,10 +83,11 @@ public class SurSungHandlerBuilder implements ERPHandlerBuilder {
 
                     ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
                     ERPInfo erpInfo = new ERPInfo(erpDetailConfig.getErpType(), erpDetailConfig.getErpSysData());
-
                     try {
                         InputStream in = request.getInputStream();
                         String postBody = StreamUtils.copyToString(in, Charset.forName("utf-8"));
+                        log.info("method:" + method);
+                        log.info("postBody:" + postBody);
 //                        String buildSign = SurSungUtil.buildSign(method, ts, partnerId, token, "erp");
 
                         switch (method) {
@@ -95,12 +96,13 @@ public class SurSungHandlerBuilder implements ERPHandlerBuilder {
                                 return surSungOrderHandler.logisticUpload(surSungLogistic, erpUserInfo, erpInfo);
                             case SurSungConstant.INVENTORY_UPLOAD:
                                 List<SurSungInventory> surSungInventoryList = JSON.parseArray(postBody, SurSungInventory.class);
+                                log.info(surSungInventoryList);
                                 return surSungOrderHandler.inventoryUpload(surSungInventoryList, erpUserInfo, erpInfo);
                         }
 
                     } catch (Exception e) {
                         log.info("error:" + e.getMessage());
-                        return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":-1,\"msg\":" + e.getMessage() + " }");
+                        return SurSungExceptionHandler.handleException(false, e.getMessage());
                     }
                     return null;
                 }
