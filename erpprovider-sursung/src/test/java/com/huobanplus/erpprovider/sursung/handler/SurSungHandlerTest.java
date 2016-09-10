@@ -11,6 +11,8 @@ package com.huobanplus.erpprovider.sursung.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.sursung.SurSungTestBase;
+import com.huobanplus.erpprovider.sursung.formatdata.SurSungInventory;
+import com.huobanplus.erpprovider.sursung.formatdata.SurSungLogistic;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefund;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefundItem;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
@@ -28,7 +30,7 @@ import java.util.List;
  */
 public class SurSungHandlerTest extends SurSungTestBase {
 
-    private String orderInfoJson = "{\"orderId\":\"2016090928627549\",\"memberId\":17423,\"userLoginName\":\"15868807873\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":0.000,\"orderName\":\"???????(??,42?)(1)(?1)\",\"itemNum\":1,\"lastUpdateTime\":\"2016-09-09 15:15:55\",\"createTime\":\"2016-09-09 15:15:55\",\"shipName\":\"???\",\"shipArea\":\"???/???/???\",\"province\":\"???\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"????????????????????e?\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"15868807873\",\"costItem\":125.000,\"onlinePayAmount\":0.00,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":125.000,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"???\",\"payType\":700,\"customerId\":296,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2016-09-09 15:15:55\",\"unionOrderId\":\"2016090966611538\",\"receiveStatus\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"362322199411050053\",\"buyerName\":\"???\",\"orderItems\":[{\"itemId\":14720,\"orderId\":\"2016090928627549\",\"unionOrderId\":\"2016090966611538\",\"productBn\":\"296pfsNHNko-1\",\"name\":\"???????(??,42?)(1)\",\"cost\":100.000,\"price\":125.000,\"amount\":125.000,\"num\":1,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":296,\"goodBn\":\"123456goodsbn\",\"standard\":\"??,42?\",\"brief\":null,\"shipStatus\":0}]}";
+    private String orderInfoJson = "{\"payNumber\":\"123456\",\"orderId\":\"2016090928627540\",\"memberId\":17423,\"userLoginName\":\"15868807873\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":0.000,\"orderName\":\"???????(??,42?)(1)(?1)\",\"itemNum\":1,\"lastUpdateTime\":\"2016-09-09 15:15:55\",\"createTime\":\"2016-09-09 15:15:55\",\"shipName\":\"???\",\"shipArea\":\"???/???/???\",\"province\":\"???\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"????????????????????e?\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"15868807873\",\"costItem\":125.000,\"onlinePayAmount\":0.00,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":125.000,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"???\",\"payType\":700,\"customerId\":296,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2016-09-09 15:15:55\",\"unionOrderId\":\"2016090966611538\",\"receiveStatus\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"362322199411050053\",\"buyerName\":\"???\",\"orderItems\":[{\"itemId\":14720,\"orderId\":\"2016090928627549\",\"unionOrderId\":\"2016090966611538\",\"productBn\":\"296pfsNHNko-1\",\"name\":\"???????(??,42?)(1)\",\"cost\":100.000,\"price\":125.000,\"amount\":125.000,\"num\":1,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":296,\"goodBn\":\"123456goodsbn\",\"standard\":\"??,42?\",\"brief\":null,\"shipStatus\":0}]}";
 
     @Autowired
     private SurSungOrderHandler surSungOrderHandler;
@@ -89,6 +91,26 @@ public class SurSungHandlerTest extends SurSungTestBase {
         EventResult eventResult = surSungOrderHandler.returnRefundUpload(surSungReturnRefund, mockSurSungSysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getData());
+        System.out.println(eventResult.getResultMsg());
+    }
+
+    @Test
+    public void testLogisticsUpload() {
+        String postBody = "{\"o_id\":\"307477\",\"l_id\":\"52301250\",\"so_id\":\"2016090928627540\",\"logistics_company\":\"????\",\"send_date\":\"2016-09-10 09:33:15\",\"items\":[{\"sku_id\":\"296pfsNHNko-1\",\"qty\":\"1\",\"name\":\"???????(??,42?)(1)\",\"so_id\":\"2016090928627540\"}]}";
+        SurSungLogistic surSungLogistic = JSON.parseObject(postBody, SurSungLogistic.class);
+        EventResult eventResult = surSungOrderHandler.logisticUpload(surSungLogistic, mockErpUserInfo, mockErpInfo);
+        System.out.println(eventResult.getData());
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
+    }
+
+    @Test
+    public void testInventoryUpload() {
+        String postBody = "[{\"id\":0,\"shop_id\":0,\"sku_id\":\"123456\",\"qty\":1100,\"shop_sku_id\":\"KE-YRC16012012\",\"i_id\":null,\"shop_i_id\":null},{\"id\":0,\"shop_id\":0,\"sku_id\":\"KE-YRC16015012\",\"qty\":2100,\"shop_sku_id\":\"KE-YRC16015012\",\"i_id\":null,\"shop_i_id\":null}]";
+        List<SurSungInventory> surSungInventoryList = JSON.parseArray(postBody, SurSungInventory.class);
+        EventResult eventResult = surSungOrderHandler.inventoryUpload(surSungInventoryList, mockErpUserInfo, mockErpInfo);
+        System.out.println(eventResult.getData());
+        System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
     }
 
