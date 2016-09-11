@@ -17,6 +17,7 @@ import com.huobanplus.erpprovider.dtw.util.AESUtil;
 import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
 import com.huobanplus.erpprovider.dtw.util.RSAUtil;
+import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -125,6 +126,9 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 
     @Test
     public void testPushWeixinPayOrder() {
+        mockOrder.setPayNumber(SerialNo.create());
+        mockOrder.setOrderId(SerialNo.create());
+
         EventResult eventResult = dtwOrderHandler.pushWeixinPayOrder(mockOrder, mockDtwSysData);
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultMsg());

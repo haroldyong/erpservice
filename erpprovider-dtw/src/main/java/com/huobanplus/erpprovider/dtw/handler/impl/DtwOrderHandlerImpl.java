@@ -71,8 +71,8 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         try {
             Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
             log.info(pushNewOrderEvent.getOrderInfoJson());
-            order.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());
-            order.setPayNumber("123456789");
+//            order.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());
+//            order.setPayNumber("123456789");
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
             DtwSysData dtwSysData = JSON.parseObject(erpInfo.getSysDataJson(), DtwSysData.class);
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
@@ -94,7 +94,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
                 eventResult = pushFourOrder(order, dtwSysData, dtwAllOrderStatus);
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.CUSTOM_BACK);
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
                 } else {
                     orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
                 }
@@ -119,12 +119,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 eventResult = pushFourOrder(order, dtwSysData, dtwAllOrderStatus);
 
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                    if (dtwAllOrderStatus.isSyncSuccess() && dtwAllOrderStatus.isBackSuccess()) {
-                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-                    } else {
-                        orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.CUSTOM_BACK);
-                    }
-
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
                 } else {
                     orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
                 }
@@ -549,7 +544,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             weixinCustom.setTransactionId(order.getPayNumber());
             weixinCustom.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.name());
             weixinCustom.setMchCustomsNo(dtwSysData.getCompanyCode());
-            weixinCustom.setSubOrderNo("");
+            weixinCustom.setSubOrderNo(order.getOrderId());// TODO: 2016-09-10  
             weixinCustom.setFeeType("CNY");
 
             //order_fee=transport_fee+product_fee  应付金额=物流费+商品价格

@@ -32,8 +32,5 @@ public class DtwAllOrderStatus {
                 && payOrderSyncStatus && customOrderSyncStatus;
     }
 
-    public boolean isBackSuccess() {
-        return customBackStatus;
-    }
 
 }
