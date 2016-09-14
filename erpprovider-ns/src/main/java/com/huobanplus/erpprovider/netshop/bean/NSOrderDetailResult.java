@@ -37,7 +37,7 @@ public class NSOrderDetailResult {
     private String dateTime;
 
     @JacksonXmlCData(value = true)
-    @JacksonXmlProperty(localName = "BuyerId")
+    @JacksonXmlProperty(localName = "BuyerID")
     private String buyerId;
 
     @JacksonXmlCData(value = true)

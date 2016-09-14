@@ -137,7 +137,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                                     Integer goodPageIndex = null;
                                     String goodPageIndexStr = request.getParameter("Page");
                                     if (!StringUtils.isEmpty(goodPageIndexStr)) {
-                                        goodPageIndex = Integer.valueOf(goodPageIndex);
+                                        goodPageIndex = Integer.valueOf(goodPageIndexStr);
                                     }
                                     return productHandler.obtainGoods(goodsType, goodBn, goodsName, goodPageSize, goodPageIndex, erpUserInfo, method);
                                 case Constant.SYNC_INVENTORY:

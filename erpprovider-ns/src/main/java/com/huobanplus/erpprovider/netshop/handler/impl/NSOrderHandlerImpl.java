@@ -17,14 +17,14 @@ import com.huobanplus.erpprovider.netshop.exceptionhandler.NSExceptionHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSOrderHandler;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderListInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.DeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailListEvent;
-import com.huobanplus.erpservice.eventhandler.model.DeliveryInfo;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
@@ -61,6 +61,11 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             orderListEvent.setOrderSearchInfo(orderSearchInfo);
             //todo 调用相关使用者获得订单数据
             EventResult eventResult = erpUserHandler.handleEvent(orderListEvent);
+
+            if (eventResult == null) {
+                return NSExceptionHandler.handleException(mType, EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件");
+            }
+
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, eventResult.getResultMsg());
             }
@@ -103,6 +108,11 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             orderDetailEvent.setErpUserInfo(erpUserInfo);
             orderDetailEvent.setOrderId(orderId);
             EventResult eventResult = erpUserHandler.handleEvent(orderDetailEvent);
+
+            if (eventResult == null) {
+                return NSExceptionHandler.handleException(mType, EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件");
+            }
+
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, eventResult.getResultMsg());
             }
@@ -169,14 +179,21 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             if (erpUserHandler == null) {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.NO_DATA, "未找到数据源信息");
             }
-            DeliveryInfoEvent deliveryInfoEvent = new DeliveryInfoEvent();
-            deliveryInfoEvent.setErpUserInfo(erpUserInfo);
-            DeliveryInfo deliveryInfo = new DeliveryInfo();
-            deliveryInfo.setOrderId(orderId);
-            deliveryInfo.setLogiName(logiName);
-            deliveryInfo.setLogiNo(logiNo);
-            deliveryInfoEvent.setDeliveryInfo(deliveryInfo);
-            EventResult eventResult = erpUserHandler.handleEvent(deliveryInfoEvent);
+
+            BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
+            List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
+            OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
+            orderDeliveryInfo.setOrderId(orderId);
+            orderDeliveryInfo.setLogiName(logiName);
+            orderDeliveryInfo.setLogiNo(logiNo);
+            orderDeliveryInfoList.add(orderDeliveryInfo);
+            batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
+            batchDeliverEvent.setErpUserInfo(erpUserInfo);
+
+            EventResult eventResult = erpUserHandler.handleEvent(batchDeliverEvent);
+            if (eventResult == null) {
+                return NSExceptionHandler.handleException(mType, EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件");
+            }
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, eventResult.getResultMsg());
             }

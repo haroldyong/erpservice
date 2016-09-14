@@ -17,13 +17,13 @@ import com.huobanplus.erpprovider.netshop.exceptionhandler.NSExceptionHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSProductHandler;
 import com.huobanplus.erpservice.common.httputil.HttpUtil;
 import com.huobanplus.erpservice.datacenter.model.MallGoods;
+import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.InventoryEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.ObtainGoodListEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncInventoryEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import com.huobanplus.erpservice.eventhandler.model.InventoryInfo;
 import com.huobanplus.erpservice.eventhandler.model.ObtainGoodListInfo;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +59,9 @@ public class NSProductHandlerImpl implements NSProductHandler {
             obtainGoodListInfo.setPageIndex(pageIndex);
             obtainGoodListEvent.setObtainGoodListInfo(obtainGoodListInfo);
             EventResult eventResult = erpUserHandler.handleEvent(obtainGoodListEvent);
+            if (eventResult == null) {
+                return NSExceptionHandler.handleException(mType, EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件");
+            }
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, eventResult.getResultMsg());
             }
@@ -116,14 +119,20 @@ public class NSProductHandlerImpl implements NSProductHandler {
             if (erpUserHandler == null) {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.NO_DATA, "未找到数据源信息");
             }
-            InventoryEvent inventoryEvent = new InventoryEvent();
-            inventoryEvent.setErpUserInfo(erpUserInfo);
-            InventoryInfo inventoryInfo = new InventoryInfo();
-            inventoryInfo.setGoodBn(goodBn);
-            inventoryInfo.setProBn(proBn);
-            inventoryInfo.setStock(quantity);
-            inventoryEvent.setInventoryInfo(inventoryInfo);
-            EventResult eventResult = erpUserHandler.handleEvent(inventoryEvent);
+            SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
+            syncInventoryEvent.setErpUserInfo(erpUserInfo);
+            List<ProInventoryInfo> inventoryInfoList = new ArrayList<>();
+            ProInventoryInfo proInventoryInfo = new ProInventoryInfo();
+            proInventoryInfo.setInventory(quantity);
+            proInventoryInfo.setGoodBn(goodBn);
+            proInventoryInfo.setProductBn(proBn);
+            inventoryInfoList.add(proInventoryInfo);
+            syncInventoryEvent.setInventoryInfoList(inventoryInfoList);
+
+            EventResult eventResult = erpUserHandler.handleEvent(syncInventoryEvent);
+            if (eventResult == null) {
+                return NSExceptionHandler.handleException(mType, EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件");
+            }
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, eventResult.getResultMsg());
             }
