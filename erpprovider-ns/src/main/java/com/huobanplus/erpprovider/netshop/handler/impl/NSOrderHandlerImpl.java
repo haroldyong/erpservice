@@ -24,7 +24,7 @@ import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailListEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
@@ -180,17 +180,15 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.NO_DATA, "未找到数据源信息");
             }
 
-            BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
-            List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
+            PushDeliveryInfoEvent pushDeliveryInfoEvent = new PushDeliveryInfoEvent();
             OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
             orderDeliveryInfo.setOrderId(orderId);
             orderDeliveryInfo.setLogiName(logiName);
             orderDeliveryInfo.setLogiNo(logiNo);
-            orderDeliveryInfoList.add(orderDeliveryInfo);
-            batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
-            batchDeliverEvent.setErpUserInfo(erpUserInfo);
+            pushDeliveryInfoEvent.setDeliveryInfo(orderDeliveryInfo);
+            pushDeliveryInfoEvent.setErpUserInfo(erpUserInfo);
 
-            EventResult eventResult = erpUserHandler.handleEvent(batchDeliverEvent);
+            EventResult eventResult = erpUserHandler.handleEvent(pushDeliveryInfoEvent);
             if (eventResult == null) {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件");
             }

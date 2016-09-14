@@ -193,7 +193,9 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
                             log.info("state:" + state);
 
                             EventResult eventResult = dtwOrderHandler.deliverOrder(msgId, wayBill, weight, state, erpUserInfo);
-
+                            if (eventResult == null) {
+                                throw new Exception(EventResultEnum.UNSUPPORT_EVENT.getResultMsg());
+                            }
 
                             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
 

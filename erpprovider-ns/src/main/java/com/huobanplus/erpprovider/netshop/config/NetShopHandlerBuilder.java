@@ -140,11 +140,11 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                                         goodPageIndex = Integer.valueOf(goodPageIndexStr);
                                     }
                                     return productHandler.obtainGoods(goodsType, goodBn, goodsName, goodPageSize, goodPageIndex, erpUserInfo, method);
-                                case Constant.SYNC_INVENTORY:
-                                    String syncGoodBn = request.getParameter("ItemID");
-                                    String syncProBn = request.getParameter("SkuID");
-                                    int stock = Integer.parseInt(request.getParameter("Quantity"));
-                                    return productHandler.syncInventory(syncGoodBn, syncProBn, stock, erpUserInfo, method);
+//                                case Constant.SYNC_INVENTORY:
+//                                    String syncGoodBn = request.getParameter("ItemID");
+//                                    String syncProBn = request.getParameter("SkuID");
+//                                    int stock = Integer.parseInt(request.getParameter("Quantity"));
+//                                    return productHandler.syncInventory(syncGoodBn, syncProBn, stock, erpUserInfo, method);
                             }
                             return NSExceptionHandler.handleException(method, EventResultEnum.NO_DATA, "未找到数据源信息");
                         } else {
