@@ -212,7 +212,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
         try {
             ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
             if (erpUserHandler == null) {
-                return EventResult.resultWith(EventResultEnum.ERROR);
+                return SurSungExceptionHandler.handleException(false, "{\"code\":0,\"msg\":\"未找到数据源信息\" }");
             }
 
             List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
@@ -259,7 +259,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
         try {
             ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
             if (erpUserHandler == null) {
-                return EventResult.resultWith(EventResultEnum.ERROR, "{\"code\":0,\"msg\":\"未找到数据源信息\" }");
+                return SurSungExceptionHandler.handleException(false, "{\"code\":0,\"msg\":\"未找到数据源信息\" }");
             }
 
             SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
