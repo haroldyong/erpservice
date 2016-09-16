@@ -15,6 +15,11 @@ package com.huobanplus.erpprovider.sursung.common;
 public class SurSungConstant {
 
     /**
+     * 每页大小，不超过30
+     */
+    public static final Integer PAGE_SIZE = 25;
+
+    /**
      * 订单上传接口
      */
     public static final String ORDER_PUSH = "orders.upload";
@@ -58,6 +63,12 @@ public class SurSungConstant {
      * 退货退款接口
      */
     public static final String AFTERSALE_UPLOAD = "aftersale.upload";
+
+
+    /**
+     * 订单查询接口
+     */
+    public static final String ORDERS_QUERY = "orders.query";
 
 
 }

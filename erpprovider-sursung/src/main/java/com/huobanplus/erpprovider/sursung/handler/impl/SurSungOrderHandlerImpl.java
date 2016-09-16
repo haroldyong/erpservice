@@ -19,6 +19,8 @@ import com.huobanplus.erpprovider.sursung.exceptionhandler.SurSungExceptionHandl
 import com.huobanplus.erpprovider.sursung.formatdata.*;
 import com.huobanplus.erpprovider.sursung.handler.SurSungOrderHandler;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
+import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
+import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearchResult;
 import com.huobanplus.erpprovider.sursung.util.SurSungUtil;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
@@ -300,7 +302,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             String requestData = JSON.toJSONString(jsonArray);
             String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.AFTERSALE_UPLOAD, time, surSungSysData);
             HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
-            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+            if (HttpStatus.SC_OK == httpResult.getHttpStatus()) {
                 JSONObject respJson = JSONObject.parseObject(httpResult.getHttpContent());
                 if (respJson.getBoolean("issuccess")) {
                     log.info("SurSungOrderHandlerImpl-returnRefundUpload: 退货退款成功");
@@ -319,5 +321,37 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
 
+    }
+
+    @Override
+    public EventResult queryChannelOrder(SurSungOrderSearch surSungOrderSearch, SurSungSysData surSungSysData) {
+        try {
+            Date now = new Date();
+            int time = (int) (now.getTime() / 1000);
+            String requestData = JSON.toJSONString(surSungOrderSearch);
+            String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.ORDERS_QUERY, time, surSungSysData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                SurSungOrderSearchResult surSungOrderSearchResult = JSON.parseObject(httpResult.getHttpContent(),
+                        SurSungOrderSearchResult.class);
+                if (0 == surSungOrderSearchResult.getCode()) {
+                    // 处理成功
+                    log.info("SurSungOrderHandlerImpl-queryChannelOrder: 查询订单成功");
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, surSungOrderSearchResult);
+                } else {
+                    // 处理失败s
+                    log.info("SurSungOrderHandlerImpl-queryChannelOrder: " + surSungOrderSearchResult.getMsg());
+                    return EventResult.resultWith(EventResultEnum.ERROR, surSungOrderSearchResult.getMsg(), null);
+                }
+
+            } else {
+                log.info("SurSungOrderHandlerImpl-queryChannelOrder: " + httpResult.getHttpContent());
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            }
+
+        } catch (Exception e) {
+            log.error("SurSungOrderHandlerImpl-queryChannelOrder: " + e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
     }
 }

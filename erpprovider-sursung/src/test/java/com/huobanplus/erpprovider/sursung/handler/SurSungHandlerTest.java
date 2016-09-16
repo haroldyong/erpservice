@@ -16,6 +16,7 @@ import com.huobanplus.erpprovider.sursung.formatdata.SurSungLogistic;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefund;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefundItem;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
+import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -112,6 +113,21 @@ public class SurSungHandlerTest extends SurSungTestBase {
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
+    }
+
+    @Test
+    public void testQueryOrder() {
+        SurSungOrderSearch surSungOrderSearch = new SurSungOrderSearch();
+        surSungOrderSearch.setPageIndex(1);
+        surSungOrderSearch.setPageSize(10);
+//        surSungOrderSearch.setShopId(14670);
+        surSungOrderSearch.setModifiedBegin("2016-09-10");
+        surSungOrderSearch.setModifiedEnd("2016-09-16");
+        EventResult eventResult = surSungOrderHandler.queryChannelOrder(surSungOrderSearch, mockSurSungSysData);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getData());
+
     }
 
 }

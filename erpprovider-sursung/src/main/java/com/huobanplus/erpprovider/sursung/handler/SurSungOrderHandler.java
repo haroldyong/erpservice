@@ -14,6 +14,7 @@ import com.huobanplus.erpprovider.sursung.formatdata.SurSungInventory;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungLogistic;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefund;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
+import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -64,5 +65,15 @@ public interface SurSungOrderHandler {
     EventResult inventoryUpload(List<SurSungInventory> surSungInventoryList, ERPUserInfo erpUserInfo, ERPInfo erpInfo);
 
     EventResult returnRefundUpload(SurSungReturnRefund surSungReturnRefund, SurSungSysData surSungSysData);
+
+
+    /**
+     * 渠道订单查询
+     *
+     * @param surSungOrderSearch
+     * @param surSungSysData
+     * @return
+     */
+    EventResult queryChannelOrder(SurSungOrderSearch surSungOrderSearch, SurSungSysData surSungSysData);
 
 }
