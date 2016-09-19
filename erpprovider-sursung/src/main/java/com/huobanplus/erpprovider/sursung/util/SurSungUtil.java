@@ -28,7 +28,6 @@ public class SurSungUtil {
                 .append("token").append(token)
                 .append(partnerKey);
 
-        System.out.println("source：" + sb.toString());
         return DigestUtils.md5Hex(sb.toString().getBytes("utf-8"));
     }
 

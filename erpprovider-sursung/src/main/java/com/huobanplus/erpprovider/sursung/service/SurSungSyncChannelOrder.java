@@ -15,15 +15,16 @@ import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
 import com.huobanplus.erpprovider.sursung.handler.SurSungOrderHandler;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearchResult;
-import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.entity.logs.ChannelOrderSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
-import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
+import com.huobanplus.erpservice.datacenter.repository.logs.ChannelOrderSyncLogRepository;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncChannelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -52,6 +53,8 @@ public class SurSungSyncChannelOrder {
     private ERPDetailConfigService detailConfigService;
     @Autowired
     private OrderShipSyncLogService orderShipSyncLogService;
+    @Autowired
+    private ChannelOrderSyncLogRepository channelOrderSyncLogRepository;
 
     @Autowired
     private SurSungOrderHandler surSungOrderHandler;
@@ -75,8 +78,8 @@ public class SurSungSyncChannelOrder {
                         ? Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusDays(2))
                         : lastSyncLog.getSyncTime();
 
-                List<OrderDeliveryInfo> failedOrders = new ArrayList<>(); //失败的订单列表
-                List<OrderDeliveryInfo> successOrders = new ArrayList<>(); //成功的订单列表
+                List failedOrders = new ArrayList<>(); //失败的订单列表
+                List successOrders = new ArrayList<>(); //成功的订单列表
                 int totalCount = 0; //总数量
                 int pageIndex = 1;
 
@@ -92,12 +95,16 @@ public class SurSungSyncChannelOrder {
                     SurSungOrderSearchResult surSungOrderSearchResult = (SurSungOrderSearchResult) eventResult.getData();
                     totalCount = surSungOrderSearchResult.getDataCount();
 
+                    // 第一次推送
+                    SyncChannelOrderEvent syncChannelOrderEvent = new SyncChannelOrderEvent();
+
                     while (surSungOrderSearchResult.isHasNext()) {
                         pageIndex++;
                         orderSearch.setPageIndex(pageIndex);
                         EventResult nextEventResult = surSungOrderHandler.queryChannelOrder(orderSearch, sysData);
                         if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                             surSungOrderSearchResult = (SurSungOrderSearchResult) nextEventResult.getData();
+                            //后续几次推送
                         }
                     }
                 }
@@ -113,33 +120,25 @@ public class SurSungSyncChannelOrder {
 
     }
 
-    public void syncLog(List<OrderDeliveryInfo> failedOrders,
-                        List<OrderDeliveryInfo> successOrders, int totalCount,
+    public void syncLog(List failedOrders,
+                        List successOrders, int totalCount,
                         ERPUserInfo erpUserInfo, ERPInfo erpInfo) {
-        //发货同步记录
-        OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
+
+        ChannelOrderSyncLog channelOrderSyncLog = new ChannelOrderSyncLog();
+        channelOrderSyncLog.setUserType(erpUserInfo.getErpUserType());
+        channelOrderSyncLog.setProviderType(erpInfo.getErpType());
+        channelOrderSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+        channelOrderSyncLog.setSyncTime(new Date());
+        channelOrderSyncLog.setTotalCount(totalCount);
         if (totalCount > 0) {
             int successCount = successOrders.size(), failedCount = failedOrders.size();
-            orderShipSyncLog.setProviderType(erpInfo.getErpType());
-            orderShipSyncLog.setUserType(erpUserInfo.getErpUserType());
-            orderShipSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-            orderShipSyncLog.setTotalCount(totalCount);
-            orderShipSyncLog.setSuccessCount(successCount);
-            orderShipSyncLog.setFailedCount(failedCount);
-            orderShipSyncLog.setSyncTime(new Date());
-            if (successCount > 0 && failedCount > 0) {
-                orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
-            }
-            if (successCount > 0 && failedCount == 0) {
-                orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-            }
-            if (successCount == 0) {
-                orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
-            }
+
         } else {
-            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.NO_DATA);
+
         }
-        orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
+
+        channelOrderSyncLogRepository.save(channelOrderSyncLog);
+
 
     }
 }
