@@ -21,5 +21,12 @@
     <groupId>com.huobanplus.erpservice</groupId>
     <artifactId>erpprovider-edi</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.huobanplus.erpservice</groupId>
+            <artifactId>erpservice-eventHandler</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>
