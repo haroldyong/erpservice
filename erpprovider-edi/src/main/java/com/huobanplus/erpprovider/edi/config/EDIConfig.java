@@ -9,6 +9,22 @@
 
 package com.huobanplus.erpprovider.edi.config;
 
-public class EDIConfig {
+import com.huobanplus.erpservice.eventhandler.ERPRegister;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.PostConstruct;
+
+@Configuration
+public class EDIConfig {
+    @Autowired
+    private ERPRegister register;
+
+    @Autowired
+    private EDIHandlerBuilder ediHandlerBuilder;
+
+    @PostConstruct
+    public void init() {
+        register.addBuilders(ediHandlerBuilder);
+    }
 }
