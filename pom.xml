@@ -35,6 +35,7 @@
         <module>erpprovider-kjyg</module>
         <module>erpprovider-dtw</module>
         <module>erpprovider-sursung</module>
+        <module>erpprovider-edi</module>
     </modules>
 
     <properties>
