@@ -12,30 +12,21 @@ package com.huobanplus.erpprovider.edi.formatdata;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Data;
 
+/**
+ * Created by wuxiongliu on 2016-09-19.
+ */
 @Data
-public class EDIOrderItem {
+public class EDIPromotion {
 
     /**
      *
      */
-    @JacksonXmlProperty(localName = "productId")
-    private String productId;
+    @JacksonXmlProperty(localName = "proAmount")
+    private double proAmount;
 
     /**
      *
      */
-    @JacksonXmlProperty(localName = "qty")
-    private int qty;
-
-    /**
-     *
-     */
-    @JacksonXmlProperty(localName = "price")
-    private double price;
-
-    /**
-     *
-     */
-    @JacksonXmlProperty(localName = "amount")
-    private String amount;
+    @JacksonXmlProperty(localName = "proRemark")
+    private String proRemark;
 }

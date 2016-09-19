@@ -9,6 +9,27 @@
 
 package com.huobanplus.erpprovider.edi.handler;
 
+import com.huobanplus.erpprovider.edi.common.EDISysData;
+import com.huobanplus.erpprovider.edi.search.EDILogiSearch;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+
 public interface EDIOrderHandler {
 
+    /**
+     * 订单推送
+     *
+     * @param pushNewOrderEvent
+     * @return
+     */
+    EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
+
+    /**
+     * 订单物流查询
+     *
+     * @param ediLogiSearch
+     * @param ediSysData
+     * @return
+     */
+    EventResult logisticSearch(EDILogiSearch ediLogiSearch, EDISysData ediSysData);
 }

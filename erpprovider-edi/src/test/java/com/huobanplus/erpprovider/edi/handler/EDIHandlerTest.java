@@ -9,10 +9,34 @@
 
 package com.huobanplus.erpprovider.edi.handler;
 
-import com.huobanplus.erpprovider.edi.EDITestBase;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.huobanplus.erpprovider.edi.formatdata.*;
+import org.junit.Test;
 
 /**
  * Created by wuxiongliu on 2016-09-19.
  */
-public class EDIHandlerTest extends EDITestBase {
+public class EDIHandlerTest /*extends EDITestBase*/ {
+
+    @Test
+    public void testXml() throws JsonProcessingException {
+        EDIOrder ediOrder = new EDIOrder();
+        EDIPromotion ediPromotion = new EDIPromotion();
+        EDIPayOrder ediPayOrder = new EDIPayOrder();
+        EDILogiOrder ediLogiOrder = new EDILogiOrder();
+        EDIOrderItem ediOrderItem = new EDIOrderItem();
+        ediOrder.setEdiPromotion(ediPromotion);
+        ediOrder.setEdiPayOrder(ediPayOrder);
+        ediOrder.setEdiLogiOrder(ediLogiOrder);
+        ediOrder.setEdiOrderItem(ediOrderItem);
+
+        String orderResultXml = new XmlMapper().writeValueAsString(ediOrder);
+        orderResultXml = orderResultXml.replaceFirst("<promotion>", "<promotions><promotion>");
+        orderResultXml = orderResultXml.replaceFirst("</promotion>", "</promotion></promotions>");
+        orderResultXml = orderResultXml.replaceFirst("<detail>", "<goods><detail>");
+        orderResultXml = orderResultXml.replaceFirst("</detail>", "</detail></goods>");
+        System.out.println();
+        System.out.println(orderResultXml);
+    }
 }

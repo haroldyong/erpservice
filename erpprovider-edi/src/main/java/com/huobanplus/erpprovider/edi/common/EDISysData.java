@@ -9,6 +9,20 @@
 
 package com.huobanplus.erpprovider.edi.common;
 
+import lombok.Data;
+
+@Data
 public class EDISysData {
 
+    private String requestUrl;
+
+    private String customer;
+
+    private String version = "0.0.1";
+
+    private String appKey;
+
+    private String secretKey;
+
+    private String shopCode;
 }
