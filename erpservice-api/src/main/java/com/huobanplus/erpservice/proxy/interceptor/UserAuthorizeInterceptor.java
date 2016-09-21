@@ -10,7 +10,6 @@
 package com.huobanplus.erpservice.proxy.interceptor;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
@@ -27,7 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,13 +45,13 @@ public class UserAuthorizeInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         ApiResult apiResult;
         //签名验证
-        String requestSign = request.getParameter("sign");
-
-        if (StringUtils.isEmpty(requestSign)) {
-            apiResult = ApiResult.resultWith(ResultCode.EMPTY_SIGN_CODE);
-            response.getWriter().write(JSON.toJSONString(apiResult));
-            return false;
-        }
+//        String requestSign = request.getParameter("sign");
+//
+//        if (StringUtils.isEmpty(requestSign)) {
+//            apiResult = ApiResult.resultWith(ResultCode.EMPTY_SIGN_CODE);
+//            response.getWriter().write(JSON.toJSONString(apiResult));
+//            return false;
+//        }
         Map<String, Object> signMap = CommonUtils.getSignMap(request);
         //得到商家的erp配置
         int customerId = Integer.parseInt(request.getParameter("customerId"));
@@ -67,16 +65,16 @@ public class UserAuthorizeInterceptor extends HandlerInterceptorAdapter {
         }
         String secretKey = detailConfigEntity.getErpUserType() == ERPTypeEnum.UserType.HUOBAN_MALL ? HBConstant.SECRET_KEY : SBConstant.SECRET_KEY;
         String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, secretKey);
-        if (sign.equals(requestSign)) {
+//        if (sign.equals(requestSign)) {
             ERPInfo erpInfo = new ERPInfo(detailConfigEntity.getErpType(), detailConfigEntity.getErpSysData());
             ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, customerId);
             request.setAttribute("erpInfo", erpInfo);
             request.setAttribute("erpUserInfo", erpUserInfo);
             return true;
-        } else {
-            apiResult = ApiResult.resultWith(ResultCode.WRONG_SIGN_CODE);
-            response.getWriter().write(new ObjectMapper().writeValueAsString(apiResult));
-            return false;
-        }
+////        } else {
+//            apiResult = ApiResult.resultWith(ResultCode.WRONG_SIGN_CODE);
+//            response.getWriter().write(new ObjectMapper().writeValueAsString(apiResult));
+//            return false;
+////        }
     }
 }

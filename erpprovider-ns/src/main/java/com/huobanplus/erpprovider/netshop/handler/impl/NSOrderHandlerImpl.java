@@ -89,7 +89,8 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             String firstPanel = orderResultXml.substring(0, firstIndex);
             String orderPanel = orderResultXml.substring(firstIndex + 9, lastIndex);
             String lastPanel = orderResultXml.substring(lastIndex + 10);
-            String xmlResult = firstPanel + "<OrderList>" + orderPanel + "</OrderList>" + lastPanel;
+            String xmlResult = "<?xml version='1.0' encoding='UTF-8'?>" + firstPanel.replaceFirst("<Order xmlns=\"\">", "<Order>")
+                    + "<OrderList>" + orderPanel + "</OrderList>" + lastPanel;
             return EventResult.resultWith(EventResultEnum.SUCCESS, xmlResult);
         } catch (Exception e) {
             return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, "服务器错误--" + e.getMessage());
@@ -165,7 +166,8 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             String firstPanel = resultXml.substring(0, firstIndex);
             String orderItemPanel = resultXml.substring(firstIndex + 6, lastIndex);
             String lastPanel = resultXml.substring(lastIndex + 7);
-            String xmlResult = firstPanel + orderItemPanel + lastPanel;
+            String xmlResult = "<?xml version='1.0' encoding='UTF-8'?>" + firstPanel.replaceFirst("<Order xmlns=\"\">", "<Order>")
+                    + orderItemPanel + lastPanel;
             return EventResult.resultWith(EventResultEnum.SUCCESS, xmlResult);
         } catch (Exception e) {
             return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, "服务器错误--" + e.getMessage());

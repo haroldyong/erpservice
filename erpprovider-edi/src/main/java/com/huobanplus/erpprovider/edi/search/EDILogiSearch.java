@@ -40,12 +40,12 @@ public class EDILogiSearch {
      *
      */
     @JSONField(name = "page")
-    private String page;
+    private Integer page;
 
     /**
      *
      */
     @JSONField(name = "pageSize")
-    private String pageSize;
+    private Integer pageSize;
 
 }

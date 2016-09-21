@@ -27,10 +27,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by wuxiongliu on 2016/6/16.
@@ -79,6 +76,8 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         map.put("test", "");
         map.put("test", null);
 
+        //9A0A8659F005D6984697E2CA0A9CF3B7
+        //9A0A8659F005D6984697E2CA0A9CF3B7
         System.out.println(DtwUtil.weixinBuildSign(map, "192006250b4c09247ec02edce69f6a2d"));
     }
 
@@ -218,6 +217,12 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         Boolean isOk = RSAUtil.verify(inpuData, publicKey, sign2);
 
         Assert.assertTrue(isOk);
+    }
+
+    @Test
+    public void test() {
+        System.out.println(UUID.randomUUID().toString());
+        System.out.println(UUID.randomUUID().toString());
     }
 
 }

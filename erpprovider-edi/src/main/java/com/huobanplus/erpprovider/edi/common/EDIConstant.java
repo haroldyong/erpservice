@@ -11,4 +11,5 @@ package com.huobanplus.erpprovider.edi.common;
 
 public class EDIConstant {
 
+    public static final int PAGE_SIZE = 30;
 }

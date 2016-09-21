@@ -544,8 +544,10 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             weixinCustom.setTransactionId(order.getPayNumber());
             weixinCustom.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.name());
             weixinCustom.setMchCustomsNo(dtwSysData.getCompanyCode());
-            weixinCustom.setSubOrderNo(order.getOrderId());// TODO: 2016-09-10  
+            weixinCustom.setSubOrderNo(order.getOrderId() + "001");// TODO: 2016-09-10
             weixinCustom.setFeeType("CNY");
+            weixinCustom.setCertType("IDCARD");
+            weixinCustom.setCertId(order.getBuyerPid());
 
             //order_fee=transport_fee+product_fee  应付金额=物流费+商品价格
             weixinCustom.setOrderFee((int) (order.getFinalAmount() * 100));// 单位转换成分

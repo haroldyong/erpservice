@@ -200,7 +200,7 @@ public class EDIOrderHandlerImpl implements EDIOrderHandler {
 
                 Element resultElem = root.element("result");
                 if (resultElem.getText().equals("success")) {
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);// TODO: 2016-09-19
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, httpResult.getHttpContent());// TODO: 2016-09-19
                 } else {
                     Element messageElem = root.element("message");
                     return EventResult.resultWith(EventResultEnum.ERROR, messageElem.getText(), null);
