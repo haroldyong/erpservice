@@ -114,8 +114,8 @@ public class EDIOrderHandlerImpl implements EDIOrderHandler {
         return sb.toString();
     }
 
-    private EDIOrder convertOrder(Order order, EDISysData ediSysData) {
-        EDIOrder ediOrder = new EDIOrder();
+    private EDINingBoOrder convertOrder(Order order, EDISysData ediSysData) {
+        EDINingBoOrder ediOrder = new EDINingBoOrder();
 
         ediOrder.setOrderShop(ediSysData.getShopCode());
         ediOrder.setOrderFrom("");

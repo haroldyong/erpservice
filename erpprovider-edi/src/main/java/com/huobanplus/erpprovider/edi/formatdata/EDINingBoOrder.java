@@ -15,13 +15,20 @@ import lombok.Data;
 
 @Data
 @JacksonXmlRootElement(localName = "order")
-public class EDIOrder {
+public class EDINingBoOrder {
 
     /**
      *
      */
     @JacksonXmlProperty(localName = "orderShop")
     private String orderShop;
+
+    /**
+     * OTO店铺代码
+     */
+    @JacksonXmlProperty(localName = "otoCode")
+    private String otoCode;
+
 
     /**
      *

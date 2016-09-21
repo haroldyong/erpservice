@@ -21,7 +21,7 @@ public class EDIHandlerTest /*extends EDITestBase*/ {
 
     @Test
     public void testXml() throws JsonProcessingException {
-        EDIOrder ediOrder = new EDIOrder();
+        EDINingBoOrder ediOrder = new EDINingBoOrder();
         EDIPromotion ediPromotion = new EDIPromotion();
         EDIPayOrder ediPayOrder = new EDIPayOrder();
         EDILogiOrder ediLogiOrder = new EDILogiOrder();
