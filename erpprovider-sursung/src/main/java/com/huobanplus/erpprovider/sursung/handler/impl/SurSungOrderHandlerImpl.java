@@ -74,7 +74,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
         SurSungSysData surSungSysData = JSON.parseObject(erpInfo.getSysDataJson(), SurSungSysData.class);
         ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
 
-        SurSungOrder surSungOrder = convertOrder(orderInfo, surSungSysData.getShopId());
+        SurSungOrder surSungOrder = convert2ErpOrder(orderInfo, surSungSysData.getShopId());
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(surSungOrder);
 
@@ -113,7 +113,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
         }
     }
 
-    private SurSungOrder convertOrder(com.huobanplus.erpservice.datacenter.model.Order order, int shopId) {
+    private SurSungOrder convert2ErpOrder(com.huobanplus.erpservice.datacenter.model.Order order, int shopId) {
         SurSungOrder surSungOrder = new SurSungOrder();
         surSungOrder.setShopId(shopId);
         surSungOrder.setSoId(order.getOrderId());
@@ -337,7 +337,9 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
                 if (0 == surSungOrderSearchResult.getCode()) {
                     // 处理成功
                     log.info("SurSungOrderHandlerImpl-queryChannelOrder: 查询订单成功");
-                    return EventResult.resultWith(EventResultEnum.SUCCESS, surSungOrderSearchResult);
+//                    List<Order> orderList = convert2PlatformOrder(surSungSysData.getShopId(), surSungOrderSearchResult.getOrders());
+//
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, null);
                 } else {
                     // 处理失败s
                     log.info("SurSungOrderHandlerImpl-queryChannelOrder: " + surSungOrderSearchResult.getMsg());
@@ -354,4 +356,6 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
+
+
 }
