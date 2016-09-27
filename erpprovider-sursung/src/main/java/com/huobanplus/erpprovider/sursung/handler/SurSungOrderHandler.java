@@ -30,7 +30,7 @@ public interface SurSungOrderHandler {
     /**
      * 推送订单
      *
-     * @param pushNewOrderEvent
+     * @param pushNewOrderEvent 推送订单事件
      * @return
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
@@ -46,9 +46,9 @@ public interface SurSungOrderHandler {
     /**
      * 发货单由erp推送至平台
      *
-     * @param surSungLogistic
-     * @param erpUserInfo
-     * @param erpInfo
+     * @param surSungLogistic 物流信息bean
+     * @param erpUserInfo erp使用者信息
+     * @param erpInfo erp提供者信息
      * @return
      */
     EventResult logisticUpload(SurSungLogistic surSungLogistic, ERPUserInfo erpUserInfo, ERPInfo erpInfo);
@@ -57,21 +57,28 @@ public interface SurSungOrderHandler {
     /**
      * 库存由erp推送至平台
      *
-     * @param surSungInventoryList
-     * @param erpUserInfo
-     * @param erpInfo
+     * @param surSungInventoryList 库存list
+     * @param erpUserInfo erp使用者信息
+     * @param erpInfo erp提供者信息
      * @return
      */
     EventResult inventoryUpload(List<SurSungInventory> surSungInventoryList, ERPUserInfo erpUserInfo, ERPInfo erpInfo);
 
+    /**
+     * 退货退款接口
+     *
+     * @param surSungReturnRefund 退货退款bean
+     * @param surSungSysData      系统参数
+     * @return
+     */
     EventResult returnRefundUpload(SurSungReturnRefund surSungReturnRefund, SurSungSysData surSungSysData);
 
 
     /**
      * 渠道订单查询
      *
-     * @param surSungOrderSearch
-     * @param surSungSysData
+     * @param surSungOrderSearch 渠道订单查询bean
+     * @param surSungSysData 系统参数
      * @return
      */
     EventResult queryChannelOrder(SurSungOrderSearch surSungOrderSearch, SurSungSysData surSungSysData);

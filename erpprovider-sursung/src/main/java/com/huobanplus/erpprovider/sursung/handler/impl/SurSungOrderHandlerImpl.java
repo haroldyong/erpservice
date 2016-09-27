@@ -339,7 +339,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
                     log.info("SurSungOrderHandlerImpl-queryChannelOrder: 查询订单成功");
 //                    List<Order> orderList = convert2PlatformOrder(surSungSysData.getShopId(), surSungOrderSearchResult.getOrders());
 //
-                    return EventResult.resultWith(EventResultEnum.SUCCESS, null);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, surSungOrderSearchResult);
                 } else {
                     // 处理失败s
                     log.info("SurSungOrderHandlerImpl-queryChannelOrder: " + surSungOrderSearchResult.getMsg());

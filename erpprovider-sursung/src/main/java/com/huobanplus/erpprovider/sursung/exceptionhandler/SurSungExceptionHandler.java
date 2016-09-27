@@ -18,6 +18,13 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
  */
 public class SurSungExceptionHandler {
 
+    /**
+     * handler request 的统一异常处理
+     *
+     * @param isSuccess 处理结果是否成功
+     * @param errorMsg  异常信息
+     * @return
+     */
     public static EventResult handleException(boolean isSuccess, String errorMsg) {
 
         SurSungResult surSungResult = new SurSungResult();
