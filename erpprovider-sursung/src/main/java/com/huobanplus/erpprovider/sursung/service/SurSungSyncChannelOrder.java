@@ -26,11 +26,13 @@ import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.repository.logs.ChannelOrderSyncLogRepository;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
+import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncChannelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,8 @@ public class SurSungSyncChannelOrder {
     private OrderShipSyncLogService orderShipSyncLogService;
     @Autowired
     private ChannelOrderSyncLogRepository channelOrderSyncLogRepository;
+    @Autowired
+    private ERPRegister erpRegister;
 
     @Autowired
     private SurSungOrderHandler surSungOrderHandler;
@@ -94,6 +98,7 @@ public class SurSungSyncChannelOrder {
 
                 // 第一次同步
                 EventResult eventResult = surSungOrderHandler.queryChannelOrder(orderSearch, sysData);
+                ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                     SurSungOrderSearchResult surSungOrderSearchResult = (SurSungOrderSearchResult) eventResult.getData();
                     totalCount = surSungOrderSearchResult.getDataCount();
@@ -105,6 +110,10 @@ public class SurSungSyncChannelOrder {
                     syncChannelOrderEvent.setOrderList(convert2PlatformOrder(sysData.getShopId(),
                             surSungOrderSearchResult.getOrders()));
                     // 推送至平台
+                    EventResult firstSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
+                    if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        // TODO: 2016-09-27  
+                    }
 
 
                     while (surSungOrderSearchResult.isHasNext()) {
@@ -118,6 +127,11 @@ public class SurSungSyncChannelOrder {
                                     surSungOrderSearchResult.getOrders()));
 
                             // 推送至平台
+                            EventResult nextSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
+                            if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                // // TODO: 2016-09-27  
+                            }
+
                         }
                     }
                 }

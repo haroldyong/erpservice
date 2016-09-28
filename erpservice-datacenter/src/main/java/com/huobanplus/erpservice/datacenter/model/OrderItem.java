@@ -32,7 +32,7 @@ public class OrderItem extends BaseInfo {
      */
     private double price;
     /**
-     * 销售价
+     * 商品总价
      */
     private double amount;
     /**
