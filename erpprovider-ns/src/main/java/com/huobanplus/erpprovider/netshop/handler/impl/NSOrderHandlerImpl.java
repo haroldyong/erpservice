@@ -78,7 +78,7 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             });
 
             NSOrderListResult orderListResult = new NSOrderListResult();
-            orderListResult.setOrderCount(String.valueOf(orderList.size()));
+            orderListResult.setOrderCount(String.valueOf(orderListInfo.getRecordCount()));
             orderListResult.setPage(pageIndex.toString());
             orderListResult.setResult("1");
             orderListResult.setOrderNo(orderIdList);
@@ -124,7 +124,11 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             orderDetailResult.setOrderNo(orderBean.getOrderId());
             orderDetailResult.setResult(1);
             orderDetailResult.setDateTime(orderBean.getPayTime());
-            orderDetailResult.setBuyerId(orderBean.getUserLoginName());
+            if (StringUtil.isEmpty(orderBean.getUserLoginName())) {// 保证buyerId不为空
+                orderDetailResult.setBuyerId(orderBean.getShipMobile());
+            } else {
+                orderDetailResult.setBuyerId(orderBean.getUserLoginName());
+            }
             orderDetailResult.setBuyerName(orderBean.getShipName());
             if (StringUtil.isEmpty(orderBean.getBuyerPid())) {
                 orderDetailResult.setCardType(1);

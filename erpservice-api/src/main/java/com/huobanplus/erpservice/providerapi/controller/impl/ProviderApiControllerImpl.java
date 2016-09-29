@@ -39,21 +39,28 @@ public class ProviderApiControllerImpl implements ProviderApiController {
 
     @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}", method = RequestMethod.POST)
     @ResponseBody
-    public String index(
+    public void index(
             @PathVariable("erpProviderType") int providerType,
             @PathVariable("erpUserType") int erpUserType,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
         ERPTypeEnum.ProviderType providerTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, providerType);
         ERPTypeEnum.UserType userTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
         ERPInfo erpInfo = new ERPInfo();
         erpInfo.setErpType(providerTypeEnum);
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
+
+        response.setCharacterEncoding("utf-8");
+        PrintWriter writer = response.getWriter();
+
         if (erpHandler == null) {
-            return "未找到相关erp处理器";
+            writer.write("未找到相关erp处理器");
         }
 
         EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
-        return eventResult.getData().toString();
+
+        String resultData = (String) eventResult.getData();
+        writer.write(resultData);
     }
 
     @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}/{backType}", method = RequestMethod.POST)
