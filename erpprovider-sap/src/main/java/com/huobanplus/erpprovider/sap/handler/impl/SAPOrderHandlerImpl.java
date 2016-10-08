@@ -73,7 +73,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             sapOrderItem.setNum(orderItem.getNum());
             sapOrderItem.setCost(orderItem.getCost());
             sapOrderItem.setPrice(orderItem.getPrice());
-            sapOrderItem.setAmount(orderItem.getAmount());
+            sapOrderItem.setAmount(orderItem.getPrice());
             sapOrderItemList.add(sapOrderItem);
         });
 
