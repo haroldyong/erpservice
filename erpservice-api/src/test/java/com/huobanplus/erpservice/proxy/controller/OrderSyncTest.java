@@ -170,6 +170,11 @@ public class OrderSyncTest extends SpringWebTest {
     }
 
     @Test
+    public void gyDeliverySyncTest() throws Exception {
+        gySyncDelivery.syncOrderShip();
+    }
+
+    @Test
     public void testGyDelivery() throws Exception {
         JSONArray deliveries = new JSONArray();
         JSONObject delivery = new JSONObject();

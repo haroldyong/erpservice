@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,8 +42,12 @@ public class PlatformInterceptor extends HandlerInterceptorAdapter {
             }
 
             if (customerId == null || customerId == 0) {
-                response.sendRedirect(environment.getProperty("huobanplus_login", "http://localhost:8080"));
-                return false;
+                String requestCustomerId = request.getParameter("customerid");
+                if (StringUtils.isEmpty(requestCustomerId)) {
+                    response.sendRedirect(environment.getProperty("huobanplus_login", "http://localhost:8080"));
+                    return false;
+                }
+                customerId = Integer.valueOf(requestCustomerId);
             }
 
 //            request.setAttribute("customerId", );
