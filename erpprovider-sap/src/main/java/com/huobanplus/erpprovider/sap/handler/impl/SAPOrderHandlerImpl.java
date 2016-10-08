@@ -73,7 +73,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             sapOrderItem.setNum(orderItem.getNum());
             sapOrderItem.setCost(orderItem.getCost());
             sapOrderItem.setPrice(orderItem.getPrice());
-            sapOrderItem.setAmount(orderItem.getPrice());
+            sapOrderItem.setAmount(orderItem.getAmount());
             sapOrderItemList.add(sapOrderItem);
         });
 
@@ -151,7 +151,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             int index = 0;
             List<SAPOrderItem> sapOrderItemList = sapSaleOrderInfo.getSapOrderItems();
             for (SAPOrderItem sapOrderItem : sapOrderItemList) {
-                double percent = sapOrderItem.getAmount() * sapOrderItem.getNum() / sapSaleOrderInfo.getCostItem();
+                double percent = sapOrderItem.getAmount() / sapSaleOrderInfo.getCostItem();
                 double subPmtAmount = index == sapOrderItemList.size() - 1 ?
                         sapSaleOrderInfo.getPmtAmount() - totalPmtAmount :
                         sapSaleOrderInfo.getPmtAmount() * percent;
