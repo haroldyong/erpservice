@@ -30,7 +30,7 @@ public class NSOrderDetailResult {
     @JacksonXmlProperty(localName = "Cause")
     private String cause;
 
-    @JacksonXmlProperty(localName = "OrderNo")
+    @JacksonXmlProperty(localName = "OrderNO")
     private String orderNo;
 
     @JacksonXmlProperty(localName = "DateTime")
