@@ -17,7 +17,7 @@ import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefund;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefundItem;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
-import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearchResult;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Test;
@@ -38,9 +38,9 @@ public class SurSungHandlerTest extends SurSungTestBase {
 
     @Test
     public void testPushOrder() {
-        Order order = JSON.parseObject(orderInfoJson, Order.class);
+//        Order order = JSON.parseObject(orderInfoJson, Order.class);
 
-//        String orderInfoJson = JSON.toJSONString(mockOrder);
+        String orderInfoJson = JSON.toJSONString(mockOrder);
         PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
         pushNewOrderEvent.setOrderInfoJson(orderInfoJson);
         pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
@@ -121,12 +121,16 @@ public class SurSungHandlerTest extends SurSungTestBase {
         surSungOrderSearch.setPageIndex(1);
         surSungOrderSearch.setPageSize(10);
 //        surSungOrderSearch.setShopId(14670);
-        surSungOrderSearch.setModifiedBegin("2016-09-10");
-        surSungOrderSearch.setModifiedEnd("2016-09-16");
+        surSungOrderSearch.setModifiedBegin("2016-09-26");
+        surSungOrderSearch.setModifiedEnd("2016-09-28");
         EventResult eventResult = surSungOrderHandler.queryChannelOrder(surSungOrderSearch, mockSurSungSysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
-        System.out.println(eventResult.getData());
+        System.out.println("*********************Data*********************");
+        SurSungOrderSearchResult resultData = (SurSungOrderSearchResult) eventResult.getData();
+        System.out.println(resultData.getDataCount());
+        System.out.println(resultData.getOrders());
+        System.out.println("*********************Data*********************");
 
     }
 
