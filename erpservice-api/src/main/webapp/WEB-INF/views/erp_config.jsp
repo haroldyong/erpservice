@@ -117,10 +117,10 @@
                         return nsConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.SAP.getCode()%>:
                         return sapConfigHandler;
-                    case <%=ERPTypeEnum.ProviderType.ISCS.getCode()%>:
-                        return iscsConfigHandler;
-                    case <%=ERPTypeEnum.ProviderType.LGJ.getCode()%>:
-                        return lgjConfigHandler;
+                        <%--case <%=ERPTypeEnum.ProviderType.ISCS.getCode()%>:--%>
+                        <%--return iscsConfigHandler;--%>
+                        <%--case <%=ERPTypeEnum.ProviderType.LGJ.getCode()%>:--%>
+                        <%--return lgjConfigHandler;--%>
                     case <%=ERPTypeEnum.ProviderType.KAOLA.getCode()%>:
                         return kaoLaConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.KJYG.getCode()%>:
@@ -283,12 +283,12 @@
                                     <%@include file="/detailConfig/sap_config.jsp" %>
                                 </div>
 
-                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.ISCS.getCode()%>">
-                                    <%@include file="/detailConfig/iscs_config.jsp" %>
-                                </div>
-                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.LGJ.getCode()%>">
-                                    <%@include file="/detailConfig/lgj_config.jsp" %>
-                                </div>
+                                    <%--<div id="detailConfig_<%=ERPTypeEnum.ProviderType.ISCS.getCode()%>">--%>
+                                    <%--<%@include file="/detailConfig/iscs_config.jsp" %>--%>
+                                    <%--</div>--%>
+                                    <%--<div id="detailConfig_<%=ERPTypeEnum.ProviderType.LGJ.getCode()%>">--%>
+                                    <%--<%@include file="/detailConfig/lgj_config.jsp" %>--%>
+                                    <%--</div>--%>
                                 <div id="detailConfig_<%=ERPTypeEnum.ProviderType.KAOLA.getCode()%>">
                                     <%@include file="/detailConfig/kaola_config.jsp" %>
                                 </div>
