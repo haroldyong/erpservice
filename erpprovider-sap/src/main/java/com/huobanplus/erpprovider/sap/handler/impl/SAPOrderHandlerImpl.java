@@ -105,6 +105,8 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setInvoiceTitle(orderInfo.getTaxCompany());
         //sapSaleOrderInfo.setSapSallId("销售订单号");
         sapSaleOrderInfo.setLogiNo(orderInfo.getLogiNo());
+        sapSaleOrderInfo.setFreight(orderInfo.getCostFreight());
+        sapSaleOrderInfo.setUnionOrderId(orderInfo.getUnionOrderId());
         //sapSaleOrderInfo.setGoodsOrg("产品组");
         sapSaleOrderInfo.setSapOrderItems(sapOrderItemList);
 
@@ -151,7 +153,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             int index = 0;
             List<SAPOrderItem> sapOrderItemList = sapSaleOrderInfo.getSapOrderItems();
             for (SAPOrderItem sapOrderItem : sapOrderItemList) {
-                double percent = sapOrderItem.getAmount() * sapOrderItem.getNum() / sapSaleOrderInfo.getCostItem();
+                double percent = sapOrderItem.getAmount() / sapSaleOrderInfo.getCostItem();
                 double subPmtAmount = index == sapOrderItemList.size() - 1 ?
                         sapSaleOrderInfo.getPmtAmount() - totalPmtAmount :
                         sapSaleOrderInfo.getPmtAmount() * percent;
@@ -183,6 +185,10 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                 jCoTable.setValue("ZFP", sapSaleOrderInfo.isInvoiceIsopen() ? "X" : null);
 
                 jCoTable.setValue("ZTITLE", sapSaleOrderInfo.getInvoiceTitle());
+
+                //联合订单和运费,新增20160909
+                jCoTable.setValue("ZORDER1", sapSaleOrderInfo.getUnionOrderId());
+                jCoTable.setValue("ZNETPR", sapSaleOrderInfo.getFreight());
                 //jCoTable.setValue("ZWMORDER", sapSaleOrderInfo.getLogiNo());
                 index++;
                 totalPmtAmount += subPmtAmount;

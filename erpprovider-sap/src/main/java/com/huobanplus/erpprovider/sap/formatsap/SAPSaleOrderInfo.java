@@ -131,6 +131,14 @@ public class SAPSaleOrderInfo {
      * 产品总金额
      */
     private double costItem;
+    /**
+     * 联合订单号
+     */
+    private String unionOrderId;
+    /**
+     * 邮费
+     */
+    private double freight;
 
     private List<SAPOrderItem> sapOrderItems;
 
