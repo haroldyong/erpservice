@@ -10,19 +10,11 @@
 package com.huobanplus.erpprovider.iscs.config;
 
 import com.huobanplus.erpprovider.iscs.handler.ISCSOrderHandler;
-import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
-import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
-import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by allan on 4/19/16.
@@ -35,27 +27,27 @@ public class ISCSHandlerBuilder implements ERPHandlerBuilder {
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        if(info.getErpType() == ERPTypeEnum.ProviderType.ISCS){
-            return new ERPHandler() {
-                @Override
-                public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
-                    if (erpBaseEvent instanceof PushNewOrderEvent) {
-                        PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                        return iscsOrderHandler.pushOrder(pushNewOrderEvent);
-                    }
-                    if (erpBaseEvent instanceof PushReturnInfoEvent){
-                        PushReturnInfoEvent pushReturnInfoEvent = (PushReturnInfoEvent) erpBaseEvent;
-                        return iscsOrderHandler.pushReturnOrder(pushReturnInfoEvent);
-                    }
-                    return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT);
-                }
-
-                @Override
-                public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
-                    return null;
-                }
-            };
-        }
+//        if(info.getErpType() == ERPTypeEnum.ProviderType.ISCS){
+//            return new ERPHandler() {
+//                @Override
+//                public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
+//                    if (erpBaseEvent instanceof PushNewOrderEvent) {
+//                        PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
+//                        return iscsOrderHandler.pushOrder(pushNewOrderEvent);
+//                    }
+//                    if (erpBaseEvent instanceof PushReturnInfoEvent){
+//                        PushReturnInfoEvent pushReturnInfoEvent = (PushReturnInfoEvent) erpBaseEvent;
+//                        return iscsOrderHandler.pushReturnOrder(pushReturnInfoEvent);
+//                    }
+//                    return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT);
+//                }
+//
+//                @Override
+//                public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
+//                    return null;
+//                }
+//            };
+//        }
         return null;
     }
 }

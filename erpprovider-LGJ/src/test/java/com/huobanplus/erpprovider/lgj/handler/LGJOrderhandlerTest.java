@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.lgj.handler;
 
 import com.alibaba.fastjson.JSON;
@@ -6,7 +15,6 @@ import com.huobanplus.erpprovider.lgj.LGJTestBase;
 import com.huobanplus.erpprovider.lgj.common.LGJSysData;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
-import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -20,7 +28,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by admin on 2016/4/29.
@@ -49,7 +60,7 @@ public class LGJOrderhandlerTest extends LGJTestBase {
         mockSysData.setApiSecret("111111");
 
         mockERP = new ERPInfo();
-        mockERP.setErpType(ERPTypeEnum.ProviderType.LGJ);
+//        mockERP.setErpType(ERPTypeEnum.ProviderType.LGJ);
         mockERP.setSysDataJson(JSON.toJSONString(mockSysData));
 
 
