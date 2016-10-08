@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Created by liual on 2015-10-21.
@@ -23,9 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 public interface ProviderApiController {
     @RequestMapping(value = "/rest/{erpProviderType}/{erpUserType}", method = RequestMethod.POST)
     @ResponseBody
-    String index(
+    void index(
             @PathVariable("erpProviderType") int providerType,
             @PathVariable("erpUserType") int erpUserType,
-            HttpServletRequest request);
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException;
 
 }
