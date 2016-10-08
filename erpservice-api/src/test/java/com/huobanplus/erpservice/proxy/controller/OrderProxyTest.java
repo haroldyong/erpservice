@@ -105,7 +105,7 @@ public class OrderProxyTest extends SpringWebTest {
         baseConfigForIscs = baseConfigRepository.saveAndFlush(baseConfigForIscs);
 
         iscsConfig = new ERPDetailConfigEntity();
-        iscsConfig.setErpType(ERPTypeEnum.ProviderType.ISCS);
+//        iscsConfig.setErpType(ERPTypeEnum.ProviderType.ISCS);
         iscsConfig.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);
         iscsConfig.setIsDefault(1);
         iscsConfig.setCustomerId(baseConfigForIscs.getCustomerId());
