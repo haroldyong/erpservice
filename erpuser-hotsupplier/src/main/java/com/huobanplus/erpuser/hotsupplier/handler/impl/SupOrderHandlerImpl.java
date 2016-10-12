@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpuser.hotsupplier.handler.impl;
 
+import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
 import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
@@ -162,5 +163,10 @@ public class SupOrderHandlerImpl implements SupOrderHandler {
     @Override
     public EventResult batchDeliver(List<OrderDeliveryInfo> orderDeliveryInfoList, ERPUserInfo erpUserInfo) {
         return hbOrderHandler.batchDeliver(orderDeliveryInfoList, erpUserInfo);
+    }
+
+    @Override
+    public EventResult syncChannelOrderList(List<Order> orderList, ERPUserInfo erpUserInfo) {
+        return hbOrderHandler.syncChannelOrderList(orderList, erpUserInfo);
     }
 }

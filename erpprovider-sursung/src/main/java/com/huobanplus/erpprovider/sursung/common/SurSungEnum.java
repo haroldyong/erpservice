@@ -15,12 +15,12 @@ package com.huobanplus.erpprovider.sursung.common;
 public interface SurSungEnum {
 
     enum OrderStatus {
-        WAIT_BUYER_PAY,
-        WAIT_SELLER_SEND_GOODS,
-        WAIT_BUYER_CONFIRM_GOODS,
-        TRADE_FINISHED,
-        TRADE_CLOSED,
-        TRADE_CLOSED_BY_TAOBAO
+        WAIT_BUYER_PAY,//等待买家付款
+        WAIT_SELLER_SEND_GOODS,//等待卖家发货
+        WAIT_BUYER_CONFIRM_GOODS,//等待买家确认收货
+        TRADE_FINISHED,//交易成功
+        TRADE_CLOSED,//付款后交易关闭
+        TRADE_CLOSED_BY_TAOBAO//付款前交易关闭
     }
 
 }

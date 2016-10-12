@@ -15,16 +15,10 @@ import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
-import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
-import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLogDetail;
-import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
-import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
+import com.huobanplus.erpservice.datacenter.entity.logs.*;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderDetailSyncSearch;
-import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogDetailService;
-import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
-import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
-import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
+import com.huobanplus.erpservice.datacenter.service.logs.*;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
@@ -61,6 +55,10 @@ public class OrderLogController {
     private ShipSyncDeliverInfoService shipSyncDeliverInfoService;
     @Autowired
     private ERPRegister erpRegister;
+    @Autowired
+    private ChannelOrderSyncLogService channelOrderSyncLogService;
+    @Autowired
+    private ChannelOrderSyncInfoService channelOrderSyncInfoService;
 
 
     @RequestMapping(value = "/orderDetailSyncs", method = RequestMethod.GET)
@@ -182,5 +180,40 @@ public class OrderLogController {
             shipSyncDeliverInfoService.save(shipSyncDeliverInfo);
             return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, eventResult.getResultMsg(), null);
         }
+    }
+
+    @RequestMapping(value = "/channelOrderSyncs", method = RequestMethod.GET)
+    private String channelOrderSyncs(@RequestParam(required = false, defaultValue = "1") int pageIndex,
+                                     String beginTime, String endTime,
+                                     @RequestAttribute int customerId,
+                                     int erpUserType,
+                                     Model model) {
+
+        Page<ChannelOrderSyncLog> channelOrderSyncLogs = channelOrderSyncLogService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, beginTime, endTime, customerId);
+        model.addAttribute("channelOrderSyncLogs", channelOrderSyncLogs);
+        model.addAttribute("pageIndex", pageIndex);
+        model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);
+        model.addAttribute("erpUserType", erpUserType);
+        model.addAttribute("beginTime", beginTime);
+        model.addAttribute("endTime", endTime);
+        return "logs/channel_order_sync_list";
+    }
+
+
+    @RequestMapping(value = "/channelOrderSyncList", method = RequestMethod.GET)
+    private String channelOrderSyncsFailedList(@RequestParam(required = false, defaultValue = "1") int pageIndex,
+                                               String orderId, long logSyncId,
+                                               int erpUserType,
+                                               Model model) {
+
+        Page<ChannelOrderSyncInfo> channelOrderSyncInfoList = channelOrderSyncInfoService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, logSyncId, orderId);
+        model.addAttribute("channelOrderSyncInfoList", channelOrderSyncInfoList);
+        model.addAttribute("pageIndex", pageIndex);
+        model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);
+        model.addAttribute("erpUserType", erpUserType);
+        model.addAttribute("orderId", orderId);
+        model.addAttribute("logSyncId", logSyncId);
+
+        return "logs/channel_order_sync_info_list";
     }
 }

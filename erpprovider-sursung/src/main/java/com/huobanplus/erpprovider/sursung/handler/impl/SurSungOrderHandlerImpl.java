@@ -23,6 +23,7 @@ import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearchResult;
 import com.huobanplus.erpprovider.sursung.util.SurSungUtil;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
+import com.huobanplus.erpservice.common.httputil.HttpClientUtil2;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
@@ -330,7 +331,8 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             int time = (int) (now.getTime() / 1000);
             String requestData = JSON.toJSONString(surSungOrderSearch);
             String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.ORDERS_QUERY, time, surSungSysData);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
+            HttpResult httpResult = HttpClientUtil2.getInstance().post(requestUrl, requestData);
+            System.out.println("content:" + httpResult.getHttpContent());
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 SurSungOrderSearchResult surSungOrderSearchResult = JSON.parseObject(httpResult.getHttpContent(),
                         SurSungOrderSearchResult.class);

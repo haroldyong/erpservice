@@ -16,6 +16,7 @@ import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushOrderListInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncChannelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncInventoryEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
@@ -58,6 +59,10 @@ public class SupplierHandlerBuilder implements ERPUserHandlerBuilder {
                     SyncInventoryEvent syncInventoryEvent = (SyncInventoryEvent) erpBaseEvent;
 
                     return goodHandler.syncProInventory(syncInventoryEvent.getInventoryInfoList(), syncInventoryEvent.getErpUserInfo());
+                } else if (erpBaseEvent instanceof SyncChannelOrderEvent) {
+                    SyncChannelOrderEvent syncChannelOrderEvent = (SyncChannelOrderEvent) erpBaseEvent;
+                    return orderHandler.syncChannelOrderList(syncChannelOrderEvent.getOrderList(), syncChannelOrderEvent.getErpUserInfo());
+
                 }
                 return null;
             };

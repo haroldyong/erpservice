@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.entity.logs;
 
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,7 +58,7 @@ public class ChannelOrderSyncLog {
     /**
      * 订单同步状态
      */
-    private boolean orderSyncStatus;// TODO: 2016-09-19
+    private OrderSyncStatus.ChannelOrderSyncStatus orderSyncStatus;
     /**
      * 同步时间
      */

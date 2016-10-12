@@ -198,4 +198,33 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
+
+    @Override
+    public EventResult syncChannelOrderList(List<Order> orderList, ERPUserInfo erpUserInfo) {
+        Map<String, Object> requestMap = new TreeMap<>();
+
+        try {
+            requestMap.put("orderListJson", JSON.toJSONString(orderList));
+            requestMap.put("customerId", erpUserInfo.getCustomerId());
+            requestMap.put("timestamp", new Date().getTime());
+
+            String sign = SignBuilder.buildSignIgnoreEmpty(requestMap, null, HBConstant.SECRET_KEY);
+            requestMap.put("sign", sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post("http://mapi.guo.fancat.cn/order/PushErpOrder", requestMap);
+
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                ApiResult<BatchPushOrderResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchPushOrderResult>>() {
+                });
+                if (apiResult.getCode() == 200) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
 }
