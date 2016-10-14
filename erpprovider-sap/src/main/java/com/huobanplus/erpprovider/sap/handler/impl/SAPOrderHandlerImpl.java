@@ -157,7 +157,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                 double subPmtAmount = index == sapOrderItemList.size() - 1 ?
                         sapSaleOrderInfo.getPmtAmount() - totalPmtAmount :
                         sapSaleOrderInfo.getPmtAmount() * percent;
-                double netPrice = sapOrderItem.getPrice() - sapOrderItem.getAmount() - subPmtAmount; //净价 市场价-销售价-优惠金额
+                double netPrice = sapOrderItem.getPrice() - sapOrderItem.getPrice() - subPmtAmount; //净价 市场价-销售价-优惠金额
                 jCoTable.appendRow();
                 jCoTable.setValue("ZKONDM", "01");
                 jCoTable.setValue("ZTYPE", sapSaleOrderInfo.getOrderType());
