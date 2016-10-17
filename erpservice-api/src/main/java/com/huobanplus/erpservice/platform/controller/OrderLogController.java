@@ -10,12 +10,14 @@
 package com.huobanplus.erpservice.platform.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.huobanplus.erpprovider.sursung.service.SurSungSyncChannelOrder;
 import com.huobanplus.erpservice.common.SysConstant;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.datacenter.entity.logs.*;
+import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderDetailSyncSearch;
 import com.huobanplus.erpservice.datacenter.service.logs.*;
@@ -24,6 +26,7 @@ import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncChannelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -35,6 +38,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,6 +63,8 @@ public class OrderLogController {
     private ChannelOrderSyncLogService channelOrderSyncLogService;
     @Autowired
     private ChannelOrderSyncInfoService channelOrderSyncInfoService;
+    @Autowired
+    private SurSungSyncChannelOrder surSungSyncChannelOrder;
 
 
     @RequestMapping(value = "/orderDetailSyncs", method = RequestMethod.GET)
@@ -182,6 +188,33 @@ public class OrderLogController {
         }
     }
 
+    @RequestMapping(value = "/reSyncChannelOrder", method = RequestMethod.POST)
+    @ResponseBody
+    private ApiResult syncChannelOrder(long id) {
+        ChannelOrderSyncInfo channelOrderSyncInfo = channelOrderSyncInfoService.findById(id);
+        ERPUserInfo erpUserInfo = new ERPUserInfo(channelOrderSyncInfo.getChannelOrderSyncLog().getUserType(), channelOrderSyncInfo.getChannelOrderSyncLog().getCustomerId());
+        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+
+        SyncChannelOrderEvent syncChannelOrderEvent = new SyncChannelOrderEvent();
+        List<Order> orders = new ArrayList<>();
+        Order order = JSON.parseObject(channelOrderSyncInfo.getOrderJson(), Order.class);
+        orders.add(order);
+
+        syncChannelOrderEvent.setOrderList(orders);
+        syncChannelOrderEvent.setErpUserInfo(erpUserInfo);
+        EventResult eventResult = erpUserHandler.handleEvent(syncChannelOrderEvent);
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_SUCCESS);
+            channelOrderSyncInfoService.save(channelOrderSyncInfo);
+            return ApiResult.resultWith(ResultCode.SUCCESS);
+        } else {
+            channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
+            channelOrderSyncInfoService.save(channelOrderSyncInfo);
+            return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST);
+        }
+
+    }
+
     @RequestMapping(value = "/channelOrderSyncs", method = RequestMethod.GET)
     private String channelOrderSyncs(@RequestParam(required = false, defaultValue = "1") int pageIndex,
                                      String beginTime, String endTime,
@@ -215,5 +248,12 @@ public class OrderLogController {
         model.addAttribute("logSyncId", logSyncId);
 
         return "logs/channel_order_sync_info_list";
+    }
+
+    @RequestMapping(value = "/manualSync", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiResult manualSyncChannelOrder() {
+        surSungSyncChannelOrder.syncChannelOrder();
+        return ApiResult.resultWith(ResultCode.SUCCESS);
     }
 }

@@ -46,7 +46,17 @@ public class ChannelOrderSyncInfoServiceImpl implements ChannelOrderSyncInfoServ
     }
 
     @Override
+    public ChannelOrderSyncInfo findById(Long id) {
+        return channelOrderSyncInfoRepository.findOne(id);
+    }
+
+    @Override
     public void batchSave(List<ChannelOrderSyncInfo> channelOrderSyncInfoList) {
         channelOrderSyncInfoRepository.save(channelOrderSyncInfoList);
+    }
+
+    @Override
+    public ChannelOrderSyncInfo save(ChannelOrderSyncInfo channelOrderSyncInfo) {
+        return channelOrderSyncInfoRepository.save(channelOrderSyncInfo);
     }
 }

@@ -24,6 +24,7 @@ import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -52,10 +53,14 @@ public class SurSungHandlerTest extends SurSungTestBase {
     @Test
     public void testPushOrder() throws IOException {
 //        Order order = JSON.parseObject(orderInfoJson, Order.class);
-//        HttpClientUtil2.getInstance().initHttpClient();
-        for (int i = 0; i < 10; i++) {
+        HttpClientUtil2.getInstance().initHttpClient();
+        for (int i = 0; i < 20; i++) {
             String orderNo = SerialNo.create();
             mockOrder.setOrderId(orderNo);
+            for (OrderItem orderItem : mockOrder.getOrderItems()) {
+                orderItem.setProductBn("BN-" + i);
+            }
+
             String orderInfoJson = JSON.toJSONString(mockOrder);
             PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
             pushNewOrderEvent.setOrderInfoJson(orderInfoJson);
@@ -66,7 +71,7 @@ public class SurSungHandlerTest extends SurSungTestBase {
             System.out.println(eventResult.getData());
             System.out.println(eventResult.getResultMsg());
         }
-//        HttpClientUtil2.getInstance().close();
+        HttpClientUtil2.getInstance().close();
     }
 
     @Test

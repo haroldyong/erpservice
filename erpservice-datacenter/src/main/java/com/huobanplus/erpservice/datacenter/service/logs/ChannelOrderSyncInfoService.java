@@ -21,5 +21,10 @@ public interface ChannelOrderSyncInfoService {
 
     Page<ChannelOrderSyncInfo> findAll(int pageIndex, int pageSize, long logSyncId, String orderId);
 
+    ChannelOrderSyncInfo findById(Long id);
+
     void batchSave(List<ChannelOrderSyncInfo> channelOrderSyncInfoList);
+
+    ChannelOrderSyncInfo save(ChannelOrderSyncInfo channelOrderSyncInfo);
+
 }

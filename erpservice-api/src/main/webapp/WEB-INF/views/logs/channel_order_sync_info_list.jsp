@@ -35,7 +35,7 @@
 
     <script type="text/javascript">
         var erpUserType = ${erpUserType};
-        var ajaxUrl = "<c:url value="/erpService/platform/reSyncOrderShip" />";
+        var ajaxUrl = "<c:url value="/erpService/platform/reSyncChannelOrder" />";
         function reSyncShip(id) {
             J.jboxConfirm("确定要同步吗?", function () {
                 $.jBox.tip("正在同步", "loading");

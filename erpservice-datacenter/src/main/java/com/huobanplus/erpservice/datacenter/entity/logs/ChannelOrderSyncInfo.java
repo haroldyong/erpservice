@@ -38,4 +38,7 @@ public class ChannelOrderSyncInfo {
 
     private String remark;
 
+    @Lob
+    private String orderJson;
+
 }
