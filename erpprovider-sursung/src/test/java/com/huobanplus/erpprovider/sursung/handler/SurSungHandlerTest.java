@@ -11,6 +11,7 @@ package com.huobanplus.erpprovider.sursung.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.sursung.SurSungTestBase;
+import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungInventory;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungLogistic;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefund;
@@ -18,11 +19,24 @@ import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefundItem;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearchResult;
+import com.huobanplus.erpservice.common.httputil.HttpClientUtil2;
+import com.huobanplus.erpservice.common.util.SerialNo;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.OrderItem;
+import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
+import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncChannelOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,18 +51,27 @@ public class SurSungHandlerTest extends SurSungTestBase {
     private SurSungOrderHandler surSungOrderHandler;
 
     @Test
-    public void testPushOrder() {
+    public void testPushOrder() throws IOException {
 //        Order order = JSON.parseObject(orderInfoJson, Order.class);
+        HttpClientUtil2.getInstance().initHttpClient();
+        for (int i = 0; i < 20; i++) {
+            String orderNo = SerialNo.create();
+            mockOrder.setOrderId(orderNo);
+            for (OrderItem orderItem : mockOrder.getOrderItems()) {
+                orderItem.setProductBn("BN-" + i);
+            }
 
-        String orderInfoJson = JSON.toJSONString(mockOrder);
-        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
-        pushNewOrderEvent.setOrderInfoJson(orderInfoJson);
-        pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
-        pushNewOrderEvent.setErpInfo(mockErpInfo);
-        EventResult eventResult = surSungOrderHandler.pushOrder(pushNewOrderEvent);
-        System.out.println(eventResult.getResultCode());
-        System.out.println(eventResult.getData());
-        System.out.println(eventResult.getResultMsg());
+            String orderInfoJson = JSON.toJSONString(mockOrder);
+            PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
+            pushNewOrderEvent.setOrderInfoJson(orderInfoJson);
+            pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
+            pushNewOrderEvent.setErpInfo(mockErpInfo);
+            EventResult eventResult = surSungOrderHandler.pushOrder(pushNewOrderEvent);
+            System.out.println(eventResult.getResultCode());
+            System.out.println(eventResult.getData());
+            System.out.println(eventResult.getResultMsg());
+        }
+        HttpClientUtil2.getInstance().close();
     }
 
     @Test
@@ -116,21 +139,59 @@ public class SurSungHandlerTest extends SurSungTestBase {
     }
 
     @Test
-    public void testQueryOrder() {
+    public void testQueryOrder() throws IOException {
+        HttpClientUtil2.getInstance().initHttpClient();
         SurSungOrderSearch surSungOrderSearch = new SurSungOrderSearch();
         surSungOrderSearch.setPageIndex(1);
         surSungOrderSearch.setPageSize(10);
 //        surSungOrderSearch.setShopId(14670);
-        surSungOrderSearch.setModifiedBegin("2016-09-26");
-        surSungOrderSearch.setModifiedEnd("2016-09-28");
+        surSungOrderSearch.setModifiedBegin("2016-10-05");
+        surSungOrderSearch.setModifiedEnd("2016-10-11");
+        surSungOrderSearch.setFlds("*");
         EventResult eventResult = surSungOrderHandler.queryChannelOrder(surSungOrderSearch, mockSurSungSysData);
+
+        System.out.println("*********************Data*********************");
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
-        System.out.println("*********************Data*********************");
         SurSungOrderSearchResult resultData = (SurSungOrderSearchResult) eventResult.getData();
         System.out.println(resultData.getDataCount());
         System.out.println(resultData.getOrders());
         System.out.println("*********************Data*********************");
+
+        HttpClientUtil2.getInstance().close();
+
+    }
+
+    @Autowired
+    private ERPDetailConfigService detailConfigService;
+    @Autowired
+    private ERPRegister erpRegister;
+
+    @Test
+    public void testSync() {
+        List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.SURSUNG);
+        for (ERPDetailConfigEntity detailConfig : detailConfigs) {
+            try {
+                ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
+                ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
+                SurSungSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), SurSungSysData.class);
+
+
+                SyncChannelOrderEvent syncChannelOrderEvent = new SyncChannelOrderEvent();
+                syncChannelOrderEvent.setErpInfo(erpInfo);
+                syncChannelOrderEvent.setErpUserInfo(erpUserInfo);
+                List<Order> orderList = new ArrayList<>();
+                orderList.add(mockOrder);
+                syncChannelOrderEvent.setOrderList(orderList);
+                ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+                // 推送至平台
+                EventResult firstSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
+                System.out.println(firstSyncEvent.getResultCode());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 

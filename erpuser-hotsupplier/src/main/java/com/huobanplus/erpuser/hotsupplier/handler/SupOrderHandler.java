@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpuser.hotsupplier.handler;
 
+import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
 import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
@@ -69,4 +70,13 @@ public interface SupOrderHandler {
      * @return
      */
     EventResult batchDeliver(List<OrderDeliveryInfo> orderDeliveryInfoList, ERPUserInfo erpUserInfo);
+
+    /**
+     * 同步渠道订单到
+     *
+     * @param orderList
+     * @param erpUserInfo
+     * @return
+     */
+    EventResult syncChannelOrderList(List<Order> orderList, ERPUserInfo erpUserInfo);
 }

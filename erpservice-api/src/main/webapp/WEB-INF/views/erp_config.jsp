@@ -90,6 +90,8 @@
                     $.jBox.tip("请输入签名密钥");
                     return;
                 }
+                var isSyncInventory = $("#isSyncInventory").val();
+                var isSyncDelivery = $("#isSyncDelivery").val();
 
                 var erpType = $("#erpType").val();
                 var erpConfigHandler = this.getErpConfigHandler(parseInt(erpType));
@@ -148,6 +150,21 @@
             //设置保存的数据
             var erpConfigHandler;
             var erpSysData;
+            var isSyncInventory = "${baseConfig.isSyncInventory}";
+            var isSyncDelivery = "${baseConfig.isSyncDelivery}";
+
+            if (isSyncDelivery == 0) {
+                $("#isSyncDelivery").attr("checked", false);
+            } else {
+                $("#isSyncDelivery").attr("checked", true);
+            }
+
+            if (isSyncInventory == 0) {
+                $("#isSyncInventory").attr("checked", false);
+            } else {
+                $("#isSyncInventory").attr("checked", true);
+
+            }
 
             <c:forEach items="${lstDetailConfig}" var="item">
             erpSysData = ${item.erpSysData};
@@ -162,7 +179,7 @@
                 configHandler.changeErpType();
             });
             if (erpType == -1) {
-                $("#currentErp").html("您还为选择任何erp系统");
+                $("#currentErp").html("您还未选择任何erp系统");
             } else {
                 $("#currentErp").html($("#erpType").find("option:selected").text());
             }
@@ -238,6 +255,20 @@
                                         <th style="vertical-align: middle;">正在使用：</th>
                                         <td id="currentErp">
 
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="vertical-align: middle;">是否开启库存同步：</th>
+                                        <td>
+                                            <input name="isSyncInventory" type="checkbox" id="isSyncInventory"
+                                                   class="sync_check">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="vertical-align: middle;">是否开启发货同步：</th>
+                                        <td>
+                                            <input name="isSyncDelivery" type="checkbox" id="isSyncDelivery"
+                                                   class="sync_check">
                                         </td>
                                     </tr>
                                     </tbody>
