@@ -252,8 +252,8 @@ public class OrderLogController {
 
     @RequestMapping(value = "/manualSync", method = RequestMethod.GET)
     @ResponseBody
-    public ApiResult manualSyncChannelOrder() {
-        surSungSyncChannelOrder.syncChannelOrder();
+    public ApiResult manualSyncChannelOrder(Integer amount) {
+        surSungSyncChannelOrder.manualSyncChannelOrder(amount);
         return ApiResult.resultWith(ResultCode.SUCCESS);
     }
 }
