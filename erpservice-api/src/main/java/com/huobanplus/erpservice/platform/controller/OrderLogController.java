@@ -10,7 +10,6 @@
 package com.huobanplus.erpservice.platform.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.huobanplus.erpprovider.sursung.service.SurSungSyncChannelOrder;
 import com.huobanplus.erpservice.common.SysConstant;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
@@ -63,8 +62,6 @@ public class OrderLogController {
     private ChannelOrderSyncLogService channelOrderSyncLogService;
     @Autowired
     private ChannelOrderSyncInfoService channelOrderSyncInfoService;
-    @Autowired
-    private SurSungSyncChannelOrder surSungSyncChannelOrder;
 
 
     @RequestMapping(value = "/orderDetailSyncs", method = RequestMethod.GET)
@@ -248,12 +245,5 @@ public class OrderLogController {
         model.addAttribute("logSyncId", logSyncId);
 
         return "logs/channel_order_sync_info_list";
-    }
-
-    @RequestMapping(value = "/manualSync", method = RequestMethod.GET)
-    @ResponseBody
-    public ApiResult manualSyncChannelOrder(Integer amount) {
-        surSungSyncChannelOrder.manualSyncChannelOrder(amount);
-        return ApiResult.resultWith(ResultCode.SUCCESS);
     }
 }
