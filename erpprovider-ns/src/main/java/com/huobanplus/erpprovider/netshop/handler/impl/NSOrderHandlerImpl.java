@@ -78,7 +78,7 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             });
 
             NSOrderListResult orderListResult = new NSOrderListResult();
-            orderListResult.setOrderCount(String.valueOf(orderList.size()));
+            orderListResult.setOrderCount(String.valueOf(orderListInfo.getRecordCount()));
             orderListResult.setPage(pageIndex.toString());
             orderListResult.setResult("1");
             orderListResult.setOrderNo(orderIdList);
