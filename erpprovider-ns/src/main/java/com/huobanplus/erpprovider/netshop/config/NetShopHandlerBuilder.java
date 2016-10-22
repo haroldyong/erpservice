@@ -86,7 +86,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
 
 
                         //通过uCode得到指定erp配置信息
-                        List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserType(providerType, erpUserType);
+                        List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserTypeAndParamNameAndParamVal(providerType, erpUserType, "uCode", paramMap.get("uCode")[0]);
                         ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
                         NSSysData nsSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), NSSysData.class);
                         String secretKey = nsSysData.getSecret();

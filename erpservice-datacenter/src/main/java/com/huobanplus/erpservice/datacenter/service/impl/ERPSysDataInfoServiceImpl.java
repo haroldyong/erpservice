@@ -43,4 +43,14 @@ public class ERPSysDataInfoServiceImpl implements ERPSysDataInfoService {
     public List<ERPSysDataInfo> findByErpTypeAndErpUserType(ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
         return sysDataInfoRepository.findByErpTypeAndErpUserType(providerType, erpUserType);
     }
+
+    @Override
+    public List<ERPSysDataInfo> findByErpTypeAndErpUserTypeAndCustomerId(ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType, int customerId) {
+        return sysDataInfoRepository.findByErpTypeAndErpUserTypeAndCustomerId(providerType, erpUserType, customerId);
+    }
+
+    @Override
+    public List<ERPSysDataInfo> findByErpTypeAndErpUserTypeAndParamNameAndParamVal(ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType, String paramName, String paramVal) {
+        return sysDataInfoRepository.findByErpTypeAndErpUserTypeAndParamNameAndParamValue(providerType, erpUserType, paramName, paramVal);
+    }
 }
