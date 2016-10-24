@@ -42,4 +42,8 @@ public interface ERPSysDataInfoService {
      * @return
      */
     List<ERPSysDataInfo> findByErpTypeAndErpUserType(ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType);
+
+    List<ERPSysDataInfo> findByErpTypeAndErpUserTypeAndCustomerId(ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType, int customerId);
+
+    List<ERPSysDataInfo> findByErpTypeAndErpUserTypeAndParamNameAndParamVal(ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType, String paramName, String paramVal);
 }

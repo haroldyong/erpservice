@@ -26,4 +26,11 @@ public interface ERPSysDataInfoRepository extends JpaRepository<ERPSysDataInfo, 
     void batchDelete(int customerId, ERPTypeEnum.ProviderType providerType);
 
     List<ERPSysDataInfo> findByErpTypeAndErpUserType(ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType);
+
+
+    List<ERPSysDataInfo> findByErpTypeAndErpUserTypeAndCustomerId(ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType, int customerId);
+
+    List<ERPSysDataInfo> findByErpTypeAndErpUserTypeAndParamNameAndParamValue(ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType, String paramName, String paramValue);
+
+
 }
