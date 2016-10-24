@@ -30,9 +30,12 @@ import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.convert.Jsr310Converters;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,8 +61,17 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             orderSearchInfo.setShipStatus(OrderEnum.ShipStatus.NOT_DELIVER.getCode());// 未发货
             orderSearchInfo.setPageSize(pageSize);
             orderSearchInfo.setPageIndex(pageIndex);
-            orderSearchInfo.setBeginUpdateTime(startUpdateTime);
-            orderSearchInfo.setEndUpdateTime(endUpdateTime);
+
+            if (StringUtil.isEmpty(startUpdateTime) || StringUtil.isEmpty(endUpdateTime)) {
+                Date beginTime = Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusMonths(2));
+                Date endTime = new Date();
+                orderSearchInfo.setBeginUpdateTime(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
+                orderSearchInfo.setEndUpdateTime(StringUtil.DateFormat(endTime, StringUtil.TIME_PATTERN));
+            } else {
+                orderSearchInfo.setBeginUpdateTime(startUpdateTime);
+                orderSearchInfo.setEndUpdateTime(endUpdateTime);
+            }
+
             orderListEvent.setOrderSearchInfo(orderSearchInfo);
             //todo 调用相关使用者获得订单数据
             EventResult eventResult = erpUserHandler.handleEvent(orderListEvent);
