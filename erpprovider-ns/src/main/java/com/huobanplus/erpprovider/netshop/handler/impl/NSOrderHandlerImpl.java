@@ -15,6 +15,7 @@ import com.huobanplus.erpprovider.netshop.bean.NSOrderItemResult;
 import com.huobanplus.erpprovider.netshop.bean.NSOrderListResult;
 import com.huobanplus.erpprovider.netshop.exceptionhandler.NSExceptionHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSOrderHandler;
+import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
@@ -54,6 +55,7 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             OrderSearchInfo orderSearchInfo = new OrderSearchInfo();
             orderListEvent.setErpUserInfo(erpUserInfo);
             orderSearchInfo.setPayStatus(orderStatus);
+            orderSearchInfo.setShipStatus(OrderEnum.ShipStatus.NOT_DELIVER.getCode());// 未发货
             orderSearchInfo.setPageSize(pageSize);
             orderSearchInfo.setPageIndex(pageIndex);
             orderSearchInfo.setBeginUpdateTime(startUpdateTime);
