@@ -127,6 +127,8 @@ public class ERPConfigController {
             int erpType,
             int erpUserType,
             String sysDataJson,
+            String isSyncInventory,
+            String isSyncDelivery,
             HttpServletRequest request,
             Model model
     ) {
@@ -138,6 +140,8 @@ public class ERPConfigController {
             ERPBaseConfigEntity baseConfig = baseConfigService.findByCustomerId(customerId, erpUserTypeEnum);
             baseConfig.setToken(token.trim());
             baseConfig.setSecretKey(secretKey.trim());
+            baseConfig.setIsSyncDelivery(isSyncDelivery == null ? 0 : 1);
+            baseConfig.setIsSyncInventory(isSyncInventory == null ? 0 : 1);
             baseConfigService.save(baseConfig);
 
 

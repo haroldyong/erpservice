@@ -27,6 +27,18 @@ public class SurSungOrder {
     private int shopId;
 
     /**
+     * 店铺名称
+     */
+    @JSONField(name = "shop_name")
+    private String shopName;
+
+    /**
+     * 店铺站点
+     */
+    @JSONField(name = "shop_site")
+    private String shopSite;
+
+    /**
      * 订单号
      */
     @JSONField(name = "so_id")
@@ -141,10 +153,16 @@ public class SurSungOrder {
     private String shopModified;
 
     /**
-     * 支付信息
+     * 支付信息 推送订单时设置
      */
     @JSONField(name = "pay")
     private SursungPay pay;
+
+    /**
+     *  支付信息 查询订单结果返回时设置
+     */
+    @JSONField(name = "pays")
+    private List<SursungPay> pays;
 
     /**
      * 快递单号
@@ -175,6 +193,13 @@ public class SurSungOrder {
      */
     @JSONField(name = "seller_flag")
     private int sellerFlag;
+
+    /**
+     * 查询返回结果有值
+     */
+    @JSONField(name = "outer_pay_id")
+    private String outerPayId;
+
 
     /**
      * 订单明细

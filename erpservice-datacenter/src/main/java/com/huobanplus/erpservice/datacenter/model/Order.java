@@ -168,6 +168,11 @@ public class Order extends BaseInfo {
     private String payNumber;
 
     /**
+     *  订单来源店铺code
+     */
+    private int sourceShop;
+
+    /**
      * 订单明细
      */
     private List<OrderItem> orderItems;

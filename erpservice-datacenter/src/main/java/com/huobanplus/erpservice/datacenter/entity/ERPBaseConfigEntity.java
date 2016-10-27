@@ -34,5 +34,19 @@ public class ERPBaseConfigEntity {
      * 是否开通erp，1表示开通
      */
     private int isOpen;
+
+    /**
+     * 是否开启库存同步
+     * 1：开通
+     * 0：不开通
+     */
+    private int isSyncInventory;
+
+    /**
+     * 是否开启发货同步
+     * 1：开通
+     * 0：不开通
+     */
+    private int isSyncDelivery;
     private ERPTypeEnum.UserType erpUserType;
 }

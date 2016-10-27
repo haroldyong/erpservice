@@ -9,17 +9,14 @@
 
 package com.huobanplus.erpservice.datacenter.repository.logs;
 
-import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
-import com.huobanplus.erpservice.datacenter.entity.logs.ChannelOrderSyncLog;
+import com.huobanplus.erpservice.datacenter.entity.logs.ChannelOrderSyncInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 /**
- * Created by wuxiongliu on 2016-09-19.
+ * Created by wuxiongliu on 2016-10-11.
  */
 @Repository
-public interface ChannelOrderSyncLogRepository extends JpaRepository<ChannelOrderSyncLog, Long>, JpaSpecificationExecutor<ChannelOrderSyncLog> {
-
-    ChannelOrderSyncLog findTopByCustomerIdAndProviderTypeOrderByIdDesc(int customerId, ERPTypeEnum.ProviderType providerType);
+public interface ChannelOrderSyncInfoRepository extends JpaRepository<ChannelOrderSyncInfo, Long>, JpaSpecificationExecutor<ChannelOrderSyncInfo> {
 }

@@ -11,21 +11,28 @@ package com.huobanplus.erpprovider.sursung.service;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.sursung.common.SurSungConstant;
+import com.huobanplus.erpprovider.sursung.common.SurSungEnum;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungOrder;
+import com.huobanplus.erpprovider.sursung.formatdata.SursungPay;
 import com.huobanplus.erpprovider.sursung.handler.SurSungOrderHandler;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearchResult;
+import com.huobanplus.erpservice.common.httputil.HttpClientUtil2;
+import com.huobanplus.erpservice.common.ienum.EnumHelper;
+import com.huobanplus.erpservice.common.ienum.OrderEnum;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.entity.logs.ChannelOrderSyncInfo;
 import com.huobanplus.erpservice.datacenter.entity.logs.ChannelOrderSyncLog;
-import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
+import com.huobanplus.erpservice.datacenter.model.BatchPushOrderResult;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.repository.logs.ChannelOrderSyncLogRepository;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
-import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
+import com.huobanplus.erpservice.datacenter.service.logs.ChannelOrderSyncInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncChannelOrderEvent;
@@ -37,6 +44,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.Jsr310Converters;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +52,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by wuxiongliu on 2016-09-16.
@@ -54,10 +63,32 @@ public class SurSungSyncChannelOrder {
 
     private static final Log log = LogFactory.getLog(SurSungSyncChannelOrder.class);
 
+    // for test use
+    private static final String[] productBns = {
+            "BN-0",
+            "BN-1",
+            "BN-2",
+            "BN-3",
+            "BN-4",
+            "BN-5",
+            "BN-6",
+            "BN-7",
+            "BN-8",
+            "BN-9",
+            "BN-10",
+            "BN-11",
+            "BN-12",
+            "BN-13",
+            "BN-14",
+            "BN-15",
+            "BN-16",
+            "BN-17",
+            "BN-18",
+            "BN-19",
+    };
+
     @Autowired
     private ERPDetailConfigService detailConfigService;
-    @Autowired
-    private OrderShipSyncLogService orderShipSyncLogService;
     @Autowired
     private ChannelOrderSyncLogRepository channelOrderSyncLogRepository;
     @Autowired
@@ -65,8 +96,10 @@ public class SurSungSyncChannelOrder {
 
     @Autowired
     private SurSungOrderHandler surSungOrderHandler;
+    @Autowired
+    private ChannelOrderSyncInfoService channelOrderSyncInfoService;
 
-    //    @Scheduled(cron = "")
+    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void syncChannelOrder() {
         Date now = new Date();
@@ -80,12 +113,12 @@ public class SurSungSyncChannelOrder {
                 SurSungSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), SurSungSysData.class);
 
                 //是否是第一次同步,第一次同步beginTime则为当前时间的前一天
-                OrderShipSyncLog lastSyncLog = orderShipSyncLogService.findTop(erpUserInfo.getCustomerId(), ERPTypeEnum.ProviderType.SURSUNG);
+                ChannelOrderSyncLog lastSyncLog = channelOrderSyncLogRepository.findTopByCustomerIdAndProviderTypeOrderByIdDesc(erpUserInfo.getCustomerId(), ERPTypeEnum.ProviderType.SURSUNG);
                 Date beginTime = lastSyncLog == null
                         ? Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusDays(2))
                         : lastSyncLog.getSyncTime();
 
-                List failedOrders = new ArrayList<>(); //失败的订单列表
+                List<Order> failedOrders = new ArrayList<>(); //失败的订单列表
                 List successOrders = new ArrayList<>(); //成功的订单列表
                 int totalCount = 0; //总数量
                 int pageIndex = 1;
@@ -97,6 +130,8 @@ public class SurSungSyncChannelOrder {
                 orderSearch.setModifiedEnd(nowStr);
 
                 // 第一次同步
+
+                HttpClientUtil2.getInstance().initHttpClient();
                 EventResult eventResult = surSungOrderHandler.queryChannelOrder(orderSearch, sysData);
                 ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -110,9 +145,16 @@ public class SurSungSyncChannelOrder {
                     syncChannelOrderEvent.setOrderList(convert2PlatformOrder(sysData.getShopId(),
                             surSungOrderSearchResult.getOrders()));
                     // 推送至平台
-                    EventResult firstSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
-                    if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                        // TODO: 2016-09-27  
+                    if (syncChannelOrderEvent.getOrderList().size() >= 0) {
+                        EventResult firstSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
+//                        System.out.println("----" + eventResult.getData() + "----");
+                        log.info("--first--" + eventResult.getData() + "----");
+                        if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                            BatchPushOrderResult firstBatchPushOrderResult = (BatchPushOrderResult) firstSyncEvent.getData();
+                            failedOrders.addAll(firstBatchPushOrderResult.getFailedOrders());
+                        } else {
+                            failedOrders.addAll(syncChannelOrderEvent.getOrderList());
+                        }
                     }
 
 
@@ -120,35 +162,53 @@ public class SurSungSyncChannelOrder {
                         pageIndex++;
                         orderSearch.setPageIndex(pageIndex);
                         EventResult nextEventResult = surSungOrderHandler.queryChannelOrder(orderSearch, sysData);
+//                        System.out.println("----" + nextEventResult.getData() + "----");
+                        log.info("--next--" + nextEventResult.getData() + "----");
                         if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                             surSungOrderSearchResult = (SurSungOrderSearchResult) nextEventResult.getData();
                             //后续几次推送
                             syncChannelOrderEvent.setOrderList(convert2PlatformOrder(sysData.getShopId(),
                                     surSungOrderSearchResult.getOrders()));
 
-                            // 推送至平台
-                            EventResult nextSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
-                            if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                // // TODO: 2016-09-27  
+//                             推送至平台
+                            if (syncChannelOrderEvent.getOrderList().size() > 0) {
+                                EventResult nextSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
+                                if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                    BatchPushOrderResult nextBatchPushOrderResult = (BatchPushOrderResult) nextSyncEvent.getData();
+                                    failedOrders.addAll(nextBatchPushOrderResult.getFailedOrders());
+                                } else {
+                                    failedOrders.addAll(syncChannelOrderEvent.getOrderList());
+                                }
                             }
-
                         }
                     }
                 }
 
+
+                log.info("failed orders" + failedOrders);
+
                 if (totalCount > 0) {// 轮询若无数据，则不记录日志
-                    syncLog(failedOrders, successOrders, totalCount, erpUserInfo, erpInfo);
+                    syncLog(failedOrders, totalCount - failedOrders.size(), totalCount, erpUserInfo, erpInfo);
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
+                log.info(e.getMessage());
+            } finally {
+                try {
+
+                    HttpClientUtil2.getInstance().close();
+                } catch (Exception e) {
+
+                }
             }
         }
         log.info("channel Order sync for SurSung end!");
 
     }
 
-    public void syncLog(List failedOrders,
-                        List successOrders, int totalCount,
+    public void syncLog(List<Order> failedOrders,
+                        int successCount, int totalCount,
                         ERPUserInfo erpUserInfo, ERPInfo erpInfo) {
 
         ChannelOrderSyncLog channelOrderSyncLog = new ChannelOrderSyncLog();
@@ -157,15 +217,31 @@ public class SurSungSyncChannelOrder {
         channelOrderSyncLog.setCustomerId(erpUserInfo.getCustomerId());
         channelOrderSyncLog.setSyncTime(new Date());
         channelOrderSyncLog.setTotalCount(totalCount);
-        if (totalCount > 0) {
-            int successCount = successOrders.size(), failedCount = failedOrders.size();
-
-        } else {
-
+        channelOrderSyncLog.setSuccessCount(successCount);
+        channelOrderSyncLog.setFailedCount(failedOrders.size());
+        if (successCount > 0 && failedOrders.size() > 0) {
+            channelOrderSyncLog.setOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_PARTY_SUCCESS);
         }
+        if (successCount > 0 && failedOrders.size() == 0) {
+            channelOrderSyncLog.setOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_SUCCESS);
+        }
+        if (successCount == 0) {
+            channelOrderSyncLog.setOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
+        }
+        log.info("save channelorder sync log");
+        channelOrderSyncLog = channelOrderSyncLogRepository.save(channelOrderSyncLog);
 
-        channelOrderSyncLogRepository.save(channelOrderSyncLog);
-
+        List<ChannelOrderSyncInfo> syncFailedChannelOrders = new ArrayList<>();
+        for (Order failedOrder : failedOrders) {
+            ChannelOrderSyncInfo channelOrderSyncInfo = new ChannelOrderSyncInfo();
+            channelOrderSyncInfo.setOrderId(failedOrder.getOrderId());
+            channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
+            channelOrderSyncInfo.setRemark(failedOrder.getRemark());
+            channelOrderSyncInfo.setChannelOrderSyncLog(channelOrderSyncLog);
+            channelOrderSyncInfo.setOrderJson(JSON.toJSONString(failedOrder));
+            syncFailedChannelOrders.add(channelOrderSyncInfo);
+        }
+        channelOrderSyncInfoService.batchSave(syncFailedChannelOrders);
 
     }
 
@@ -183,18 +259,34 @@ public class SurSungSyncChannelOrder {
 
 
         List<Order> orderList = new ArrayList<>();
-        surSungOrders.forEach(surSungOrder -> {
+        if (surSungOrders != null) {
+            surSungOrders.forEach(surSungOrder -> {
 
-            if (surSungOrder.getShopId() != shopId) {// 过滤方式2
+                if (true || surSungOrder.getShopId() != shopId) {// 过滤方式2
 
-                Order order = new Order();
+                    String shopStatus = StringUtil.getWithDefault(surSungOrder.getShopStatus(), "");
 
-                order.setOrderId(surSungOrder.getSoId());
+                    Order order = new Order();
+
+                    order.setOrderId(surSungOrder.getSoId());
+                    String shopSite = surSungOrder.getShopSite();
+                    SurSungEnum.SourceShop sourceShopEnum = EnumHelper.getEnumType(SurSungEnum.SourceShop.class, shopSite);
+                    if (sourceShopEnum == null) {
+                        order.setSourceShop(SurSungEnum.SourceShop.OTHER.getCode());
+                    } else {
+                        order.setSourceShop(sourceShopEnum.getCode());
+                    }
 //            order.setMemberId();
-                order.setUserLoginName(surSungOrder.getShopBuyerId());
+                    order.setUserLoginName(surSungOrder.getShopBuyerId());
 //            order.setUserNickname("");
-                order.setConfirm(1);
-                order.setOrderStatus(1);//0：活动；1：完成；-1：作废，关闭；
+                    order.setConfirm(1);
+
+                    if (shopStatus.equals(SurSungEnum.OrderStatus.TRADE_FINISHED)) {
+
+                        order.setOrderStatus(1);//0：活动；1：完成；-1：作废，关闭；
+                    } else {
+                        order.setOrderStatus(0);
+                    }
 
 //                0：未支付；
 //                1：已支付；
@@ -202,7 +294,12 @@ public class SurSungSyncChannelOrder {
 //                3：部分退款；
 //                4：全额退款；
 //                5：售后退款中
-                order.setPayStatus(1);
+
+                    if (shopStatus.equals(SurSungEnum.OrderStatus.WAIT_BUYER_PAY)) {
+                        order.setPayStatus(0);
+                    } else {
+                        order.setPayStatus(1);
+                    }
 
 
 //                0：未发货；
@@ -210,42 +307,51 @@ public class SurSungSyncChannelOrder {
 //                2：部分发货；
 //                3：部分退货；
 //                4：已退货；
-                order.setShipStatus(1);// TODO: 2016-09-26
+                    if (shopStatus.equals(SurSungEnum.OrderStatus.WAIT_BUYER_CONFIRM_GOODS)
+                            || shopStatus.equals(SurSungEnum.OrderStatus.TRADE_FINISHED)) {
+
+                        order.setShipStatus(1);// TODO: 2016-09-26
+                    } else {
+                        order.setShipStatus(0);
+                    }
 //            order.setWeight(0);
 //            order.setOrderName("");
-                order.setItemNum(surSungOrder.getSurSungOrderItems().size());
-//            order.setCreateTime("");// TODO: 2016-09-26
+                    order.setItemNum(surSungOrder.getSurSungOrderItems().size());
+                    order.setCreateTime(surSungOrder.getOrderDate());// TODO: 2016-09-26
 //            order.setBuyerName("");
-//            order.setPayNumber("");
+                    order.setPayNumber(surSungOrder.getOuterPayId());
 
 //            order.setCurrency("");
 
-                order.setShipName(surSungOrder.getReceiverName());
-                order.setShipArea(surSungOrder.getReceiverState() + "/" + surSungOrder.getReceiverCity() + "/"
-                        + surSungOrder.getReceiverDistrict());// /省/市/区
-                order.setProvince(surSungOrder.getReceiverState());
-                order.setCity(surSungOrder.getReceiverCity());
-                order.setDistrict(surSungOrder.getReceiverDistrict());
-                order.setShipAddr(surSungOrder.getReceiverAddress());
+                    order.setShipName(surSungOrder.getReceiverName());
+                    order.setShipArea(surSungOrder.getReceiverState() + "/" + surSungOrder.getReceiverCity() + "/"
+                            + surSungOrder.getReceiverDistrict());// /省/市/区
+                    order.setProvince(surSungOrder.getReceiverState());
+                    order.setCity(surSungOrder.getReceiverCity());
+                    order.setDistrict(surSungOrder.getReceiverDistrict());
+                    order.setShipAddr(surSungOrder.getReceiverAddress());
 //            order.setShipZip("");
-                order.setShipTel(surSungOrder.getReceiverPhone());
+                    order.setShipTel(surSungOrder.getReceiverPhone());
 //            order.setShipEmail();
-                order.setShipMobile(surSungOrder.getReceiverMobile());
-                order.setCostItem(surSungOrder.getPayAmount() - surSungOrder.getFreight());
-                order.setCostFreight(surSungOrder.getFreight());
-                order.setFinalAmount(surSungOrder.getPayAmount());
+                    order.setShipMobile(surSungOrder.getReceiverMobile());
+                    order.setCostItem(surSungOrder.getPayAmount() - surSungOrder.getFreight());
+                    order.setCostFreight(surSungOrder.getFreight());
+                    order.setFinalAmount(surSungOrder.getPayAmount());
 //            order.setPmtAmount(0.0);
-                order.setMemo(surSungOrder.getBuyerMessage());
-//            order.setRemark("");
+                    order.setMemo(surSungOrder.getBuyerMessage());
+                    order.setRemark(surSungOrder.getRemark());
 //            order.setPrintStatus(0);
 //            order.setPaymentName("");
-//            order.setPayType(1);
+                    order.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());
 //            order.setCustomerId(1);
 //            order.setSupplierId(1);
 //            order.setLogiName("");
 //            order.setLogiNo("");
 //            order.setLogiCode("");
-                order.setPayTime(surSungOrder.getOrderDate());
+                    List<SursungPay> pays = surSungOrder.getPays();
+                    if (pays.size() > 0) {
+                        order.setPayTime(pays.get(0).getPayDate());
+                    }
 //            order.setUnionOrderId("");
 //            order.setReceiveStatus(0);
 //            order.setIsTax(0);
@@ -254,35 +360,42 @@ public class SurSungSyncChannelOrder {
 //            order.setOnlinePayAmount(0);
 //            order.setLastUpdateTime("");
 
-                List<OrderItem> orderItems = new ArrayList<>();
-                surSungOrder.getSurSungOrderItems().forEach(surSungOrderItem -> {
-                    OrderItem orderItem = new OrderItem();
+                    List<OrderItem> orderItems = new ArrayList<>();
+                    surSungOrder.getSurSungOrderItems().forEach(surSungOrderItem -> {
+                        OrderItem orderItem = new OrderItem();
 
-                    orderItem.setName(surSungOrderItem.getName());
+                        orderItem.setName(surSungOrderItem.getName());
 //                orderItem.setItemId(0);
-                    orderItem.setOrderId(surSungOrder.getSoId());
+                        orderItem.setOrderId(surSungOrder.getSoId());
 //                orderItem.setUnionOrderId("");
-                    orderItem.setProductBn(surSungOrderItem.getSkuId());
+                        orderItem.setProductBn(surSungOrderItem.getSkuId());
+                        Random random = new Random();
+                        int i = random.nextInt(productBns.length);
+                        orderItem.setProductBn(surSungOrderItem.getSkuId());// TODO: 2016-10-20 正式环境需修改为surSungOrderItem.getSkuId()
 //                orderItem.setCost(0);
-                    orderItem.setPrice(surSungOrderItem.getBasePrice());
-                    orderItem.setAmount(surSungOrderItem.getAmount());
-                    orderItem.setNum(surSungOrderItem.getQty());
+                        orderItem.setPrice(surSungOrderItem.getBasePrice());
+                        orderItem.setAmount(surSungOrderItem.getAmount());
+                        orderItem.setNum(surSungOrderItem.getQty());
 //                orderItem.setSendNum(0);
 //                orderItem.setRefundNum(0);
 //                orderItem.setSupplierId(0);
 //                orderItem.setCustomerId(0);
-//                orderItem.setGoodBn("");
-                    orderItem.setStandard(surSungOrderItem.getPropertiesValue());
+                        orderItem.setGoodBn(surSungOrderItem.getSkuId());
+                        orderItem.setStandard(surSungOrderItem.getPropertiesValue());
 //                orderItem.setBrief("");
 //                orderItem.setShipStatus(0);
-                    orderItems.add(orderItem);
+                        orderItems.add(orderItem);
 
-                });
+                    });
 
-                order.setOrderItems(orderItems);
-                orderList.add(order);
-            }
-        });
+                    order.setOrderItems(orderItems);
+                    orderList.add(order);
+
+                }
+            });
+        }
+
         return orderList;
     }
+
 }

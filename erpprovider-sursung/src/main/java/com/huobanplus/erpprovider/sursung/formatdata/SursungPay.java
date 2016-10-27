@@ -53,4 +53,12 @@ public class SursungPay {
      */
     @JSONField(name = "amount")
     private double amount;
+
+    /**
+     * 1 付款
+     * -1 退款
+     */
+    @JSONField(name = "pay_type")
+    private Integer payType;
+
 }

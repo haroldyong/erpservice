@@ -15,9 +15,9 @@ package com.huobanplus.erpprovider.sursung.common;
 public class SurSungConstant {
 
     /**
-     * 每页大小，不超过30
+     * 每页大小，不超过50
      */
-    public static final Integer PAGE_SIZE = 25;
+    public static final Integer PAGE_SIZE = 50;
 
     /**
      * 订单上传接口
