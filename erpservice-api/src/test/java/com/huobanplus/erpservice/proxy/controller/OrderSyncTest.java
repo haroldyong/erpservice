@@ -20,7 +20,6 @@ import com.huobanplus.erpprovider.edb.service.EDBSyncInventory;
 import com.huobanplus.erpprovider.edb.util.EDBConstant;
 import com.huobanplus.erpprovider.gy.service.GYSyncDelivery;
 import com.huobanplus.erpprovider.gy.service.GYSyncInventory;
-import com.huobanplus.erpprovider.kaola.service.KaolaScheduledService;
 import com.huobanplus.erpprovider.kjyg.service.KjygScheduledService;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.commons.config.WebConfig;
@@ -49,8 +48,8 @@ public class OrderSyncTest extends SpringWebTest {
     private EDBScheduledService edbScheduledService;
     @Autowired
     private EDBOrderHandler edbOrderHandler;
-    @Autowired
-    private KaolaScheduledService kaolaScheduledService;
+    //    @Autowired
+//    private KaolaScheduledService kaolaScheduledService;
     @Autowired
     private KjygScheduledService kjygScheduledService;
     @Autowired
