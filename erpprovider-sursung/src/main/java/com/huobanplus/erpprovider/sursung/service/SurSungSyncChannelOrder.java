@@ -371,7 +371,7 @@ public class SurSungSyncChannelOrder {
                         orderItem.setProductBn(surSungOrderItem.getSkuId());
                         Random random = new Random();
                         int i = random.nextInt(productBns.length);
-                        orderItem.setProductBn(productBns[i]);// TODO: 2016-10-20 正式环境需修改为surSungOrderItem.getSkuId()
+                        orderItem.setProductBn(surSungOrderItem.getSkuId());// TODO: 2016-10-20 正式环境需修改为surSungOrderItem.getSkuId()
 //                orderItem.setCost(0);
                         orderItem.setPrice(surSungOrderItem.getBasePrice());
                         orderItem.setAmount(surSungOrderItem.getAmount());
