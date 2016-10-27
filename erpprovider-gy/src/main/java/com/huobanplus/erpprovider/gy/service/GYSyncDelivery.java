@@ -220,43 +220,47 @@ public class GYSyncDelivery extends GYBaseHandler {
 
         List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
 
-        deliverys.forEach(delivery -> {
-            JSONObject jsonObject = (JSONObject) delivery;
-            JSONObject deliveryStatusInfo = jsonObject.getJSONObject("delivery_statusInfo");
-            int deliveryStatus = deliveryStatusInfo.getInteger("delivery");
-            if (deliveryStatus == 1 || deliveryStatus == 2) {// 发货中 发货成功
-                String logiName = jsonObject.getString("express_name");
-                String logiNo = jsonObject.getString("express_no");
-                double freight = jsonObject.getDouble("post_fee");
-                String remark = jsonObject.getString("seller_memo");
-                String logiCode = jsonObject.getString("express_code");
-                // 序列化商品明细
-                JSONArray detailsArray = jsonObject.getJSONArray("details");
-                String itemStr = "";
-                for (Object item : detailsArray) {
-                    JSONObject obj = (JSONObject) item;
-                    String productBn = obj.getString("sku_code");
-                    int qty = obj.getInteger("qty");
-                    itemStr += productBn + "," + qty + "|";
-                }
+        for (Object delivery : deliverys) {
+            try {
+                JSONObject jsonObject = (JSONObject) delivery;
+                JSONObject deliveryStatusInfo = jsonObject.getJSONObject("delivery_statusInfo");
+                int deliveryStatus = deliveryStatusInfo.getInteger("delivery");
+                if (deliveryStatus == 1 || deliveryStatus == 2) {// 发货中 发货成功
+                    String logiName = jsonObject.getString("express_name");
+                    String logiNo = jsonObject.getString("express_no");
+                    double freight = jsonObject.getDouble("post_fee");
+                    String remark = jsonObject.getString("seller_memo");
+                    String logiCode = jsonObject.getString("express_code");
+                    // 序列化商品明细
+                    JSONArray detailsArray = jsonObject.getJSONArray("details");
+                    String itemStr = "";
+                    for (Object item : detailsArray) {
+                        JSONObject obj = (JSONObject) item;
+                        String productBn = obj.getString("sku_code");
+                        int qty = obj.getInteger("qty");
+                        itemStr += productBn + "," + qty + "|";
+                    }
 
-                //管易会把相同的地址合并发货,此时要进行拆分
-                String gyOrderInfo = jsonObject.getString("platform_code");
-                String[] gyOrderInfoArray = gyOrderInfo.split(";");
-                for (String orderId : gyOrderInfoArray) {
-                    OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
-                    orderDeliveryInfo.setLogiName(logiName);
-                    orderDeliveryInfo.setOrderId(orderId);
-                    orderDeliveryInfo.setLogiNo(logiNo);
+                    //管易会把相同的地址合并发货,此时要进行拆分
+                    String gyOrderInfo = jsonObject.getString("platform_code");
+                    String[] gyOrderInfoArray = gyOrderInfo.split(";");
+                    for (String orderId : gyOrderInfoArray) {
+                        OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
+                        orderDeliveryInfo.setLogiName(logiName);
+                        orderDeliveryInfo.setOrderId(orderId);
+                        orderDeliveryInfo.setLogiNo(logiNo);
 
-                    orderDeliveryInfo.setDeliverItemsStr(itemStr);
-                    orderDeliveryInfo.setFreight(freight);
-                    orderDeliveryInfo.setRemark(remark);
-                    orderDeliveryInfo.setLogiCode(logiCode);
-                    orderDeliveryInfoList.add(orderDeliveryInfo);
+                        orderDeliveryInfo.setDeliverItemsStr(itemStr);
+                        orderDeliveryInfo.setFreight(freight);
+                        orderDeliveryInfo.setRemark(remark);
+                        orderDeliveryInfo.setLogiCode(logiCode);
+                        orderDeliveryInfoList.add(orderDeliveryInfo);
+                    }
                 }
+            } catch (Exception ex) {
+                log.info("changetoSyncInfolist error--" + ex.getMessage());
             }
-        });
+        }
 
         return orderDeliveryInfoList;
     }
