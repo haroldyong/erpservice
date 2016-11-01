@@ -109,7 +109,7 @@ public class ProviderApiControllerImpl implements ProviderApiController {
 
     @RequestMapping(value = "/rest/erp/{erpProviderType}/{erpUserType}/{uniqueID}", method = RequestMethod.POST)
     @ResponseBody
-    public void callBack(@PathVariable("erpProviderType") int providerType, @PathVariable("erpUserType") int erpUserType, @PathVariable("uniqueID") String uniqueID, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public Object callBack(@PathVariable("erpProviderType") int providerType, @PathVariable("erpUserType") int erpUserType, @PathVariable("uniqueID") String uniqueID, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         ERPTypeEnum.ProviderType providerTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, providerType);
         ERPTypeEnum.UserType userTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
@@ -117,19 +117,14 @@ public class ProviderApiControllerImpl implements ProviderApiController {
         erpInfo.setErpType(providerTypeEnum);
         ERPHandler erpHandler = erpRegister.getERPHandler(erpInfo);
 
-        response.setCharacterEncoding("utf-8");
-        PrintWriter writer = response.getWriter();
-
         if (erpHandler == null) {
-            writer.write("未找到相关erp处理器");
+            return "未找到相关erp处理器";
         }
 
         request.setAttribute("uniqueID",uniqueID);
 
         EventResult eventResult = erpHandler.handleRequest(request, providerTypeEnum, userTypeEnum);
-
-        String resultData = (String) eventResult.getData();
-        writer.write(resultData);
+        return eventResult.getData();
 
     }
 }
