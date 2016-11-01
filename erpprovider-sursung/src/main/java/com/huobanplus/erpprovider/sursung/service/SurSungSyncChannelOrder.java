@@ -148,7 +148,6 @@ public class SurSungSyncChannelOrder {
                     if (syncChannelOrderEvent.getOrderList().size() >= 0) {
                         EventResult firstSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
 //                        System.out.println("----" + eventResult.getData() + "----");
-                        log.info("--first--" + eventResult.getData() + "----");
                         if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                             BatchPushOrderResult firstBatchPushOrderResult = (BatchPushOrderResult) firstSyncEvent.getData();
                             failedOrders.addAll(firstBatchPushOrderResult.getFailedOrders());
@@ -163,7 +162,6 @@ public class SurSungSyncChannelOrder {
                         orderSearch.setPageIndex(pageIndex);
                         EventResult nextEventResult = surSungOrderHandler.queryChannelOrder(orderSearch, sysData);
 //                        System.out.println("----" + nextEventResult.getData() + "----");
-                        log.info("--next--" + nextEventResult.getData() + "----");
                         if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                             surSungOrderSearchResult = (SurSungOrderSearchResult) nextEventResult.getData();
                             //后续几次推送
@@ -183,9 +181,6 @@ public class SurSungSyncChannelOrder {
                         }
                     }
                 }
-
-
-                log.info("failed orders" + failedOrders);
 
                 if (totalCount > 0) {// 轮询若无数据，则不记录日志
                     syncLog(failedOrders, totalCount - failedOrders.size(), totalCount, erpUserInfo, erpInfo);
