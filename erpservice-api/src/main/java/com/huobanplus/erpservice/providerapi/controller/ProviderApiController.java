@@ -31,4 +31,15 @@ public interface ProviderApiController {
             HttpServletRequest request,
             HttpServletResponse response) throws IOException;
 
+
+
+    @RequestMapping(value = "/rest/erp/{erpProviderType}/{erpUserType}/{uniqueID}", method = RequestMethod.POST)
+    @ResponseBody
+    void callBack(
+            @PathVariable("erpProviderType") int providerType,
+            @PathVariable("erpUserType") int erpUserType,
+            @PathVariable("uniqueID") String uniqueID,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException;
+
 }

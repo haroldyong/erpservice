@@ -71,7 +71,10 @@ public class SurSungHandlerBuilder implements ERPHandlerBuilder {
                 @Override
                 public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
                     log.info("************SurSung**********");
-                    List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserType(providerType, erpUserType);
+
+                    String uniqueID = (String) request.getAttribute("uniqueID");
+
+                    List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserTypeAndParamNameAndParamVal(providerType, erpUserType,"shopId",uniqueID);
                     ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
                     SurSungSysData surSungSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), SurSungSysData.class);
 
@@ -80,6 +83,7 @@ public class SurSungHandlerBuilder implements ERPHandlerBuilder {
                     String token = request.getParameter("token");
                     int ts = Integer.valueOf(request.getParameter("ts"));
                     String sign = request.getParameter("sign");
+
 
                     ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
                     ERPInfo erpInfo = new ERPInfo(erpDetailConfig.getErpType(), erpDetailConfig.getErpSysData());
