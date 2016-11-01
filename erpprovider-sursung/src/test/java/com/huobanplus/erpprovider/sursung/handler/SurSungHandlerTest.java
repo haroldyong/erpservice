@@ -53,8 +53,8 @@ public class SurSungHandlerTest extends SurSungTestBase {
     @Test
     public void testPushOrder() throws IOException {
 //        Order order = JSON.parseObject(orderInfoJson, Order.class);
-        HttpClientUtil2.getInstance().initHttpClient();
-        for (int i = 0; i < 20; i++) {
+//        HttpClientUtil2.getInstance().initHttpClient();
+        for (int i = 0; i < 1; i++) {
             String orderNo = SerialNo.create();
             mockOrder.setOrderId(orderNo);
             for (OrderItem orderItem : mockOrder.getOrderItems()) {
@@ -71,7 +71,7 @@ public class SurSungHandlerTest extends SurSungTestBase {
             System.out.println(eventResult.getData());
             System.out.println(eventResult.getResultMsg());
         }
-        HttpClientUtil2.getInstance().close();
+//        HttpClientUtil2.getInstance().close();
     }
 
     @Test

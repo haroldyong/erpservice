@@ -169,7 +169,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
     }
 
     private EventResult orderPush(String requestUrl, String requestData) {
-        HttpResult httpResult = HttpClientUtil2.getInstance().post(requestUrl, requestData);
+        HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
         if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
             JSONObject respJson = JSONObject.parseObject(httpResult.getHttpContent());
             if (respJson.getBoolean("issuccess")) {
