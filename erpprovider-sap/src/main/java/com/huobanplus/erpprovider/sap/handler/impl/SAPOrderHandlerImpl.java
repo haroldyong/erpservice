@@ -57,6 +57,9 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
         Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+        if (orderInfo.getPayStatus() == OrderEnum.PayStatus.REFUNDING.getCode()) {
+            return EventResult.resultWith(EventResultEnum.ERROR, "无效订单");
+        }
         log.info("sap start to order, orderId=" + orderInfo.getOrderId());
         SAPSysData sysData = JSON.parseObject(pushNewOrderEvent.getErpInfo().getSysDataJson(), SAPSysData.class);
 
@@ -157,7 +160,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                 double subPmtAmount = index == sapOrderItemList.size() - 1 ?
                         sapSaleOrderInfo.getPmtAmount() - totalPmtAmount :
                         sapSaleOrderInfo.getPmtAmount() * percent;
-                double netPrice = sapOrderItem.getPrice() - sapOrderItem.getAmount() - subPmtAmount; //净价 市场价-销售价-优惠金额
+                double netPrice = sapOrderItem.getPrice() - sapOrderItem.getPrice() - subPmtAmount; //净价 市场价-销售价-优惠金额
                 jCoTable.appendRow();
                 jCoTable.setValue("ZKONDM", "01");
                 jCoTable.setValue("ZTYPE", sapSaleOrderInfo.getOrderType());
