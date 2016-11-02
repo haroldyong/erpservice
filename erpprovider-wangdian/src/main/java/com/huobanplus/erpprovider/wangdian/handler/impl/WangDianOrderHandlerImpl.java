@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼在地图中查看
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.wangdian.handler.impl;
 
 import com.alibaba.fastjson.JSON;
@@ -34,20 +43,21 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
         WangDianSysData wangDianSysData = JSON.parseObject(erpInfo.getSysDataJson(), WangDianSysData.class);
         ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
 
-       return EventResult.resultWith(EventResultEnum.ERROR);
+        return EventResult.resultWith(EventResultEnum.ERROR);
 
 
     }
 
     /**
      * 记录日志
+     *
      * @param orderInfo
      * @param erpUserInfo
      * @param erpInfo
      * @param pushNewOrderEvent
      * @param isSuccess
      */
-    private void saveLog(Order orderInfo,ERPUserInfo erpUserInfo,ERPInfo erpInfo,PushNewOrderEvent pushNewOrderEvent,boolean isSuccess,String errorMsg ){
+    private void saveLog(Order orderInfo, ERPUserInfo erpUserInfo, ERPInfo erpInfo, PushNewOrderEvent pushNewOrderEvent, boolean isSuccess, String errorMsg) {
         OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderInfo.getOrderId());
         Date now = new Date();
         if (orderDetailSyncLog == null) {
@@ -61,7 +71,7 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
         orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
         orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
         orderDetailSyncLog.setSyncTime(now);
-        if(errorMsg != null){
+        if (errorMsg != null) {
             orderDetailSyncLog.setErrorMsg(errorMsg);
         }
 
