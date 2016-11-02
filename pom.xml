@@ -36,6 +36,7 @@
         <module>erpprovider-dtw</module>
         <module>erpprovider-sursung</module>
         <module>erpprovider-edi</module>
+        <module>erpprovider-wangdian</module>
     </modules>
 
     <properties>
