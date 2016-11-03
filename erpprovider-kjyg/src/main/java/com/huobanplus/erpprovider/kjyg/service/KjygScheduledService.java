@@ -80,128 +80,132 @@ public class KjygScheduledService {
         Date now = new Date();
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.KJYG);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
-            try {
+            if (detailConfig.getErpBaseConfig().getIsSyncDelivery() == 1) {
+                try {
 
-                ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
-                ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
-                KjygSysData kjygSysData = JSON.parseObject(detailConfig.getErpSysData(), KjygSysData.class);
-                int currentPageIndex = 1;
-                OrderShipSyncLog lastSyncLog = orderShipSyncLogService.findTop(erpUserInfo.getCustomerId(), ERPTypeEnum.ProviderType.KJYG);
-                List<OrderDeliveryInfo> failedOrders = new ArrayList<>(); //失败的订单列表
-                List<OrderDeliveryInfo> successOrders = new ArrayList<>(); //成功的订单列表
-                int totalCount = 0; //总数量
-                OrderSearchInfo orderSearchInfo = new OrderSearchInfo();
-                orderSearchInfo.setPageIndex(currentPageIndex);
-                orderSearchInfo.setPageSize(KjygConstant.PAGE_SIZE);
-                orderSearchInfo.setShipStatus(OrderEnum.ShipStatus.NOT_DELIVER.getCode());
-                orderSearchInfo.setPayStatus(OrderEnum.PayStatus.PAYED.getCode());
+                    ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
+                    ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
+                    KjygSysData kjygSysData = JSON.parseObject(detailConfig.getErpSysData(), KjygSysData.class);
+                    int currentPageIndex = 1;
+                    OrderShipSyncLog lastSyncLog = orderShipSyncLogService.findTop(erpUserInfo.getCustomerId(), ERPTypeEnum.ProviderType.KJYG);
+                    List<OrderDeliveryInfo> failedOrders = new ArrayList<>(); //失败的订单列表
+                    List<OrderDeliveryInfo> successOrders = new ArrayList<>(); //成功的订单列表
+                    int totalCount = 0; //总数量
+                    OrderSearchInfo orderSearchInfo = new OrderSearchInfo();
+                    orderSearchInfo.setPageIndex(currentPageIndex);
+                    orderSearchInfo.setPageSize(KjygConstant.PAGE_SIZE);
+                    orderSearchInfo.setShipStatus(OrderEnum.ShipStatus.NOT_DELIVER.getCode());
+                    orderSearchInfo.setPayStatus(OrderEnum.PayStatus.PAYED.getCode());
 
-                GetOrderDetailListEvent getOrderDetailListEvent = new GetOrderDetailListEvent();
-                getOrderDetailListEvent.setErpUserInfo(erpUserInfo);
-                getOrderDetailListEvent.setErpInfo(erpInfo);
-                getOrderDetailListEvent.setOrderSearchInfo(orderSearchInfo);
+                    GetOrderDetailListEvent getOrderDetailListEvent = new GetOrderDetailListEvent();
+                    getOrderDetailListEvent.setErpUserInfo(erpUserInfo);
+                    getOrderDetailListEvent.setErpInfo(erpInfo);
+                    getOrderDetailListEvent.setOrderSearchInfo(orderSearchInfo);
 
-                ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-                EventResult firstEventResult = erpUserHandler.handleEvent(getOrderDetailListEvent);
-                if (firstEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                    OrderListInfo orderListInfo = (OrderListInfo) firstEventResult.getData();
-                    int totalResult = orderListInfo.getRecordCount();
+                    ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+                    EventResult firstEventResult = erpUserHandler.handleEvent(getOrderDetailListEvent);
+                    if (firstEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        OrderListInfo orderListInfo = (OrderListInfo) firstEventResult.getData();
+                        int totalResult = orderListInfo.getRecordCount();
 //                    totalCount = orderListInfo.getRecordCount();
-                    List<Order> orderList = orderListInfo.getOrders();
+                        List<Order> orderList = orderListInfo.getOrders();
 
-                    // first pull
-                    BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
-                    batchDeliverEvent.setErpUserInfo(erpUserInfo);
-                    batchDeliverEvent.setErpInfo(erpInfo);
-                    EventResult firstSyncResult = null;
+                        // first pull
+                        BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
+                        batchDeliverEvent.setErpUserInfo(erpUserInfo);
+                        batchDeliverEvent.setErpInfo(erpInfo);
+                        EventResult firstSyncResult = null;
 
-                    if (orderList != null && orderList.size() > 0) {
+                        if (orderList != null && orderList.size() > 0) {
 
-                        EventResult deliveryResult = kjygOrderHandler.queryOrderTradNo(orderList, kjygSysData);
-                        if (deliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                            List<OrderDeliveryInfo> orderDeliveryInfoList = (List<OrderDeliveryInfo>) deliveryResult.getData();
-                            totalCount += orderDeliveryInfoList.size();
-                            batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
-                            firstSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
-                            if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
-                                failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
-                                successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
-                            }
-                        }
-                    }
-
-                    // next pull
-                    int totalPage = totalResult / KjygConstant.PAGE_SIZE;
-                    if (totalResult % KjygConstant.PAGE_SIZE != 0) {
-                        totalPage++;
-                    }
-                    if (totalPage > 1) {
-                        currentPageIndex++;
-                        for (int i = currentPageIndex; i <= totalPage; i++) {
-                            orderSearchInfo.setPageIndex(currentPageIndex);
-                            EventResult nextEventResult = erpUserHandler.handleEvent(getOrderDetailListEvent);
-                            if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                OrderListInfo nextOrderListInfo = (OrderListInfo) nextEventResult.getData();
-                                if (nextOrderListInfo != null) {
-                                    List<Order> nextOrderList = orderListInfo.getOrders();
-                                    if (nextOrderList != null && nextOrderList.size() > 0) {
-                                        EventResult nextDeliveryResult = kjygOrderHandler.queryOrderTradNo(nextOrderList, kjygSysData);
-                                        if (nextDeliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                            List<OrderDeliveryInfo> next = (List<OrderDeliveryInfo>) nextDeliveryResult.getData();
-                                            batchDeliverEvent.setOrderDeliveryInfoList(next);
-                                            totalCount += next.size();
-                                            EventResult nextSyncResult = erpUserHandler.handleEvent(batchDeliverEvent); //使用者同步
-                                            if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                                BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
-                                                failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
-                                                successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
-                                            }
-                                        }
-
-                                    }
+                            EventResult deliveryResult = kjygOrderHandler.queryOrderTradNo(orderList, kjygSysData);
+                            if (deliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                List<OrderDeliveryInfo> orderDeliveryInfoList = (List<OrderDeliveryInfo>) deliveryResult.getData();
+                                totalCount += orderDeliveryInfoList.size();
+                                batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
+                                firstSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
+                                if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                    BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
+                                    failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
+                                    successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
                                 }
+                            }
+                        }
 
+                        // next pull
+                        int totalPage = totalResult / KjygConstant.PAGE_SIZE;
+                        if (totalResult % KjygConstant.PAGE_SIZE != 0) {
+                            totalPage++;
+                        }
+                        if (totalPage > 1) {
+                            currentPageIndex++;
+                            for (int i = currentPageIndex; i <= totalPage; i++) {
+                                orderSearchInfo.setPageIndex(currentPageIndex);
+                                EventResult nextEventResult = erpUserHandler.handleEvent(getOrderDetailListEvent);
+                                if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                    OrderListInfo nextOrderListInfo = (OrderListInfo) nextEventResult.getData();
+                                    if (nextOrderListInfo != null) {
+                                        List<Order> nextOrderList = orderListInfo.getOrders();
+                                        if (nextOrderList != null && nextOrderList.size() > 0) {
+                                            EventResult nextDeliveryResult = kjygOrderHandler.queryOrderTradNo(nextOrderList, kjygSysData);
+                                            if (nextDeliveryResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                                List<OrderDeliveryInfo> next = (List<OrderDeliveryInfo>) nextDeliveryResult.getData();
+                                                batchDeliverEvent.setOrderDeliveryInfoList(next);
+                                                totalCount += next.size();
+                                                EventResult nextSyncResult = erpUserHandler.handleEvent(batchDeliverEvent); //使用者同步
+                                                if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                                    BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
+                                                    failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
+                                                    successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
+                                                }
+                                            }
+
+                                        }
+                                    }
+
+                                }
                             }
                         }
                     }
-                }
-                if (totalCount > 0) {
-                    int successCount = successOrders.size(), failedCount = failedOrders.size();
-                    //发货同步记录
-                    OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
-                    orderShipSyncLog.setProviderType(erpInfo.getErpType());
-                    orderShipSyncLog.setUserType(erpUserInfo.getErpUserType());
-                    orderShipSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-                    orderShipSyncLog.setTotalCount(totalCount);
-                    orderShipSyncLog.setSuccessCount(successCount);
-                    orderShipSyncLog.setFailedCount(failedCount);
-                    orderShipSyncLog.setSyncTime(now);
                     if (totalCount > 0) {
-                        if (successCount > 0 && failedCount > 0) {
-                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
+                        int successCount = successOrders.size(), failedCount = failedOrders.size();
+                        //发货同步记录
+                        OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
+                        orderShipSyncLog.setProviderType(erpInfo.getErpType());
+                        orderShipSyncLog.setUserType(erpUserInfo.getErpUserType());
+                        orderShipSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+                        orderShipSyncLog.setTotalCount(totalCount);
+                        orderShipSyncLog.setSuccessCount(successCount);
+                        orderShipSyncLog.setFailedCount(failedCount);
+                        orderShipSyncLog.setSyncTime(now);
+                        if (totalCount > 0) {
+                            if (successCount > 0 && failedCount > 0) {
+                                orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_PARTY_SUCCESS);
+                            }
+                            if (successCount > 0 && failedCount == 0) {
+                                orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+                            }
+                            if (successCount == 0) {
+                                orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                            }
+                        } else {
+                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.NO_DATA);
                         }
-                        if (successCount > 0 && failedCount == 0) {
-                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-                        }
-                        if (successCount == 0) {
-                            orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
-                        }
-                    } else {
-                        orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.NO_DATA);
+                        orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
+
+                        List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
+
+                        shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                        shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+
+                        shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
                     }
-                    orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
 
-                    List<ShipSyncDeliverInfo> shipSyncDeliverInfoList = new ArrayList<>();
-
-                    shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, failedOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
-                    shipSyncDeliverInfoService.shipSyncDeliverInfoList(shipSyncDeliverInfoList, successOrders, orderShipSyncLog, OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
-
-                    shipSyncDeliverInfoService.batchSave(shipSyncDeliverInfoList);
+                } catch (Exception e) {
+                    log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
                 }
-
-            } catch (Exception e) {
-                log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
+            } else {
+                log.info("kjyg customer " + detailConfig.getCustomerId() + " not open sync delivery");
             }
         }
         log.info("kjyg ship sync end");

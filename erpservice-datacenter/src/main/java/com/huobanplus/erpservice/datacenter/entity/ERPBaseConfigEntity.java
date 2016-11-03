@@ -47,6 +47,6 @@ public class ERPBaseConfigEntity {
      * 1：开通
      * 0：不开通
      */
-    private int isSyncDelivery;
+    private int isSyncDelivery = 1;
     private ERPTypeEnum.UserType erpUserType;
 }
