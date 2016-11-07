@@ -9,8 +9,13 @@
 
 package com.huobanplus.erpprovider.wangdian.handler;
 
+import com.huobanplus.erpprovider.wangdian.formatdata.WangDianLogistic;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+
+import java.util.List;
 
 /**
  * Created by wuxiongliu on 2016/5/23.
@@ -24,5 +29,16 @@ public interface WangDianOrderHandler {
      * @return
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
+
+
+    /**
+     * 推送发货单至平台
+     *
+     * @param wangDianLogistics
+     * @param erpUserInfo
+     * @param erpInfo
+     * @return
+     */
+    EventResult deliverOrder(List<WangDianLogistic> wangDianLogistics, ERPUserInfo erpUserInfo, ERPInfo erpInfo);
 
 }

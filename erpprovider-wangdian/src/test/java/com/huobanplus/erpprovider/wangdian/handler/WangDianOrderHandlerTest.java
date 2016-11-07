@@ -9,7 +9,10 @@
 
 package com.huobanplus.erpprovider.wangdian.handler;
 
+import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.wangdian.WangDianTestBase;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +28,21 @@ public class WangDianOrderHandlerTest extends WangDianTestBase {
     @Test
     public void test() {
         Assert.assertNotNull(wangDianOrderHandler);
+    }
+
+    @Test
+    public void testPushOrder() {
+        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
+        pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
+        pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
+        pushNewOrderEvent.setErpInfo(mockErpInfo);
+
+        EventResult eventResult = wangDianOrderHandler.pushOrder(pushNewOrderEvent);
+
+        System.out.println("\n**************request result*************");
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getData());
+        System.out.println("\n**************request result*************");
     }
 }

@@ -11,6 +11,7 @@
 
     <groupId>com.huobanplus.erpservice</groupId>
     <artifactId>erpprovider-wangdian</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>

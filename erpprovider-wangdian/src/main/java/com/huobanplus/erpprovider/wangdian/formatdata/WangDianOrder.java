@@ -12,6 +12,8 @@ package com.huobanplus.erpprovider.wangdian.formatdata;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Created by wuxiongliu on 2016-11-02.
  */
@@ -94,13 +96,13 @@ public class WangDianOrder {
      * 优惠金额
      */
     @JSONField(name = "FavourableTotal")
-    private String favourableTotal;
+    private double favourableTotal;
 
     /**
      * 其他费用
      */
     @JSONField(name = "OtherFee")
-    private String otherFee;
+    private double otherFee;
 
     /**
      * 货到付款标记，0为不需要货到付款，1为需要货到付款
@@ -208,7 +210,7 @@ public class WangDianOrder {
      * 货品详细的行项目数量
      */
     @JSONField(name = "ItemCount")
-    private String itemCount;
+    private int itemCount;
 
     /**
      * 付款时间
@@ -231,6 +233,6 @@ public class WangDianOrder {
     /**
      * 货品明细
      */
-    @JSONField(name = "orderItem")
-    private String orderItem;
+    @JSONField(name = "ItemList")
+    private List<WangDianOrderItem> orderItem;
 }

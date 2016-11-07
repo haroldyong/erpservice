@@ -26,5 +26,8 @@ public class WangDianSysData {
 
     private String interfaceId;
 
+    private String appKey;
+
+    private String warehouseNo;
 
 }
