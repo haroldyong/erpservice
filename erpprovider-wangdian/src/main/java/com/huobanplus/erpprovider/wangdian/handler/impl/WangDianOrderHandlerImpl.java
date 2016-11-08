@@ -188,11 +188,11 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
                     return EventResult.resultWith(EventResultEnum.ERROR, obj.getString("ResultMsg"), null);
                 }
             } else {
-                return EventResult.resultWith(EventResultEnum.ERROR);
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return EventResult.resultWith(EventResultEnum.ERROR);
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
 
