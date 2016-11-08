@@ -30,6 +30,8 @@ import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +44,8 @@ import java.util.List;
  */
 @Component
 public class WangDianHandlerBuilder implements ERPHandlerBuilder {
+
+    private static final Log log = LogFactory.getLog(WangDianHandlerBuilder.class);
 
     @Autowired
     private WangDianOrderHandler wangDianOrderHandler;
@@ -70,15 +74,27 @@ public class WangDianHandlerBuilder implements ERPHandlerBuilder {
                 String requestSign = request.getParameter("Sign");
                 String content = request.getParameter("Content");
 
-                List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserTypeAndParamNameAndParamVal(providerType, erpUserType, "sellerId", sellerID);
-                ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
-                WangDianSysData wangDianSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), WangDianSysData.class);
-
-                ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
-                ERPInfo erpInfo = new ERPInfo(erpDetailConfig.getErpType(), erpDetailConfig.getErpSysData());
-
-                // 签名验证
+                log.info("wangdian delivery content:" + content);
                 try {
+
+                    List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserTypeAndParamNameAndParamVal(providerType, erpUserType, "sellerId", sellerID);
+                    if (sysDataInfos.size() == 0) {
+                        JSONObject respJson = new JSONObject();
+                        respJson.put("ResultCode", 1);
+                        respJson.put("ResultMsg", "未找到该商户的相关配置");
+
+                        JSONObject response = new JSONObject();
+                        response.put("ResultList", respJson);
+                        return EventResult.resultWith(EventResultEnum.ERROR, response);
+                    }
+                    ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
+                    WangDianSysData wangDianSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), WangDianSysData.class);
+
+                    ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
+                    ERPInfo erpInfo = new ERPInfo(erpDetailConfig.getErpType(), erpDetailConfig.getErpSysData());
+
+                    // 签名验证
+
                     String sign = WangDianSignUtil.buildSign(content, wangDianSysData.getAppKey());
                     if (sign.equals(requestSign)) {
 
@@ -101,10 +117,21 @@ public class WangDianHandlerBuilder implements ERPHandlerBuilder {
                         JSONObject respJson = new JSONObject();
                         respJson.put("ResultCode", 1);
                         respJson.put("ResultMsg", "签名错误");
-                        return EventResult.resultWith(EventResultEnum.ERROR, respJson);
+
+                        JSONObject response = new JSONObject();
+                        response.put("ResultList", respJson);
+
+                        return EventResult.resultWith(EventResultEnum.ERROR, response);
                     }
                 } catch (Exception e) {
+                    JSONObject respJson = new JSONObject();
+                    respJson.put("ResultCode", 1);
+                    respJson.put("ResultMsg", e.getMessage());
 
+                    JSONObject response = new JSONObject();
+                    response.put("ResultList", respJson);
+
+                    return EventResult.resultWith(EventResultEnum.ERROR, response);
                 }
 
                 return null;

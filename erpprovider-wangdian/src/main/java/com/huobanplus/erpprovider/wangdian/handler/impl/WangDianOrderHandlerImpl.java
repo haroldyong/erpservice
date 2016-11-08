@@ -79,7 +79,7 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
 
         try {
 
-            WangDianOrder wangDianOrder = convertOrder2ErpOrder(orderInfo, wangDianSysData.getWarehouseNo());// TODO: 2016-11-07
+            WangDianOrder wangDianOrder = convertOrder2ErpOrder(orderInfo, wangDianSysData.getWarehouseNo(), wangDianSysData.getShopName());// TODO: 2016-11-07
             EventResult eventResult = orderPush(wangDianOrder, wangDianSysData);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
@@ -98,28 +98,28 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
         }
     }
 
-    private WangDianOrder convertOrder2ErpOrder(Order order, String warehouseNo) {
+    private WangDianOrder convertOrder2ErpOrder(Order order, String warehouseNo, String shopName) {
         WangDianOrder wangDianOrder = new WangDianOrder();
 
         wangDianOrder.setOutInFlag(3);
         wangDianOrder.setIFOrderCode(order.getOrderId());
         wangDianOrder.setWarehouseNO(warehouseNo);
         wangDianOrder.setRemark(order.getRemark());// 商家留言?
-        wangDianOrder.setTheCause("");// TODO: 2016-11-07
-        wangDianOrder.setProviderNO("");// TODO: 2016-11-07
-        wangDianOrder.setProviderName("");// TODO: 2016-11-07
-        wangDianOrder.setLinkMan("");// TODO: 2016-11-07
-        wangDianOrder.setLinkManTel("");// TODO: 2016-11-07
-        wangDianOrder.setLinkManAdr("");// TODO: 2016-11-07
-        wangDianOrder.setRegOperatorNO("");// TODO: 2016-11-07
-        wangDianOrder.setGoodsTotal(order.getFinalAmount());
+        wangDianOrder.setTheCause("");
+        wangDianOrder.setProviderNO("");
+        wangDianOrder.setProviderName("");
+        wangDianOrder.setLinkMan("");
+        wangDianOrder.setLinkManTel("");
+        wangDianOrder.setLinkManAdr("");
+        wangDianOrder.setRegOperatorNO("");
+        wangDianOrder.setGoodsTotal(order.getFinalAmount() - order.getCostFreight());
         wangDianOrder.setFavourableTotal(order.getPmtAmount());
-        wangDianOrder.setOtherFee(0);// TODO: 2016-11-07
-        wangDianOrder.setCodFlag(0);// TODO: 2016-11-07
+//        wangDianOrder.setOtherFee(0);
+        wangDianOrder.setCodFlag(0);// 0 不需要货到付款
         wangDianOrder.setOrderPay(order.getFinalAmount());
         wangDianOrder.setLogisticsPay(order.getCostFreight());
         wangDianOrder.setLogisticsCode(order.getLogiCode());
-        wangDianOrder.setShopName("测试店铺");// FIXME: 2016-11-07
+        wangDianOrder.setShopName(shopName);
         wangDianOrder.setNickName(order.getUserLoginName());
         wangDianOrder.setBuyerName(order.getShipName());
         wangDianOrder.setBuyerPostCode(order.getShipZip());
@@ -132,7 +132,7 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
         wangDianOrder.setNeedInvoice(0);// 0 不需要
         wangDianOrder.setInvoiceTitle("");
         wangDianOrder.setInvoiceContent("");
-        wangDianOrder.setItemCount(order.getItemNum());  // TODO: 2016-11-07  
+        wangDianOrder.setItemCount(order.getOrderItems().size());
         wangDianOrder.setPayTime(order.getPayTime());
         wangDianOrder.setTradeTime(order.getCreateTime());
         wangDianOrder.setChargeID(order.getPayNumber());
@@ -271,7 +271,7 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             BatchDeliverResult batchDeliverResult = (BatchDeliverResult) eventResult.getData();
             List<OrderDeliveryInfo> successOrders = batchDeliverResult.getSuccessOrders();
-            List<OrderDeliveryInfo> failedOrders = batchDeliverResult.getSuccessOrders();
+            List<OrderDeliveryInfo> failedOrders = batchDeliverResult.getFailedOrders();
 
             List<LogisticResponse> logisticResponses = new ArrayList<>();
             successOrders.forEach(successOrder -> {
@@ -294,13 +294,20 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
             respJson.put("ResultCode", 0);
             respJson.put("ResultMsg", "");
             respJson.put("Result", JSON.parseArray(JSON.toJSONString(logisticResponses)));
-            return EventResult.resultWith(EventResultEnum.SUCCESS, respJson);
+
+            JSONObject response = new JSONObject();
+            response.put("ResultList", respJson);
+            return EventResult.resultWith(EventResultEnum.SUCCESS, response);
 
         } else {
             JSONObject respJson = new JSONObject();
             respJson.put("ResultCode", 1);
             respJson.put("ResultMsg", eventResult.getResultMsg());
-            return EventResult.resultWith(EventResultEnum.ERROR, respJson);
+
+            JSONObject response = new JSONObject();
+            response.put("ResultList", respJson);
+
+            return EventResult.resultWith(EventResultEnum.ERROR, response);
         }
 
     }

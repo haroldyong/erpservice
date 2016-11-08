@@ -63,6 +63,7 @@ public class WangDianTestBase {
         mockWangDianSysData.setInterfaceId("youzuntest");
         mockWangDianSysData.setSellerId("dev5");
         mockWangDianSysData.setWarehouseNo("keketest");
+        mockWangDianSysData.setShopName("测试店铺");
 
         // TODO: 2016-11-07
 

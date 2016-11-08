@@ -51,7 +51,7 @@ public class WangDianOrderHandlerTest extends WangDianTestBase {
 
     @Test
     public void testRequestSign() throws UnsupportedEncodingException {
-        String content = "{\"TradeList\":{\"Trade\":[{\"OrderCode\":\"OR2013010101\",\"TradeNO\":\"JY201301010001\",\"ErpLogisticCode\":\"SF\",\"LogisticName\":\"顺丰速运\",\"PostID\":\"3273832728\",\"SndTime\":\"2001-01-0110:00:00\"},{\"OrderCode\":\"OR2013010102\",\"TradeNO\":\"JY201301010002\",\"ErpLogisticCode\":\"EMS\",\"LogisticName\":\"EMS\",\"PostID\":\"3273832729\",\"SndTime\":\"2001-01-0110:00:00\"}]}}";
+        String content = "{\"TradeList\":{\"Trade\":[{\"OrderCode\":\"20161108923182141111\",\"TradeNO\":\"JY201301010001\",\"ErpLogisticCode\":\"SF\",\"LogisticName\":\"顺丰速运\",\"PostID\":\"3273832728\",\"SndTime\":\"2001-01-0110:00:00\"},{\"OrderCode\":\"OR2013010102\",\"TradeNO\":\"JY201301010002\",\"ErpLogisticCode\":\"EMS\",\"LogisticName\":\"EMS\",\"PostID\":\"3273832729\",\"SndTime\":\"2001-01-0110:00:00\"}]}}";
 //        JSONObject jsonObject = JSON.parseObject(content);
         String sign = WangDianSignUtil.buildSign(content, "12345");
         System.out.println("\n*************");
