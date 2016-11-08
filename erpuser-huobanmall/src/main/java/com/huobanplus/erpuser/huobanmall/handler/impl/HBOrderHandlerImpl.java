@@ -210,7 +210,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
 
             String sign = SignBuilder.buildSignIgnoreEmpty(requestMap, null, HBConstant.SECRET_KEY);
             requestMap.put("sign", sign);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.CHANNELORDER_REQUEST_URL + "/order/PushErpOrder", requestMap);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/order/PushErpOrder", requestMap);
 
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult<BatchPushOrderResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchPushOrderResult>>() {

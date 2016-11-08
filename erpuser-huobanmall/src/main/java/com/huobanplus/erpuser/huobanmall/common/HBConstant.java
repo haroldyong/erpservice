@@ -31,7 +31,6 @@ public class HBConstant {
 
     public static String REQUEST_URL;
 
-    public static String CHANNELORDER_REQUEST_URL;
 
     public static Map buildSignMap(BaseInfo baseInfo) {
         Map<String, Object> signMap = new TreeMap<>();
@@ -59,6 +58,5 @@ public class HBConstant {
     @Autowired
     private void initConstant(Environment environment) {
         REQUEST_URL = environment.getProperty("huobanmall.pushUrl", "http://mallapi.devpdmall.com");
-        CHANNELORDER_REQUEST_URL = environment.getProperty("huobanj.pushUrl", "http://mallapi.51flashmall.com");
     }
 }
