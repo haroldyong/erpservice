@@ -210,21 +210,21 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
 
             String sign = SignBuilder.buildSignIgnoreEmpty(requestMap, null, HBConstant.SECRET_KEY);
             requestMap.put("sign", sign);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.CHANNELORDER_REQUEST_URL + "/order/PushErpOrder", requestMap);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/order/PushErpOrder", requestMap);
 
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult<BatchPushOrderResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchPushOrderResult>>() {
                 });
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                } else {
+                    return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
                 }
-                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
-            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
-
         } catch (Exception e) {
-
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
-        return null;
     }
 }
