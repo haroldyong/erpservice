@@ -20,21 +20,39 @@ import lombok.Data;
 @Data
 public class WangDianLogistic {
 
+    /**
+     * 订单号
+     */
     @JSONField(name = "OrderCode")
     private String orderCode;
 
+    /**
+     *
+     */
     @JSONField(name = "TradeNO")
     private String tradeNo;
 
+    /**
+     * 物流公司代码
+     */
     @JSONField(name = "ErpLogisticCode")
     private String logisticCode;
 
+    /**
+     * 物流公司名称
+     */
     @JSONField(name = "LogisticName")
     private String logisticName;
 
+    /**
+     * 物流单号
+     */
     @JSONField(name = "PostID")
     private String postId;
 
+    /**
+     * 发货时间
+     */
     @JSONField(name = "SndTime")
     private String sendTime;
 }

@@ -12,8 +12,6 @@ package com.huobanplus.erpprovider.wangdian.formatdata;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * Created by wuxiongliu on 2016-11-02.
  */
@@ -234,5 +232,5 @@ public class WangDianOrder {
      * 货品明细
      */
     @JSONField(name = "ItemList")
-    private List<WangDianOrderItem> orderItem;
+    private WangDianItemList orderItem;
 }

@@ -22,12 +22,29 @@ public class WangDianSysData {
      */
     private String requestUrl;
 
+    /**
+     * ERP为卖家分配的帐号
+     */
     private String sellerId;
 
+    /**
+     * ERP为外部接口分配的帐号
+     */
     private String interfaceId;
 
+    /**
+     * ERP给外部接口的授权字段
+     */
     private String appKey;
 
+    /**
+     * 仓库编码
+     */
     private String warehouseNo;
+
+    /**
+     * 店铺名称
+     */
+    private String shopName;
 
 }

@@ -98,7 +98,10 @@ public class WangDianHandlerBuilder implements ERPHandlerBuilder {
                         }
 
                     } else {
-                        return EventResult.resultWith(EventResultEnum.ERROR);
+                        JSONObject respJson = new JSONObject();
+                        respJson.put("ResultCode", 1);
+                        respJson.put("ResultMsg", "签名错误");
+                        return EventResult.resultWith(EventResultEnum.ERROR, respJson);
                     }
                 } catch (Exception e) {
 

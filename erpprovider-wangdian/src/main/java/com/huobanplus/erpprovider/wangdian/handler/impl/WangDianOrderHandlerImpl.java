@@ -12,10 +12,7 @@ package com.huobanplus.erpprovider.wangdian.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.wangdian.common.WangDianSysData;
-import com.huobanplus.erpprovider.wangdian.formatdata.LogisticResponse;
-import com.huobanplus.erpprovider.wangdian.formatdata.WangDianLogistic;
-import com.huobanplus.erpprovider.wangdian.formatdata.WangDianOrder;
-import com.huobanplus.erpprovider.wangdian.formatdata.WangDianOrderItem;
+import com.huobanplus.erpprovider.wangdian.formatdata.*;
 import com.huobanplus.erpprovider.wangdian.handler.WangDianOrderHandler;
 import com.huobanplus.erpprovider.wangdian.util.WangDianSignUtil;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
@@ -122,7 +119,7 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
         wangDianOrder.setOrderPay(order.getFinalAmount());
         wangDianOrder.setLogisticsPay(order.getCostFreight());
         wangDianOrder.setLogisticsCode(order.getLogiCode());
-        wangDianOrder.setShopName("shopName");// FIXME: 2016-11-07
+        wangDianOrder.setShopName("测试店铺");// FIXME: 2016-11-07
         wangDianOrder.setNickName(order.getUserLoginName());
         wangDianOrder.setBuyerName(order.getShipName());
         wangDianOrder.setBuyerPostCode(order.getShipZip());
@@ -159,7 +156,9 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
             wangDianOrderItems.add(wangDianOrderItem);
 
         });
-        wangDianOrder.setOrderItem(wangDianOrderItems);
+        WangDianItemList wangDianItemList = new WangDianItemList();
+        wangDianItemList.setItemList(wangDianOrderItems);
+        wangDianOrder.setOrderItem(wangDianItemList);
 
         return wangDianOrder;
     }
@@ -183,7 +182,7 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
                 String content = httpResult.getHttpContent();
 
                 JSONObject obj = JSON.parseObject(content);
-                if (obj.getInteger("ResultCode") == 0) {
+                if (obj.getString("ResultCode").equals("0")) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 } else {
                     return EventResult.resultWith(EventResultEnum.ERROR, obj.getString("ResultMsg"), null);
@@ -195,7 +194,6 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
             e.printStackTrace();
             return EventResult.resultWith(EventResultEnum.ERROR);
         }
-
     }
 
     private String createRequestData(String method, WangDianSysData wangDianSysData, String sign, String content) {

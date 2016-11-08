@@ -133,6 +133,8 @@
                         return dtwConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.SURSUNG.getCode()%>:
                         return sursungConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.WANGDIAN.getCode()%>:
+                        return wangdianConfigHandler;
                 }
                 return null;
             }
@@ -334,6 +336,9 @@
                                 </div>
                                 <div id="detailConfig_<%=ERPTypeEnum.ProviderType.SURSUNG.getCode()%>">
                                     <%@include file="/detailConfig/sursung_config.jsp" %>
+                                </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.WANGDIAN.getCode()%>">
+                                    <%@include file="/detailConfig/wangdian_config.jsp" %>
                                 </div>
                             </div>
                         </div>
