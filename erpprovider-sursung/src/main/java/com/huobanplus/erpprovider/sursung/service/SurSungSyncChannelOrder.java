@@ -48,6 +48,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -115,7 +117,7 @@ public class SurSungSyncChannelOrder {
                 //是否是第一次同步,第一次同步beginTime则为当前时间的前一天
                 ChannelOrderSyncLog lastSyncLog = channelOrderSyncLogRepository.findTopByCustomerIdAndProviderTypeOrderByIdDesc(erpUserInfo.getCustomerId(), ERPTypeEnum.ProviderType.SURSUNG);
                 Date beginTime = lastSyncLog == null
-                        ? Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusDays(2))
+                        ? Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusDays(1))
                         : lastSyncLog.getSyncTime();
 
                 List<Order> failedOrders = new ArrayList<>(); //失败的订单列表
@@ -204,7 +206,7 @@ public class SurSungSyncChannelOrder {
 
     public void syncLog(List<Order> failedOrders,
                         int successCount, int totalCount,
-                        ERPUserInfo erpUserInfo, ERPInfo erpInfo) {
+                        ERPUserInfo erpUserInfo, ERPInfo erpInfo) throws UnsupportedEncodingException {
 
         ChannelOrderSyncLog channelOrderSyncLog = new ChannelOrderSyncLog();
         channelOrderSyncLog.setUserType(erpUserInfo.getErpUserType());
@@ -233,7 +235,7 @@ public class SurSungSyncChannelOrder {
             channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
             channelOrderSyncInfo.setRemark(failedOrder.getRemark());
             channelOrderSyncInfo.setChannelOrderSyncLog(channelOrderSyncLog);
-            channelOrderSyncInfo.setOrderJson(JSON.toJSONString(failedOrder));
+            channelOrderSyncInfo.setOrderJson(URLEncoder.encode(JSON.toJSONString(failedOrder), "utf-8"));
             syncFailedChannelOrders.add(channelOrderSyncInfo);
         }
         channelOrderSyncInfoService.batchSave(syncFailedChannelOrders);

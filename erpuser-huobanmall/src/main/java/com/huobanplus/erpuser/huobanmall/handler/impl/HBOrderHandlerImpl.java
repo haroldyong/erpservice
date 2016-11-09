@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -204,7 +205,8 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
         Map<String, Object> requestMap = new TreeMap<>();
 
         try {
-            requestMap.put("orderListJson", JSON.toJSONString(orderList));
+            String orderListJson = JSON.toJSONString(orderList);
+            requestMap.put("orderListJson", URLEncoder.encode(orderListJson, "utf-8"));
             requestMap.put("customerId", erpUserInfo.getCustomerId());
             requestMap.put("timestamp", new Date().getTime());
 
@@ -223,8 +225,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
 
         } catch (Exception e) {
-
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
-        return null;
     }
 }
