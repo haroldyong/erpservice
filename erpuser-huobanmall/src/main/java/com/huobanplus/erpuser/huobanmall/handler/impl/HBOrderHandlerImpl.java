@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -204,12 +205,15 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
         Map<String, Object> requestMap = new TreeMap<>();
 
         try {
-            requestMap.put("orderListJson", JSON.toJSONString(orderList));
+            String orderListJson = JSON.toJSONString(orderList);
+            requestMap.put("orderListJson", URLEncoder.encode(orderListJson, "utf-8"));
             requestMap.put("customerId", erpUserInfo.getCustomerId());
             requestMap.put("timestamp", new Date().getTime());
 
             String sign = SignBuilder.buildSignIgnoreEmpty(requestMap, null, HBConstant.SECRET_KEY);
             requestMap.put("sign", sign);
+            requestMap.put("orderListJson", URLEncoder.encode(URLEncoder.encode(orderListJson, "utf-8"), "utf-8"));
+
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/order/PushErpOrder", requestMap);
 
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
@@ -217,12 +221,11 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
                 });
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
-                } else {
-                    return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
                 }
-            } else {
-                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
             }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+
         } catch (Exception e) {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
