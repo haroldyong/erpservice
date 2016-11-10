@@ -11,6 +11,39 @@
 
 package com.huobanplus.erpprovider.baison.formatdata;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Data;
+
+@Data
 public class BaisonOrderItem {
 
+    /**
+     *
+     */
+    @JSONField(name = "goods_name")
+    private String goodsName;
+
+    /**
+     *
+     */
+    @JSONField(name = "goods_number")
+    private String goodsNumber;
+
+    /**
+     *
+     */
+    @JSONField(name = "goods_price")
+    private String goodsPrice;
+
+    /**
+     *
+     */
+    @JSONField(name = "outer_sku")
+    private String outerSku;
+
+    /**
+     *
+     */
+    @JSONField(name = "payment_ft")
+    private String paymentFt;
 }
