@@ -37,6 +37,7 @@
         <module>erpprovider-sursung</module>
         <module>erpprovider-edi</module>
         <module>erpprovider-wangdian</module>
+        <module>erpprovider-baison</module>
     </modules>
 
     <properties>
