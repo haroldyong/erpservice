@@ -233,7 +233,7 @@ public class SurSungSyncChannelOrder {
             ChannelOrderSyncInfo channelOrderSyncInfo = new ChannelOrderSyncInfo();
             channelOrderSyncInfo.setOrderId(failedOrder.getOrderId());
             channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
-            channelOrderSyncInfo.setRemark(failedOrder.getRemark());
+            channelOrderSyncInfo.setRemark("");
             channelOrderSyncInfo.setChannelOrderSyncLog(channelOrderSyncLog);
             channelOrderSyncInfo.setOrderJson(URLEncoder.encode(JSON.toJSONString(failedOrder), "utf-8"));
             syncFailedChannelOrders.add(channelOrderSyncInfo);
