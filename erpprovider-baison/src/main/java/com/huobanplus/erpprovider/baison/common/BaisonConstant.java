@@ -13,5 +13,6 @@ package com.huobanplus.erpprovider.baison.common;
 
 public class BaisonConstant {
 
-//    public static final String
+    public static final String ADD_ORDER = "efast.trade.new.add";
+
 }

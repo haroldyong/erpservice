@@ -12,7 +12,15 @@
 package com.huobanplus.erpprovider.baison.handler.impl;
 
 import com.huobanplus.erpprovider.baison.handler.BaisonOrderHandler;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
 
+    @Override
+    public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
+        return null;
+    }
 }

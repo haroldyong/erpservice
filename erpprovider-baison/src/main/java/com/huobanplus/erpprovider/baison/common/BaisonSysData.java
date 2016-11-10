@@ -11,12 +11,30 @@
 
 package com.huobanplus.erpprovider.baison.common;
 
+import lombok.Data;
+
+@Data
 public class BaisonSysData {
 
+
+    /**
+     * 请求地址
+     */
     private String requestUrl;
 
+    /**
+     * appkey
+     */
     private String baisonAppkey;
 
+    /**
+     * app 用户
+     */
+    private String baisonAppkeyName;
+
+    /**
+     * secret
+     */
     private String baisonSecret;
 
 }

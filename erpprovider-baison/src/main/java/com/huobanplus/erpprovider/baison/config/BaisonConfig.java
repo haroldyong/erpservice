@@ -11,6 +11,23 @@
 
 package com.huobanplus.erpprovider.baison.config;
 
+import com.huobanplus.erpservice.eventhandler.ERPRegister;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.PostConstruct;
+
+@Configuration
 public class BaisonConfig {
 
+    @Autowired
+    private ERPRegister erpRegister;
+
+    @Autowired
+    private BaisonHandlerBuilder baisonHandlerBuilder;
+
+    @PostConstruct
+    public void init() {
+        erpRegister.addBuilders(baisonHandlerBuilder);
+    }
 }

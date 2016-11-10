@@ -11,6 +11,16 @@
 
 package com.huobanplus.erpprovider.baison.handler;
 
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+
 public interface BaisonOrderHandler {
 
+    /**
+     * 订单推送
+     *
+     * @param pushNewOrderEvent
+     * @return
+     */
+    EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
 }
