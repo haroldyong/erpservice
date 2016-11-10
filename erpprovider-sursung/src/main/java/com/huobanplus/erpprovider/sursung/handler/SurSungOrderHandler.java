@@ -12,10 +12,11 @@ package com.huobanplus.erpprovider.sursung.handler;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungInventory;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungLogistic;
-import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefund;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -67,12 +68,10 @@ public interface SurSungOrderHandler {
     /**
      * 退货退款接口
      *
-     * @param surSungReturnRefund 退货退款bean
-     * @param surSungSysData      系统参数
+     * @param pushReturnInfoEvent
      * @return
      */
-    EventResult returnRefundUpload(SurSungReturnRefund surSungReturnRefund, SurSungSysData surSungSysData);
-
+    EventResult returnRefundUpload(PushReturnInfoEvent pushReturnInfoEvent);
 
     /**
      * 渠道订单查询
@@ -82,5 +81,11 @@ public interface SurSungOrderHandler {
      * @return
      */
     EventResult queryChannelOrder(SurSungOrderSearch surSungOrderSearch, SurSungSysData surSungSysData);
+
+    /**
+     * @param cancelOrderEvent
+     * @return
+     */
+    EventResult cancelOrder(CancelOrderEvent cancelOrderEvent);
 
 }

@@ -27,14 +27,14 @@ import com.huobanplus.erpservice.common.httputil.HttpClientUtil2;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
-import com.huobanplus.erpservice.datacenter.model.Order;
-import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
-import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
+import com.huobanplus.erpservice.datacenter.model.*;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncInventoryEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -293,7 +293,55 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
     }
 
     @Override
-    public EventResult returnRefundUpload(SurSungReturnRefund surSungReturnRefund, SurSungSysData surSungSysData) {
+    public EventResult returnRefundUpload(PushReturnInfoEvent pushReturnInfoEvent) {
+
+        ERPInfo erpInfo = pushReturnInfoEvent.getErpInfo();
+        SurSungSysData surSungSysData = JSON.parseObject(erpInfo.getSysDataJson(), SurSungSysData.class);
+        ERPUserInfo erpUserInfo = pushReturnInfoEvent.getErpUserInfo();
+
+
+        ReturnInfo returnInfo = pushReturnInfoEvent.getReturnInfo();
+        List<ProReturnInfo> proReturnInfos = returnInfo.getProReturnInfoList();
+
+
+        int totalAmount = 0;
+
+        List<SurSungReturnRefundItem> surSungReturnRefundItems = new ArrayList<>();
+        if (proReturnInfos != null) {
+            for (ProReturnInfo item : proReturnInfos) {
+
+                totalAmount += item.getPrice() * item.getReturnNum();
+
+                SurSungReturnRefundItem surSungReturnRefundItem = new SurSungReturnRefundItem();
+                surSungReturnRefundItem.setOuterOiId(returnInfo.getOrderId());
+                surSungReturnRefundItem.setSkuId(item.getProductBn());
+                surSungReturnRefundItem.setQty(item.getReturnNum());
+                surSungReturnRefundItem.setAmount(item.getPrice());// FIXME: 2016-11-10
+                surSungReturnRefundItem.setType("其他");
+//                surSungReturnRefundItem.setName("");
+//                surSungReturnRefundItem.setPropertiesValue("");
+                surSungReturnRefundItems.add(surSungReturnRefundItem);
+            }
+        }
+
+
+        SurSungReturnRefund surSungReturnRefund = new SurSungReturnRefund();
+        surSungReturnRefund.setShopId(surSungSysData.getShopId());
+        surSungReturnRefund.setOuterAsId(returnInfo.getOrderId());
+        surSungReturnRefund.setSoId(returnInfo.getOrderId());
+        surSungReturnRefund.setType("其他");
+        surSungReturnRefund.setLogiCompany(returnInfo.getLogiName());
+        surSungReturnRefund.setLogiNo(returnInfo.getLogiNo());
+        surSungReturnRefund.setShopStatus("WAIT_SELLER_AGREE");
+        surSungReturnRefund.setRemark(returnInfo.getRemark());
+        surSungReturnRefund.setGoodStatus("BUYER_NOT_RECEIVED");
+//        surSungReturnRefund.setQuestionType("");
+        surSungReturnRefund.setTotalAmount(totalAmount);
+        surSungReturnRefund.setRefund(totalAmount);
+        surSungReturnRefund.setPayment(0);
+        surSungReturnRefund.setItems(surSungReturnRefundItems);
+
+
         try {
             JSONArray jsonArray = new JSONArray();
             jsonArray.add(surSungReturnRefund);
@@ -359,5 +407,44 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
         }
     }
 
+    @Override
+    public EventResult cancelOrder(CancelOrderEvent cancelOrderEvent) {
+        Date now = new Date();
+        int time = (int) (now.getTime() / 1000);
 
+        String orderId = cancelOrderEvent.getOrderId();
+        ERPInfo erpInfo = cancelOrderEvent.getErpInfo();
+        SurSungSysData surSungSysData = JSON.parseObject(erpInfo.getSysDataJson(), SurSungSysData.class);
+
+        JSONObject cancelOrderObj = new JSONObject();
+        cancelOrderObj.put("shop_id", surSungSysData.getShopId());
+        cancelOrderObj.put("so_id", orderId);
+        cancelOrderObj.put("remark", "");
+
+        JSONArray cancelOrderArray = new JSONArray();
+        cancelOrderArray.add(cancelOrderObj);
+
+        try {
+            String requestData = JSON.toJSONString(cancelOrderArray);
+            String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.ORDER_CANCEL_TO_ERP, time, surSungSysData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
+
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject respJson = JSONObject.parseObject(httpResult.getHttpContent());
+                if (respJson.getBoolean("issuccess")) {
+                    log.info("SurSungOrderHandlerImpl-cancelOrder:取消订单成功");
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                } else {
+                    log.info("SurSungOrderHandlerImpl-cancelOrder:取消订单失败 " + respJson.getString("msg"));
+                    return EventResult.resultWith(EventResultEnum.ERROR, respJson.getString("msg"), null);
+                }
+
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            }
+
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
 }
