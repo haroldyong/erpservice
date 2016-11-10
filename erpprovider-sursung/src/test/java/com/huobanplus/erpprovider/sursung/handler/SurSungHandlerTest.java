@@ -14,8 +14,6 @@ import com.huobanplus.erpprovider.sursung.SurSungTestBase;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungInventory;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungLogistic;
-import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefund;
-import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefundItem;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearchResult;
@@ -25,8 +23,11 @@ import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
+import com.huobanplus.erpservice.datacenter.model.ProReturnInfo;
+import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncChannelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -57,6 +58,7 @@ public class SurSungHandlerTest extends SurSungTestBase {
         for (int i = 0; i < 1; i++) {
             String orderNo = SerialNo.create();
             mockOrder.setOrderId(orderNo);
+            System.out.println("\norderNo:" + orderNo);
             for (OrderItem orderItem : mockOrder.getOrderItems()) {
                 orderItem.setProductBn("BN-" + i);
             }
@@ -86,36 +88,71 @@ public class SurSungHandlerTest extends SurSungTestBase {
     @Test
     public void testReturnRefund() {
 
-        List<SurSungReturnRefundItem> surSungReturnRefundItems = new ArrayList<>();
-        SurSungReturnRefundItem surSungReturnRefundItem = new SurSungReturnRefundItem();
-        surSungReturnRefundItem.setOuterOiId("0987654321");
-        surSungReturnRefundItem.setSkuId("123");
-        surSungReturnRefundItem.setQty(2);
-        surSungReturnRefundItem.setAmount(50);
-        surSungReturnRefundItem.setType("退货");
-        surSungReturnRefundItem.setName("奶粉");
-        surSungReturnRefundItem.setPropertiesValue("红色");
-        surSungReturnRefundItems.add(surSungReturnRefundItem);
+//        List<SurSungReturnRefundItem> surSungReturnRefundItems = new ArrayList<>();
+//        SurSungReturnRefundItem surSungReturnRefundItem = new SurSungReturnRefundItem();
+//        surSungReturnRefundItem.setOuterOiId("0987654321");
+//        surSungReturnRefundItem.setSkuId("123");
+//        surSungReturnRefundItem.setQty(2);
+//        surSungReturnRefundItem.setAmount(50);
+//        surSungReturnRefundItem.setType("退货");
+//        surSungReturnRefundItem.setName("奶粉");
+//        surSungReturnRefundItem.setPropertiesValue("红色");
+//        surSungReturnRefundItems.add(surSungReturnRefundItem);
+//
+//        SurSungReturnRefund surSungReturnRefund = new SurSungReturnRefund();
+//        surSungReturnRefund.setShopId(14670);
+//        surSungReturnRefund.setOuterAsId("1234567890");
+//        surSungReturnRefund.setSoId("20160908145050387283");
+//        surSungReturnRefund.setType("普通退货");
+//        surSungReturnRefund.setLogiCompany("顺丰快递");
+//        surSungReturnRefund.setLogiNo("12345logino");
+//        surSungReturnRefund.setShopStatus("WAIT_SELLER_AGREE");
+//        surSungReturnRefund.setRemark("不喜欢");
+//        surSungReturnRefund.setGoodStatus("BUYER_RETURNED_GOODS");
+//        surSungReturnRefund.setQuestionType("测试");
+//        surSungReturnRefund.setTotalAmount(100);
+//        surSungReturnRefund.setRefund(100);
+//        surSungReturnRefund.setPayment(0);
+//        surSungReturnRefund.setItems(surSungReturnRefundItems);
 
-        SurSungReturnRefund surSungReturnRefund = new SurSungReturnRefund();
-        surSungReturnRefund.setShopId(14670);
-        surSungReturnRefund.setOuterAsId("1234567890");
-        surSungReturnRefund.setSoId("20160908145050387283");
-        surSungReturnRefund.setType("普通退货");
-        surSungReturnRefund.setLogiCompany("顺丰快递");
-        surSungReturnRefund.setLogiNo("12345logino");
-        surSungReturnRefund.setShopStatus("WAIT_SELLER_AGREE");
-        surSungReturnRefund.setRemark("不喜欢");
-        surSungReturnRefund.setGoodStatus("BUYER_RETURNED_GOODS");
-        surSungReturnRefund.setQuestionType("测试");
-        surSungReturnRefund.setTotalAmount(100);
-        surSungReturnRefund.setRefund(100);
-        surSungReturnRefund.setPayment(0);
-        surSungReturnRefund.setItems(surSungReturnRefundItems);
-        EventResult eventResult = surSungOrderHandler.returnRefundUpload(surSungReturnRefund, mockSurSungSysData);
-        System.out.println(eventResult.getResultCode());
-        System.out.println(eventResult.getData());
-        System.out.println(eventResult.getResultMsg());
+        ReturnInfo returnInfo = new ReturnInfo();
+        returnInfo.setOrderId("20161110194809568103");
+        returnInfo.setReason("test");
+        returnInfo.setLogiName("顺丰快递");
+        returnInfo.setLogiNo("12345logino");
+        returnInfo.setReturnAddr("浙江省杭州市滨江区");
+        returnInfo.setReturnMobile("15061745623");
+        returnInfo.setReturnName("wuxiongliu");
+        returnInfo.setReturnZip("334600");
+        returnInfo.setFreight(20);
+        returnInfo.setRemark("测试");
+        returnInfo.setReturnItemStr("fasfas|fasfas|sfas");
+        returnInfo.setUserLoginName("wuxionglou");
+
+        List<ProReturnInfo> proReturnInfos = new ArrayList<>();
+        ProReturnInfo proReturnInfo = new ProReturnInfo();
+        proReturnInfo.setGoodBn("goodsBn");
+        proReturnInfo.setProductBn("123");
+        proReturnInfo.setReturnNum(2);
+        proReturnInfo.setPrice(102);
+        proReturnInfos.add(proReturnInfo);
+
+        returnInfo.setProReturnInfoList(proReturnInfos);
+
+        System.out.println("\n*********");
+        System.out.println(JSON.toJSONString(returnInfo));
+        System.out.println("\n*********");
+
+
+//        PushReturnInfoEvent pushReturnInfoEvent = new PushReturnInfoEvent();
+//        pushReturnInfoEvent.setErpInfo(mockErpInfo);
+//        pushReturnInfoEvent.setErpUserInfo(mockErpUserInfo);
+//        pushReturnInfoEvent.setReturnInfo(returnInfo);
+//
+//        EventResult eventResult = surSungOrderHandler.returnRefundUpload(pushReturnInfoEvent);
+//        System.out.println(eventResult.getResultCode());
+//        System.out.println(eventResult.getData());
+//        System.out.println(eventResult.getResultMsg());
     }
 
     @Test
@@ -160,6 +197,21 @@ public class SurSungHandlerTest extends SurSungTestBase {
 
         HttpClientUtil2.getInstance().close();
 
+    }
+
+    @Test
+    public void testCancelOrder() {
+        CancelOrderEvent cancelOrderEvent = new CancelOrderEvent();
+        cancelOrderEvent.setOrderId("20161110194809568103");
+        cancelOrderEvent.setErpInfo(mockErpInfo);
+        cancelOrderEvent.setErpUserInfo(mockErpUserInfo);
+
+        EventResult eventResult = surSungOrderHandler.cancelOrder(cancelOrderEvent);
+
+        System.out.println("*********************Data*********************");
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
+        System.out.println("*********************Data*********************");
     }
 
     @Autowired
