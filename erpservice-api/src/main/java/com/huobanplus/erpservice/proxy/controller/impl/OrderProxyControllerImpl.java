@@ -127,6 +127,7 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     @ResponseBody
     public ApiResult returnRefund(@RequestAttribute ERPInfo erpInfo, @RequestAttribute ERPUserInfo erpUserInfo, String returnInfoJson) {
 
+        log.info("ReturnInfo:" + returnInfoJson);
         ReturnInfo returnInfo = JSON.parseObject(returnInfoJson, ReturnInfo.class);
 
         PushReturnInfoEvent pushReturnInfoEvent = new PushReturnInfoEvent();
