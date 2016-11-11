@@ -9,13 +9,11 @@
 
 package com.huobanplus.erpservice.proxy.controller.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderRefundStatusInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderRemarkUpdateInfo;
-import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.*;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -125,16 +123,14 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     @Override
     @RequestMapping("/returnRefund")
     @ResponseBody
-    public ApiResult returnRefund(@RequestAttribute ERPInfo erpInfo, @RequestAttribute ERPUserInfo erpUserInfo, String returnInfoJson) {
+    public ApiResult returnRefund(@RequestAttribute ERPInfo erpInfo, @RequestAttribute ERPUserInfo erpUserInfo, String afterSaleJson) {
 
-        log.info("ReturnInfo:" + returnInfoJson);
-        ReturnInfo returnInfo = JSON.parseObject(returnInfoJson, ReturnInfo.class);
-
-        PushReturnInfoEvent pushReturnInfoEvent = new PushReturnInfoEvent();
-        pushReturnInfoEvent.setReturnInfo(returnInfo);
-        pushReturnInfoEvent.setErpUserInfo(erpUserInfo);
-        pushReturnInfoEvent.setErpInfo(erpInfo);
-        return orderProxyService.handleEvent(pushReturnInfoEvent);
+        log.info("AfterSaleJson:" + afterSaleJson);
+        PushAfterSaleEvent pushAfterSaleEvent = new PushAfterSaleEvent();
+        pushAfterSaleEvent.setErpInfo(erpInfo);
+        pushAfterSaleEvent.setErpUserInfo(erpUserInfo);
+        pushAfterSaleEvent.setAfterSaleInfo(afterSaleJson);
+        return orderProxyService.handleEvent(pushAfterSaleEvent);
     }
 
 

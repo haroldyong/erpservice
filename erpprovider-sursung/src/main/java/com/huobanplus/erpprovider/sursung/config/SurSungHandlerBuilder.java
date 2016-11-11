@@ -23,8 +23,8 @@ import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPSysDataInfoService;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushAfterSaleEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -67,9 +67,9 @@ public class SurSungHandlerBuilder implements ERPHandlerBuilder {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
                         return surSungOrderHandler.pushOrder(pushNewOrderEvent);
                     }
-                    if (erpBaseEvent instanceof PushReturnInfoEvent) {
-                        PushReturnInfoEvent pushReturnInfoEvent = (PushReturnInfoEvent) erpBaseEvent;
-                        return surSungOrderHandler.returnRefundUpload(pushReturnInfoEvent);
+                    if (erpBaseEvent instanceof PushAfterSaleEvent) {
+                        PushAfterSaleEvent pushAfterSaleEvent = (PushAfterSaleEvent) erpBaseEvent;
+                        return surSungOrderHandler.returnRefundUpload(pushAfterSaleEvent);
                     }
                     if (erpBaseEvent instanceof CancelOrderEvent) {
                         CancelOrderEvent cancelOrderEvent = (CancelOrderEvent) erpBaseEvent;

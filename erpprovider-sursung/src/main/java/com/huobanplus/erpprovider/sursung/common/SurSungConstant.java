@@ -70,5 +70,14 @@ public class SurSungConstant {
      */
     public static final String ORDERS_QUERY = "orders.query";
 
+    public static final String[] AFTER_STATUS = {
+            "WAIT_SELLER_AGREE",
+            "WAIT_SELLER_AGREE",
+            "SELLER_REFUSE_BUYER",
+            "SUCCESS",
+            "CLOSED",
+            "WAIT_BUYER_RETURN_GOODS",
+            "WAIT_SELLER_CONFIRM_GOODS"
+    };
 
 }

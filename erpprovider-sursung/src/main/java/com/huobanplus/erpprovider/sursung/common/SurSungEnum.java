@@ -74,4 +74,30 @@ public interface SurSungEnum {
         }
     }
 
+
+    enum GoodsStatus implements ICommonEnum {
+        BUYER_NOT_RECEIVED(0, "买家未收到货"),
+        BUYER_RECEIVED(1, "买家已收到货"),
+        BUYER_RETURNED_GOODS(2, "买家已退货"),
+        SELLER_RECEIVED(3, "卖家已收到退货");
+
+        private int code;
+        private String name;
+
+        GoodsStatus(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        @Override
+        public int getCode() {
+            return this.code;
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
+    }
+
 }

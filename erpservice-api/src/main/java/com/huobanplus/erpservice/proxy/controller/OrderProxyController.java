@@ -133,7 +133,7 @@ public interface OrderProxyController {
      *
      * @param erpInfo
      * @param erpUserInfo
-     * @param returnInfoJson
+     * @param afterSaleJson
      * @return
      */
     @RequestMapping("/returnRefund")
@@ -141,7 +141,7 @@ public interface OrderProxyController {
     ApiResult returnRefund(
             @RequestAttribute ERPInfo erpInfo,
             @RequestAttribute ERPUserInfo erpUserInfo,
-            String returnInfoJson
+            String afterSaleJson
     );
 
 
