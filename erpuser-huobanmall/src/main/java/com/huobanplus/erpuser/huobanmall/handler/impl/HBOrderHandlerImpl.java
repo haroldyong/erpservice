@@ -229,6 +229,5 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
         } catch (Exception e) {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
-        return null;
     }
 }
