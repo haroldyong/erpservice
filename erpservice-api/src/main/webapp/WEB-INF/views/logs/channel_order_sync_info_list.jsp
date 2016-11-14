@@ -105,6 +105,11 @@
                                    style="margin-bottom: 3px;">
                                     <span>显示全部</span>
                                 </a>
+                                <a class="btn-middle"
+                                   href="<c:url value="/erpService/platform/resyncAllChannelOrder?erpUserType=${erpUserType}&logSyncId=${logSyncId}" />"
+                                   style="margin-bottom: 3px; background-color:#00B738; color:#fff; font-size:14px; border-radius:4px; padding:4px 8px;">
+                                    <span>一键同步</span>
+                                </a>
                             </label>
                         </div>
                     </div>
@@ -172,5 +177,8 @@
         </div>
     </form>
 </div>
+<script>
+
+</script>
 </body>
 </html>

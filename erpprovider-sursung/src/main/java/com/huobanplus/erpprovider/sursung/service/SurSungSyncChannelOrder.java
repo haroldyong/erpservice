@@ -44,7 +44,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.Jsr310Converters;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -101,7 +100,7 @@ public class SurSungSyncChannelOrder {
     @Autowired
     private ChannelOrderSyncInfoService channelOrderSyncInfoService;
 
-    @Scheduled(cron = "0 0 */1 * * ?")
+    //    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void syncChannelOrder() {
         Date now = new Date();

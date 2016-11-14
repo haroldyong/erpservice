@@ -37,6 +37,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -240,7 +242,11 @@ public class SurSungHandlerTest extends SurSungTestBase {
                 syncChannelOrderEvent.setErpInfo(erpInfo);
                 syncChannelOrderEvent.setErpUserInfo(erpUserInfo);
                 List<Order> orderList = new ArrayList<>();
-                orderList.add(mockOrder);
+
+                String orderJson = "{\"city\":\"常德市\",\"confirm\":1,\"costFreight\":0,\"costItem\":168,\"createTime\":\"2016-11-11 08:43:14\",\"customerId\":0,\"district\":\"武陵区\",\"finalAmount\":168,\"isTax\":0,\"itemNum\":3,\"memberId\":0,\"onlinePayAmount\":0,\"orderId\":\"2755982872419815\",\"orderItems\":[{\"amount\":178,\"cost\":0,\"customerId\":0,\"goodBn\":\"Y24003\",\"name\":\"【双11全球狂欢节】艺福堂安吉白茶 特级 茶叶 绿茶 安吉白茶2016新茶 珍稀白茶100g\",\"num\":2,\"orderId\":\"2755982872419815\",\"price\":216,\"productBn\":\"Y24003\",\"refundNum\":0,\"sendNum\":0,\"shipStatus\":0,\"standard\":\"100g/罐\",\"supplierId\":0},{\"amount\":0,\"cost\":0,\"customerId\":0,\"goodBn\":\"Y11025\",\"name\":\"艺福堂茶点绿茶方块酥200g/盒\",\"num\":1,\"orderId\":\"2755982872419815\",\"price\":0,\"productBn\":\"Y11025\",\"refundNum\":0,\"sendNum\":0,\"shipStatus\":0,\"standard\":\"200g/盒\",\"supplierId\":0},{\"amount\":0,\"cost\":0,\"customerId\":0,\"goodBn\":\"YZ01029\",\"name\":\"赠品--艺福堂体验装（福袋C袋）\",\"num\":1,\"orderId\":\"2755982872419815\",\"price\":0,\"productBn\":\"YZ01029\",\"refundNum\":0,\"sendNum\":0,\"shipStatus\":0,\"standard\":\"C袋\",\"supplierId\":0}],\"orderStatus\":0,\"payNumber\":\"2016111121001001820295951591\",\"payStatus\":1,\"payTime\":\"2016-11-11 08:43:28\",\"payType\":9,\"pmtAmount\":0,\"printStatus\":0,\"province\":\"湖南省\",\"receiveStatus\":0,\"shipAddr\":\"永安街道武陵区东宛小区（武陵区党校对面）\",\"shipArea\":\"湖南省/常德市/武陵区\",\"shipMobile\":\"13975618638\",\"shipName\":\"吴平安\",\"shipStatus\":0,\"sourceShop\":0,\"supplierId\":0,\"userLoginName\":\"wuqin166\",\"weight\":0}";
+                Order order = JSON.parseObject(orderJson, Order.class);
+
+                orderList.add(order);
                 syncChannelOrderEvent.setOrderList(orderList);
                 ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
                 // 推送至平台
@@ -252,6 +258,15 @@ public class SurSungHandlerTest extends SurSungTestBase {
             }
         }
 
+    }
+
+    @Test
+    public void testUrlDecode() throws UnsupportedEncodingException {
+        String str = "%7B%22city%22%3A%22%E5%B8%B8%E5%BE%B7%E5%B8%82%22%2C%22confirm%22%3A1%2C%22costFreight%22%3A0%2C%22costItem%22%3A168%2C%22createTime%22%3A%222016-11-11+08%3A43%3A14%22%2C%22customerId%22%3A0%2C%22district%22%3A%22%E6%AD%A6%E9%99%B5%E5%8C%BA%22%2C%22finalAmount%22%3A168%2C%22isTax%22%3A0%2C%22itemNum%22%3A3%2C%22memberId%22%3A0%2C%22onlinePayAmount%22%3A0%2C%22orderId%22%3A%222755982872419815%22%2C%22orderItems%22%3A%5B%7B%22amount%22%3A178%2C%22cost%22%3A0%2C%22customerId%22%3A0%2C%22goodBn%22%3A%22Y24003%22%2C%22name%22%3A%22%E3%80%90%E5%8F%8C11%E5%85%A8%E7%90%83%E7%8B%82%E6%AC%A2%E8%8A%82%E3%80%91%E8%89%BA%E7%A6%8F%E5%A0%82%E5%AE%89%E5%90%89%E7%99%BD%E8%8C%B6+%E7%89%B9%E7%BA%A7+%E8%8C%B6%E5%8F%B6+%E7%BB%BF%E8%8C%B6+%E5%AE%89%E5%90%89%E7%99%BD%E8%8C%B62016%E6%96%B0%E8%8C%B6+%E7%8F%8D%E7%A8%80%E7%99%BD%E8%8C%B6100g%22%2C%22num%22%3A2%2C%22orderId%22%3A%222755982872419815%22%2C%22price%22%3A216%2C%22productBn%22%3A%22Y24003%22%2C%22refundNum%22%3A0%2C%22sendNum%22%3A0%2C%22shipStatus%22%3A0%2C%22standard%22%3A%22100g%2F%E7%BD%90%22%2C%22supplierId%22%3A0%7D%2C%7B%22amount%22%3A0%2C%22cost%22%3A0%2C%22customerId%22%3A0%2C%22goodBn%22%3A%22Y11025%22%2C%22name%22%3A%22%E8%89%BA%E7%A6%8F%E5%A0%82%E8%8C%B6%E7%82%B9%E7%BB%BF%E8%8C%B6%E6%96%B9%E5%9D%97%E9%85%A5200g%2F%E7%9B%92%22%2C%22num%22%3A1%2C%22orderId%22%3A%222755982872419815%22%2C%22price%22%3A0%2C%22productBn%22%3A%22Y11025%22%2C%22refundNum%22%3A0%2C%22sendNum%22%3A0%2C%22shipStatus%22%3A0%2C%22standard%22%3A%22200g%2F%E7%9B%92%22%2C%22supplierId%22%3A0%7D%2C%7B%22amount%22%3A0%2C%22cost%22%3A0%2C%22customerId%22%3A0%2C%22goodBn%22%3A%22YZ01029%22%2C%22name%22%3A%22%E8%B5%A0%E5%93%81--%E8%89%BA%E7%A6%8F%E5%A0%82%E4%BD%93%E9%AA%8C%E8%A3%85%EF%BC%88%E7%A6%8F%E8%A2%8BC%E8%A2%8B%EF%BC%89%22%2C%22num%22%3A1%2C%22orderId%22%3A%222755982872419815%22%2C%22price%22%3A0%2C%22productBn%22%3A%22YZ01029%22%2C%22refundNum%22%3A0%2C%22sendNum%22%3A0%2C%22shipStatus%22%3A0%2C%22standard%22%3A%22C%E8%A2%8B%22%2C%22supplierId%22%3A0%7D%5D%2C%22orderStatus%22%3A0%2C%22payNumber%22%3A%222016111121001001820295951591%22%2C%22payStatus%22%3A1%2C%22payTime%22%3A%222016-11-11+08%3A43%3A28%22%2C%22payType%22%3A9%2C%22pmtAmount%22%3A0%2C%22printStatus%22%3A0%2C%22province%22%3A%22%E6%B9%96%E5%8D%97%E7%9C%81%22%2C%22receiveStatus%22%3A0%2C%22shipAddr%22%3A%22%E6%B0%B8%E5%AE%89%E8%A1%97%E9%81%93%E6%AD%A6%E9%99%B5%E5%8C%BA%E4%B8%9C%E5%AE%9B%E5%B0%8F%E5%8C%BA%EF%BC%88%E6%AD%A6%E9%99%B5%E5%8C%BA%E5%85%9A%E6%A0%A1%E5%AF%B9%E9%9D%A2%EF%BC%89%22%2C%22shipArea%22%3A%22%E6%B9%96%E5%8D%97%E7%9C%81%2F%E5%B8%B8%E5%BE%B7%E5%B8%82%2F%E6%AD%A6%E9%99%B5%E5%8C%BA%22%2C%22shipMobile%22%3A%2213975618638%22%2C%22shipName%22%3A%22%E5%90%B4%E5%B9%B3%E5%AE%89%22%2C%22shipStatus%22%3A0%2C%22sourceShop%22%3A0%2C%22supplierId%22%3A0%2C%22userLoginName%22%3A%22wuqin166%22%2C%22weight%22%3A0%7D";
+        String json = URLDecoder.decode(str, "utf-8");
+        System.out.println("\n*************");
+        System.out.println(json);
+        System.out.println("\n*************");
     }
 
 }
