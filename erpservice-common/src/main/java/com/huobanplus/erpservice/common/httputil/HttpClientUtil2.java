@@ -13,6 +13,7 @@ import com.huobanplus.erpservice.common.util.StringUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -47,6 +48,14 @@ public class HttpClientUtil2 {
         try {
             StringEntity stringEntity = new StringEntity(requestData, "utf-8");
             HttpPost httpPost = new HttpPost(url);
+
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectTimeout(5000)
+                    .setConnectionRequestTimeout(5000)
+                    .setSocketTimeout(5000)
+                    .build();
+            httpPost.setConfig(requestConfig);
+
             httpPost.setEntity(stringEntity);
             response = httpClient.execute(httpPost);
             HttpResult httpResult = new HttpResult(response.getStatusLine().getStatusCode(), EntityUtils.toString(response.getEntity()));
@@ -77,6 +86,13 @@ public class HttpClientUtil2 {
                 }
             });
             HttpPost httpPost = new HttpPost(url);
+
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectTimeout(5000)
+                    .setConnectionRequestTimeout(5000)
+                    .setSocketTimeout(5000)
+                    .build();
+            httpPost.setConfig(requestConfig);
             HttpEntity httpEntity = new UrlEncodedFormEntity(nameValuePairs, StringUtil.UTF8);
 
             httpPost.setEntity(httpEntity);

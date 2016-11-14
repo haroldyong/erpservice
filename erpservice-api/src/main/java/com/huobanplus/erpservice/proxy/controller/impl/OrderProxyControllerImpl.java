@@ -14,10 +14,7 @@ import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderRefundStatusInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderRemarkUpdateInfo;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRefundStatusUpdate;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRemarkUpdate;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.*;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.proxy.common.ProxyBaseController;
@@ -111,6 +108,33 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
 
         return orderProxyService.handleEvent(orderRemarkUpdate);
     }
+
+    @Override
+    @RequestMapping("/cancelOrder")
+    @ResponseBody
+    public ApiResult cancelOrder(@RequestAttribute ERPInfo erpInfo, @RequestAttribute ERPUserInfo erpUserInfo, String orderId) {
+        CancelOrderEvent cancelOrderEvent = new CancelOrderEvent();
+        cancelOrderEvent.setErpInfo(erpInfo);
+        cancelOrderEvent.setErpUserInfo(erpUserInfo);
+        cancelOrderEvent.setOrderId(orderId);
+        return orderProxyService.handleEvent(cancelOrderEvent);
+    }
+
+    @Override
+    @RequestMapping("/returnRefund")
+    @ResponseBody
+    public ApiResult returnRefund(@RequestAttribute ERPInfo erpInfo, @RequestAttribute ERPUserInfo erpUserInfo, String afterSaleJson) {
+
+        log.info("AfterSaleJson:" + afterSaleJson);
+        PushAfterSaleEvent pushAfterSaleEvent = new PushAfterSaleEvent();
+        pushAfterSaleEvent.setErpInfo(erpInfo);
+        pushAfterSaleEvent.setErpUserInfo(erpUserInfo);
+        pushAfterSaleEvent.setAfterSaleInfo(afterSaleJson);
+        return orderProxyService.handleEvent(pushAfterSaleEvent);
+    }
+
+
+
 
 
 }

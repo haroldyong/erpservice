@@ -14,8 +14,6 @@ import com.huobanplus.erpprovider.sursung.SurSungTestBase;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungInventory;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungLogistic;
-import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefund;
-import com.huobanplus.erpprovider.sursung.formatdata.SurSungReturnRefundItem;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearchResult;
@@ -23,10 +21,11 @@ import com.huobanplus.erpservice.common.httputil.HttpClientUtil2;
 import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
-import com.huobanplus.erpservice.datacenter.model.Order;
-import com.huobanplus.erpservice.datacenter.model.OrderItem;
+import com.huobanplus.erpservice.datacenter.model.*;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushAfterSaleEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncChannelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -35,6 +34,7 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,6 +57,7 @@ public class SurSungHandlerTest extends SurSungTestBase {
         for (int i = 0; i < 1; i++) {
             String orderNo = SerialNo.create();
             mockOrder.setOrderId(orderNo);
+            System.out.println("\norderNo:" + orderNo);
             for (OrderItem orderItem : mockOrder.getOrderItems()) {
                 orderItem.setProductBn("BN-" + i);
             }
@@ -83,36 +84,78 @@ public class SurSungHandlerTest extends SurSungTestBase {
         System.out.println(eventResult.getResultMsg());
     }
 
+    @Rollback(value = false)
     @Test
     public void testReturnRefund() {
 
-        List<SurSungReturnRefundItem> surSungReturnRefundItems = new ArrayList<>();
-        SurSungReturnRefundItem surSungReturnRefundItem = new SurSungReturnRefundItem();
-        surSungReturnRefundItem.setOuterOiId("0987654321");
-        surSungReturnRefundItem.setSkuId("123");
-        surSungReturnRefundItem.setQty(2);
-        surSungReturnRefundItem.setAmount(50);
-        surSungReturnRefundItem.setType("退货");
-        surSungReturnRefundItem.setName("奶粉");
-        surSungReturnRefundItem.setPropertiesValue("红色");
-        surSungReturnRefundItems.add(surSungReturnRefundItem);
+//        List<SurSungReturnRefundItem> surSungReturnRefundItems = new ArrayList<>();
+//        SurSungReturnRefundItem surSungReturnRefundItem = new SurSungReturnRefundItem();
+//        surSungReturnRefundItem.setOuterOiId("0987654321");
+//        surSungReturnRefundItem.setSkuId("123");
+//        surSungReturnRefundItem.setQty(2);
+//        surSungReturnRefundItem.setAmount(50);
+//        surSungReturnRefundItem.setType("退货");
+//        surSungReturnRefundItem.setName("奶粉");
+//        surSungReturnRefundItem.setPropertiesValue("红色");
+//        surSungReturnRefundItems.add(surSungReturnRefundItem);
+//
+//        SurSungReturnRefund surSungReturnRefund = new SurSungReturnRefund();
+//        surSungReturnRefund.setShopId(14670);
+//        surSungReturnRefund.setOuterAsId("1234567890");
+//        surSungReturnRefund.setSoId("20160908145050387283");
+//        surSungReturnRefund.setType("普通退货");
+//        surSungReturnRefund.setLogiCompany("顺丰快递");
+//        surSungReturnRefund.setLogiNo("12345logino");
+//        surSungReturnRefund.setShopStatus("WAIT_SELLER_AGREE");
+//        surSungReturnRefund.setRemark("不喜欢");
+//        surSungReturnRefund.setGoodStatus("BUYER_RETURNED_GOODS");
+//        surSungReturnRefund.setQuestionType("测试");
+//        surSungReturnRefund.setTotalAmount(100);
+//        surSungReturnRefund.setRefund(100);
+//        surSungReturnRefund.setPayment(0);
+//        surSungReturnRefund.setItems(surSungReturnRefundItems);
 
-        SurSungReturnRefund surSungReturnRefund = new SurSungReturnRefund();
-        surSungReturnRefund.setShopId(14670);
-        surSungReturnRefund.setOuterAsId("1234567890");
-        surSungReturnRefund.setSoId("20160908145050387283");
-        surSungReturnRefund.setType("普通退货");
-        surSungReturnRefund.setLogiCompany("顺丰快递");
-        surSungReturnRefund.setLogiNo("12345logino");
-        surSungReturnRefund.setShopStatus("WAIT_SELLER_AGREE");
-        surSungReturnRefund.setRemark("不喜欢");
-        surSungReturnRefund.setGoodStatus("BUYER_RETURNED_GOODS");
-        surSungReturnRefund.setQuestionType("测试");
-        surSungReturnRefund.setTotalAmount(100);
-        surSungReturnRefund.setRefund(100);
-        surSungReturnRefund.setPayment(0);
-        surSungReturnRefund.setItems(surSungReturnRefundItems);
-        EventResult eventResult = surSungOrderHandler.returnRefundUpload(surSungReturnRefund, mockSurSungSysData);
+        AfterSaleInfo afterSaleInfo = new AfterSaleInfo();
+
+        ReturnInfo returnInfo = new ReturnInfo();
+        afterSaleInfo.setOrderId("20161110194644997344");
+        afterSaleInfo.setRemark("test");
+        afterSaleInfo.setLogiCompany("顺丰快递");
+        afterSaleInfo.setLogiNo("12345logino");
+        afterSaleInfo.setAfterStatus(5);
+        afterSaleInfo.setAfterSaleId("20161110194644997355");
+        afterSaleInfo.setRefund(110);
+        afterSaleInfo.setTotalAmount(120);
+        afterSaleInfo.setPayment(10);
+
+        List<AfterSaleItem> afterSaleItems = new ArrayList<>();
+        AfterSaleItem afterSaleItem = new AfterSaleItem();
+        afterSaleItem.setSkuId("BN-1234");
+        afterSaleItem.setAmount(10);
+        afterSaleItem.setReturnNum(2);
+        afterSaleItem.setType("其他");
+        afterSaleItem.setOrderId("20161110194644997344");
+        afterSaleItems.add(afterSaleItem);
+
+        afterSaleInfo.setItems(afterSaleItems);
+
+        System.out.println("\n*********");
+        System.out.println(JSON.toJSONString(afterSaleInfo));
+        System.out.println("\n*********");
+
+        mockErpUserInfo.setCustomerId(7297);
+
+//        PushReturnInfoEvent pushReturnInfoEvent = new PushReturnInfoEvent();
+//        pushReturnInfoEvent.setErpInfo(mockErpInfo);
+//        pushReturnInfoEvent.setErpUserInfo(mockErpUserInfo);
+//        pushReturnInfoEvent.setReturnInfo(returnInfo);
+
+        PushAfterSaleEvent pushAfterSaleEvent = new PushAfterSaleEvent();
+        pushAfterSaleEvent.setErpInfo(mockErpInfo);
+        pushAfterSaleEvent.setErpUserInfo(mockErpUserInfo);
+        pushAfterSaleEvent.setAfterSaleInfo(JSON.toJSONString(afterSaleInfo));
+
+        EventResult eventResult = surSungOrderHandler.returnRefundUpload(pushAfterSaleEvent);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultMsg());
@@ -120,6 +163,7 @@ public class SurSungHandlerTest extends SurSungTestBase {
 
     @Test
     public void testLogisticsUpload() {
+        mockErpUserInfo.setCustomerId(7297);
         String postBody = "{\"o_id\":\"307477\",\"l_id\":\"52301250\",\"so_id\":\"2016090928627540\",\"logistics_company\":\"????\",\"send_date\":\"2016-09-10 09:33:15\",\"items\":[{\"sku_id\":\"296pfsNHNko-1\",\"qty\":\"1\",\"name\":\"???????(??,42?)(1)\",\"so_id\":\"2016090928627540\"}]}";
         SurSungLogistic surSungLogistic = JSON.parseObject(postBody, SurSungLogistic.class);
         EventResult eventResult = surSungOrderHandler.logisticUpload(surSungLogistic, mockErpUserInfo, mockErpInfo);
@@ -160,6 +204,21 @@ public class SurSungHandlerTest extends SurSungTestBase {
 
         HttpClientUtil2.getInstance().close();
 
+    }
+
+    @Test
+    public void testCancelOrder() {
+        CancelOrderEvent cancelOrderEvent = new CancelOrderEvent();
+        cancelOrderEvent.setOrderId("20161110194809568103");
+        cancelOrderEvent.setErpInfo(mockErpInfo);
+        cancelOrderEvent.setErpUserInfo(mockErpUserInfo);
+
+        EventResult eventResult = surSungOrderHandler.cancelOrder(cancelOrderEvent);
+
+        System.out.println("*********************Data*********************");
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
+        System.out.println("*********************Data*********************");
     }
 
     @Autowired

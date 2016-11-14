@@ -27,14 +27,17 @@ import com.huobanplus.erpservice.common.httputil.HttpClientUtil2;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
-import com.huobanplus.erpservice.datacenter.model.Order;
-import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
-import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
+import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
+import com.huobanplus.erpservice.datacenter.entity.logs.ReturnRefundSyncLog;
+import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
+import com.huobanplus.erpservice.datacenter.model.*;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
+import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
+import com.huobanplus.erpservice.datacenter.service.logs.ReturnRefundSyncLogService;
+import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.*;
 import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncInventoryEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -62,6 +65,12 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
     private OrderDetailSyncLogService orderDetailSyncLogService;
     @Autowired
     private ERPRegister erpRegister;
+    @Autowired
+    private OrderShipSyncLogService orderShipSyncLogService;
+    @Autowired
+    private ShipSyncDeliverInfoService shipSyncDeliverInfoService;
+    @Autowired
+    private ReturnRefundSyncLogService returnRefundSyncLogService;
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
@@ -233,20 +242,81 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             orderDeliveryInfo.setDeliverItemsStr(sb.toString());
             orderDeliveryInfoList.add(orderDeliveryInfo);
 
+            PushDeliveryInfoEvent pushDeliveryInfoEvent = new PushDeliveryInfoEvent();
+            pushDeliveryInfoEvent.setErpInfo(erpInfo);
+            pushDeliveryInfoEvent.setErpUserInfo(erpUserInfo);
+            pushDeliveryInfoEvent.setDeliveryInfo(orderDeliveryInfo);
+
             BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
             batchDeliverEvent.setErpInfo(erpInfo);
             batchDeliverEvent.setErpUserInfo(erpUserInfo);
             batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
             EventResult eventResult = erpUserHandler.handleEvent(batchDeliverEvent);
 
+            OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
+            orderShipSyncLog.setProviderType(erpInfo.getErpType());
+            orderShipSyncLog.setUserType(erpUserInfo.getErpUserType());
+            orderShipSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+            orderShipSyncLog.setTotalCount(1);
+
+            orderShipSyncLog.setSyncTime(new Date());
+
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
 
+
                 log.info("SurSungOrderHandlerImpl-logisticUpload: 发货同步失败 " + eventResult.getResultMsg());
+                orderShipSyncLog.setSuccessCount(0);
+                orderShipSyncLog.setFailedCount(1);
+                orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
+
+                ShipSyncDeliverInfo shipSyncDeliverInfo = new ShipSyncDeliverInfo();
+                shipSyncDeliverInfo.setOrderDeliveryInfo(orderDeliveryInfo);
+                shipSyncDeliverInfo.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                shipSyncDeliverInfo.setOrderShipSyncLog(orderShipSyncLog);
+                shipSyncDeliverInfoService.save(shipSyncDeliverInfo);
+
                 return SurSungExceptionHandler.handleException(false, eventResult.getResultMsg());
+            } else {
+
+                BatchDeliverResult batchDeliverResult = (BatchDeliverResult) eventResult.getData();
+                List<OrderDeliveryInfo> successOrder = batchDeliverResult.getSuccessOrders();
+                List<OrderDeliveryInfo> failedOrder = batchDeliverResult.getFailedOrders();
+
+                ShipSyncDeliverInfo shipSyncDeliverInfo = new ShipSyncDeliverInfo();
+
+                if (successOrder.size() == 0) {
+                    orderShipSyncLog.setSuccessCount(0);
+                    orderShipSyncLog.setFailedCount(1);
+                    orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                    orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
+
+                    shipSyncDeliverInfo.setOrderDeliveryInfo(orderDeliveryInfo);
+                    shipSyncDeliverInfo.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_FAILURE);
+                    shipSyncDeliverInfo.setOrderShipSyncLog(orderShipSyncLog);
+                    shipSyncDeliverInfoService.save(shipSyncDeliverInfo);
+
+                    log.info("SurSungOrderHandlerImpl-logisticUpload: 发货同步失败 |errorMsg:" + failedOrder.get(0).getRemark());
+                    return SurSungExceptionHandler.handleException(false, failedOrder.get(0).getRemark());
+                } else {
+                    orderShipSyncLog.setSuccessCount(1);
+                    orderShipSyncLog.setFailedCount(0);
+                    orderShipSyncLog.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+                    orderShipSyncLog = orderShipSyncLogService.save(orderShipSyncLog);
+
+                    shipSyncDeliverInfo.setOrderDeliveryInfo(orderDeliveryInfo);
+                    shipSyncDeliverInfo.setShipSyncStatus(OrderSyncStatus.ShipSyncStatus.SYNC_SUCCESS);
+                    shipSyncDeliverInfo.setOrderShipSyncLog(orderShipSyncLog);
+                    shipSyncDeliverInfoService.save(shipSyncDeliverInfo);
+
+                    log.info("SurSungOrderHandlerImpl-logisticUpload: 发货同步成功");
+                    return SurSungExceptionHandler.handleException(true, null);
+                }
+
+
             }
 
-            log.info("SurSungOrderHandlerImpl-logisticUpload: 发货同步成功");
-            return SurSungExceptionHandler.handleException(true, null);
+
 
         } catch (Exception e) {
             log.error("SurSungOrderHandlerImpl-logisticUpload: " + e.getMessage());
@@ -293,15 +363,94 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
     }
 
     @Override
-    public EventResult returnRefundUpload(SurSungReturnRefund surSungReturnRefund, SurSungSysData surSungSysData) {
+    public EventResult returnRefundUpload(PushAfterSaleEvent pushAfterSaleEvent) {
+
+
+        ERPInfo erpInfo = pushAfterSaleEvent.getErpInfo();
+        SurSungSysData surSungSysData = JSON.parseObject(erpInfo.getSysDataJson(), SurSungSysData.class);
+        ERPUserInfo erpUserInfo = pushAfterSaleEvent.getErpUserInfo();
+
+        String afterSaleJson = pushAfterSaleEvent.getAfterSaleInfo();
+        AfterSaleInfo afterSaleInfo = JSON.parseObject(afterSaleJson, AfterSaleInfo.class);
+
+        List<AfterSaleItem> afterSaleItems = afterSaleInfo.getItems();
+
+        List<SurSungReturnRefundItem> surSungReturnRefundItems = new ArrayList<>();
+        if (afterSaleItems != null) {
+            for (AfterSaleItem item : afterSaleItems) {
+
+                SurSungReturnRefundItem surSungReturnRefundItem = new SurSungReturnRefundItem();
+                surSungReturnRefundItem.setOuterOiId(item.getOrderId());
+                surSungReturnRefundItem.setSkuId(item.getSkuId());
+                surSungReturnRefundItem.setQty(item.getReturnNum());
+                surSungReturnRefundItem.setAmount(item.getAmount());
+                surSungReturnRefundItem.setType("其他");
+//                surSungReturnRefundItem.setName("");
+//                surSungReturnRefundItem.setPropertiesValue("");
+                surSungReturnRefundItems.add(surSungReturnRefundItem);
+            }
+        }
+
+        SurSungReturnRefund surSungReturnRefund = new SurSungReturnRefund();
+        surSungReturnRefund.setShopId(surSungSysData.getShopId());
+        surSungReturnRefund.setOuterAsId(afterSaleInfo.getOrderId());
+        surSungReturnRefund.setSoId(afterSaleInfo.getOrderId());
+        surSungReturnRefund.setType("其他");
+        surSungReturnRefund.setLogiCompany(afterSaleInfo.getLogiCompany());
+        surSungReturnRefund.setLogiNo(afterSaleInfo.getLogiNo());
+        surSungReturnRefund.setShopStatus(SurSungConstant.AFTER_STATUS[afterSaleInfo.getAfterStatus()]);
+        surSungReturnRefund.setRemark(afterSaleInfo.getRemark());
+//        surSungReturnRefund.setGoodStatus("BUYER_NOT_RECEIVED");
+//        surSungReturnRefund.setQuestionType("");
+        surSungReturnRefund.setTotalAmount(afterSaleInfo.getTotalAmount());
+        surSungReturnRefund.setRefund(afterSaleInfo.getRefund());
+        surSungReturnRefund.setPayment(afterSaleInfo.getPayment());
+        surSungReturnRefund.setItems(surSungReturnRefundItems);
+//
+        Date now = new Date();
+
+        ReturnRefundSyncLog returnRefundSyncLog = returnRefundSyncLogService.findByOrderId(afterSaleInfo.getOrderId());
+        if (returnRefundSyncLog == null) {
+            returnRefundSyncLog = new ReturnRefundSyncLog();
+            returnRefundSyncLog.setCreateTime(now);
+        }
+        returnRefundSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+        returnRefundSyncLog.setProviderType(erpInfo.getErpType());
+        returnRefundSyncLog.setUserType(erpUserInfo.getErpUserType());
+        returnRefundSyncLog.setOrderId(afterSaleInfo.getOrderId());
+        returnRefundSyncLog.setReturnInfoJson(afterSaleJson);
+        returnRefundSyncLog.setErpSysData(erpInfo.getSysDataJson());
+        returnRefundSyncLog.setSyncTime(now);
+//
+//
         try {
             JSONArray jsonArray = new JSONArray();
             jsonArray.add(surSungReturnRefund);
-            Date now = new Date();
             int time = (int) (now.getTime() / 1000);
 
             String requestData = JSON.toJSONString(jsonArray);
             String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.AFTERSALE_UPLOAD, time, surSungSysData);
+
+            EventResult eventResult = returnRefundOrderPush(requestUrl, requestData);
+            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                returnRefundSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+            } else {
+                returnRefundSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                returnRefundSyncLog.setErrorMsg(eventResult.getResultMsg());
+            }
+
+            returnRefundSyncLogService.save(returnRefundSyncLog);
+            return eventResult;
+
+        } catch (Exception e) {
+            log.error("SurSungOrderHandlerImpl-returnRefundUpload: " + e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+
+    }
+
+    private EventResult returnRefundOrderPush(String requestUrl, String requestData) {
+        try {
             HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
             if (HttpStatus.SC_OK == httpResult.getHttpStatus()) {
                 JSONObject respJson = JSONObject.parseObject(httpResult.getHttpContent());
@@ -318,7 +467,6 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             }
 
         } catch (Exception e) {
-            log.error("SurSungOrderHandlerImpl-returnRefundUpload: " + e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
 
@@ -359,5 +507,44 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
         }
     }
 
+    @Override
+    public EventResult cancelOrder(CancelOrderEvent cancelOrderEvent) {
+        Date now = new Date();
+        int time = (int) (now.getTime() / 1000);
 
+        String orderId = cancelOrderEvent.getOrderId();
+        ERPInfo erpInfo = cancelOrderEvent.getErpInfo();
+        SurSungSysData surSungSysData = JSON.parseObject(erpInfo.getSysDataJson(), SurSungSysData.class);
+
+        JSONObject cancelOrderObj = new JSONObject();
+        cancelOrderObj.put("shop_id", surSungSysData.getShopId());
+        cancelOrderObj.put("so_id", orderId);
+        cancelOrderObj.put("remark", "");
+
+        JSONArray cancelOrderArray = new JSONArray();
+        cancelOrderArray.add(cancelOrderObj);
+
+        try {
+            String requestData = JSON.toJSONString(cancelOrderArray);
+            String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.ORDER_CANCEL_TO_ERP, time, surSungSysData);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(requestUrl, requestData);
+
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject respJson = JSONObject.parseObject(httpResult.getHttpContent());
+                if (respJson.getBoolean("issuccess")) {
+                    log.info("SurSungOrderHandlerImpl-cancelOrder:取消订单成功");
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                } else {
+                    log.info("SurSungOrderHandlerImpl-cancelOrder:取消订单失败 " + respJson.getString("msg"));
+                    return EventResult.resultWith(EventResultEnum.ERROR, respJson.getString("msg"), null);
+                }
+
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            }
+
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
 }

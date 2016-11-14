@@ -111,4 +111,38 @@ public interface OrderProxyController {
             @RequestAttribute ERPUserInfo erpUserInfo,
             OrderRemarkUpdateInfo orderRemarkUpdateInfo
     );
+
+    /**
+     * 取消订单
+     *
+     * @param erpInfo
+     * @param erpUserInfo
+     * @param orderId
+     * @return
+     */
+    @RequestMapping("/cancelOrder")
+    @ResponseBody
+    ApiResult cancelOrder(
+            @RequestAttribute ERPInfo erpInfo,
+            @RequestAttribute ERPUserInfo erpUserInfo,
+            String orderId
+    );
+
+    /**
+     * 退货退款
+     *
+     * @param erpInfo
+     * @param erpUserInfo
+     * @param afterSaleJson
+     * @return
+     */
+    @RequestMapping("/returnRefund")
+    @ResponseBody
+    ApiResult returnRefund(
+            @RequestAttribute ERPInfo erpInfo,
+            @RequestAttribute ERPUserInfo erpUserInfo,
+            String afterSaleJson
+    );
+
+
 }

@@ -37,6 +37,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -187,14 +189,14 @@ public class OrderLogController {
 
     @RequestMapping(value = "/reSyncChannelOrder", method = RequestMethod.POST)
     @ResponseBody
-    private ApiResult syncChannelOrder(long id) {
+    private ApiResult syncChannelOrder(long id) throws UnsupportedEncodingException {
         ChannelOrderSyncInfo channelOrderSyncInfo = channelOrderSyncInfoService.findById(id);
         ERPUserInfo erpUserInfo = new ERPUserInfo(channelOrderSyncInfo.getChannelOrderSyncLog().getUserType(), channelOrderSyncInfo.getChannelOrderSyncLog().getCustomerId());
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
 
         SyncChannelOrderEvent syncChannelOrderEvent = new SyncChannelOrderEvent();
         List<Order> orders = new ArrayList<>();
-        Order order = JSON.parseObject(channelOrderSyncInfo.getOrderJson(), Order.class);
+        Order order = JSON.parseObject(URLDecoder.decode(channelOrderSyncInfo.getOrderJson(), "utf-8"), Order.class);
         orders.add(order);
 
         syncChannelOrderEvent.setOrderList(orders);
