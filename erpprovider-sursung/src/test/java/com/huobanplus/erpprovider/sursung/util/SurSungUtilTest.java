@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpprovider.sursung.util;
 
+import com.huobanplus.erpprovider.sursung.common.SurSungEnum;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,5 +38,11 @@ public class SurSungUtilTest {
     @Test
     public void testCreateRequestUrl() throws UnsupportedEncodingException {
         System.out.println(SurSungUtil.createRequestUrl("logistic.query", (int) (new Date().getTime() / 1000), surSungSysData));
+    }
+
+    @Test
+    public void testEnum() {
+        String status = "WAIT_BUYER_CONFIRM_GOODS";
+        System.out.println(status.equals(SurSungEnum.OrderStatus.WAIT_BUYER_CONFIRM_GOODS.toString()));
     }
 }

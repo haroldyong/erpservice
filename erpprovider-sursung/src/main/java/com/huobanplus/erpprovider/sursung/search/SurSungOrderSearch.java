@@ -54,7 +54,7 @@ public class SurSungOrderSearch {
      * 订单编号,多个用逗号分隔 最多50
      */
     @JSONField(name = "o_ids")
-    private String oIds;
+    private List<String> oIds;
 
     /**
      * 订单状态，可选：WaitPay:待付款,Delivering:发货中, ,WaitConfirm:已付款待审核,WaitDeliver:已审核待配快递,Sent:已发货
@@ -72,7 +72,7 @@ public class SurSungOrderSearch {
      * 平台订单号号，如淘宝订单号，京东订单号，多个用逗号分隔
      */
     @JSONField(name = "so_ids")
-    private String soIds;
+    private List<String> soIds;
 
     /**
      * 买家账号,最多50

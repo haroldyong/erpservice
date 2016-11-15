@@ -22,7 +22,7 @@
 <head id="Head1">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>
-        订单发货同步日志
+        渠道订单信息同步记录
     </title>
     <link href="<c:url value="/resource/css/admin.global.css" />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/resource/css/admin.content.css" />" rel="stylesheet" type="text/css">
@@ -64,7 +64,7 @@
                 }, function (json) {
                     if (json.resultCode == 2000) {
                         $.jBox.tip("同步成功", json.resultMsg);
-                        window.location.reload();
+//                        window.location.reload();
                     } else {
                         $.jBox.tip("同步失败", "error");
                     }
@@ -157,7 +157,7 @@
 
                             <th scope="col">同步状态
                             </th>
-                            <th scope="col">备注
+                            <th scope="col">错误信息
                             </th>
                             <th scope="col">操作
                             </th>

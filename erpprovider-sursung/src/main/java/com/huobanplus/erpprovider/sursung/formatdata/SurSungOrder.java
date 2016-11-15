@@ -206,6 +206,15 @@ public class SurSungOrder {
     @JSONField(name = "outer_pay_id")
     private String outerPayId;
 
+    /**
+     * 订单状态 Sent,Merged...
+     */
+    @JSONField(name = "status")
+    private String status;
+
+    @JSONField(name = "paid_amount")
+    private double paidAmount;
+
 
     /**
      * 订单明细

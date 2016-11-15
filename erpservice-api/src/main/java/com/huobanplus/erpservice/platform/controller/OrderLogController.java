@@ -204,9 +204,18 @@ public class OrderLogController {
         syncChannelOrderEvent.setErpUserInfo(erpUserInfo);
         EventResult eventResult = erpUserHandler.handleEvent(syncChannelOrderEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-            channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_SUCCESS);
-            channelOrderSyncInfoService.save(channelOrderSyncInfo);
-            return ApiResult.resultWith(ResultCode.SUCCESS);
+            BatchPushOrderResult batchPushOrderResult = (BatchPushOrderResult) eventResult.getData();
+            List<Order> failedOrder = batchPushOrderResult.getFailedOrders();
+            if (failedOrder.size() == 0) {
+                channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_SUCCESS);
+                channelOrderSyncInfo.setRemark("");
+                channelOrderSyncInfoService.save(channelOrderSyncInfo);
+                return ApiResult.resultWith(ResultCode.SUCCESS);
+            } else {
+                channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
+                channelOrderSyncInfoService.save(channelOrderSyncInfo);
+                return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, failedOrder.get(0).getErrorMessage(), null);
+            }
         } else {
             channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
             channelOrderSyncInfoService.save(channelOrderSyncInfo);
@@ -233,6 +242,10 @@ public class OrderLogController {
                 orderList.add(order);
                 orderIds.add(order.getOrderId());
             }
+
+            System.out.println("\n**************");
+            System.out.println(JSON.toJSONString(orderList));
+            System.out.println("\n**************");
 
             SyncChannelOrderEvent syncChannelOrderEvent = new SyncChannelOrderEvent();
             syncChannelOrderEvent.setOrderList(orderList);

@@ -191,8 +191,12 @@ public class SurSungHandlerTest extends SurSungTestBase {
         surSungOrderSearch.setPageIndex(1);
         surSungOrderSearch.setPageSize(10);
 //        surSungOrderSearch.setShopId(14670);
-        surSungOrderSearch.setModifiedBegin("2016-10-05");
-        surSungOrderSearch.setModifiedEnd("2016-10-11");
+        List<String> oids = new ArrayList<>();
+        oids.add("2309077162568347");
+//        surSungOrderSearch.setOIds(oids);
+        surSungOrderSearch.setSoIds(oids);
+//        surSungOrderSearch.setModifiedBegin("2016-10-05");
+//        surSungOrderSearch.setModifiedEnd("2016-10-11");
         surSungOrderSearch.setFlds("*");
         EventResult eventResult = surSungOrderHandler.queryChannelOrder(surSungOrderSearch, mockSurSungSysData);
 

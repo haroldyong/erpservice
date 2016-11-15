@@ -123,6 +123,7 @@ public class SurSungSyncChannelOrder {
                 List successOrders = new ArrayList<>(); //成功的订单列表
                 int totalCount = 0; //总数量
                 int pageIndex = 1;
+                int totalSyncNum = 0;
 
                 SurSungOrderSearch orderSearch = new SurSungOrderSearch();
                 orderSearch.setPageIndex(1);
@@ -145,6 +146,9 @@ public class SurSungSyncChannelOrder {
                     syncChannelOrderEvent.setErpUserInfo(erpUserInfo);
                     syncChannelOrderEvent.setOrderList(convert2PlatformOrder(sysData.getShopId(),
                             surSungOrderSearchResult.getOrders()));
+
+                    totalSyncNum += syncChannelOrderEvent.getOrderList().size();
+
                     // 推送至平台
                     if (syncChannelOrderEvent.getOrderList().size() >= 0) {
                         EventResult firstSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
@@ -168,6 +172,7 @@ public class SurSungSyncChannelOrder {
                             //后续几次推送
                             syncChannelOrderEvent.setOrderList(convert2PlatformOrder(sysData.getShopId(),
                                     surSungOrderSearchResult.getOrders()));
+                            totalSyncNum += syncChannelOrderEvent.getOrderList().size();
 
 //                             推送至平台
                             if (syncChannelOrderEvent.getOrderList().size() > 0) {
@@ -180,14 +185,20 @@ public class SurSungSyncChannelOrder {
                                 }
                             }
                         }
-                        if (pageIndex > 2) {
-                            break;
-                        }
+//                        if (pageIndex > 1) {
+//                            break;
+//                        }
                     }
                 }
 
+                System.out.println("\n******************************");
+                System.out.println("本次共同步:" + totalSyncNum);
+                System.out.println("失败数:" + failedOrders.size());
+                System.out.println("成功数:" + (totalSyncNum - failedOrders.size()));
+                System.out.println("\n******************************");
+
                 if (totalCount > 0) {// 轮询若无数据，则不记录日志
-                    syncLog(failedOrders, totalCount - failedOrders.size(), totalCount, erpUserInfo, erpInfo);
+                    syncLog(failedOrders, totalSyncNum - failedOrders.size(), totalSyncNum, erpUserInfo, erpInfo);
                 }
 
             } catch (Exception e) {
@@ -235,7 +246,7 @@ public class SurSungSyncChannelOrder {
             ChannelOrderSyncInfo channelOrderSyncInfo = new ChannelOrderSyncInfo();
             channelOrderSyncInfo.setOrderId(failedOrder.getOrderId());
             channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
-            channelOrderSyncInfo.setRemark("");
+            channelOrderSyncInfo.setRemark(failedOrder.getErrorMessage());
             channelOrderSyncInfo.setChannelOrderSyncLog(channelOrderSyncLog);
             channelOrderSyncInfo.setOrderJson(URLEncoder.encode(JSON.toJSONString(failedOrder), "utf-8"));
             syncFailedChannelOrders.add(channelOrderSyncInfo);
@@ -258,13 +269,13 @@ public class SurSungSyncChannelOrder {
 
         System.out.println("\n**********");
         System.out.println(JSON.toJSONString(surSungOrders));
-        System.out.println("\n**********");
+        System.out.println("\n**********");// TODO: 2016-11-15 delete sout
 
         List<Order> orderList = new ArrayList<>();
         if (surSungOrders != null) {
             surSungOrders.forEach(surSungOrder -> {
 
-                if (true || surSungOrder.getShopId() != shopId) {// 过滤方式2
+                if ((surSungOrder.getShopId() != shopId) && (!surSungOrder.getStatus().equals("Merged"))) {// 过滤方式2
 
                     String shopStatus = StringUtil.getWithDefault(surSungOrder.getShopStatus(), "");
 
@@ -297,10 +308,15 @@ public class SurSungSyncChannelOrder {
 //                4：全额退款；
 //                5：售后退款中
 
-                    if (shopStatus.equals(SurSungEnum.OrderStatus.WAIT_BUYER_PAY)) {
-                        order.setPayStatus(0);
-                    } else {
+                    double paidAmount = surSungOrder.getPaidAmount();
+                    double payAmount = surSungOrder.getPayAmount();
+
+                    if (paidAmount == payAmount) {
                         order.setPayStatus(1);
+                    } else if (paidAmount > 0 && paidAmount < payAmount) {
+                        order.setPayStatus(2);
+                    } else {
+                        order.setPayStatus(0);
                     }
 
 
@@ -309,8 +325,8 @@ public class SurSungSyncChannelOrder {
 //                2：部分发货；
 //                3：部分退货；
 //                4：已退货；
-                    if (shopStatus.equals(SurSungEnum.OrderStatus.WAIT_BUYER_CONFIRM_GOODS)
-                            || shopStatus.equals(SurSungEnum.OrderStatus.TRADE_FINISHED)) {
+                    if (shopStatus.equals(SurSungEnum.OrderStatus.WAIT_BUYER_CONFIRM_GOODS.toString())
+                            || shopStatus.equals(SurSungEnum.OrderStatus.TRADE_FINISHED.toString())) {
 
                         order.setShipStatus(1);// TODO: 2016-09-26
                     } else {
@@ -336,7 +352,7 @@ public class SurSungSyncChannelOrder {
                     order.setShipTel(surSungOrder.getReceiverPhone());
 //            order.setShipEmail();
                     order.setShipMobile(surSungOrder.getReceiverMobile());
-                    order.setCostItem(surSungOrder.getPayAmount() - surSungOrder.getFreight());
+                    order.setCostItem(surSungOrder.getPayAmount() - surSungOrder.getFreight() + surSungOrder.getFreeAmount());
                     order.setCostFreight(surSungOrder.getFreight());
                     order.setFinalAmount(surSungOrder.getPayAmount());
 //            order.setPmtAmount(0.0);
@@ -376,7 +392,7 @@ public class SurSungSyncChannelOrder {
                         int i = random.nextInt(productBns.length);
                         orderItem.setProductBn(surSungOrderItem.getSkuId());// TODO: 2016-10-20 正式环境需修改为surSungOrderItem.getSkuId()
 //                orderItem.setCost(0);
-                        orderItem.setPrice(surSungOrderItem.getBasePrice());
+                        orderItem.setPrice(surSungOrderItem.getPrice());
                         orderItem.setAmount(surSungOrderItem.getAmount());
                         orderItem.setNum(surSungOrderItem.getQty());
 //                orderItem.setSendNum(0);
@@ -397,7 +413,6 @@ public class SurSungSyncChannelOrder {
                 }
             });
         }
-
         return orderList;
     }
 
