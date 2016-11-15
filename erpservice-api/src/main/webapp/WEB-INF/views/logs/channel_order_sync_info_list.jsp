@@ -53,6 +53,24 @@
                 }, J.PostMethod)
             });
         }
+
+        var syncUrl = "<c:url value="/erpService/platform/resyncAllChannelOrder" />"
+        function syncAll(logSyncId) {
+            J.jboxConfirm("确定一键同步所有订单吗?", function () {
+                $.jBox.tip("正在同步", "loading");
+                J.GetJsonRespons(syncUrl, {
+                    logSyncId: logSyncId,
+                    erpUserType: erpUserType
+                }, function (json) {
+                    if (json.resultCode == 2000) {
+                        $.jBox.tip("同步成功", json.resultMsg);
+                        window.location.reload();
+                    } else {
+                        $.jBox.tip("同步失败", "error");
+                    }
+                })
+            })
+        }
     </script>
 </head>
 <body>
@@ -106,7 +124,7 @@
                                     <span>显示全部</span>
                                 </a>
                                 <a class="btn-middle"
-                                   href="<c:url value="/erpService/platform/resyncAllChannelOrder?erpUserType=${erpUserType}&logSyncId=${logSyncId}" />"
+                                   href="javascript:syncAll(${logSyncId})"
                                    style="margin-bottom: 3px; background-color:#00B738; color:#fff; font-size:14px; border-radius:4px; padding:4px 8px;">
                                     <span>一键同步</span>
                                 </a>

@@ -117,6 +117,12 @@ public class SurSungOrder {
     private double payAmount;
 
     /**
+     * 抵扣金额
+     */
+    @JSONField(name = "free_amount")
+    private double freeAmount;
+
+    /**
      * 运费
      */
     @JSONField(name = "freight")
