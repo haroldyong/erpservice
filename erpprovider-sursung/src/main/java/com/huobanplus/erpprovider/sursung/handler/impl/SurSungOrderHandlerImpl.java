@@ -478,6 +478,9 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             Date now = new Date();
             int time = (int) (now.getTime() / 1000);
             String requestData = JSON.toJSONString(surSungOrderSearch);
+            System.out.println("\n************");
+            System.out.println(requestData);
+            System.out.println("\n************");
             String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.ORDERS_QUERY, time, surSungSysData);
             HttpResult httpResult = HttpClientUtil2.getInstance().post(requestUrl, requestData);
             System.out.println("content:" + httpResult.getHttpContent());

@@ -14,9 +14,11 @@ import com.huobanplus.erpprovider.sursung.SurSungTestBase;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungInventory;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungLogistic;
+import com.huobanplus.erpprovider.sursung.formatdata.SurSungOrder;
 import com.huobanplus.erpprovider.sursung.search.SurSungLogisticSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearchResult;
+import com.huobanplus.erpprovider.sursung.service.SurSungSyncChannelOrder;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil2;
 import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
@@ -51,6 +53,8 @@ public class SurSungHandlerTest extends SurSungTestBase {
 
     @Autowired
     private SurSungOrderHandler surSungOrderHandler;
+    @Autowired
+    private SurSungSyncChannelOrder surSungSyncChannelOrder;
 
     @Test
     public void testPushOrder() throws IOException {
@@ -186,13 +190,61 @@ public class SurSungHandlerTest extends SurSungTestBase {
 
     @Test
     public void testQueryOrder() throws IOException {
+//        mockSurSungSysData.setRequestUrl("http://www.erp321.com/api/open/query.aspx");
+//        mockSurSungSysData.setPartnerId("0ca483b4e595c596ca5a8e57f2ab3483");
+//        mockSurSungSysData.setPartnerKey("cc8d64515028c6321b9971738a3185c5");
+//        mockSurSungSysData.setToken("b08e15f90e13b90d217789c528976743");
+//        mockSurSungSysData.setShopId(10016667);
+
+
+        HttpClientUtil2.getInstance().initHttpClient();
+        Integer[] shopIds = {14582, 14583, 14585, 14586, 14587, 14588, 14596, 14597};
+        for (int i = 0; i < shopIds.length; i++) {
+
+
+            SurSungOrderSearch surSungOrderSearch = new SurSungOrderSearch();
+            surSungOrderSearch.setPageIndex(1);
+            surSungOrderSearch.setPageSize(10);
+            surSungOrderSearch.setShopId(14597);
+//        surSungOrderSearch.setShopId(14670);
+//        List<String> oids = new ArrayList<>();
+            //2268120988984247,
+//        oids.add("2806828827031441");
+//        surSungOrderSearch.setOIds(oids);
+//        surSungOrderSearch.setSoIds(oids);
+            surSungOrderSearch.setModifiedBegin("2016-11-10");
+            surSungOrderSearch.setModifiedEnd("2016-11-16");
+            surSungOrderSearch.setFlds("*");
+            EventResult eventResult = surSungOrderHandler.queryChannelOrder(surSungOrderSearch, mockSurSungSysData);
+
+            System.out.println("*********************Data*********************");
+            System.out.println(eventResult.getResultCode());
+            System.out.println(eventResult.getResultMsg());
+            SurSungOrderSearchResult resultData = (SurSungOrderSearchResult) eventResult.getData();
+            System.out.println(resultData.getDataCount());
+            System.out.println(JSON.toJSONString(resultData.getOrders()));
+            System.out.println("*********************Data*********************");
+        }
+        HttpClientUtil2.getInstance().close();
+    }
+
+    //    @Test
+    public List<SurSungOrder> queryOrder() throws IOException {
+
+        mockSurSungSysData.setRequestUrl("http://www.erp321.com/api/open/query.aspx");
+        mockSurSungSysData.setPartnerId("0ca483b4e595c596ca5a8e57f2ab3483");
+        mockSurSungSysData.setPartnerKey("cc8d64515028c6321b9971738a3185c5");
+        mockSurSungSysData.setToken("b08e15f90e13b90d217789c528976743");
+        mockSurSungSysData.setShopId(10016667);
+
+
         HttpClientUtil2.getInstance().initHttpClient();
         SurSungOrderSearch surSungOrderSearch = new SurSungOrderSearch();
         surSungOrderSearch.setPageIndex(1);
         surSungOrderSearch.setPageSize(10);
 //        surSungOrderSearch.setShopId(14670);
         List<String> oids = new ArrayList<>();
-        oids.add("2309077162568347");
+        oids.add("2268120988984247");
 //        surSungOrderSearch.setOIds(oids);
         surSungOrderSearch.setSoIds(oids);
 //        surSungOrderSearch.setModifiedBegin("2016-10-05");
@@ -205,11 +257,11 @@ public class SurSungHandlerTest extends SurSungTestBase {
         System.out.println(eventResult.getResultMsg());
         SurSungOrderSearchResult resultData = (SurSungOrderSearchResult) eventResult.getData();
         System.out.println(resultData.getDataCount());
-        System.out.println(resultData.getOrders());
+        System.out.println(JSON.toJSONString(resultData.getOrders()));
         System.out.println("*********************Data*********************");
 
         HttpClientUtil2.getInstance().close();
-
+        return resultData.getOrders();
     }
 
     @Test
@@ -242,15 +294,19 @@ public class SurSungHandlerTest extends SurSungTestBase {
                 SurSungSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), SurSungSysData.class);
 
 
+                List<SurSungOrder> surSungOrders = queryOrder();
+                List<Order> orderList = surSungSyncChannelOrder.convert2PlatformOrder(sysData.getShopId(), surSungOrders);
+
                 SyncChannelOrderEvent syncChannelOrderEvent = new SyncChannelOrderEvent();
                 syncChannelOrderEvent.setErpInfo(erpInfo);
                 syncChannelOrderEvent.setErpUserInfo(erpUserInfo);
-                List<Order> orderList = new ArrayList<>();
+//                List<Order> orderList = new ArrayList<>();
 
-                String orderJson = "{\"city\":\"常德市\",\"confirm\":1,\"costFreight\":0,\"costItem\":168,\"createTime\":\"2016-11-11 08:43:14\",\"customerId\":0,\"district\":\"武陵区\",\"finalAmount\":168,\"isTax\":0,\"itemNum\":3,\"memberId\":0,\"onlinePayAmount\":0,\"orderId\":\"2755982872419815\",\"orderItems\":[{\"amount\":178,\"cost\":0,\"customerId\":0,\"goodBn\":\"Y24003\",\"name\":\"【双11全球狂欢节】艺福堂安吉白茶 特级 茶叶 绿茶 安吉白茶2016新茶 珍稀白茶100g\",\"num\":2,\"orderId\":\"2755982872419815\",\"price\":216,\"productBn\":\"Y24003\",\"refundNum\":0,\"sendNum\":0,\"shipStatus\":0,\"standard\":\"100g/罐\",\"supplierId\":0},{\"amount\":0,\"cost\":0,\"customerId\":0,\"goodBn\":\"Y11025\",\"name\":\"艺福堂茶点绿茶方块酥200g/盒\",\"num\":1,\"orderId\":\"2755982872419815\",\"price\":0,\"productBn\":\"Y11025\",\"refundNum\":0,\"sendNum\":0,\"shipStatus\":0,\"standard\":\"200g/盒\",\"supplierId\":0},{\"amount\":0,\"cost\":0,\"customerId\":0,\"goodBn\":\"YZ01029\",\"name\":\"赠品--艺福堂体验装（福袋C袋）\",\"num\":1,\"orderId\":\"2755982872419815\",\"price\":0,\"productBn\":\"YZ01029\",\"refundNum\":0,\"sendNum\":0,\"shipStatus\":0,\"standard\":\"C袋\",\"supplierId\":0}],\"orderStatus\":0,\"payNumber\":\"2016111121001001820295951591\",\"payStatus\":1,\"payTime\":\"2016-11-11 08:43:28\",\"payType\":9,\"pmtAmount\":0,\"printStatus\":0,\"province\":\"湖南省\",\"receiveStatus\":0,\"shipAddr\":\"永安街道武陵区东宛小区（武陵区党校对面）\",\"shipArea\":\"湖南省/常德市/武陵区\",\"shipMobile\":\"13975618638\",\"shipName\":\"吴平安\",\"shipStatus\":0,\"sourceShop\":0,\"supplierId\":0,\"userLoginName\":\"wuqin166\",\"weight\":0}";
+                String orderJson = "{\"city\":\"常德市\",\"confirm\":1,\"costFreight\":0,\"costItem\":168,\"createTime\":\"2016-11-11 08:43:14\",\"customerId\":0,\"district\":\"武陵区\",\"finalAmount\":168,\"isTax\":0,\"itemNum\":3,\"memberId\":0,\"onlinePayAmount\":0,\"orderId\":\"2755982872419815222222222222222222222222222\",\"orderItems\":[{\"amount\":178,\"cost\":0,\"customerId\":0,\"goodBn\":\"Y24003\",\"name\":\"【双11全球狂欢节】艺福堂安吉白茶 特级 茶叶 绿茶 安吉白茶2016新茶 珍稀白茶100g\",\"num\":2,\"orderId\":\"2755982872419815\",\"price\":216,\"productBn\":\"Y24003\",\"refundNum\":0,\"sendNum\":0,\"shipStatus\":0,\"standard\":\"100g/罐\",\"supplierId\":0},{\"amount\":0,\"cost\":0,\"customerId\":0,\"goodBn\":\"Y11025\",\"name\":\"艺福堂茶点绿茶方块酥200g/盒\",\"num\":1,\"orderId\":\"2755982872419815\",\"price\":0,\"productBn\":\"Y11025\",\"refundNum\":0,\"sendNum\":0,\"shipStatus\":0,\"standard\":\"200g/盒\",\"supplierId\":0},{\"amount\":0,\"cost\":0,\"customerId\":0,\"goodBn\":\"YZ01029\",\"name\":\"赠品--艺福堂体验装（福袋C袋）\",\"num\":1,\"orderId\":\"2755982872419815\",\"price\":0,\"productBn\":\"YZ01029\",\"refundNum\":0,\"sendNum\":0,\"shipStatus\":0,\"standard\":\"C袋\",\"supplierId\":0}],\"orderStatus\":0,\"payNumber\":\"2016111121001001820295951591\",\"payStatus\":1,\"payTime\":\"2016-11-11 08:43:28\",\"payType\":9,\"pmtAmount\":0,\"printStatus\":0,\"province\":\"湖南省\",\"receiveStatus\":0,\"shipAddr\":\"永安街道武陵区东宛小区（武陵区党校对面）\",\"shipArea\":\"湖南省/常德市/武陵区\",\"shipMobile\":\"13975618638\",\"shipName\":\"吴平安\",\"shipStatus\":0,\"sourceShop\":0,\"supplierId\":0,\"userLoginName\":\"wuqin166\",\"weight\":0}";
                 Order order = JSON.parseObject(orderJson, Order.class);
 
-                orderList.add(order);
+//                orderList.add(order);
+
                 syncChannelOrderEvent.setOrderList(orderList);
                 ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
                 // 推送至平台

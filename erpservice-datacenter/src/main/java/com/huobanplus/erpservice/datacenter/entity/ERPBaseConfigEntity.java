@@ -48,5 +48,13 @@ public class ERPBaseConfigEntity {
      * 0：不开通
      */
     private int isSyncDelivery;
+
+    /**
+     * 是否开启渠道订单同步
+     * 1：开通
+     * 0：不开通
+     */
+    private int isSyncChannelOrder;
+
     private ERPTypeEnum.UserType erpUserType;
 }

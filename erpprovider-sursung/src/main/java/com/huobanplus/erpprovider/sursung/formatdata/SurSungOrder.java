@@ -212,8 +212,23 @@ public class SurSungOrder {
     @JSONField(name = "status")
     private String status;
 
+    /**
+     * 已支付金额
+     */
     @JSONField(name = "paid_amount")
     private double paidAmount;
+
+    /**
+     * 支付时间
+     */
+    @JSONField(name = "pay_date")
+    private String payDate;
+
+    /**
+     * 订单更新时间
+     */
+    @JSONField(name = "modified")
+    private String modified;
 
 
     /**

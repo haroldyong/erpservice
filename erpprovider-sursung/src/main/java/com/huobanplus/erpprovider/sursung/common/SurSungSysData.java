@@ -47,4 +47,9 @@ public class SurSungSysData {
      */
     private int shopId;
 
+    /**
+     * 指定同步的订单字符串，逗号分隔
+     */
+    private String syncShopId;
+
 }
