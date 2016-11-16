@@ -34,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.Jsr310Converters;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,7 +61,7 @@ public class GYSyncInventory {
     @Autowired
     private GYStockHandler gyStockHandler;
 
-    //    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void syncInventoryForGy() {
         Date now = new Date();
