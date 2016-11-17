@@ -168,9 +168,9 @@
             }
 
             if (isSyncChannelOrder == 0) {
-                $("#isSyncInventory").attr("checked", false);
+                $("#isSyncChannelOrder").attr("checked", false);
             } else {
-                $("#isSyncInventory").attr("checked", true);
+                $("#isSyncChannelOrder").attr("checked", true);
             }
 
             <c:forEach items="${lstDetailConfig}" var="item">

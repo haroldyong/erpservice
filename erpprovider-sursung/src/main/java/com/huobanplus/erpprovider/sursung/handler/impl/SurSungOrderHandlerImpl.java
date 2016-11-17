@@ -188,7 +188,6 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
                 log.info("SurSungOrderHandlerImpl-orderPush:推送订单失败 " + respJson.getString("msg"));
                 return EventResult.resultWith(EventResultEnum.ERROR, respJson.getString("msg"), null);
             }
-
         } else {
             return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
         }
@@ -312,11 +311,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
                     log.info("SurSungOrderHandlerImpl-logisticUpload: 发货同步成功");
                     return SurSungExceptionHandler.handleException(true, null);
                 }
-
-
             }
-
-
 
         } catch (Exception e) {
             log.error("SurSungOrderHandlerImpl-logisticUpload: " + e.getMessage());
@@ -478,9 +473,6 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             Date now = new Date();
             int time = (int) (now.getTime() / 1000);
             String requestData = JSON.toJSONString(surSungOrderSearch);
-            System.out.println("\n************");
-            System.out.println(requestData);
-            System.out.println("\n************");
             String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.ORDERS_QUERY, time, surSungSysData);
             HttpResult httpResult = HttpClientUtil2.getInstance().post(requestUrl, requestData);
             System.out.println("content:" + httpResult.getHttpContent());
@@ -490,11 +482,9 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
                 if (0 == surSungOrderSearchResult.getCode()) {
                     // 处理成功
                     log.info("SurSungOrderHandlerImpl-queryChannelOrder: 查询订单成功");
-//                    List<Order> orderList = convert2PlatformOrder(surSungSysData.getShopId(), surSungOrderSearchResult.getOrders());
-//
                     return EventResult.resultWith(EventResultEnum.SUCCESS, surSungOrderSearchResult);
                 } else {
-                    // 处理失败s
+                    // 处理失败
                     log.info("SurSungOrderHandlerImpl-queryChannelOrder: " + surSungOrderSearchResult.getMsg());
                     return EventResult.resultWith(EventResultEnum.ERROR, surSungOrderSearchResult.getMsg(), null);
                 }

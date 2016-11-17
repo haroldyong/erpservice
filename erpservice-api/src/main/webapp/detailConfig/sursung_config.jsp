@@ -69,7 +69,7 @@
             $("#sursung_key").val(jsonData.partnerKey);
             $("#sursung_token").val(jsonData.token);
             $("#sursung_shopId").val(jsonData.shopId);
-            $("#sync_shopId").valueOf(jsonData.syncShopId);
+            $("#sync_shopId").val(jsonData.syncShopId);
         }
     };
 </script>
@@ -109,9 +109,11 @@
     </tr>
 
     <tr>
-        <th style="vertical-align: middle;">指定同步店铺id：</th>
+        <th style="vertical-align: middle;">指定订单同步店铺id：</th>
         <td>
-            <input name="sursung_shopId" type="text" value="" id="sync_shopId" class="input-normal"/>
+            <input
+                    style="width: 100%"
+                    name="sursung_shopId" type="text" value="" id="sync_shopId" class="input-normal"/>
             <label>以英文逗号字符串分隔店铺id，例如111,222,333</label>
         </td>
     </tr>

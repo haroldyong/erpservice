@@ -190,41 +190,38 @@ public class SurSungHandlerTest extends SurSungTestBase {
 
     @Test
     public void testQueryOrder() throws IOException {
-//        mockSurSungSysData.setRequestUrl("http://www.erp321.com/api/open/query.aspx");
-//        mockSurSungSysData.setPartnerId("0ca483b4e595c596ca5a8e57f2ab3483");
-//        mockSurSungSysData.setPartnerKey("cc8d64515028c6321b9971738a3185c5");
-//        mockSurSungSysData.setToken("b08e15f90e13b90d217789c528976743");
-//        mockSurSungSysData.setShopId(10016667);
+        mockSurSungSysData.setRequestUrl("http://www.erp321.com/api/open/query.aspx");
+        mockSurSungSysData.setPartnerId("0ca483b4e595c596ca5a8e57f2ab3483");
+        mockSurSungSysData.setPartnerKey("cc8d64515028c6321b9971738a3185c5");
+        mockSurSungSysData.setToken("b08e15f90e13b90d217789c528976743");
+        mockSurSungSysData.setShopId(10016667);
 
 
         HttpClientUtil2.getInstance().initHttpClient();
         Integer[] shopIds = {14582, 14583, 14585, 14586, 14587, 14588, 14596, 14597};
-        for (int i = 0; i < shopIds.length; i++) {
 
 
-            SurSungOrderSearch surSungOrderSearch = new SurSungOrderSearch();
-            surSungOrderSearch.setPageIndex(1);
-            surSungOrderSearch.setPageSize(10);
-            surSungOrderSearch.setShopId(14597);
+        SurSungOrderSearch surSungOrderSearch = new SurSungOrderSearch();
+        surSungOrderSearch.setPageIndex(1);
+        surSungOrderSearch.setPageSize(10);
 //        surSungOrderSearch.setShopId(14670);
-//        List<String> oids = new ArrayList<>();
-            //2268120988984247,
-//        oids.add("2806828827031441");
+        List<String> oids = new ArrayList<>();
+        //2268120988984247,
+        oids.add("2812119233302309");
 //        surSungOrderSearch.setOIds(oids);
-//        surSungOrderSearch.setSoIds(oids);
-            surSungOrderSearch.setModifiedBegin("2016-11-10");
-            surSungOrderSearch.setModifiedEnd("2016-11-16");
-            surSungOrderSearch.setFlds("*");
-            EventResult eventResult = surSungOrderHandler.queryChannelOrder(surSungOrderSearch, mockSurSungSysData);
+        surSungOrderSearch.setSoIds(oids);
+        surSungOrderSearch.setModifiedBegin("2016-11-11 06:00:00");
+        surSungOrderSearch.setModifiedEnd("2016-11-17 23:59:59");
+        surSungOrderSearch.setFlds("*");
+        EventResult eventResult = surSungOrderHandler.queryChannelOrder(surSungOrderSearch, mockSurSungSysData);
 
-            System.out.println("*********************Data*********************");
-            System.out.println(eventResult.getResultCode());
-            System.out.println(eventResult.getResultMsg());
-            SurSungOrderSearchResult resultData = (SurSungOrderSearchResult) eventResult.getData();
-            System.out.println(resultData.getDataCount());
-            System.out.println(JSON.toJSONString(resultData.getOrders()));
-            System.out.println("*********************Data*********************");
-        }
+        System.out.println("*********************Data*********************");
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
+        SurSungOrderSearchResult resultData = (SurSungOrderSearchResult) eventResult.getData();
+        System.out.println(resultData.getDataCount());
+        System.out.println(JSON.toJSONString(resultData.getOrders()));
+        System.out.println("*********************Data*********************");
         HttpClientUtil2.getInstance().close();
     }
 

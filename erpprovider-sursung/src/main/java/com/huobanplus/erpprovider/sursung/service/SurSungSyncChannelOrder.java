@@ -54,7 +54,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by wuxiongliu on 2016-09-16.
@@ -116,7 +115,8 @@ public class SurSungSyncChannelOrder {
                     ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
                     SurSungSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), SurSungSysData.class);
 
-                    String[] syncShopIds = sysData.getSyncShopId().split(",");
+//                    String[] syncShopIds = sysData.getSyncShopId().split(",");
+//                    List<String>
 
 
                     //是否是第一次同步,第一次同步beginTime则为当前时间的前一天
@@ -126,77 +126,67 @@ public class SurSungSyncChannelOrder {
                             : lastSyncLog.getSyncTime();
 
                     List<Order> failedOrders = new ArrayList<>(); //失败的订单列表
-                    List successOrders = new ArrayList<>(); //成功的订单列表
                     int totalCount = 0; //总数量
                     int pageIndex = 1;
                     int totalSyncNum = 0;
 
                     HttpClientUtil2.getInstance().initHttpClient();
 
-                    for (int i = 0; i < syncShopIds.length; i++) {
-                        SurSungOrderSearch orderSearch = new SurSungOrderSearch();
-                        orderSearch.setShopId(Integer.valueOf(syncShopIds[i]));
-                        orderSearch.setPageIndex(1);
-                        orderSearch.setPageSize(SurSungConstant.PAGE_SIZE);
-                        orderSearch.setModifiedBegin(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
-                        orderSearch.setModifiedEnd(nowStr);
 
-                        // 第一次同步
+                    SurSungOrderSearch orderSearch = new SurSungOrderSearch();
+                    orderSearch.setPageIndex(1);
+                    orderSearch.setPageSize(SurSungConstant.PAGE_SIZE);
+                    orderSearch.setModifiedBegin(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
+                    orderSearch.setModifiedEnd(nowStr);
 
+                    // 第一次同步
+                    EventResult eventResult = surSungOrderHandler.queryChannelOrder(orderSearch, sysData);
+                    ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+                    if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        SurSungOrderSearchResult surSungOrderSearchResult = (SurSungOrderSearchResult) eventResult.getData();
+                        totalCount = surSungOrderSearchResult.getDataCount();
 
-                        EventResult eventResult = surSungOrderHandler.queryChannelOrder(orderSearch, sysData);
-                        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-                        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                            SurSungOrderSearchResult surSungOrderSearchResult = (SurSungOrderSearchResult) eventResult.getData();
-                            totalCount = surSungOrderSearchResult.getDataCount();
+                        // 第一次推送
+                        SyncChannelOrderEvent syncChannelOrderEvent = new SyncChannelOrderEvent();
+                        syncChannelOrderEvent.setErpInfo(erpInfo);
+                        syncChannelOrderEvent.setErpUserInfo(erpUserInfo);
+                        syncChannelOrderEvent.setOrderList(convert2PlatformOrder(sysData.getShopId(),
+                                surSungOrderSearchResult.getOrders()));
 
-                            // 第一次推送
-                            SyncChannelOrderEvent syncChannelOrderEvent = new SyncChannelOrderEvent();
-                            syncChannelOrderEvent.setErpInfo(erpInfo);
-                            syncChannelOrderEvent.setErpUserInfo(erpUserInfo);
-                            syncChannelOrderEvent.setOrderList(convert2PlatformOrder(sysData.getShopId(),
-                                    surSungOrderSearchResult.getOrders()));
+                        totalSyncNum += syncChannelOrderEvent.getOrderList().size();
 
-                            totalSyncNum += syncChannelOrderEvent.getOrderList().size();
-
-                            // 推送至平台
-                            if (syncChannelOrderEvent.getOrderList().size() >= 0) {
-                                EventResult firstSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
-//                        System.out.println("----" + eventResult.getData() + "----");
-                                if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                    BatchPushOrderResult firstBatchPushOrderResult = (BatchPushOrderResult) firstSyncEvent.getData();
-                                    failedOrders.addAll(firstBatchPushOrderResult.getFailedOrders());
-                                } else {
-                                    failedOrders.addAll(syncChannelOrderEvent.getOrderList());
-                                }
+                        // 推送至平台
+                        if (syncChannelOrderEvent.getOrderList().size() >= 0) {
+                            EventResult firstSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
+                            if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                BatchPushOrderResult firstBatchPushOrderResult = (BatchPushOrderResult) firstSyncEvent.getData();
+                                failedOrders.addAll(firstBatchPushOrderResult.getFailedOrders());
+                            } else {
+                                failedOrders.addAll(syncChannelOrderEvent.getOrderList());
                             }
+                        }
 
 
-                            while (surSungOrderSearchResult.isHasNext()) {
-                                pageIndex++;
-                                orderSearch.setPageIndex(pageIndex);
-                                EventResult nextEventResult = surSungOrderHandler.queryChannelOrder(orderSearch, sysData);
-//                        System.out.println("----" + nextEventResult.getData() + "----");
-                                if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                    surSungOrderSearchResult = (SurSungOrderSearchResult) nextEventResult.getData();
-                                    //后续几次推送
-                                    syncChannelOrderEvent.setOrderList(convert2PlatformOrder(sysData.getShopId(),
-                                            surSungOrderSearchResult.getOrders()));
-                                    totalSyncNum += syncChannelOrderEvent.getOrderList().size();
+                        while (surSungOrderSearchResult.isHasNext()) {
+                            pageIndex++;
+                            orderSearch.setPageIndex(pageIndex);
+                            EventResult nextEventResult = surSungOrderHandler.queryChannelOrder(orderSearch, sysData);
+                            if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                surSungOrderSearchResult = (SurSungOrderSearchResult) nextEventResult.getData();
+                                //后续几次推送
+                                syncChannelOrderEvent.setOrderList(convert2PlatformOrder(sysData.getShopId(),
+                                        surSungOrderSearchResult.getOrders()));
+                                totalSyncNum += syncChannelOrderEvent.getOrderList().size();
 
-//                             推送至平台
-                                    if (syncChannelOrderEvent.getOrderList().size() > 0) {
-                                        EventResult nextSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
-                                        if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                            BatchPushOrderResult nextBatchPushOrderResult = (BatchPushOrderResult) nextSyncEvent.getData();
-                                            failedOrders.addAll(nextBatchPushOrderResult.getFailedOrders());
-                                        } else {
-                                            failedOrders.addAll(syncChannelOrderEvent.getOrderList());
-                                        }
+                                //推送至平台
+                                if (syncChannelOrderEvent.getOrderList().size() > 0) {
+                                    EventResult nextSyncEvent = erpUserHandler.handleEvent(syncChannelOrderEvent);
+                                    if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                        BatchPushOrderResult nextBatchPushOrderResult = (BatchPushOrderResult) nextSyncEvent.getData();
+                                        failedOrders.addAll(nextBatchPushOrderResult.getFailedOrders());
+                                    } else {
+                                        failedOrders.addAll(syncChannelOrderEvent.getOrderList());
                                     }
-                                }
-                                if (pageIndex > 50) {
-                                    break;
                                 }
                             }
                         }
@@ -209,9 +199,9 @@ public class SurSungSyncChannelOrder {
                     log.info("success:" + (totalSyncNum - failedOrders.size()));
                     log.info("\n******************************");
 
-                    if (totalCount > 0) {// 轮询若无数据，则不记录日志
-                        syncLog(failedOrders, totalSyncNum - failedOrders.size(), totalSyncNum, erpUserInfo, erpInfo);
-                    }
+                    // 记录日志
+                    syncLog(failedOrders, totalSyncNum - failedOrders.size(), totalSyncNum, erpUserInfo, erpInfo);
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -278,16 +268,14 @@ public class SurSungSyncChannelOrder {
         // 订单过滤，过滤掉erp中的平台订单；
         // 过滤方式1：获取订单号，根据此订单号从erp推送日志中查询，如果存在，则过滤掉；
         // 过滤方式2：获取订单中的店铺id，查询此店铺id，如果和系统参数的店铺id一致，则表示是平台订单，过滤掉；
-
-        System.out.println("\n**********");
-        System.out.println(JSON.toJSONString(surSungOrders));
-        System.out.println("\n**********");// TODO: 2016-11-15 delete sout
+        // 现在更新为查询指定店铺的订单，所以无需再筛选了
 
         List<Order> orderList = new ArrayList<>();
         if (surSungOrders != null) {
             surSungOrders.forEach(surSungOrder -> {
 
                 if ((surSungOrder.getShopId() != shopId) && (!surSungOrder.getStatus().equals("Merged"))) {// 过滤方式2
+//                if (!surSungOrder.getStatus().equals("Merged")) {// 合并的订单过滤掉
 
                     String shopStatus = StringUtil.getWithDefault(surSungOrder.getShopStatus(), "");
 
@@ -304,8 +292,7 @@ public class SurSungSyncChannelOrder {
                     order.setUserLoginName(surSungOrder.getShopBuyerId());
                     order.setConfirm(1);
 
-                    if (shopStatus.equals(SurSungEnum.OrderStatus.TRADE_FINISHED)) {
-
+                    if (shopStatus.equals(SurSungEnum.OrderStatus.TRADE_FINISHED.toString())) {
                         order.setOrderStatus(1);//0：活动；1：完成；-1：作废，关闭；
                     } else {
                         order.setOrderStatus(0);
@@ -317,16 +304,13 @@ public class SurSungSyncChannelOrder {
 //                3：部分退款；
 //                4：全额退款；
 //                5：售后退款中
-
                     double paidAmount = surSungOrder.getPaidAmount();
                     double payAmount = surSungOrder.getPayAmount();
-
-
                     if (paidAmount == 0) {// 未支付
                         order.setPayStatus(0);
                         order.setOnlinePayAmount(0);
 
-                    } else {// 已支付
+                    } else {
                         order.setPayTime(surSungOrder.getPayDate());
                         order.setPayStatus(1);
                         order.setOnlinePayAmount(surSungOrder.getPayAmount());
@@ -338,15 +322,13 @@ public class SurSungSyncChannelOrder {
 //                2：部分发货；
 //                3：部分退货；
 //                4：已退货；
-                    if (shopStatus.equals(SurSungEnum.OrderStatus.WAIT_BUYER_CONFIRM_GOODS.toString())
-                            || shopStatus.equals(SurSungEnum.OrderStatus.TRADE_FINISHED.toString())) {
-
-                        order.setShipStatus(1);// TODO: 2016-09-26
+                    if (surSungOrder.getStatus().equals("Sent")) {
+                        order.setShipStatus(1);
                     } else {
                         order.setShipStatus(0);
                     }
                     order.setItemNum(surSungOrder.getSurSungOrderItems().size());
-                    order.setCreateTime(surSungOrder.getOrderDate());// TODO: 2016-09-26
+                    order.setCreateTime(surSungOrder.getOrderDate());
                     order.setPayNumber(surSungOrder.getOuterPayId());
 
 
@@ -399,9 +381,6 @@ public class SurSungSyncChannelOrder {
                         orderItem.setName(surSungOrderItem.getName());
                         orderItem.setOrderId(surSungOrder.getSoId());
                         orderItem.setProductBn(surSungOrderItem.getSkuId());
-                        Random random = new Random();
-                        int i = random.nextInt(productBns.length);
-                        orderItem.setProductBn(surSungOrderItem.getSkuId());// TODO: 2016-10-20 正式环境需修改为surSungOrderItem.getSkuId()
                         orderItem.setPrice(surSungOrderItem.getPrice());
                         orderItem.setAmount(surSungOrderItem.getAmount());
                         orderItem.setNum(surSungOrderItem.getQty());
@@ -417,13 +396,11 @@ public class SurSungSyncChannelOrder {
 //                orderItem.setCustomerId(0);
 //                orderItem.setBrief("");
 //                orderItem.setShipStatus(0);
-
                     }
 
                     order.setCostItem(costItem);
                     order.setOrderItems(orderItems);
                     orderList.add(order);
-
                 }
             });
         }
