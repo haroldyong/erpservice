@@ -65,4 +65,10 @@ public class SurSungOrderItem {
      */
     @JSONField(name = "outer_oi_id")
     private String outerOiId;
+
+    /**
+     * 商品单价
+     */
+    @JSONField(name = "price")
+    private double price;
 }

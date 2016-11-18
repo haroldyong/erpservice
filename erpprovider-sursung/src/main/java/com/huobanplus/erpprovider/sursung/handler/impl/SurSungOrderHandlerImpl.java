@@ -188,7 +188,6 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
                 log.info("SurSungOrderHandlerImpl-orderPush:推送订单失败 " + respJson.getString("msg"));
                 return EventResult.resultWith(EventResultEnum.ERROR, respJson.getString("msg"), null);
             }
-
         } else {
             return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
         }
@@ -312,11 +311,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
                     log.info("SurSungOrderHandlerImpl-logisticUpload: 发货同步成功");
                     return SurSungExceptionHandler.handleException(true, null);
                 }
-
-
             }
-
-
 
         } catch (Exception e) {
             log.error("SurSungOrderHandlerImpl-logisticUpload: " + e.getMessage());
@@ -487,11 +482,9 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
                 if (0 == surSungOrderSearchResult.getCode()) {
                     // 处理成功
                     log.info("SurSungOrderHandlerImpl-queryChannelOrder: 查询订单成功");
-//                    List<Order> orderList = convert2PlatformOrder(surSungSysData.getShopId(), surSungOrderSearchResult.getOrders());
-//
                     return EventResult.resultWith(EventResultEnum.SUCCESS, surSungOrderSearchResult);
                 } else {
-                    // 处理失败s
+                    // 处理失败
                     log.info("SurSungOrderHandlerImpl-queryChannelOrder: " + surSungOrderSearchResult.getMsg());
                     return EventResult.resultWith(EventResultEnum.ERROR, surSungOrderSearchResult.getMsg(), null);
                 }

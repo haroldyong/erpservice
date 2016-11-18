@@ -173,6 +173,11 @@ public class Order extends BaseInfo {
     private int sourceShop;
 
     /**
+     * 订单推送失败信息
+     */
+    private String errorMessage;
+
+    /**
      * 订单明细
      */
     private List<OrderItem> orderItems;

@@ -24,6 +24,7 @@
             var partnerKey = $.trim($("#sursung_key").val());
             var token = $.trim($("#sursung_token").val());
             var shopId = $.trim($("#sursung_shopId").val());
+            var syncShopId = $.trim($("#sync_shopId").val());
 
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入请求地址");
@@ -47,12 +48,18 @@
                 return null;
             }
 
+            if (syncShopId.length == 0) {
+                $.jBox.tip("请输入指定同步店铺id");
+                return null;
+            }
+
             var sursungConfig = {
                 requestUrl: requestUrl,
                 partnerId: partnerId,
                 partnerKey: partnerKey,
                 token: token,
-                shopId: shopId
+                shopId: shopId,
+                syncShopId: syncShopId
             };
             return JSON.stringify(sursungConfig);
         },
@@ -62,8 +69,7 @@
             $("#sursung_key").val(jsonData.partnerKey);
             $("#sursung_token").val(jsonData.token);
             $("#sursung_shopId").val(jsonData.shopId);
-
-
+            $("#sync_shopId").val(jsonData.syncShopId);
         }
     };
 </script>
@@ -99,6 +105,16 @@
         <th style="vertical-align: middle;">店铺id：</th>
         <td>
             <input name="sursung_shopId" type="text" value="" id="sursung_shopId" class="input-normal"/>
+        </td>
+    </tr>
+
+    <tr>
+        <th style="vertical-align: middle;">指定订单同步店铺id：</th>
+        <td>
+            <input
+                    style="width: 100%"
+                    name="sursung_shopId" type="text" value="" id="sync_shopId" class="input-normal"/>
+            <label>以英文逗号字符串分隔店铺id，例如111,222,333</label>
         </td>
     </tr>
 

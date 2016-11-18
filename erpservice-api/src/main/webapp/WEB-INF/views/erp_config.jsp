@@ -154,6 +154,7 @@
             var erpSysData;
             var isSyncInventory = "${baseConfig.isSyncInventory}";
             var isSyncDelivery = "${baseConfig.isSyncDelivery}";
+            var isSyncChannelOrder = "${baseConfig.isSyncChannelOrder}";
 
             if (isSyncDelivery == 0) {
                 $("#isSyncDelivery").attr("checked", false);
@@ -166,6 +167,12 @@
             } else {
                 $("#isSyncInventory").attr("checked", true);
 
+            }
+
+            if (isSyncChannelOrder == 0) {
+                $("#isSyncChannelOrder").attr("checked", false);
+            } else {
+                $("#isSyncChannelOrder").attr("checked", true);
             }
 
             <c:forEach items="${lstDetailConfig}" var="item">
@@ -270,6 +277,13 @@
                                         <th style="vertical-align: middle;">是否开启发货同步：</th>
                                         <td>
                                             <input name="isSyncDelivery" type="checkbox" id="isSyncDelivery"
+                                                   class="sync_check">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="vertical-align: middle;">是否开启渠道订单同步：</th>
+                                        <td>
+                                            <input name="isSyncChannelOrder" type="checkbox" id="isSyncChannelOrder"
                                                    class="sync_check">
                                         </td>
                                     </tr>
