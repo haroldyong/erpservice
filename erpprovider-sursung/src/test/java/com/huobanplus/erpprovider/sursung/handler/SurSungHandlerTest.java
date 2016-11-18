@@ -198,8 +198,6 @@ public class SurSungHandlerTest extends SurSungTestBase {
 
 
         HttpClientUtil2.getInstance().initHttpClient();
-        Integer[] shopIds = {14582, 14583, 14585, 14586, 14587, 14588, 14596, 14597};
-
 
         SurSungOrderSearch surSungOrderSearch = new SurSungOrderSearch();
         surSungOrderSearch.setPageIndex(1);
@@ -207,11 +205,11 @@ public class SurSungHandlerTest extends SurSungTestBase {
 //        surSungOrderSearch.setShopId(14670);
         List<String> oids = new ArrayList<>();
         //2268120988984247,
-        oids.add("2812119233302309");
+        oids.add("2317974994171144");
 //        surSungOrderSearch.setOIds(oids);
         surSungOrderSearch.setSoIds(oids);
-        surSungOrderSearch.setModifiedBegin("2016-11-11 06:00:00");
-        surSungOrderSearch.setModifiedEnd("2016-11-17 23:59:59");
+//        surSungOrderSearch.setModifiedBegin("2016-11-11 06:00:00");
+//        surSungOrderSearch.setModifiedEnd("2016-11-17 23:59:59");
         surSungOrderSearch.setFlds("*");
         EventResult eventResult = surSungOrderHandler.queryChannelOrder(surSungOrderSearch, mockSurSungSysData);
 
@@ -241,7 +239,7 @@ public class SurSungHandlerTest extends SurSungTestBase {
         surSungOrderSearch.setPageSize(10);
 //        surSungOrderSearch.setShopId(14670);
         List<String> oids = new ArrayList<>();
-        oids.add("2268120988984247");
+        oids.add("2737298064044537");
 //        surSungOrderSearch.setOIds(oids);
         surSungOrderSearch.setSoIds(oids);
 //        surSungOrderSearch.setModifiedBegin("2016-10-05");
