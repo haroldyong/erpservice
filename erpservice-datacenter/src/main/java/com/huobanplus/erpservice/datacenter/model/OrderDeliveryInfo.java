@@ -37,7 +37,7 @@ public class OrderDeliveryInfo extends BaseInfo {
     /**
      * 发货数量序列化字段（productBn,发货数量|productBn,发货数量，productBn为货品的编号
      */
-    @JSONField(deserialize = false, serialize = false)
+//    @JSONField(deserialize = false, serialize = false)
     @Column(length = 2000)
     private String deliverItemsStr;
 }
