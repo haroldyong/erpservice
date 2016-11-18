@@ -268,7 +268,6 @@ public class SurSungSyncChannelOrder {
         // 订单过滤，过滤掉erp中的平台订单；
         // 过滤方式1：获取订单号，根据此订单号从erp推送日志中查询，如果存在，则过滤掉；
         // 过滤方式2：获取订单中的店铺id，查询此店铺id，如果和系统参数的店铺id一致，则表示是平台订单，过滤掉；
-        // 现在更新为查询指定店铺的订单，所以无需再筛选了
 
         List<Order> orderList = new ArrayList<>();
         if (surSungOrders != null) {
