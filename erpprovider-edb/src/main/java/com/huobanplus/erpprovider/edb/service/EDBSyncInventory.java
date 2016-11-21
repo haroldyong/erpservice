@@ -30,6 +30,7 @@ import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +53,7 @@ public class EDBSyncInventory {
     @Autowired
     private ERPRegister erpRegister;
 
+    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void syncInventoryForEDB() {
         Date now = new Date();
