@@ -100,7 +100,7 @@ public class SurSungSyncChannelOrder {
     @Autowired
     private ChannelOrderSyncInfoService channelOrderSyncInfoService;
 
-    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 0 */3 * * ?")
     @Transactional
     public void syncChannelOrder() {
         Date now = new Date();
@@ -163,6 +163,7 @@ public class SurSungSyncChannelOrder {
                                 failedOrders.addAll(firstBatchPushOrderResult.getFailedOrders());
                             } else {
                                 failedOrders.addAll(syncChannelOrderEvent.getOrderList());
+                                log.info("code:" + firstSyncEvent.getResultCode() + " msg:" + firstSyncEvent.getResultMsg());
                             }
                         }
 
@@ -186,10 +187,13 @@ public class SurSungSyncChannelOrder {
                                         failedOrders.addAll(nextBatchPushOrderResult.getFailedOrders());
                                     } else {
                                         failedOrders.addAll(syncChannelOrderEvent.getOrderList());
+                                        log.info("code:" + nextEventResult.getResultCode() + " msg:" + nextSyncEvent.getResultMsg());
                                     }
                                 }
                             }
                         }
+                    } else {
+                        log.info("code:" + eventResult.getResultCode() + " msg:" + eventResult.getResultMsg());
                     }
 
 
@@ -240,7 +244,7 @@ public class SurSungSyncChannelOrder {
         if (successCount == 0) {
             channelOrderSyncLog.setOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
         }
-        log.info("save channelorder sync log");
+
         channelOrderSyncLog = channelOrderSyncLogRepository.save(channelOrderSyncLog);
 
         List<ChannelOrderSyncInfo> syncFailedChannelOrders = new ArrayList<>();
@@ -254,6 +258,7 @@ public class SurSungSyncChannelOrder {
             syncFailedChannelOrders.add(channelOrderSyncInfo);
         }
         channelOrderSyncInfoService.batchSave(syncFailedChannelOrders);
+        log.info("save channelorder sync log");
 
     }
 
