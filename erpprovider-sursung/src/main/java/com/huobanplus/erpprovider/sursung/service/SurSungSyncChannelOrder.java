@@ -100,7 +100,7 @@ public class SurSungSyncChannelOrder {
     @Autowired
     private ChannelOrderSyncInfoService channelOrderSyncInfoService;
 
-    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 0 */3 * * ?")
     @Transactional
     public void syncChannelOrder() {
         Date now = new Date();
@@ -163,6 +163,7 @@ public class SurSungSyncChannelOrder {
                                 failedOrders.addAll(firstBatchPushOrderResult.getFailedOrders());
                             } else {
                                 failedOrders.addAll(syncChannelOrderEvent.getOrderList());
+                                log.info("code:" + firstSyncEvent.getResultCode() + " msg:" + firstSyncEvent.getResultMsg());
                             }
                         }
 
@@ -186,10 +187,13 @@ public class SurSungSyncChannelOrder {
                                         failedOrders.addAll(nextBatchPushOrderResult.getFailedOrders());
                                     } else {
                                         failedOrders.addAll(syncChannelOrderEvent.getOrderList());
+                                        log.info("code:" + nextEventResult.getResultCode() + " msg:" + nextSyncEvent.getResultMsg());
                                     }
                                 }
                             }
                         }
+                    } else {
+                        log.info("code:" + eventResult.getResultCode() + " msg:" + eventResult.getResultMsg());
                     }
 
 
@@ -240,7 +244,7 @@ public class SurSungSyncChannelOrder {
         if (successCount == 0) {
             channelOrderSyncLog.setOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
         }
-        log.info("save channelorder sync log");
+
         channelOrderSyncLog = channelOrderSyncLogRepository.save(channelOrderSyncLog);
 
         List<ChannelOrderSyncInfo> syncFailedChannelOrders = new ArrayList<>();
@@ -254,6 +258,7 @@ public class SurSungSyncChannelOrder {
             syncFailedChannelOrders.add(channelOrderSyncInfo);
         }
         channelOrderSyncInfoService.batchSave(syncFailedChannelOrders);
+        log.info("save channelorder sync log");
 
     }
 
@@ -268,7 +273,6 @@ public class SurSungSyncChannelOrder {
         // 订单过滤，过滤掉erp中的平台订单；
         // 过滤方式1：获取订单号，根据此订单号从erp推送日志中查询，如果存在，则过滤掉；
         // 过滤方式2：获取订单中的店铺id，查询此店铺id，如果和系统参数的店铺id一致，则表示是平台订单，过滤掉；
-        // 现在更新为查询指定店铺的订单，所以无需再筛选了
 
         List<Order> orderList = new ArrayList<>();
         if (surSungOrders != null) {
