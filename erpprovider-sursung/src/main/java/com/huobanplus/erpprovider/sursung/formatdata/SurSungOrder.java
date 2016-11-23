@@ -230,6 +230,13 @@ public class SurSungOrder {
     @JSONField(name = "modified")
     private String modified;
 
+    /**
+     * 订单类型
+     * 普通订单，补发订单
+     */
+    @JSONField(name = "type")
+    private String type;
+
 
     /**
      * 订单明细
