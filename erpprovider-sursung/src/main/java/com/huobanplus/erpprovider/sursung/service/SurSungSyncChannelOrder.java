@@ -278,8 +278,8 @@ public class SurSungSyncChannelOrder {
         if (surSungOrders != null) {
             surSungOrders.forEach(surSungOrder -> {
 
-                if ((surSungOrder.getShopId() != shopId) && (!surSungOrder.getStatus().equals("Merged"))) {// 过滤方式2
-//                if (!surSungOrder.getStatus().equals("Merged")) {// 合并的订单过滤掉
+                if ((surSungOrder.getShopId() != shopId) && (!surSungOrder.getStatus().equals("Merged"))
+                        && !surSungOrder.getType().equals("补发订单")) {// 过滤方式2
 
                     String shopStatus = StringUtil.getWithDefault(surSungOrder.getShopStatus(), "");
 
