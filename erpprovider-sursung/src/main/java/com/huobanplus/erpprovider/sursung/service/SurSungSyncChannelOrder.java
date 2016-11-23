@@ -128,6 +128,7 @@ public class SurSungSyncChannelOrder {
                     List<Order> failedOrders = new ArrayList<>(); //失败的订单列表
                     int totalCount = 0; //总数量
                     int pageIndex = 1;
+                    int lastPageIndex = 1;
                     int totalSyncNum = 0;
 
                     HttpClientUtil2.getInstance().initHttpClient();
@@ -170,6 +171,7 @@ public class SurSungSyncChannelOrder {
 
                         while (surSungOrderSearchResult.isHasNext()) {
                             pageIndex++;
+                            lastPageIndex = pageIndex;
                             orderSearch.setPageIndex(pageIndex);
                             EventResult nextEventResult = surSungOrderHandler.queryChannelOrder(orderSearch, sysData);
                             if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -190,6 +192,8 @@ public class SurSungSyncChannelOrder {
                                         log.info("code:" + nextEventResult.getResultCode() + " msg:" + nextSyncEvent.getResultMsg());
                                     }
                                 }
+                            } else {
+                                pageIndex = lastPageIndex - 1;
                             }
                         }
                     } else {
