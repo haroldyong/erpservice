@@ -9,9 +9,14 @@
 
 package com.huobanplus.erpservice.datacenter.service.logs;
 
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderDetailSyncSearch;
 import org.springframework.data.domain.Page;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 订单详细信息同步
@@ -51,4 +56,15 @@ public interface OrderDetailSyncLogService {
      * @return
      */
     Page<OrderDetailSyncLog> findAll(int pageIndex, int pageSize, int customerId, OrderDetailSyncSearch orderDetailSyncSearch);
+
+    /**
+     * 根据订单状态及erp类型查询订单
+     *
+     * @param syncStatus
+     * @return
+     */
+    List<OrderDetailSyncLog> findOrderBySyncStatusAndProviderType(int customerId,
+                                                                  OrderSyncStatus.DetailSyncStatus syncStatus,
+                                                                  ERPTypeEnum.ProviderType providerType,
+                                                                  Date beginTime);
 }
