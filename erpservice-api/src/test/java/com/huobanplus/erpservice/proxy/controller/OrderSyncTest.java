@@ -205,11 +205,11 @@ public class OrderSyncTest extends SpringWebTest {
     public void testtest() throws Exception {
         List<OrderDeliveryInfo> orderDeliveryInfos = new ArrayList<>();
         OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
-        orderDeliveryInfo.setDeliverItemsStr("BJ.12,1|");
+        orderDeliveryInfo.setDeliverItemsStr("D.B.03,1|BK.04,10|D.C.02,1|D.B.02,1|D.B.01,1|");
         orderDeliveryInfo.setLogiCode("YTO");
         orderDeliveryInfo.setLogiName("圆通速递");
         orderDeliveryInfo.setLogiNo("12343928391");
-        orderDeliveryInfo.setOrderId("20161118981354295842");
+        orderDeliveryInfo.setOrderId("20161118521952452639");
         orderDeliveryInfos.add(orderDeliveryInfo);
 
         ERPInfo erpInfo = new ERPInfo(ERPTypeEnum.ProviderType.GY, "");
