@@ -195,9 +195,6 @@ public class SurSungSyncChannelOrder {
                             } else {
                                 pageIndex = lastPageIndex - 1;
                             }
-                            if (pageIndex > 10) {
-                                break;
-                            }
                         }
                     } else {
                         log.info("code:" + eventResult.getResultCode() + " msg:" + eventResult.getResultMsg());
