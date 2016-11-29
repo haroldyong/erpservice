@@ -171,6 +171,7 @@ public class SurSungSyncChannelOrder {
 
                         while (surSungOrderSearchResult.isHasNext()) {
                             pageIndex++;
+                            lastPageIndex = pageIndex;
                             orderSearch.setPageIndex(pageIndex);
                             EventResult nextEventResult = surSungOrderHandler.queryChannelOrder(orderSearch, sysData);
                             if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -193,6 +194,9 @@ public class SurSungSyncChannelOrder {
                                 }
                             } else {
                                 pageIndex = lastPageIndex - 1;
+                            }
+                            if (pageIndex > 10) {
+                                break;
                             }
                         }
                     } else {
