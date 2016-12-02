@@ -230,7 +230,7 @@ public class ScheduledService {
     @Transactional
     public void rePushFailedOrder() {
 
-        String beginTime = "2016-11-01 00:00:00";
+        String beginTime = "2016-12-01 00:00:00";
         Date begin = StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN);
 
         int failedNum = 0;
