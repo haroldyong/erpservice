@@ -85,66 +85,63 @@ public class GYSyncInventory {
                     List<ProInventoryInfo> failedList = new ArrayList<>(); //失败的列表
                     int totalCount = 0; //总数量
 
-                    String[] warehouseCodes = sysData.getWarehouseCodes().split(",");
-                    for (int i = 0; i < warehouseCodes.length; i++) {
 
-                        int currentPageIndex = 1;
-                        GYStockSearchNew stockSearchNew = new GYStockSearchNew();
-                        stockSearchNew.setPageNo(currentPageIndex);
-                        stockSearchNew.setPageSize(GYConstant.PAGE_SIZE);
-                        stockSearchNew.setStartDate(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
-                        stockSearchNew.setEndDate(nowStr);
-                        stockSearchNew.setWarehouseCode(warehouseCodes[i]);
+                    int currentPageIndex = 1;
+                    GYStockSearchNew stockSearchNew = new GYStockSearchNew();
+                    stockSearchNew.setPageNo(currentPageIndex);
+                    stockSearchNew.setPageSize(GYConstant.PAGE_SIZE);
+                    stockSearchNew.setStartDate(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
+                    stockSearchNew.setEndDate(nowStr);
+//                        stockSearchNew.setWarehouseCode("");
 
-                        // 第一次同步
-                        EventResult eventResult = gyStockHandler.stockQueryNew(stockSearchNew, sysData);
-                        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                            GYStockResponse stockResponse = (GYStockResponse) eventResult.getData();
+                    // 第一次同步
+                    EventResult eventResult = gyStockHandler.stockQueryNew(stockSearchNew, sysData);
+                    if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        GYStockResponse stockResponse = (GYStockResponse) eventResult.getData();
 
-                            totalCount = stockResponse.getTotalCount();
-                            if (totalCount > 0) {
-                                List<ProInventoryInfo> first = toProInventoryInfo(stockResponse.getStockInfoList());
-                                SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
-                                syncInventoryEvent.setErpUserInfo(erpUserInfo);
-                                syncInventoryEvent.setErpInfo(erpInfo);
-                                syncInventoryEvent.setInventoryInfoList(first);
-                                ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+                        totalCount = stockResponse.getTotalCount();
+                        if (totalCount > 0) {
+                            List<ProInventoryInfo> first = toProInventoryInfo(stockResponse.getStockInfoList());
+                            SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
+                            syncInventoryEvent.setErpUserInfo(erpUserInfo);
+                            syncInventoryEvent.setErpInfo(erpInfo);
+                            syncInventoryEvent.setInventoryInfoList(first);
+                            ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
 
-                                EventResult firstSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
+                            EventResult firstSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
 
-                                if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                    failedList.addAll((List<ProInventoryInfo>) firstSyncResult.getData());
+                            if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                failedList.addAll((List<ProInventoryInfo>) firstSyncResult.getData());
 
-                                    int totalPage = totalCount / GYConstant.PAGE_SIZE;
+                                int totalPage = totalCount / GYConstant.PAGE_SIZE;
 
-                                    // 后续几页同步
-                                    if (totalCount % GYConstant.PAGE_SIZE != 0) {
-                                        totalPage++;
-                                    }
-                                    if (totalPage > 1) {
-                                        currentPageIndex++;
-                                        for (int index = currentPageIndex; index <= totalPage; index++) {
-                                            stockSearchNew.setPageNo(index);
-                                            EventResult nextEventResult = gyStockHandler.stockQueryNew(stockSearchNew, sysData);
-                                            if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                                GYStockResponse nextStockResponse = (GYStockResponse) eventResult.getData();
-                                                List<ProInventoryInfo> next = toProInventoryInfo(nextStockResponse.getStockInfoList());
-                                                syncInventoryEvent.setInventoryInfoList(next);
+                                // 后续几页同步
+                                if (totalCount % GYConstant.PAGE_SIZE != 0) {
+                                    totalPage++;
+                                }
+                                if (totalPage > 1) {
+                                    currentPageIndex++;
+                                    for (int index = currentPageIndex; index <= totalPage; index++) {
+                                        stockSearchNew.setPageNo(index);
+                                        EventResult nextEventResult = gyStockHandler.stockQueryNew(stockSearchNew, sysData);
+                                        if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                            GYStockResponse nextStockResponse = (GYStockResponse) eventResult.getData();
+                                            List<ProInventoryInfo> next = toProInventoryInfo(nextStockResponse.getStockInfoList());
+                                            syncInventoryEvent.setInventoryInfoList(next);
 
-                                                EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
-                                                if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                                    failedList.addAll((List<ProInventoryInfo>) firstSyncResult.getData());
-                                                } else {
-                                                    log.info("库存同步失败--" + eventResult.getResultMsg());
-                                                    return;
-                                                }
+                                            EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
+                                            if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                                failedList.addAll((List<ProInventoryInfo>) firstSyncResult.getData());
+                                            } else {
+                                                log.info("库存同步失败--" + eventResult.getResultMsg());
+                                                return;
                                             }
                                         }
                                     }
-                                } else {
-                                    log.info("库存同步处理失败--" + eventResult.getResultMsg());
-                                    return;
                                 }
+                            } else {
+                                log.info("库存同步处理失败--" + eventResult.getResultMsg());
+                                return;
                             }
                         }
                     }
