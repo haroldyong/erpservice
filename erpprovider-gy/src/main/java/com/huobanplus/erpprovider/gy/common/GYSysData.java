@@ -52,4 +52,9 @@ public class GYSysData {
      * 默认快递公司代码
      */
     private String defaultLogiCode;
+
+    /**
+     * 指定库存同步的仓库代码集，逗号分隔
+     */
+    private String warehouseCodes;
 }

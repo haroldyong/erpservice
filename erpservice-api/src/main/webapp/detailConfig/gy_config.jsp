@@ -26,6 +26,7 @@
             var shopCode = $.trim($("#gy_shopCode").val());
             var warehouseCode = $("#gy_warehouseCode").val();
             var defaultLogiCode = $.trim($("#gy_defaultLogiCode").val());
+            var warehouseCodes = $.trim($("#gy_warehousecodes").val());
 
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入请求地址");
@@ -56,6 +57,10 @@
                 $.jBox.tip("请输入默认快递代码");
                 return null;
             }
+            if (warehouseCodes.length == 0) {
+                $.jBox.tip("请输入同步库存的仓库代码");
+                return null;
+            }
 
             var gyConfig = {
                 requestUrl: requestUrl,
@@ -64,7 +69,8 @@
                 secret: appSecret,
                 shopCode: shopCode,
                 warehouseCode: warehouseCode,
-                defaultLogiCode: defaultLogiCode
+                defaultLogiCode: defaultLogiCode,
+                warehouseCodes: warehouseCodes
             };
             return JSON.stringify(gyConfig);
         },
@@ -76,6 +82,7 @@
             $("#gy_shopCode").val(jsonData.shopCode);
             $("#gy_warehouseCode").val(jsonData.warehouseCode);
             $("#gy_defaultLogiCode").val(jsonData.defaultLogiCode);
+            $("#gy_warehousecodes").val(jsonData.warehouseCodes);
         }
     };
 </script>
@@ -130,13 +137,13 @@
             (基础信息->快递管理->物流公司查看)
         </td>
     </tr>
-    <%--<tr>--%>
-    <%--<th style="vertical-align: middle;">token：</th>--%>
-    <%--<td>--%>
-    <%--<input name="edb_token" type="text" value="" id="edb_token" class="input-normal"/>--%>
-    <%--（可在edb开发者后台查看）--%>
-    <%--</td>--%>
-    <%--</tr>--%>
+    <tr>
+        <th style="vertical-align: middle;">指定库存同步仓库代码：</th>
+        <td>
+            <input name="gy_warehousecodes" type="text" value="" id="gy_warehousecodes" class="input-normal"/>
+            (多个仓库代码之间使用英文逗号分隔,例如12,34,56)
+        </td>
+    </tr>
 
     </tbody>
 </table>
