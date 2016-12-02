@@ -69,62 +69,60 @@ public class EDBSyncInventory {
                     List<ProInventoryInfo> failedList = new ArrayList<>(); //失败的列表
                     int totalCount = 0; //总数量
 
-                    String[] storageIds = sysData.getStorageIds().split(",");
-                    for (int i = 0; i < storageIds.length; i++) {
-                        int currentPageIndex = 1;
+//                    String[] storageIds = sysData.getStorageIds().split(",");
+                    int currentPageIndex = 1;
 
-                        EDBStockSearch stockSearch = new EDBStockSearch();
-                        stockSearch.setPageIndex(currentPageIndex);
-                        stockSearch.setPageSize(EDBConstant.PAGE_SIZE);
-                        stockSearch.setStoreId(storageIds[i]);
+                    EDBStockSearch stockSearch = new EDBStockSearch();
+                    stockSearch.setPageIndex(currentPageIndex);
+                    stockSearch.setPageSize(EDBConstant.PAGE_SIZE);
+                    stockSearch.setStoreId(sysData.getStorageIds());
 
-                        EventResult firstEventResult = productHandler.getProInventoryInfo(sysData, stockSearch);
-                        if (firstEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                            List<EDBProStockInfo> proStockInfoList = (List<EDBProStockInfo>) firstEventResult.getData();
-                            if (proStockInfoList.size() > 0) {
-                                totalCount = proStockInfoList.get(0).getTotalRecord();
+                    EventResult firstEventResult = productHandler.getProInventoryInfo(sysData, stockSearch);
+                    if (firstEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        List<EDBProStockInfo> proStockInfoList = (List<EDBProStockInfo>) firstEventResult.getData();
+                        if (proStockInfoList.size() > 0) {
+                            totalCount = proStockInfoList.get(0).getTotalRecord();
 
-                                List<ProInventoryInfo> proInventoryInfoList = toProInventoryInfo(proStockInfoList);
-                                SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
-                                syncInventoryEvent.setErpInfo(erpInfo);
-                                syncInventoryEvent.setErpUserInfo(erpUserInfo);
-                                syncInventoryEvent.setInventoryInfoList(proInventoryInfoList);
+                            List<ProInventoryInfo> proInventoryInfoList = toProInventoryInfo(proStockInfoList);
+                            SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
+                            syncInventoryEvent.setErpInfo(erpInfo);
+                            syncInventoryEvent.setErpUserInfo(erpUserInfo);
+                            syncInventoryEvent.setInventoryInfoList(proInventoryInfoList);
 
-                                ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-                                EventResult firstSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
+                            ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+                            EventResult firstSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
 
-                                if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                    failedList.addAll((List<ProInventoryInfo>) firstSyncResult.getData());
-                                    int totalPage = totalCount / EDBConstant.PAGE_SIZE;
+                            if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                failedList.addAll((List<ProInventoryInfo>) firstSyncResult.getData());
+                                int totalPage = totalCount / EDBConstant.PAGE_SIZE;
 
-                                    // 后续几页同步
-                                    if (totalCount % EDBConstant.PAGE_SIZE != 0) {
-                                        totalPage++;
-                                    }
+                                // 后续几页同步
+                                if (totalCount % EDBConstant.PAGE_SIZE != 0) {
+                                    totalPage++;
+                                }
 
-                                    if (totalPage > 1) {
-                                        currentPageIndex++;
-                                        for (int index = currentPageIndex; index <= totalPage; index++) {
-                                            stockSearch.setPageIndex(index);
-                                            EventResult nextEventResult = productHandler.getProInventoryInfo(sysData, stockSearch);
-                                            if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                                List<ProInventoryInfo> nextResult = toProInventoryInfo(proStockInfoList);
-                                                syncInventoryEvent.setInventoryInfoList(nextResult);
+                                if (totalPage > 1) {
+                                    currentPageIndex++;
+                                    for (int index = currentPageIndex; index <= totalPage; index++) {
+                                        stockSearch.setPageIndex(index);
+                                        EventResult nextEventResult = productHandler.getProInventoryInfo(sysData, stockSearch);
+                                        if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                            List<ProInventoryInfo> nextResult = toProInventoryInfo(proStockInfoList);
+                                            syncInventoryEvent.setInventoryInfoList(nextResult);
 
-                                                EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
-                                                if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                                    failedList.addAll((List<ProInventoryInfo>) firstSyncResult.getData());
-                                                } else {
-                                                    log.info("库存同步失败--" + nextEventResult.getResultMsg());
-                                                    return;
-                                                }
+                                            EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
+                                            if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                                failedList.addAll((List<ProInventoryInfo>) firstSyncResult.getData());
+                                            } else {
+                                                log.info("库存同步失败--" + nextEventResult.getResultMsg());
+                                                return;
                                             }
                                         }
                                     }
-                                } else {
-                                    log.info("库存同步处理失败--" + firstEventResult.getResultMsg());
-                                    return;
                                 }
+                            } else {
+                                log.info("库存同步处理失败--" + firstEventResult.getResultMsg());
+                                return;
                             }
                         }
                     }
