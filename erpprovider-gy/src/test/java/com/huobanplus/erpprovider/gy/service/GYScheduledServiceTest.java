@@ -20,9 +20,16 @@ public class GYScheduledServiceTest extends GYTestBase {
 
     @Autowired
     private GYSyncDelivery gySyncDelivery;
+    @Autowired
+    private GYSyncInventory gySyncInventory;
 
     @Test
     public void testSyncOrderShip() {
         gySyncDelivery.syncOrderShip();
+    }
+
+    @Test
+    public void testSyncInventory() {
+        gySyncInventory.syncInventoryForGy();
     }
 }

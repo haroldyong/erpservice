@@ -9,13 +9,23 @@
 
 package com.huobanplus.erpservice.datacenter.repository.logs;
 
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by allan on 4/22/16.
  */
 public interface OrderDetailSyncLogRepository extends JpaRepository<OrderDetailSyncLog, Long>, JpaSpecificationExecutor<OrderDetailSyncLog> {
     OrderDetailSyncLog findByOrderId(String orderId);
+
+    @Query("select l from OrderDetailSyncLog l where l.customerId=?1 and l.detailSyncStatus=?2 and l.providerType=?3 and l.syncTime > ?4")
+    List<OrderDetailSyncLog> findByCustomerIdAndDetailSyncStatusAndProviderType(int customerId, OrderSyncStatus.DetailSyncStatus syncStatus,
+                                                                                ERPTypeEnum.ProviderType providerType, Date begin);
 }

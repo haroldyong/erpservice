@@ -22,7 +22,7 @@
 <head id="Head1">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>
-        订单发货同步日志
+        渠道订单信息同步记录
     </title>
     <link href="<c:url value="/resource/css/admin.global.css" />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/resource/css/admin.content.css" />" rel="stylesheet" type="text/css">
@@ -52,6 +52,24 @@
                 }, function () {
                 }, J.PostMethod)
             });
+        }
+
+        var syncUrl = "<c:url value="/erpService/platform/resyncAllChannelOrder" />"
+        function syncAll(logSyncId) {
+            J.jboxConfirm("确定一键同步所有订单吗?", function () {
+                $.jBox.tip("正在同步", "loading");
+                J.GetJsonRespons(syncUrl, {
+                    logSyncId: logSyncId,
+                    erpUserType: erpUserType
+                }, function (json) {
+                    if (json.resultCode == 2000) {
+                        $.jBox.tip("同步成功", json.resultMsg);
+//                        window.location.reload();
+                    } else {
+                        $.jBox.tip("同步失败", "error");
+                    }
+                })
+            })
         }
     </script>
 </head>
@@ -105,6 +123,11 @@
                                    style="margin-bottom: 3px;">
                                     <span>显示全部</span>
                                 </a>
+                                <a class="btn-middle"
+                                   href="javascript:syncAll(${logSyncId})"
+                                   style="margin-bottom: 3px; background-color:#00B738; color:#fff; font-size:14px; border-radius:4px; padding:4px 8px;">
+                                    <span>一键同步</span>
+                                </a>
                             </label>
                         </div>
                     </div>
@@ -134,7 +157,7 @@
 
                             <th scope="col">同步状态
                             </th>
-                            <th scope="col">备注
+                            <th scope="col">错误信息
                             </th>
                             <th scope="col">操作
                             </th>
@@ -172,5 +195,8 @@
         </div>
     </form>
 </div>
+<script>
+
+</script>
 </body>
 </html>

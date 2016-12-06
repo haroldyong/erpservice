@@ -82,18 +82,17 @@ public class GYSyncInventory {
                             ? Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusDays(7))
                             : lastSyncLog.getSyncTime();
 
-                    int currentPageIndex = 1;
-
                     List<ProInventoryInfo> failedList = new ArrayList<>(); //失败的列表
-
                     int totalCount = 0; //总数量
 
+
+                    int currentPageIndex = 1;
                     GYStockSearchNew stockSearchNew = new GYStockSearchNew();
                     stockSearchNew.setPageNo(currentPageIndex);
                     stockSearchNew.setPageSize(GYConstant.PAGE_SIZE);
                     stockSearchNew.setStartDate(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
                     stockSearchNew.setEndDate(nowStr);
-                    stockSearchNew.setWarehouseCode(sysData.getWarehouseCode());
+//                        stockSearchNew.setWarehouseCode("");
 
                     // 第一次同步
                     EventResult eventResult = gyStockHandler.stockQueryNew(stockSearchNew, sysData);

@@ -129,6 +129,7 @@ public class ERPConfigController {
             String sysDataJson,
             String isSyncInventory,
             String isSyncDelivery,
+            String isSyncChannelOrder,
             HttpServletRequest request,
             Model model
     ) {
@@ -142,6 +143,8 @@ public class ERPConfigController {
             baseConfig.setSecretKey(secretKey.trim());
             baseConfig.setIsSyncDelivery(isSyncDelivery == null ? 0 : 1);
             baseConfig.setIsSyncInventory(isSyncInventory == null ? 0 : 1);
+            baseConfig.setIsSyncChannelOrder(isSyncChannelOrder == null ? 0 : 1);
+
             baseConfigService.save(baseConfig);
 
 

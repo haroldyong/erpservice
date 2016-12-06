@@ -66,17 +66,16 @@ public class EDBSyncInventory {
                     ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
                     ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
                     EDBSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), EDBSysData.class);
-
-                    int currentPageIndex = 1;
-
                     List<ProInventoryInfo> failedList = new ArrayList<>(); //失败的列表
-
                     int totalCount = 0; //总数量
+
+//                    String[] storageIds = sysData.getStorageIds().split(",");
+                    int currentPageIndex = 1;
 
                     EDBStockSearch stockSearch = new EDBStockSearch();
                     stockSearch.setPageIndex(currentPageIndex);
                     stockSearch.setPageSize(EDBConstant.PAGE_SIZE);
-                    stockSearch.setStoreId(sysData.getStorageId());
+                    stockSearch.setStoreId(sysData.getStorageIds());
 
                     EventResult firstEventResult = productHandler.getProInventoryInfo(sysData, stockSearch);
                     if (firstEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {

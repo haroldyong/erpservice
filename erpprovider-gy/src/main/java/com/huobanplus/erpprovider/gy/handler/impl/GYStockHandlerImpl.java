@@ -56,7 +56,8 @@ public class GYStockHandlerImpl extends GYBaseHandler implements GYStockHandler 
                         gyrStocks.add(gyrStock);
                     });
 
-                    return EventResult.resultWith(EventResultEnum.SUCCESS, gyrStocks);
+                    GYStockResponse stockResponse = new GYStockResponse(gyrStocks, gyrStocks.size());
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, stockResponse);
                 } else {
                     log.info("错误信息：" + result.getString("errorDesc"));
                     log.info("请求数据报文：" + requestData);

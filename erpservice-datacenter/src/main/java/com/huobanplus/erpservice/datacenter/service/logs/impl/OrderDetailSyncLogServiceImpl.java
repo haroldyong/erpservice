@@ -12,6 +12,7 @@ package com.huobanplus.erpservice.datacenter.service.logs.impl;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.repository.logs.OrderDetailSyncLogRepository;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderDetailSyncSearch;
@@ -78,4 +79,11 @@ public class OrderDetailSyncLogServiceImpl implements OrderDetailSyncLogService 
                 new PageRequest(pageIndex - 1, pageSize, new Sort(Sort.Direction.DESC, "syncTime")));
     }
 
+    @Override
+    public List<OrderDetailSyncLog> findOrderBySyncStatusAndProviderType(int customerId,
+                                                                         OrderSyncStatus.DetailSyncStatus syncStatus,
+                                                                         ERPTypeEnum.ProviderType providerType,
+                                                                         Date beginTime) {
+        return orderDetailSyncLogRepository.findByCustomerIdAndDetailSyncStatusAndProviderType(customerId, syncStatus, providerType, beginTime);
+    }
 }

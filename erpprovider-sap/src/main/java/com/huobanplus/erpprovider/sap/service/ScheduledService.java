@@ -12,21 +12,25 @@ package com.huobanplus.erpprovider.sap.service;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.sap.common.SAPSysData;
 import com.huobanplus.erpprovider.sap.formatsap.LogiInfo;
+import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpprovider.sap.util.ConnectHelper;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
 import com.huobanplus.erpservice.datacenter.model.BatchDeliverResult;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
+import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -58,6 +62,10 @@ public class ScheduledService {
     private OrderShipSyncLogService orderShipSyncLogService;
     @Autowired
     private ShipSyncDeliverInfoService shipSyncDeliverInfoService;
+    @Autowired
+    private OrderDetailSyncLogService orderDetailSyncLogService;
+    @Autowired
+    private SAPOrderHandler sapOrderHandler;
 
     @Autowired
     private ERPRegister erpRegister;
@@ -213,5 +221,56 @@ public class ScheduledService {
             deliveryInfo.setLogiCode("yuantong");
             orderDeliveryInfoList.add(deliveryInfo);
         }
+    }
+
+    /**
+     * 定时重新推送失败的订单
+     */
+    @Scheduled(cron = "0 0 */1 * * ?")
+    @Transactional
+    public void rePushFailedOrder() {
+
+        String beginTime = "2016-12-01 00:00:00";
+        Date begin = StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN);
+
+        int failedNum = 0;
+        int totalNum = 0;
+        List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.SAP);
+        for (ERPDetailConfigEntity detailConfig : detailConfigs) {
+            List<OrderDetailSyncLog> failedOrderLogs = orderDetailSyncLogService.findOrderBySyncStatusAndProviderType(detailConfig.getCustomerId(),
+                    OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE,
+                    ERPTypeEnum.ProviderType.SAP, begin);
+            totalNum += failedOrderLogs.size();
+            for (OrderDetailSyncLog failedLog : failedOrderLogs) {
+
+                String orderJson = failedLog.getOrderInfoJson();
+                PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
+                ERPInfo erpInfo = new ERPInfo();
+                erpInfo.setErpType(failedLog.getProviderType());
+                erpInfo.setSysDataJson(failedLog.getErpSysData());
+
+                ERPUserInfo erpUserInfo = new ERPUserInfo();
+                erpUserInfo.setCustomerId(failedLog.getCustomerId());
+                erpUserInfo.setErpUserType(failedLog.getUserType());
+
+                pushNewOrderEvent.setOrderInfoJson(orderJson);
+                pushNewOrderEvent.setErpUserInfo(erpUserInfo);
+                pushNewOrderEvent.setErpInfo(erpInfo);
+
+                EventResult eventResult = sapOrderHandler.pushOrder(pushNewOrderEvent);
+                if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
+                    failedNum++;
+                }
+            }
+        }
+
+        log.info("本次订单重新推送共:" + totalNum);
+        log.info("本次订单重新推送失败数:" + failedNum);
+        log.info("本次订单重新推送成功数:" + (totalNum - failedNum));
+
+        System.out.println("本次订单重新推送共:" + totalNum);
+        System.out.println("本次订单重新推送失败数:" + failedNum);
+        System.out.println("本次订单重新推送成功数:" + (totalNum - failedNum));
+
     }
 }

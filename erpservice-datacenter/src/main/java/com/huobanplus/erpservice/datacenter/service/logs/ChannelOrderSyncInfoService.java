@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.service.logs;
 
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.ChannelOrderSyncInfo;
 import org.springframework.data.domain.Page;
 
@@ -26,5 +27,11 @@ public interface ChannelOrderSyncInfoService {
     void batchSave(List<ChannelOrderSyncInfo> channelOrderSyncInfoList);
 
     ChannelOrderSyncInfo save(ChannelOrderSyncInfo channelOrderSyncInfo);
+
+    List<ChannelOrderSyncInfo> findByChannelOrderStatusAndChannelOrderSyncLogId(OrderSyncStatus.ChannelOrderSyncStatus channelOrderSyncStatus, long logId);
+
+    List<ChannelOrderSyncInfo> findByOrderIdAndLogId(String orderId, long logId);
+
+    void deleteSyncInfo(long logId);
 
 }
