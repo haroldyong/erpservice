@@ -217,9 +217,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
     public EventResult pushPlatformOrder(Order order, DtwSysData dtwSysData) {
 
-        double taxRate = Arith.div(dtwSysData.getTaxRate(), 100);
-        double taxPrice = calculateTaxPrice(order.getOrderItems(), taxRate);
-        double orderGoodsAmount = caculateGoodsPrice(order.getOrderItems(), taxRate);
+//        double taxRate = Arith.div(dtwSysData.getTaxRate(), 100);
+//        double taxPrice = calculateTaxPrice(order.getOrderItems(), taxRate);
+//        double orderGoodsAmount = caculateGoodsPrice(order.getOrderItems(), taxRate);
 
         Map<String, Object> requestMap = new HashMap<>();
         DtwOrder dtwOrder = new DtwOrder();
@@ -235,8 +235,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwOrderItem.setSpec(orderItem.getStandard());//(必填)
             dtwOrderItem.setUnit(DtwEnum.UnitEnum.JIAN.getCode());
             dtwOrderItem.setCurrency(DtwEnum.CurrencyEnum.RMB.getCode());
-            double goodsPirce = Arith.sub(orderItem.getPrice(), Arith.mul(orderItem.getPrice(), taxRate));
-            dtwOrderItem.setAmount(Arith.mul(goodsPirce, orderItem.getNum()));//(必填)
+            dtwOrderItem.setAmount(orderItem.getAmount());//(必填)
             dtwOrderItem.setQty(orderItem.getNum());
             dtwOrderItemList.add(dtwOrderItem);
         }
@@ -252,35 +251,34 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         dtwOrder.setMsgid(order.getOrderId());//(必填)
         dtwOrder.setPayType(DtwEnum.PaytypeEnum.Other.getCode());
-        if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType())
-                == OrderEnum.PaymentOptions.ALIPAY_PC) {
-            dtwOrder.setPayCompanyCode("");
+        OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
 
-        } else if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType())
-                == OrderEnum.PaymentOptions.WEIXINPAY_V3) {
+        if (paymentOptions == OrderEnum.PaymentOptions.ALIPAY_PC || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE) {
+            dtwOrder.setPayCompanyCode(DtwConstant.ALI_PAY_CUSTOM_CODE);
+
+        } else if (paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_V3 || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY
+                || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_APP) {
             dtwOrder.setPayCompanyCode(DtwConstant.WEIXIN_PAY_CUSTOM_CODE);//(必填) 支付公司在海关的备案码
         } else {
             return EventResult.resultWith(EventResultEnum.ERROR, "支付方式不支持", null);
         }
         dtwOrder.setPayNumber(order.getPayNumber());//(必填) 支付单号
         dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
-        dtwOrder.setOrderGoodsAmount(orderGoodsAmount);//(必填)
+        dtwOrder.setOrderGoodsAmount(order.getCostItem());//(必填)// FIXME: 2016-12-09
         dtwOrder.setOrderNo(order.getOrderId());//(必填)
-        dtwOrder.setOrderTaxAmount(taxPrice);
+        dtwOrder.setOrderTaxAmount(order.getTaxAmount());
         dtwOrder.setTotalCount(order.getItemNum());//(必填)
-        dtwOrder.setTotalAmount(orderGoodsAmount);//(必填)
+        dtwOrder.setTotalAmount(order.getCostItem());//(必填)
         dtwOrder.setLogisCompanyName("百世物流科技（中国）有限公司");//(必填)
         dtwOrder.setLogisCompanyCode("WL15041401");//(必填)
         dtwOrder.setPurchaserId(String.valueOf(order.getMemberId()));//(必填)
-        dtwOrder.setShipper(dtwSysData.getSenderName());
-        dtwOrder.setShipperPro("");
-        dtwOrder.setShipperCity("");
-        dtwOrder.setShipperDistrict("");
-        dtwOrder.setShipperAddress(dtwSysData.getSenderAddr());
-        dtwOrder.setShipperMobile("");
-        dtwOrder.setShipperTel("");
+        dtwOrder.setShipper(DtwConstant.SENDER_NAME);
+        dtwOrder.setShipperPro(DtwConstant.SENDER_PROVINCE);// TODO: 2016-12-09
+        dtwOrder.setShipperCity(DtwConstant.SENDER_CITY);
+        dtwOrder.setShipperDistrict(DtwConstant.SENDER_DISTRICT);
+        dtwOrder.setShipperAddress(DtwConstant.SENDER_ADDR);
+        dtwOrder.setShipperMobile(DtwConstant.SENDER_MOBILE);
         dtwOrder.setShipperCountry(DtwEnum.CountryEnum.CHINA.getCode());
-        dtwOrder.setShipperZip("");
         dtwOrder.setConsignee(order.getShipName());//(必填)
         dtwOrder.setConsigneePro(order.getProvince());//(必填)
         dtwOrder.setConsigneeCity(order.getCity());//(必填)
@@ -297,7 +295,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         System.out.println("\n**********************");
         System.out.println(JSON.toJSONString(dtwOrder));
-        System.out.println("税费:" + taxPrice);
+        System.out.println("税费:" + order.getTaxAmount());
         System.out.println("贷款：" + dtwOrder.getOrderGoodsAmount());
         System.out.println("成交总价：" + dtwOrder.getTotalAmount());
         System.out.println("订单总金额:" + dtwOrder.getOrderTotalAmount());
@@ -769,9 +767,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 //        customGoodsPurchaser.setAddress("");//地址 非必填
 
 
-        customOrderHead.setOrderTaxAmount(taxPrice);
-        customOrderHead.setOrderGoodsAmount(orderGoodsAmount);
-        customOrderHead.setTotalAmount(orderGoodsAmount);
+        customOrderHead.setOrderTaxAmount(order.getTaxAmount());
+        customOrderHead.setOrderGoodsAmount(order.getCostItem());
+        customOrderHead.setTotalAmount(order.getCostItem());
         customOrderInfo.setCustomSign(customSign);
         customOrderInfo.setCustomOrderHead(customOrderHead);
         customOrderInfo.setCustomOrderDetailList(customOrderDetails);

@@ -22,6 +22,8 @@ public class DtwConstant {
 
     public static final String WEIXIN_PAY_CUSTOM_CODE = "ZF14120401";
 
+    public static final String ALI_PAY_CUSTOM_CODE = "";
+
     public static final String CUSTOM_WEBSERVICE_URL = "http://122.224.230.4:18003/newyorkWS/ws/ReceiveEncryptDeclare?wsdl";
 
     public static final String CUSTOM_TARGET_NAMESPACE = "http://ws.newyork.zjport.gov.cn/";
@@ -41,6 +43,15 @@ public class DtwConstant {
     public static final String CUSTOM_DEFAULT_AES_KEY = "qZe60QZFxuirub2ey4+7+Q==";
 
     public static final String AES_KEY = "kI0/zRegCAZXytz0XV/G/w==";
+
+    public static final String SENDER_NAME = "wuxiongliu";
+    public static final String SENDER_ADDR = "浙江省杭州市滨江区";
+    public static final String SENDER_PROVINCE = "浙江省";
+    public static final String SENDER_CITY = "杭州市";
+    public static final String SENDER_DISTRICT = "滨江区";
+    public static final String SENDER_MOBILE = "15067134476";
+
+
 
 
 }

@@ -82,18 +82,31 @@ public class DtwTestBase {
 
         mockDtwSysData.setTaxRate(11);
 
-        int[] number = createRandomNum();
-        double[] price = {0.100, 0.100, 0.100, 0.100, 0.100};
-        double costFreight = 5;
-        double finalAmount = 0.0;
-        for (int i = 0; i < number.length; i++) {
-            double goodPrice = Arith.mul(price[i], number[i]);
-//            double taxPrice = Arith.mul(goodPrice, mockDtwSysData.getTaxRate() / 100);
-            finalAmount = Arith.add(finalAmount, goodPrice);
-        }
-        finalAmount = Arith.add(finalAmount, costFreight);
+        double itemPirce = 10;
+        int itemNum = 3;
+        double itemAmount = itemPirce * itemNum;
 
-        mockOrderItems = createOrderItem(price, number);
+        double orderCostFreight = 10;
+        double taxAmount = 5;
+        double finalAmount = taxAmount + itemAmount + orderCostFreight;
+
+        mockOrderItems = new ArrayList<>();
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setItemId(178770);
+        orderItem.setOrderId(mockOrderNo);
+        orderItem.setUnionOrderId("2016062455965373");
+        orderItem.setProductBn("CSXJ0001");
+        orderItem.setName("婴儿配方奶粉0001");
+        orderItem.setCost(0.5);
+        orderItem.setPrice(itemPirce);
+        orderItem.setAmount(itemAmount);
+        orderItem.setNum(itemNum);
+        orderItem.setStandard("测试");
+        orderItem.setCustomerId(296);
+        orderItem.setGoodBn("1901101000");
+        mockOrderItems.add(orderItem);
+
 
         mockOrder = new Order();
         mockOrder.setOrderId(mockOrderNo);
@@ -117,11 +130,11 @@ public class DtwTestBase {
         mockOrder.setShipTel("");
         mockOrder.setShipEmail("");
         mockOrder.setShipMobile("18705153967");
-        mockOrder.setCostItem(10);
+        mockOrder.setCostItem(itemAmount);
 //        mockOrder.setOnlinePayAmount();
-        mockOrder.setCostFreight(costFreight);
+        mockOrder.setCostFreight(orderCostFreight);
         mockOrder.setCurrency("CYN");
-        mockOrder.setFinalAmount(finalAmount);// 商品费用+商品费用*税率+运费
+        mockOrder.setFinalAmount(finalAmount);// 商品费用+税费+运费
 
         mockOrder.setPaymentName("微信");
         mockOrder.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());//微信支付V3
@@ -131,6 +144,7 @@ public class DtwTestBase {
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
 
         mockOrder.setPayNumber(createOrderNo());
+        mockOrder.setTaxAmount(taxAmount);
 
         mockOrder.setOrderItems(mockOrderItems);
 

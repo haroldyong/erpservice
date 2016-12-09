@@ -90,6 +90,11 @@ public class Order extends BaseInfo {
     private double finalAmount;
 
     /**
+     * 订单税款
+     */
+    private double taxAmount;
+
+    /**
      * 订单优惠金额
      */
     private double pmtAmount;
