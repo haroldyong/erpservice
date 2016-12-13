@@ -14,12 +14,14 @@ import com.huobanplus.erpservice.platform.interceptor.PlatformInterceptor;
 import com.huobanplus.erpservice.proxy.interceptor.UserAuthorizeInterceptor;
 import com.huobanplus.erpservice.sandbox.interceptor.SandboxInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -41,6 +43,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private PlatformInterceptor platformInterceptor;
     @Autowired
     private SandboxInterceptor sandboxInterceptor;
+
+    @Bean
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+        resolver.setDefaultEncoding("UTF-8");
+        return resolver;
+    }
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {

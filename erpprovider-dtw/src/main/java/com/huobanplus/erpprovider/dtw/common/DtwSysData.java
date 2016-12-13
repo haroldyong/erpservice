@@ -67,6 +67,8 @@ public class DtwSysData {
      */
     private String aliPartner;
 
+    private String aliKey;
+
     /**
      * 发货人姓名
      */

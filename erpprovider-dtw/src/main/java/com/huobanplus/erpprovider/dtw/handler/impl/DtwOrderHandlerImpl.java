@@ -229,7 +229,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         for (int i = 0; i < orderItemList.size(); i++) {
             OrderItem orderItem = orderItemList.get(i);
             DtwOrderItem dtwOrderItem = new DtwOrderItem();
-            dtwOrderItem.setMsgitem(i);//(必填)
+            dtwOrderItem.setMsgitem(i + 1);//(必填)
             dtwOrderItem.setPartno(orderItem.getProductBn());//(必填)
             dtwOrderItem.setPartName(orderItem.getName());//(必填)
             dtwOrderItem.setSpec(orderItem.getStandard());//(必填)
@@ -493,7 +493,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             requestMap.put("merchant_customs_name", dtwSysData.getECommerceName());
 //            requestMap.put("is_split", "n");
 //            requestMap.put("sub_out_biz_no", "2015080811223212345453");
-            String sign = DtwUtil.aliBuildSign(requestMap);
+            String sign = DtwUtil.aliBuildSign(requestMap, dtwSysData.getAliKey());
             requestMap.put("sign", sign);
 
             HttpResult httpResult = HttpClientUtil.getInstance().get(DtwConstant.ALI_PAY_URL, requestMap);
@@ -504,12 +504,14 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
                 Element isSuccessElem = root.element("is_success");
                 if (isSuccessElem.getText().equals("T")) {
-                    Element resultCodeElem = root.element("result_code");
+
+                    Element aliPayElem = root.element("response").element("alipay");
+                    Element resultCodeElem = aliPayElem.element("result_code");
                     if (resultCodeElem.equals("SUCCESS")) {
                         log.info("大田推送支付宝支付单到海关");
                         return EventResult.resultWith(EventResultEnum.SUCCESS);
                     } else {
-                        Element errorElem = root.element("detail_error_des");
+                        Element errorElem = aliPayElem.element("detail_error_des");
                         log.error("推送支付宝支付单到海关失败:" + errorElem.getText());
                         return EventResult.resultWith(EventResultEnum.ERROR, errorElem.getText(), null);
                     }

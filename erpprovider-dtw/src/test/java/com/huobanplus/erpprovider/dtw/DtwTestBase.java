@@ -71,7 +71,8 @@ public class DtwTestBase {
         mockDtwSysData.setCompanyName("杭州美伴网络科技有限公司");
         mockDtwSysData.setRequestUrl("http://logistics.dtw.com.cn:8080/QBT/api");
 
-        mockDtwSysData.setAliPartner("2088211251545121");
+        mockDtwSysData.setAliPartner("2088421965473023");
+        mockDtwSysData.setAliKey("k48u3xqezrpwhpuv8al265p515uhclr5");
 
         mockDtwSysData.setWeixinKey("hzmeibanwangluokejiyouxiangongsi");
         mockDtwSysData.setWeixinMchId("1342661701");
