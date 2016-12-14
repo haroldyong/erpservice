@@ -105,6 +105,11 @@ public class DtwPurchaseHandlerTest extends DtwTestBase {
         pushPurchaseOrderEvent.setErpInfo(mockErpInfo);
         pushPurchaseOrderEvent.setPurchaseOrderJson(JSON.toJSONString(purchaseOrder));
 
-        dtwPurchaseHandler.pushPurchaseOrder(pushPurchaseOrderEvent);
+        EventResult eventResult = dtwPurchaseHandler.pushPurchaseOrder(pushPurchaseOrderEvent);
+        System.out.println("\n***************");
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
+        System.out.println(eventResult.getData());
+        System.out.println("\n***************");
     }
 }

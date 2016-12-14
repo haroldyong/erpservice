@@ -11,9 +11,12 @@
 
 package com.huobanplus.erpservice.datacenter.repository.logs;
 
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.PurchaseOrderSyncLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+import java.util.List;
 
 /**
  * Created by wuxiongliu on 2016-12-12.
@@ -21,4 +24,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface PurchaseOrderSyncLogRepository extends JpaRepository<PurchaseOrderSyncLog, Long>, JpaSpecificationExecutor<PurchaseOrderSyncLog> {
 
     PurchaseOrderSyncLog findByReceiveNo(String receiveNo);
+
+    List<PurchaseOrderSyncLog> findByCustomerIdAndDetailSyncStatus(int customerId, OrderSyncStatus.DetailSyncStatus detailSyncStatus);
 }

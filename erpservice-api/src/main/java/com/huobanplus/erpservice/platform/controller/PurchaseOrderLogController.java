@@ -14,9 +14,11 @@ package com.huobanplus.erpservice.platform.controller;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpservice.common.SysConstant;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
+import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.logs.PurchaseOrderSyncLog;
@@ -25,9 +27,11 @@ import com.huobanplus.erpservice.datacenter.model.PurchaseOrderItem;
 import com.huobanplus.erpservice.datacenter.repository.logs.PurchaseOrderSyncLogRepository;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.logs.PurchaseOrderSyncLogService;
+import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushPurchaseOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import com.huobanplus.erpservice.proxy.utils.OrderProxyService;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -38,6 +42,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.ArrayList;
@@ -60,6 +65,8 @@ public class PurchaseOrderLogController {
     private PurchaseOrderSyncLogRepository purchaseOrderSyncLogRepository;
     @Autowired
     private PurchaseOrderSyncLogService purchaseOrderSyncLogService;
+    @Autowired
+    private ERPRegister erpRegister;
 
     private static final Map<String, Integer> colMap = new HashMap<>();
 
@@ -79,9 +86,11 @@ public class PurchaseOrderLogController {
     public String toPurchaseOrder(@RequestParam(required = false, defaultValue = "1") int pageIndex,
                                   @RequestAttribute int customerId,
                                   int erpUserType,
+                                  String receiveNo,
                                   Model model) throws Exception {
 
-        Page<PurchaseOrderSyncLog> page = purchaseOrderSyncLogService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, customerId);
+        Page<PurchaseOrderSyncLog> page = purchaseOrderSyncLogService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE,
+                customerId, receiveNo);
         model.addAttribute("purchaseOrderPage", page);
         model.addAttribute("pageIndex", pageIndex);
         model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);
@@ -104,10 +113,44 @@ public class PurchaseOrderLogController {
     }
 
 
-    @RequestMapping(value = "/pushPurchaseOrder")
-    public ApiResult pushPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
-        return null;
+    @RequestMapping(value = "/rePushPurchaseOrder")
+    @ResponseBody
+    public ApiResult rePushPurchaseOrder(long id) throws Exception {
+        PurchaseOrderSyncLog purchaseOrderSyncLog = purchaseOrderSyncLogRepository.findOne(id);
+        ERPInfo erpInfo = new ERPInfo(purchaseOrderSyncLog.getProviderType(), purchaseOrderSyncLog.getErpSysData());
+        ERPUserInfo erpUserInfo = new ERPUserInfo(purchaseOrderSyncLog.getUserType(), purchaseOrderSyncLog.getCustomerId());
+        PushPurchaseOrderEvent pushPurchaseOrderEvent = new PushPurchaseOrderEvent();
+        pushPurchaseOrderEvent.setErpInfo(erpInfo);
+        pushPurchaseOrderEvent.setErpUserInfo(erpUserInfo);
+        pushPurchaseOrderEvent.setPurchaseOrderJson(purchaseOrderSyncLog.getPurchaseOrderJson());
+        ERPUserHandler userHandler = erpRegister.getERPUserHandler(erpUserInfo);
+        if (userHandler == null) {
+            return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
+        }
+
+        return orderProxyService.handleEvent(pushPurchaseOrderEvent);
     }
+
+    @RequestMapping(value = "/rePushAllPurchaseOrder")
+    @ResponseBody
+    public ApiResult rePushAllPurchaseOrder(@RequestAttribute int customerId) throws Exception {
+        List<PurchaseOrderSyncLog> purchaseOrderSyncLogs = purchaseOrderSyncLogRepository.findByCustomerIdAndDetailSyncStatus(customerId,
+                OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+        for (PurchaseOrderSyncLog purchaseOrderSyncLog : purchaseOrderSyncLogs) {
+            ERPInfo erpInfo = new ERPInfo(purchaseOrderSyncLog.getProviderType(), purchaseOrderSyncLog.getErpSysData());
+            ERPUserInfo erpUserInfo = new ERPUserInfo(purchaseOrderSyncLog.getUserType(), purchaseOrderSyncLog.getCustomerId());
+            PushPurchaseOrderEvent pushPurchaseOrderEvent = new PushPurchaseOrderEvent();
+            pushPurchaseOrderEvent.setErpInfo(erpInfo);
+            pushPurchaseOrderEvent.setErpUserInfo(erpUserInfo);
+            pushPurchaseOrderEvent.setPurchaseOrderJson(purchaseOrderSyncLog.getPurchaseOrderJson());
+            ERPUserHandler userHandler = erpRegister.getERPUserHandler(erpUserInfo);
+            if (userHandler == null) {
+                return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
+            }
+        }
+        return ApiResult.resultWith(ResultCode.SUCCESS, "推送完成", null);
+    }
+
 
     @RequestMapping(value = "/uploadPurchaseOrderFile")
     public String uploadPurchaseOrderFile(@RequestAttribute int customerId,

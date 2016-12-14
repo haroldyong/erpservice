@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -51,10 +52,13 @@ public class PurchaseOrderSyncLogServiceImpl implements PurchaseOrderSyncLogServ
     }
 
     @Override
-    public Page<PurchaseOrderSyncLog> findAll(int pageIndex, int pageSize, int customerId) {
+    public Page<PurchaseOrderSyncLog> findAll(int pageIndex, int pageSize, int customerId, String receiveNo) {
         Specification<PurchaseOrderSyncLog> specification = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.equal(root.get("customerId").as(Integer.class), customerId));
+            if (!StringUtils.isEmpty(receiveNo)) {
+                predicates.add(cb.like(root.get("receiveNo").as(String.class), "%" + receiveNo + '%'));
+            }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
         return purchaseOrderSyncLogRepository.findAll(specification,

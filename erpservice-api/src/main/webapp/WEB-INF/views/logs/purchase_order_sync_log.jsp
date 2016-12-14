@@ -56,6 +56,15 @@
             color: white;
         }
 
+        .confirmButton {
+            width: 145px;
+            text-align: center;
+            border-radius: 4px;
+            height: 30px;
+            background-color: #EE3B3B;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
@@ -100,17 +109,23 @@
                 <div style="text-align: center;">
                     <input type="button" value="提交" id="uploadFile"/>
                 </div>
-
             </div>
         </div>
     </form>
 
     <form method="get" id="searchForm">
+
         <input type="hidden" name="erpUserType" value="${erpUserType}"/>
         <div class="blank10">
         </div>
 
         <div class="block">
+            <div class="blank10">
+            </div>
+            <%--<div style="text-align: left;padding-left: 10px;">--%>
+            <%--<input type="button" value="重新推送所有失败采购单" id="repushAll" class="confirmButton"/>--%>
+            <%--</div>--%>
+
             <div class="tl corner">
             </div>
             <div class="tr corner">
@@ -122,10 +137,38 @@
             <div class="cnt-wp" style="padding: 10px 10px 10px;display: block;">
 
                 <div class="cnt">
+
+                    <div class="search-bar">
+                        <div>
+                            <input type="hidden" name="erpUserType" value="${erpUserType}"/>
+                            <label class="first ">收货订单编号：</label>
+                            <input name="receiveNo" type="text"
+                                   class="input-normal"/>
+
+                            <label>
+                                <a class="btn-lit btn-middle" href="javascript:$('#searchForm').submit();"
+                                   style="margin-bottom: 3px;">
+                                    <span>查询</span>
+                                </a>
+                                <a class="btn-lit btn-middle"
+                                   href="<c:url value="/erpService/platform/toPurchaseOrder?erpUserType=${erpUserType}" />"
+                                   style="margin-bottom: 3px;">
+                                    <span>显示全部</span>
+                                </a>
+                                <a class="btn-middle"
+                                   id="repushAll"
+                                   style="margin-bottom: 3px; background-color:#00B738; color:#fff; font-size:14px; border-radius:4px; padding:4px 8px;">
+                                    <span>一键同步</span>
+                                </a>
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr>
+
                     <table class="data-table even1" width="100%" border="0" cellspacing="0" cellpadding="0">
                         <thead>
                         <tr class="even">
-                            <th scope="col">全选 <input type="checkbox" id="checkAll"/></th>
                             <th scope="col">提单号
                             </th>
                             <th scope="col">供应商编码
@@ -147,7 +190,6 @@
                         <tbody>
                         <c:forEach var="log" items="${purchaseOrderPage.getContent()}">
                             <tr>
-                                <td class="txt40 c"><input type="checkbox" class="checkItem"></td>
                                 <td class="txt20 c">${log.blno}</td>
                                 <td class="txt20 c">${log.supplierId}</td>
                                 <td class="txt20 c">${log.receiveNo}</td>
@@ -188,6 +230,8 @@
 <div id="error_dialog" style="padding: 20px;display: none;"></div>
 
 <script>
+    var erpUserType = ${erpUserType};
+
     $(document).ready(function () {
         $("#uploadFile").click(function () {
             var filePath = $.trim($("#sourceFile").val());
@@ -238,6 +282,43 @@
             }
         })
     }
+
+    var ajaxUrl = "<c:url value="/erpService/platform/rePushPurchaseOrder" />";
+    function rePush(id) {
+        J.jboxConfirm("确定要推送吗?", function () {
+            $.jBox.tip("正在推送", "loading");
+            J.GetJsonRespons(ajaxUrl, {
+                id: id,
+                erpUserType: erpUserType
+            }, function (json) {
+                if (json.resultCode == 2000) {
+                    $.jBox.tip("推送成功", "success");
+                    window.location.reload();
+                } else {
+                    $.jBox.tip("推送失败", "error");
+                }
+            }, function () {
+            }, J.PostMethod)
+        });
+    }
+
+    $("#repushAll").click(function () {
+        var ajaxUrl2 = "<c:url value="/erpService/platform/rePushAllPurchaseOrder" />";
+        J.jboxConfirm("确定要推送吗?", function () {
+            $.jBox.tip("正在推送", "loading");
+            J.GetJsonRespons(ajaxUrl2, {
+                erpUserType: erpUserType
+            }, function (json) {
+                if (json.resultCode == 2000) {
+                    $.jBox.tip("推送成功", "success");
+                    window.location.reload();
+                } else {
+                    $.jBox.tip("推送失败", "error");
+                }
+            }, function () {
+            }, J.PostMethod)
+        });
+    });
 
 
 </script>
