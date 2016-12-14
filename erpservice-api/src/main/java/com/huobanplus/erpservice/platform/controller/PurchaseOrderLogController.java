@@ -87,10 +87,11 @@ public class PurchaseOrderLogController {
                                   @RequestAttribute int customerId,
                                   int erpUserType,
                                   String receiveNo,
+                                  String blno,
                                   Model model) throws Exception {
 
         Page<PurchaseOrderSyncLog> page = purchaseOrderSyncLogService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE,
-                customerId, receiveNo);
+                customerId, receiveNo, blno);
         model.addAttribute("purchaseOrderPage", page);
         model.addAttribute("pageIndex", pageIndex);
         model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);

@@ -52,12 +52,15 @@ public class PurchaseOrderSyncLogServiceImpl implements PurchaseOrderSyncLogServ
     }
 
     @Override
-    public Page<PurchaseOrderSyncLog> findAll(int pageIndex, int pageSize, int customerId, String receiveNo) {
+    public Page<PurchaseOrderSyncLog> findAll(int pageIndex, int pageSize, int customerId, String receiveNo, String blno) {
         Specification<PurchaseOrderSyncLog> specification = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.equal(root.get("customerId").as(Integer.class), customerId));
             if (!StringUtils.isEmpty(receiveNo)) {
                 predicates.add(cb.like(root.get("receiveNo").as(String.class), "%" + receiveNo + '%'));
+            }
+            if (!StringUtils.isEmpty(blno)) {
+                predicates.add(cb.like(root.get("blno").as(String.class), "%" + blno + '%'));
             }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };

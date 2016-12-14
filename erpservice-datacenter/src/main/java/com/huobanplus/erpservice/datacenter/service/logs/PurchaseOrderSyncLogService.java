@@ -24,5 +24,5 @@ public interface PurchaseOrderSyncLogService {
 
     void batchSave(List<PurchaseOrder> purchaseOrderList);
 
-    Page<PurchaseOrderSyncLog> findAll(int pageIndex, int pageSize, int customerId, String receiveNo);
+    Page<PurchaseOrderSyncLog> findAll(int pageIndex, int pageSize, int customerId, String receiveNo, String blno);
 }

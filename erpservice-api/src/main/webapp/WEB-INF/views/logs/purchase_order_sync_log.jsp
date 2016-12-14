@@ -143,6 +143,10 @@
                             <input type="hidden" name="erpUserType" value="${erpUserType}"/>
                             <label class="first ">收货订单编号：</label>
                             <input name="receiveNo" type="text"
+                                   class="input-normal"/><br><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label
+                                class="first ">提单号：</label>
+                            <input name="blno" type="text"
                                    class="input-normal"/>
 
                             <label>
