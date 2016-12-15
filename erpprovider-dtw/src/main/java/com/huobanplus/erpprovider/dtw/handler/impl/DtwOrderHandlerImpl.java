@@ -754,6 +754,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             customOrderDetail.setUnitPrice(orderItem.getPrice());
             customOrderDetail.setGoodsCount(orderItem.getNum());
             customOrderDetail.setGoodsUnit(DtwEnum.UnitEnum.JIAN.getCode());
+            customOrderDetail.setCurrency(DtwEnum.CurrencyEnum.RMB.getCode());
 //            customOrderDetail.setGrossWeight(0.0);//商品毛重 非必填
             customOrderDetails.add(customOrderDetail);
 

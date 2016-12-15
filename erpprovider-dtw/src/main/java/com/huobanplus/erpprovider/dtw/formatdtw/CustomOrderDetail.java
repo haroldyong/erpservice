@@ -34,4 +34,6 @@ public class CustomOrderDetail {
     private String originCountry;
 
     private int goodsCount;
+
+    private String currency;
 }
