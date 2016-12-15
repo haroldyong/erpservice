@@ -37,15 +37,6 @@ public class DtwSysData {
      */
     private String eCommerceName;
 
-    /**
-     * 电商平台名称（电商平台在跨境电商通关服务平台的备案名称）
-     */
-    private String companyName;
-
-    /**
-     * 电商平台代码（电商平台在跨境电商通关服务的备案编号）
-     */
-    private String companyCode;
 
     /**
      * 微信公众账号ID
@@ -67,22 +58,26 @@ public class DtwSysData {
      */
     private String aliPartner;
 
+    /**
+     * 支付宝key
+     */
     private String aliKey;
 
-    /**
-     * 发货人姓名
-     */
-    private String senderName;
 
     /**
-     * 发货人地址
+     * 海关接口rsa加密公钥
      */
-    private String senderAddr;
+    private String rsaPublicKey;
 
     /**
-     * 商品税率
+     * 海关接口rsa加密私钥
      */
-    private double taxRate;
+    private String rsaPrivateKey;
+
+    /**
+     * 海关接口
+     */
+    private String aesKey;
 
 
 }

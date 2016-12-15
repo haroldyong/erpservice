@@ -176,12 +176,13 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
 
                         try {
                             DtwEventResult dtwEventResult = new DtwEventResult();
+                            String requestKey = request.getParameter("PassKey");
 
-                            List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserType(providerType, erpUserType);
+                            List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserTypeAndParamNameAndParamVal(providerType, erpUserType, "passKey", requestKey);
                             ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
                             DtwSysData dtwSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), DtwSysData.class);
                             String passKey = dtwSysData.getPassKey();
-                            String requestKey = request.getParameter("PassKey");
+
                             if (!passKey.equals(requestKey)) {
                                 dtwEventResult.setErrorCode(DtwEnum.ErrorCode.CHECK_ERROR.getCode());
                                 dtwEventResult.setErrMsg("PassKey 不一致");

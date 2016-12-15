@@ -23,15 +23,14 @@
             var passKey = $.trim($("#passKey").val());
             var eCommerceCode = $.trim($("#eCommerceCode").val());
             var eCommerceName = $.trim($("#eCommerceName").val());
-            var companyCode = $.trim($("#companyCode").val());
-            var companyName = $.trim($("#companyName").val());
             var weiXinAppId = $.trim($("#weiXinAppId").val());
             var weixinMchId = $.trim($("#weixinMchId").val());
             var weixinKey = $.trim($("#weixinKey").val());
             var aliPartner = $.trim($("#aliPartner").val());
-            var senderName = $.trim($("#senderName").val());
-            var senderAddr = $.trim($("#senderAddr").val());
-            var taxRate = $.trim($("#taxRate").val());
+            var aliKey = $.trim($("#aliKey").val());
+            var rsaPublicKey = $.trim($("#rsaPublicKey").val());
+            var rsaPrivateKey = $.trim($("#rsaPrivateKey").val());
+            var aesKey = $.trim($("#aesKey").val());
 
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入大田接口地址");
@@ -49,14 +48,6 @@
                 $.jBox.tip("请输入电商企业名称");
                 return null;
             }
-            if (companyCode.length == 0) {
-                $.jBox.tip("请输入电商平台代码");
-                return null;
-            }
-            if (companyName.length == 0) {
-                $.jBox.tip("请输入电商平台名称");
-                return null;
-            }
             if (weiXinAppId.length == 0) {
                 $.jBox.tip("请输入微信公众账号ID");
                 return null;
@@ -69,23 +60,27 @@
                 $.jBox.tip("请输入微信秘钥");
                 return null;
             }
-//            if (aliPartner.length == 0) {
-//                $.jBox.tip("请输入支付宝商户号");
-//                return null;
-//            }
-            if (senderName.length == 0) {
-                $.jBox.tip("请输入发货人姓名");
+            if (aliPartner.length == 0) {
+                $.jBox.tip("请输入支付宝商户号");
+                return null;
+            }
+            if (aliKey.length == 0) {
+                $.jBox.tip("请输入支付宝签名密钥");
+                return null;
+            }
+            if (rsaPublicKey.length == 0) {
+                $.jBox.tip("请输入海关加密公钥");
+                return null;
+            }
+            if (rsaPrivateKey.length == 0) {
+                $.jBox.tip("请输入海关加密私钥");
+                return null;
+            }
+            if (aesKey.length == 0) {
+                $.jBox.tip("请输入海关加密密钥");
                 return null;
             }
 
-            if (senderAddr.length == 0) {
-                $.jBox.tip("请输入发货人地址");
-                return null;
-            }
-            if (taxRate.length == 0) {
-                $.jBox.tip("请输入税率");
-                return null;
-            }
 
 
             var dtwConfig = {
@@ -93,15 +88,14 @@
                 passKey: passKey,
                 eCommerceCode: eCommerceCode,
                 eCommerceName: eCommerceName,
-                companyCode: companyCode,
-                companyName: companyName,
                 weiXinAppId: weiXinAppId,
                 weixinMchId: weixinMchId,
                 weixinKey: weixinKey,
                 aliPartner: aliPartner,
-                senderName: senderName,
-                senderAddr: senderAddr,
-                taxRate: taxRate
+                aliKey: aliKey,
+                rsaPublicKey: rsaPublicKey,
+                rsaPrivateKey: rsaPrivateKey,
+                aesKey: aesKey
             };
             return JSON.stringify(dtwConfig);
         },
@@ -110,15 +104,14 @@
             $("#passKey").val(jsonData.passKey);
             $("#eCommerceCode").val(jsonData.eCommerceCode);
             $("#eCommerceName").val(jsonData.eCommerceName);
-            $("#companyCode").val(jsonData.companyCode);
-            $("#companyName").val(jsonData.companyName);
             $("#weiXinAppId").val(jsonData.weiXinAppId);
             $("#weixinMchId").val(jsonData.weixinMchId);
             $("#weixinKey").val(jsonData.weixinKey);
             $("#aliPartner").val(jsonData.aliPartner);
-            $("#senderName").val(jsonData.senderName);
-            $("#senderAddr").val(jsonData.senderAddr);
-            $("#taxRate").val(jsonData.taxRate);
+            $("#aliKey").val(jsonData.aliKey);
+            $("#rsaPublicKey").val(jsonData.rsaPublicKey);
+            $("#rsaPrivateKey").val(jsonData.rsaPrivateKey);
+            $("#aesKey").val(jsonData.aesKey);
 
         }
     };
@@ -151,18 +144,6 @@
     </tr>
 
     <tr>
-        <th style="vertical-align: middle;">companyCode(电商平台代码)：</th>
-        <td>
-            <input name="companyCode" type="text" value="" id="companyCode" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">companyName(电商平台名称)：</th>
-        <td>
-            <input name="companyName" type="text" value="" id="companyName" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
         <th style="vertical-align: middle;">weiXinAppId(微信公众账号ID)：</th>
         <td>
             <input name="weiXinAppId" type="text" value="" id="weiXinAppId" class="input-normal"/>
@@ -187,21 +168,27 @@
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">发货人姓名：</th>
+        <th style="vertical-align: middle;">aliKey(支付宝密钥)：</th>
         <td>
-            <input name="senderName" type="text" value="" id="senderName" class="input-normal"/>
+            <input name="aliKey" type="text" value="" id="aliKey" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">发货人地址：</th>
+        <th style="vertical-align: middle;">rsaPublicKey(海关RSA公钥)：</th>
         <td>
-            <input name="senderAddr" type="text" value="" id="senderAddr" class="input-normal"/>
+            <input name="rsaPublicKey" type="text" value="" id="rsaPublicKey" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">税率：</th>
+        <th style="vertical-align: middle;">rsaPrivateKey(海关RSA密钥)：</th>
         <td>
-            <input name="taxRate" type="text" value="" id="taxRate" class="input-normal"/>%
+            <input name="rsaPrivateKey" type="text" value="" id="rsaPrivateKey" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">aesKey(海关AES密钥)：</th>
+        <td>
+            <input name="aesKey" type="text" value="" id="aesKey" class="input-normal"/>
         </td>
     </tr>
     </tbody>
