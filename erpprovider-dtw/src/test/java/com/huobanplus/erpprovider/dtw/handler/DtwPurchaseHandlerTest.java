@@ -40,9 +40,9 @@ public class DtwPurchaseHandlerTest extends DtwTestBase {
         DtwPurchaseOrder dtwPurchaseOrder = new DtwPurchaseOrder();
         dtwPurchaseOrder.setPassKey(mockDtwSysData.getPassKey());
         dtwPurchaseOrder.setMsgId("201611232562");
-        dtwPurchaseOrder.setSupplier("0000000000000");
-        dtwPurchaseOrder.setECommerceCode("330196T018");
-        dtwPurchaseOrder.setECommerceName("杭州美伴网络科技有限公司");
+        dtwPurchaseOrder.setSupplier(mockDtwSysData.getECommerceCode());
+        dtwPurchaseOrder.setECommerceCode("3210932722");
+        dtwPurchaseOrder.setECommerceName("扬州市新扬达进出口有限公司");
         dtwPurchaseOrder.setHawb("22222222222");
         dtwPurchaseOrder.setMawb("11111111111");
 

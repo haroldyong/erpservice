@@ -51,6 +51,10 @@ public class DtwConstant {
     public static final String SENDER_DISTRICT = "滨江区";
     public static final String SENDER_MOBILE = "15067134476";
 
+    public static final String LOGISTIC_CODE = "WL15041401";
+    public static final String LOGISTIC_NAME = "百世物流科技（中国）有限公司";
+
+    public static final String BUSINESS_TYPE = "IMPORTORDER";
 
 
 

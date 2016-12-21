@@ -14,23 +14,20 @@ import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpprovider.dtw.config.DtwTestConfig;
 import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
+import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
-import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
-import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,35 +57,31 @@ public class DtwTestBase {
 
     private int itemNumber = 5;
 
-    @Autowired
-    private ERPDetailConfigService erpDetailConfigService;
-
     @Before
     public void setUp() {
 
-        ERPDetailConfigEntity erpDetailConfigEntity = erpDetailConfigService.findByCustomerIdAndDefault(7297, ERPTypeEnum.UserType.HUOBAN_SUPPLIER);
 
-        mockOrderNo = createOrderNo();//"20160825113538530780";
+        mockOrderNo = SerialNo.create();//"20160825113538530780";
 
-        mockDtwSysData = JSON.parseObject(erpDetailConfigEntity.getErpSysData(), DtwSysData.class);
-//        mockDtwSysData.setPassKey("1c78cac2-b8b7-4764-9045-4810d3ef20e9");
-//        mockDtwSysData.setECommerceName("扬州市新扬达进出口有限公司");
-//        mockDtwSysData.setECommerceCode("3210932722");
-//
-////        mockDtwSysData.setCompanyCode("3210932722");
-////        mockDtwSysData.setCompanyName("扬州市新扬达进出口有限公司");
-//        mockDtwSysData.setRequestUrl("http://logistics.dtw.com.cn:8080/QBT/api");
-//
-//        mockDtwSysData.setAliPartner("2088421965473023");
-//        mockDtwSysData.setAliKey("k48u3xqezrpwhpuv8al265p515uhclr5");
-//
-//        mockDtwSysData.setWeixinKey("hzmeibanwangluokejiyouxiangongsi");
-//        mockDtwSysData.setWeixinMchId("1342661701");
-//        mockDtwSysData.setWeiXinAppId("gh_4dbf09a0a18e");
-//
-//        mockDtwSysData.setRsaPublicKey("MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJFlixAXFom5VY6TZEveQ8KmiCbfBdj8zxg52WUEzX5VNaxqce2XU7N4rTZm4WFJjLgwJmMQK5VazIo46mr5bo8CAwEAAQ==");
-//        mockDtwSysData.setRsaPrivateKey("MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAkWWLEBcWiblVjpNkS95DwqaIJt8F2PzPGDnZZQTNflU1rGpx7ZdTs3itNmbhYUmMuDAmYxArlVrMijjqavlujwIDAQABAkBkq7tCs8m+KF4N7w3V3hpqryW8TFVfLYQy0PMuF8o0urUZ07S0AoOTvlmKTKRThn4rE4/oh7m3p3SJ5jyJpTAxAiEA+QUyLngSN5M95r+Mj/2DyXMb2LnblhkiDOJlWdzPWUkCIQCVeNAX89Q92xBNsixn2o7U/hv0GBC9xRrXYGkN0SYhFwIhAOFUSFIwKBvNyoeP8HsipSuWUy5LD13EpEEQYzFrUtyxAiBSOFyvcE6ln+T9+C55Cj5bZ1RVFw/Oc6fqJXxkP1IsDQIgIZBDSR1DOMweY3XPD4+8+o1koFNlgNjq2uCvB7t42Ms=");
-//        mockDtwSysData.setAesKey("02oTDtoGk+2XpY0WOglyog==");
+        mockDtwSysData = new DtwSysData();
+        mockDtwSysData.setPassKey("1c78cac2-b8b7-4764-9045-4810d3ef20e9");
+        mockDtwSysData.setECommerceName("扬州市新扬达进出口有限公司");
+        mockDtwSysData.setECommerceCode("3210932722");
+
+//        mockDtwSysData.setCompanyCode("3210932722");
+//        mockDtwSysData.setCompanyName("扬州市新扬达进出口有限公司");
+        mockDtwSysData.setRequestUrl("http://logistics.dtw.com.cn:8080/QBT/api");
+
+        mockDtwSysData.setAliPartner("2088421965473023");
+        mockDtwSysData.setAliKey("k48u3xqezrpwhpuv8al265p515uhclr5");
+
+        mockDtwSysData.setWeixinKey("hzmeibanwangluokejiyouxiangongsi");
+        mockDtwSysData.setWeixinMchId("1342661701");
+        mockDtwSysData.setWeiXinAppId("gh_4dbf09a0a18e");
+
+        mockDtwSysData.setRsaPublicKey("MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJFlixAXFom5VY6TZEveQ8KmiCbfBdj8zxg52WUEzX5VNaxqce2XU7N4rTZm4WFJjLgwJmMQK5VazIo46mr5bo8CAwEAAQ==");
+        mockDtwSysData.setRsaPrivateKey("MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAkWWLEBcWiblVjpNkS95DwqaIJt8F2PzPGDnZZQTNflU1rGpx7ZdTs3itNmbhYUmMuDAmYxArlVrMijjqavlujwIDAQABAkBkq7tCs8m+KF4N7w3V3hpqryW8TFVfLYQy0PMuF8o0urUZ07S0AoOTvlmKTKRThn4rE4/oh7m3p3SJ5jyJpTAxAiEA+QUyLngSN5M95r+Mj/2DyXMb2LnblhkiDOJlWdzPWUkCIQCVeNAX89Q92xBNsixn2o7U/hv0GBC9xRrXYGkN0SYhFwIhAOFUSFIwKBvNyoeP8HsipSuWUy5LD13EpEEQYzFrUtyxAiBSOFyvcE6ln+T9+C55Cj5bZ1RVFw/Oc6fqJXxkP1IsDQIgIZBDSR1DOMweY3XPD4+8+o1koFNlgNjq2uCvB7t42Ms=");
+        mockDtwSysData.setAesKey("02oTDtoGk+2XpY0WOglyog==");
 
         double itemPirce = 10;
         int itemNum = 3;
@@ -151,7 +144,7 @@ public class DtwTestBase {
         mockOrder.setBuyerPid("362322199411050053");
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
 
-        mockOrder.setPayNumber(createOrderNo());
+        mockOrder.setPayNumber(SerialNo.create());
         mockOrder.setTaxAmount(taxAmount);
 
         mockOrder.setOrderItems(mockOrderItems);
@@ -166,18 +159,6 @@ public class DtwTestBase {
 
     }
 
-    public static String createOrderNo() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-        String date = sdf.format(new Date());
-        Random random = new Random();
-        String code = "";
-        //随机产生6位数字的字符串
-        for (int i = 0; i < 6; i++) {
-            String rand = String.valueOf(random.nextInt(10));
-            code += rand;
-        }
-        return date + code;
-    }
 
     public List<OrderItem> createOrderItem(double[] prices, int[] number) {
         List<OrderItem> orderItems = new ArrayList<>();

@@ -122,9 +122,6 @@
         <div class="block">
             <div class="blank10">
             </div>
-            <%--<div style="text-align: left;padding-left: 10px;">--%>
-            <%--<input type="button" value="重新推送所有失败采购单" id="repushAll" class="confirmButton"/>--%>
-            <%--</div>--%>
 
             <div class="tl corner">
             </div>
@@ -135,10 +132,21 @@
             <div class="br corner">
             </div>
             <div class="cnt-wp" style="padding: 10px 10px 10px;display: block;">
+                <div class="h">
+                    <span class="icon-sprite icon-magnifier"></span>
+
+                    <h3>采购单推送记录</h3>
+                </div>
+
+                <div class="blank10">
+                </div>
+                <div class="blank10">
+                </div>
 
                 <div class="cnt">
 
                     <div class="search-bar">
+
                         <div>
                             <input type="hidden" name="erpUserType" value="${erpUserType}"/>
                             <label class="first ">收货订单编号：</label>
@@ -159,11 +167,11 @@
                                    style="margin-bottom: 3px;">
                                     <span>显示全部</span>
                                 </a>
-                                <a class="btn-middle"
-                                   id="repushAll"
-                                   style="margin-bottom: 3px; background-color:#00B738; color:#fff; font-size:14px; border-radius:4px; padding:4px 8px;">
-                                    <span>一键同步</span>
-                                </a>
+                                <%--<a class="btn-middle"--%>
+                                <%--id="repushAll"--%>
+                                <%--style="margin-bottom: 3px; background-color:#00B738; color:#fff; font-size:14px; border-radius:4px; padding:4px 8px;">--%>
+                                <%--<span>一键同步</span>--%>
+                                <%--</a>--%>
                             </label>
                         </div>
                     </div>
