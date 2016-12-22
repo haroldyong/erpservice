@@ -11,7 +11,6 @@
 
 package com.huobanplus.erpservice.platform.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpservice.common.SysConstant;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
@@ -20,12 +19,9 @@ import com.huobanplus.erpservice.datacenter.entity.logs.ReturnRefundSyncLog;
 import com.huobanplus.erpservice.datacenter.searchbean.ReturnRefundSearch;
 import com.huobanplus.erpservice.datacenter.service.logs.ReturnRefundSyncLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
-import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
-import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushAfterSaleEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
-import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import com.huobanplus.erpservice.proxy.utils.OrderProxyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,25 +71,16 @@ public class ReturnRefundController {
         ReturnRefundSyncLog returnRefundSyncLog = returnRefundSyncLogService.findById(id);
         ERPInfo erpInfo = new ERPInfo(returnRefundSyncLog.getProviderType(), returnRefundSyncLog.getErpSysData());
         ERPUserInfo erpUserInfo = new ERPUserInfo(returnRefundSyncLog.getUserType(), returnRefundSyncLog.getCustomerId());
-        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
-        pushNewOrderEvent.setErpInfo(erpInfo);
-        pushNewOrderEvent.setErpUserInfo(erpUserInfo);
+        PushAfterSaleEvent pushAfterSaleEvent = new PushAfterSaleEvent();
+        pushAfterSaleEvent.setErpInfo(erpInfo);
+        pushAfterSaleEvent.setErpUserInfo(erpUserInfo);
 
         ERPUserHandler userHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (userHandler == null) {
             return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
         }
-
-        GetOrderDetailEvent getOrderDetailEvent = new GetOrderDetailEvent();
-        getOrderDetailEvent.setErpUserInfo(erpUserInfo);
-        getOrderDetailEvent.setErpInfo(erpInfo);
-        getOrderDetailEvent.setOrderId(returnRefundSyncLog.getOrderId());
-        EventResult eventResult = userHandler.handleEvent(getOrderDetailEvent);
-        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-            pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(eventResult.getData()));
-            return orderProxyService.handleEvent(pushNewOrderEvent);
-        }
-        return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, eventResult.getResultMsg(), null);
+        pushAfterSaleEvent.setAfterSaleInfo(returnRefundSyncLog.getReturnInfoJson());
+        return orderProxyService.handleEvent(pushAfterSaleEvent);
     }
 
 }

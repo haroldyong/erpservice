@@ -46,6 +46,8 @@ public class SurSungTestBase {
     protected List<OrderItem> mockOrderItems;
 
     protected SurSungSysData mockSurSungSysData;
+    protected SurSungSysData mockNormalSysData;
+
 
     protected ERPInfo mockErpInfo;
 
@@ -61,6 +63,14 @@ public class SurSungTestBase {
         mockSurSungSysData.setPartnerKey("ywv5jGT8ge6Pvlq3FZSPol2323");
         mockSurSungSysData.setVersion("1.0");
         mockSurSungSysData.setRequestUrl("http://b.sursung.com/api/open/query.aspx");
+
+        mockNormalSysData = new SurSungSysData();
+        mockNormalSysData.setShopId(10016667);
+        mockNormalSysData.setToken("b08e15f90e13b90d217789c528976743");
+        mockNormalSysData.setPartnerId("0ca483b4e595c596ca5a8e57f2ab3483");
+        mockNormalSysData.setPartnerKey("cc8d64515028c6321b9971738a3185c5");
+        mockNormalSysData.setVersion("1.0");
+        mockNormalSysData.setRequestUrl("http://www.erp321.com/api/open/query.aspx");
 
         String orderNo = SerialNo.create();
 
