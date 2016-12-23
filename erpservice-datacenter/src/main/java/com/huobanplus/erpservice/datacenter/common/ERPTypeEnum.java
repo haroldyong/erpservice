@@ -19,15 +19,15 @@ public interface ERPTypeEnum {
         EDB(0, "E店宝"),
         NETSHOP(1, "网店管家"),
         SAP(2, "SAP系统"),
-        ISCS(3, "网仓"),
+        //        ISCS(3, "网仓"),
         LGJ(4, "礼管家（尽请期待）"),
         KAOLA(5, "考拉"),
         KJYG(6, "跨境易购"),
         GY(7, "管易云ERP"),
         DTW(8, "大田跨境"),
-        SURSUNG(9, "聚水潭ERP"),
-        EDI(10, "杭州能容物联网科技（尽请期待）"),
-        WANGDIAN(11,"旺店通");
+        SURSUNG(9, "聚水潭ERP");
+//        EDI(10, "杭州能容物联网科技（尽请期待）"),
+//        WANGDIAN(11,"旺店通");
 
         private int code;
         private String name;
