@@ -28,13 +28,23 @@ public class BaisonSysData {
     private String baisonAppkey;
 
     /**
-     * app 用户
+     * secretKey
      */
-    private String baisonAppkeyName;
+    private String baisonAppSecret;
 
     /**
-     * secret
+     * 版本号
      */
-    private String baisonSecret;
+    private String version;
+
+    /**
+     * 店铺代码
+     */
+    private String baisonShopCode;
+
+    /**
+     * 仓库代码
+     */
+    private String baisonWarehouseCode;
 
 }

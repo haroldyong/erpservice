@@ -24,23 +24,17 @@ public class BaisonSignBuilder {
 
     /**
      * @param params TreeMap
-     * @param prefix
-     * @param suffix
      * @return
      */
-    public static String buildSign(Map<String, Object> params, String prefix, String suffix) throws UnsupportedEncodingException {
-        if (prefix == null)
-            prefix = "";
-        if (suffix == null)
-            suffix = "";
+    public static String buildSign(Map<String, Object> params) throws UnsupportedEncodingException {
 
-        StringBuilder stringBuilder = new StringBuilder(prefix);
+        StringBuilder stringBuilder = new StringBuilder();
         Iterator<Map.Entry<String, Object>> iterator = params.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, Object> next = iterator.next();
-            stringBuilder.append(next.getKey()).append(next.getValue());
+            stringBuilder.append(next.getKey()).append("=").append(next.getValue()).append("&");
         }
-        stringBuilder.append(suffix);
+        stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("&"));
         System.out.println("\nsource string:" + stringBuilder.toString());
         return DigestUtils.md5Hex(stringBuilder.toString().getBytes("utf-8")).toLowerCase();
     }

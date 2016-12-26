@@ -14,8 +14,8 @@ package com.huobanplus.erpprovider.baison.util;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by wuxiongliu on 2016-11-10.
@@ -24,16 +24,17 @@ public class BaisonSignBuilderTest {
 
     @Test
     public void testBuildSign() throws UnsupportedEncodingException {
-        Map<String, Object> params = new TreeMap<>();
-        params.put("app_act", " [接口名称]");
-        params.put("app_key", "testerp_appkey");
-        params.put("format", "json");
-        params.put("timestamp", "2015-04-26 00:00:07");
-        params.put("v", "2.0");
+        Map<String, Object> params = new HashMap<>();
+        params.put("key", " test");
+        params.put("requestTime", "20110714101701");
+        params.put("secret", "1a2b3c4d5e6f7g8h9i10j11k12l");
+        params.put("version", "2.0");
+        params.put("serviceType", "goods.list.get");
+        params.put("data", "{json}");
 
         String secret = "test";
 
-        String sign = BaisonSignBuilder.buildSign(params, secret, secret);
+        String sign = BaisonSignBuilder.buildSign(params);
         System.out.println("\nsign:" + sign);
     }
 }

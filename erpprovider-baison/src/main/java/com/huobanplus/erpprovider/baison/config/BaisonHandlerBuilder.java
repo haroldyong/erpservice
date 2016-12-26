@@ -42,21 +42,24 @@ public class BaisonHandlerBuilder implements ERPHandlerBuilder {
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        return new ERPHandler() {
-            @Override
-            public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
-                if (erpBaseEvent instanceof PushNewOrderEvent) {
-                    PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                    return baisonOrderHandler.pushOrder(pushNewOrderEvent);
+        if (info.getErpType() == ERPTypeEnum.ProviderType.DTW) {
+            return new ERPHandler() {
+                @Override
+                public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
+                    if (erpBaseEvent instanceof PushNewOrderEvent) {
+                        PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
+                        return baisonOrderHandler.pushOrder(pushNewOrderEvent);
+                    }
+                    return null;
                 }
-                return null;
-            }
 
-            @Override
-            public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
+                @Override
+                public EventResult handleRequest(HttpServletRequest request, ERPTypeEnum.ProviderType providerType, ERPTypeEnum.UserType erpUserType) {
 
-                return null;
-            }
-        };
+                    return null;
+                }
+            };
+        }
+        return null;
     }
 }
