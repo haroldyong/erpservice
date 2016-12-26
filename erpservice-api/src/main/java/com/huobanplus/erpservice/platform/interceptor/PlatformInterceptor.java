@@ -49,7 +49,7 @@ public class PlatformInterceptor extends HandlerInterceptorAdapter {
             }
 
             if (environment.acceptsProfiles("development")) {
-                customerId = 296;
+                customerId = 297;
             }
 
 
@@ -59,7 +59,7 @@ public class PlatformInterceptor extends HandlerInterceptorAdapter {
 
             if (environment.acceptsProfiles("development")) {
 //                customerId = 23367;
-                customerId = 7297;
+                customerId = 296;
             }
 
             if (customerId == null || customerId == 0) {

@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.datacenter.service.logs.impl;
 
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.ChannelOrderSyncInfo;
 import com.huobanplus.erpservice.datacenter.repository.logs.ChannelOrderSyncInfoRepository;
 import com.huobanplus.erpservice.datacenter.service.logs.ChannelOrderSyncInfoService;
@@ -58,5 +59,20 @@ public class ChannelOrderSyncInfoServiceImpl implements ChannelOrderSyncInfoServ
     @Override
     public ChannelOrderSyncInfo save(ChannelOrderSyncInfo channelOrderSyncInfo) {
         return channelOrderSyncInfoRepository.save(channelOrderSyncInfo);
+    }
+
+    @Override
+    public List<ChannelOrderSyncInfo> findByChannelOrderStatusAndChannelOrderSyncLogId(OrderSyncStatus.ChannelOrderSyncStatus channelOrderSyncStatus, long logId) {
+        return channelOrderSyncInfoRepository.findByChannelOrderSyncStatusAndChannelOrderSyncLog_id(channelOrderSyncStatus, logId);
+    }
+
+    @Override
+    public List<ChannelOrderSyncInfo> findByOrderIdAndLogId(String orderId, long logId) {
+        return channelOrderSyncInfoRepository.findByOrderIdAndChannelOrderSyncLog_id(orderId, logId);
+    }
+
+    @Override
+    public void deleteSyncInfo(long logId) {
+        channelOrderSyncInfoRepository.deleteSyncInfo(logId);
     }
 }

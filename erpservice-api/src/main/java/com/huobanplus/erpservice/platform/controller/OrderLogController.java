@@ -16,6 +16,7 @@ import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.datacenter.entity.logs.*;
+import com.huobanplus.erpservice.datacenter.model.BatchPushOrderResult;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.searchbean.OrderDetailSyncSearch;
@@ -203,14 +204,86 @@ public class OrderLogController {
         syncChannelOrderEvent.setErpUserInfo(erpUserInfo);
         EventResult eventResult = erpUserHandler.handleEvent(syncChannelOrderEvent);
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-            channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_SUCCESS);
-            channelOrderSyncInfoService.save(channelOrderSyncInfo);
-            return ApiResult.resultWith(ResultCode.SUCCESS);
+            BatchPushOrderResult batchPushOrderResult = (BatchPushOrderResult) eventResult.getData();
+            List<Order> failedOrder = batchPushOrderResult.getFailedOrders();
+            if (failedOrder.size() == 0) {
+                channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_SUCCESS);
+                channelOrderSyncInfo.setRemark("");
+                channelOrderSyncInfoService.save(channelOrderSyncInfo);
+                return ApiResult.resultWith(ResultCode.SUCCESS);
+            } else {
+                channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
+                channelOrderSyncInfoService.save(channelOrderSyncInfo);
+                return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST, failedOrder.get(0).getErrorMessage(), null);
+            }
         } else {
             channelOrderSyncInfo.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
             channelOrderSyncInfoService.save(channelOrderSyncInfo);
             return ApiResult.resultWith(ResultCode.SYSTEM_BAD_REQUEST);
         }
+
+    }
+
+    @RequestMapping(value = "/resyncAllChannelOrder", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiResult syncAllChannelOrder(long logSyncId) throws UnsupportedEncodingException {
+
+        List<ChannelOrderSyncInfo> channelOrderSyncInfos = channelOrderSyncInfoService.findByChannelOrderStatusAndChannelOrderSyncLogId(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE, logSyncId);
+
+        if (channelOrderSyncInfos.size() > 0) {
+            ChannelOrderSyncInfo channelOrderSyncInfo = channelOrderSyncInfos.get(0);
+            ERPUserInfo erpUserInfo = new ERPUserInfo(channelOrderSyncInfo.getChannelOrderSyncLog().getUserType(), channelOrderSyncInfo.getChannelOrderSyncLog().getCustomerId());
+            ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+
+            List<Order> orderList = new ArrayList<>();
+            List<String> orderIds = new ArrayList<>();
+            for (ChannelOrderSyncInfo item : channelOrderSyncInfos) {
+                Order order = JSON.parseObject(URLDecoder.decode(item.getOrderJson(), "utf-8"), Order.class);
+                orderList.add(order);
+                orderIds.add(order.getOrderId());
+            }
+
+            System.out.println("\n**************");
+            System.out.println(JSON.toJSONString(orderList));
+            System.out.println("\n**************");
+
+            SyncChannelOrderEvent syncChannelOrderEvent = new SyncChannelOrderEvent();
+            syncChannelOrderEvent.setOrderList(orderList);
+            syncChannelOrderEvent.setErpUserInfo(erpUserInfo);
+
+
+            List<String> failedOrderIds = new ArrayList<>();
+
+
+            EventResult eventResult = erpUserHandler.handleEvent(syncChannelOrderEvent);
+            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                BatchPushOrderResult firstBatchPushOrderResult = (BatchPushOrderResult) eventResult.getData();
+                List<Order> failedOrders = firstBatchPushOrderResult.getFailedOrders();
+
+                for (Order item : failedOrders) {
+                    failedOrderIds.add(item.getOrderId());
+//                    List<ChannelOrderSyncInfo> syncInfos = channelOrderSyncInfoService.findByOrderIdAndLogId(item.getOrderId(), logSyncId);
+//                    syncInfos.forEach(info -> {
+//                        info.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_FAILURE);
+//                        channelOrderSyncInfoService.save(info);
+//                    });
+                }
+
+                orderIds.removeAll(failedOrderIds);
+
+                orderIds.forEach(orderId -> {
+                    List<ChannelOrderSyncInfo> syncInfos = channelOrderSyncInfoService.findByOrderIdAndLogId(orderId, logSyncId);
+                    syncInfos.forEach(info -> {
+                        info.setChannelOrderSyncStatus(OrderSyncStatus.ChannelOrderSyncStatus.SYNC_SUCCESS);
+                        channelOrderSyncInfoService.save(info);
+                    });
+                });
+
+                String msg = "一键同步成功" + orderIds.size() + "条;" + "失败" + failedOrderIds.size() + "条";
+                return ApiResult.resultWith(ResultCode.SUCCESS, msg, null);
+            }
+        }
+        return ApiResult.resultWith(ResultCode.ERPUSER_BAD_REQUEST);
 
     }
 
