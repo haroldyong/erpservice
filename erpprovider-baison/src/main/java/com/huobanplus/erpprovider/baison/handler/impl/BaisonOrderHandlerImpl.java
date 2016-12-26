@@ -160,4 +160,9 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
         baisonOrder.setOrderItems(baisonOrderItems);
         return baisonOrder;
     }
+
+    @Override
+    public EventResult orderQuery() {
+        return null;
+    }
 }

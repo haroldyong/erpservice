@@ -23,4 +23,6 @@ public interface BaisonOrderHandler {
      * @return
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
+
+    EventResult orderQuery();
 }

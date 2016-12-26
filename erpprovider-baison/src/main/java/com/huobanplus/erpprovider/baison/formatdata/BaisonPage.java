@@ -9,12 +9,22 @@
  *
  */
 
-package com.huobanplus.erpprovider.baison.common;
+package com.huobanplus.erpprovider.baison.formatdata;
 
-public class BaisonConstant {
+import lombok.Data;
 
-    public static final String ADD_ORDER = "efast.trade.new.add";
+/**
+ * Created by wuxiongliu on 2016-12-26.
+ */
+@Data
+public class BaisonPage {
 
-    public static final int PAGE_SIZE = 50;
 
+    private Integer totalResult;
+
+    private Integer pagesize;
+
+    private Integer pageNo;
+
+    private Integer pageTotal;
 }
