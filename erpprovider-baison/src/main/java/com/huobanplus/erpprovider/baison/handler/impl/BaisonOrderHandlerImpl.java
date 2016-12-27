@@ -22,6 +22,7 @@ import com.huobanplus.erpprovider.baison.util.BaisonSignBuilder;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
@@ -159,7 +160,7 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
     private Map<String, Object> buildRequestMap(BaisonSysData baisonSysData, String serviceType, String data) throws UnsupportedEncodingException {
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("key", baisonSysData.getBaisonAppkey());
-        requestMap.put("requestTime", "");// TODO: 2016-12-27
+        requestMap.put("requestTime", StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN2));// TODO: 2016-12-27
         requestMap.put("serviceType", serviceType);
         requestMap.put("data", data);
         requestMap.put("version", baisonSysData.getVersion());
