@@ -13,7 +13,8 @@ package com.huobanplus.erpprovider.baison.common;
 
 public class BaisonConstant {
 
-    public static final String ADD_ORDER = "efast.trade.new.add";
+    public static final String ADD_ORDER = "order.detail.add";
+    public static final String QUERY_ORDER = "order.detail.get";
 
     public static final int PAGE_SIZE = 50;
 

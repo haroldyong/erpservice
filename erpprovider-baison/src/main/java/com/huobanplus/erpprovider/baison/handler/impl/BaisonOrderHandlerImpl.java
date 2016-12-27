@@ -16,13 +16,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.baison.common.BaisonConstant;
 import com.huobanplus.erpprovider.baison.common.BaisonSysData;
 import com.huobanplus.erpprovider.baison.formatdata.BaisonOrder;
-import com.huobanplus.erpprovider.baison.formatdata.BaisonOrderItem;
 import com.huobanplus.erpprovider.baison.handler.BaisonOrderHandler;
+import com.huobanplus.erpprovider.baison.search.BaisonOrderSearch;
+import com.huobanplus.erpprovider.baison.util.BaisonSignBuilder;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
-import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -36,7 +37,10 @@ import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
@@ -73,38 +77,35 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
         orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
         orderDetailSyncLog.setSyncTime(now);
 
-        BaisonOrder baisonOrder = convert2ErpOrder(orderInfo);
-
-
-
-
-        return null;
+        try {
+            BaisonOrder baisonOrder = convert2ErpOrder(orderInfo);
+            EventResult eventResult = orderPush(baisonOrder, baisonSysData);
+            if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+            } else {
+                orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
+            }
+            orderDetailSyncLogService.save(orderDetailSyncLog);
+            log.info("BaisonOrderHandlerImpl-pushOrder complete");
+            return eventResult;
+        } catch (Exception e) {
+            log.info("BaisonOrderHandlerImpl-pushOrder exception:" + e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
     }
 
     private EventResult orderPush(BaisonOrder baisonOrder, BaisonSysData baisonSysData) {
-        Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("app_act", BaisonConstant.ADD_ORDER);
-        requestMap.put("app_key", "");
-        requestMap.put("app_nick", "");
-        requestMap.put("app_secret", "");
-        requestMap.put("timestamp", "");
-        requestMap.put("sign", "");
-        requestMap.put("format", "");
-        requestMap.put("version", "");
-        requestMap.put("info", JSON.toJSONString(baisonOrder));
 
         try {
+            Map<String, Object> requestMap = buildRequestMap(baisonSysData, BaisonConstant.ADD_ORDER, JSON.toJSONString(baisonOrder));
             HttpResult httpResult = HttpClientUtil.getInstance().get(baisonSysData.getRequestUrl(), requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                String content = httpResult.getHttpContent();
-
-                JSONObject respData = JSON.parseObject(content);
-                JSONObject resultData = respData.getJSONObject("resp_data");
-
-                if (resultData.getString("code").equals("0")) {
+                JSONObject respData = JSON.parseObject(httpResult.getHttpContent());
+                if (respData.getString("status").equals("api-success")) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS);
                 } else {
-                    return EventResult.resultWith(EventResultEnum.ERROR, resultData.getString("ResultMsg"), null);
+                    return EventResult.resultWith(EventResultEnum.ERROR, respData.getString("message"), null);
                 }
             } else {
                 return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
@@ -118,51 +119,52 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
 
         BaisonOrder baisonOrder = new BaisonOrder();
 
-        baisonOrder.setAddress("");
-        baisonOrder.setPayTime("");
-        baisonOrder.setCityName("");
-        baisonOrder.setGoodsCount("");
-        baisonOrder.setConsignee("");
-        baisonOrder.setDistrictName("");
-        baisonOrder.setEmail("");
-        baisonOrder.setGoodsAmount("");
-        baisonOrder.setMobile("");
-        baisonOrder.setOid("");
-        baisonOrder.setMoneyPaid("");
-        baisonOrder.setOrderAmount("");
-        baisonOrder.setPayName("");
-        baisonOrder.setTel("");
-        baisonOrder.setPostscript("");
-        baisonOrder.setToBuyer("");
-        baisonOrder.setSdId("");
-        baisonOrder.setUserName("");
-        baisonOrder.setZipcode("");
-        baisonOrder.setProvinceName("");
-        baisonOrder.setShippingName("");
-        baisonOrder.setTotalAmount("");
-        baisonOrder.setShippingFee("");
-        baisonOrder.setAddTime("");
-
-
-        List<BaisonOrderItem> baisonOrderItems = new ArrayList<>();
-
-        List<OrderItem> orderItems = new ArrayList<>();
-        orderItems.forEach(item -> {
-            BaisonOrderItem baisonOrderItem = new BaisonOrderItem();
-            baisonOrderItem.setGoodsName("");
-            baisonOrderItem.setGoodsNumber("");
-            baisonOrderItem.setGoodsPrice("");
-            baisonOrderItem.setOuterSku("");
-            baisonOrderItem.setPaymentFt("");
-            baisonOrderItems.add(baisonOrderItem);
-        });
-
-        baisonOrder.setOrderItems(baisonOrderItems);
         return baisonOrder;
     }
 
     @Override
-    public EventResult orderQuery() {
-        return null;
+    public EventResult orderQuery(BaisonOrderSearch baisonOrderSearch, BaisonSysData baisonSysData) {
+
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("key", baisonSysData.getBaisonAppkey());
+        requestMap.put("requestTime", "");// TODO: 2016-12-27
+        requestMap.put("serviceType", BaisonConstant.QUERY_ORDER);
+        requestMap.put("data", JSON.toJSONString(baisonOrderSearch));
+        requestMap.put("version", baisonSysData.getVersion());
+        try {
+            String sign = BaisonSignBuilder.buildSign(requestMap);
+            requestMap.put("sign", sign);
+
+            HttpResult httpResult = HttpClientUtil.getInstance().get(baisonSysData.getRequestUrl(), requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject jsonObj = JSON.parseObject(httpResult.getHttpContent());
+                String status = jsonObj.getString("status");
+                if (status.equals("api-success")) {
+                    log.info("BaisonOrderHandlerImpl-orderQuery: get order detail success");
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, jsonObj.getJSONObject("data"));
+                } else {
+                    log.info("BaisonOrderHandlerImpl-orderQuery: get order detail failed,error message :" + jsonObj.getString("message"));
+                    return EventResult.resultWith(EventResultEnum.ERROR, jsonObj.getString("message"), null);
+                }
+            } else {
+                log.info("BaisonOrderHandlerImpl-orderQuery request server error: " + httpResult.getHttpContent());
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            }
+        } catch (Exception e) {
+            log.info("BaisonOrderHandlerImpl-orderQuery: exception " + e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    private Map<String, Object> buildRequestMap(BaisonSysData baisonSysData, String serviceType, String data) throws UnsupportedEncodingException {
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("key", baisonSysData.getBaisonAppkey());
+        requestMap.put("requestTime", "");// TODO: 2016-12-27
+        requestMap.put("serviceType", serviceType);
+        requestMap.put("data", data);
+        requestMap.put("version", baisonSysData.getVersion());
+        String sign = BaisonSignBuilder.buildSign(requestMap);
+        requestMap.put("sign", sign);
+        return requestMap;
     }
 }

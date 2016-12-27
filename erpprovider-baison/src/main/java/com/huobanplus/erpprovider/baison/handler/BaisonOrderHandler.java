@@ -11,6 +11,8 @@
 
 package com.huobanplus.erpprovider.baison.handler;
 
+import com.huobanplus.erpprovider.baison.common.BaisonSysData;
+import com.huobanplus.erpprovider.baison.search.BaisonOrderSearch;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
@@ -24,5 +26,5 @@ public interface BaisonOrderHandler {
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
 
-    EventResult orderQuery();
+    EventResult orderQuery(BaisonOrderSearch baisonOrderSearch, BaisonSysData baisonSysData);
 }

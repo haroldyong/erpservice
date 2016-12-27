@@ -18,32 +18,38 @@ import lombok.Data;
 public class BaisonOrderItem {
 
     /**
-     *
+     *Sku
      */
-    @JSONField(name = "goods_name")
-    private String goodsName;
+    @JSONField(name = "sku_sn")
+    private String skuSn;
 
     /**
-     *
-     */
-    @JSONField(name = "goods_number")
-    private String goodsNumber;
-
-    /**
-     *
+     *商品单价(折前)
      */
     @JSONField(name = "goods_price")
-    private String goodsPrice;
+    private double goodsPrice;
 
     /**
-     *
+     *商品单价(折后)
      */
-    @JSONField(name = "outer_sku")
-    private String outerSku;
+    @JSONField(name = "transaction_price")
+    private double transactionPrice;
 
     /**
-     *
+     *折扣
      */
-    @JSONField(name = "payment_ft")
-    private String paymentFt;
+    @JSONField(name = "discount")
+    private double discount;
+
+    /**
+     *数量
+     */
+    @JSONField(name = "goods_number")
+    private int goodsNumber;
+
+    /**
+     * 是否礼品
+     */
+    @JSONField(name = "is_gift")
+    private int isGift;
 }

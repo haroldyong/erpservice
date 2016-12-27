@@ -96,7 +96,7 @@ public class BaisonDeliveryScheduleService {
             ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
 
             // 第一次查询& 推送
-            EventResult firstQueryEvent = baisonOrderHandler.orderQuery();
+            EventResult firstQueryEvent = baisonOrderHandler.orderQuery(baisonOrderSearch, sysData);
             if (firstQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 // 获取查询结果data
                 JSONObject jsonData = (JSONObject) firstQueryEvent.getData();// 约定接口返回的数据是json对象的数据
@@ -121,7 +121,7 @@ public class BaisonDeliveryScheduleService {
 
             // 后几次查询& 推送
             for (; ; ) {
-                EventResult nextQueryEvent = baisonOrderHandler.orderQuery();
+                EventResult nextQueryEvent = baisonOrderHandler.orderQuery(baisonOrderSearch, sysData);
                 if (nextQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
 
                     JSONObject jsonData = (JSONObject) nextQueryEvent.getData();// 约定接口返回的数据是json对象的数据

@@ -35,7 +35,7 @@ public class BaisonSysData {
     /**
      * 版本号
      */
-    private String version;
+    private String version = "2.0";
 
     /**
      * 店铺代码
