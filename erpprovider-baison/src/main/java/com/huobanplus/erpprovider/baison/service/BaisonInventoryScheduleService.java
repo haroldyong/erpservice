@@ -11,6 +11,8 @@
 
 package com.huobanplus.erpprovider.baison.service;
 
+import com.huobanplus.erpprovider.baison.handler.BaisonGoodsHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,7 +21,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class BaisonInventoryScheduleService {
 
+    @Autowired
+    private BaisonGoodsHandler baisonGoodsHandler;
+
     public void syncInventory() {
+
+    }
+
+    public void captureInventory() {
 
     }
 }

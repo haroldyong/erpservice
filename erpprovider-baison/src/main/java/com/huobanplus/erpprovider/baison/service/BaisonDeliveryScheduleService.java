@@ -78,12 +78,12 @@ public class BaisonDeliveryScheduleService {
             List<OrderDeliveryInfo> successOrders = new ArrayList<>();
             List<OrderDeliveryInfo> failedOrders = new ArrayList<>();
             int totalCount = 0;
+            int totalPage = 0;
 
             BaisonOrderSearch baisonOrderSearch = new BaisonOrderSearch();
             baisonOrderSearch.setStartModified(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
             baisonOrderSearch.setEndModified(StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
-            int currentPageIndex = 1;
-            baisonOrderSearch.setPageNo(currentPageIndex);
+            baisonOrderSearch.setPageNo(1);
             baisonOrderSearch.setPageSize(BaisonConstant.PAGE_SIZE);
 
             ERPInfo erpInfo = new ERPInfo(erpDetailConfigEntity.getErpType(), erpDetailConfigEntity.getErpSysData());
@@ -104,6 +104,7 @@ public class BaisonDeliveryScheduleService {
                 String baisonPageStr = jsonData.getString("page");
                 BaisonPage baisonPage = JSON.parseObject(baisonPageStr, BaisonPage.class);
                 totalCount = baisonPage.getTotalResult();
+                totalPage = baisonPage.getPageTotal();
 
                 JSONArray orderJsonArray = jsonData.getJSONArray("orderListGets");
                 List<OrderDeliveryInfo> tempToPush = convert2OrderDeliveryInfo(orderJsonArray);
@@ -120,7 +121,8 @@ public class BaisonDeliveryScheduleService {
             }
 
             // 后几次查询& 推送
-            for (; ; ) {
+            for (int index = 2; index <= totalPage; index++) {
+                baisonOrderSearch.setPageNo(index);
                 EventResult nextQueryEvent = baisonOrderHandler.orderQuery(baisonOrderSearch, sysData);
                 if (nextQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
 

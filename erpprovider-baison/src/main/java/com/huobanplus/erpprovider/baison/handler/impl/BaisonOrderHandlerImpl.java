@@ -18,11 +18,10 @@ import com.huobanplus.erpprovider.baison.common.BaisonSysData;
 import com.huobanplus.erpprovider.baison.formatdata.BaisonOrder;
 import com.huobanplus.erpprovider.baison.handler.BaisonOrderHandler;
 import com.huobanplus.erpprovider.baison.search.BaisonOrderSearch;
-import com.huobanplus.erpprovider.baison.util.BaisonSignBuilder;
+import com.huobanplus.erpprovider.baison.util.BaisonUtil;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
-import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
@@ -38,9 +37,7 @@ import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -99,7 +96,7 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
     private EventResult orderPush(BaisonOrder baisonOrder, BaisonSysData baisonSysData) {
 
         try {
-            Map<String, Object> requestMap = buildRequestMap(baisonSysData, BaisonConstant.ADD_ORDER, JSON.toJSONString(baisonOrder));
+            Map<String, Object> requestMap = BaisonUtil.buildRequestMap(baisonSysData, BaisonConstant.ADD_ORDER, JSON.toJSONString(baisonOrder));
             HttpResult httpResult = HttpClientUtil.getInstance().get(baisonSysData.getRequestUrl(), requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject respData = JSON.parseObject(httpResult.getHttpContent());
@@ -127,8 +124,8 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
     public EventResult orderQuery(BaisonOrderSearch baisonOrderSearch, BaisonSysData baisonSysData) {
 
         try {
-            Map<String, Object> requestMap = buildRequestMap(baisonSysData, BaisonConstant.QUERY_ORDER, JSON.toJSONString(baisonOrderSearch));
-            String sign = BaisonSignBuilder.buildSign(requestMap);
+            Map<String, Object> requestMap = BaisonUtil.buildRequestMap(baisonSysData, BaisonConstant.QUERY_ORDER, JSON.toJSONString(baisonOrderSearch));
+            String sign = BaisonUtil.buildSign(requestMap);
             requestMap.put("sign", sign);
 
             HttpResult httpResult = HttpClientUtil.getInstance().get(baisonSysData.getRequestUrl(), requestMap);
@@ -152,15 +149,5 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
         }
     }
 
-    private Map<String, Object> buildRequestMap(BaisonSysData baisonSysData, String serviceType, String data) throws UnsupportedEncodingException {
-        Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("key", baisonSysData.getBaisonAppkey());
-        requestMap.put("requestTime", StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN2));// TODO: 2016-12-27
-        requestMap.put("serviceType", serviceType);
-        requestMap.put("data", data);
-        requestMap.put("version", baisonSysData.getVersion());
-        String sign = BaisonSignBuilder.buildSign(requestMap);
-        requestMap.put("sign", sign);
-        return requestMap;
-    }
+
 }

@@ -34,7 +34,7 @@ public class BaisonSignBuilderTest {
 
         String secret = "test";
 
-        String sign = BaisonSignBuilder.buildSign(params);
+        String sign = BaisonUtil.buildSign(params);
         System.out.println("\nsign:" + sign);
     }
 }

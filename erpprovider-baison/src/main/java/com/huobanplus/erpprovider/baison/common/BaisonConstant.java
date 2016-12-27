@@ -15,6 +15,7 @@ public class BaisonConstant {
 
     public static final String ADD_ORDER = "order.detail.add";
     public static final String QUERY_ORDER = "order.detail.get";
+    public static final String GET_STOCK = "getKc";
 
     public static final int PAGE_SIZE = 50;
 
