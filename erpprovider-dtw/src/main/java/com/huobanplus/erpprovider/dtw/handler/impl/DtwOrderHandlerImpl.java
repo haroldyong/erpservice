@@ -260,7 +260,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         } else {
             return EventResult.resultWith(EventResultEnum.ERROR, "支付方式不支持", null);
         }
-        dtwOrder.setPayNumber(order.getPayNumber());//(必填) 支付单号
+        dtwOrder.setPayNumber(order.getPayPlatformNo());//(必填) 支付单号
         dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
         dtwOrder.setOrderGoodsAmount(order.getCostItem());//(必填)
         dtwOrder.setOrderNo(order.getOrderId());//(必填)
@@ -493,7 +493,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
             requestMap.put("partner", dtwSysData.getAliPartner());
             requestMap.put("out_request_no", order.getOrderId());
-            requestMap.put("trade_no", order.getPayNumber());
+            requestMap.put("trade_no", order.getPayPlatformNo());
             requestMap.put("merchant_customs_code", dtwSysData.getECommerceCode());
             requestMap.put("amount", order.getFinalAmount());
             requestMap.put("customs_place", DtwEnum.CustomerEnum.HANGZHOU.toString());
@@ -548,7 +548,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             weixinCustom.setAppid(dtwSysData.getWeiXinAppId());
             weixinCustom.setMchId(dtwSysData.getWeixinMchId());
             weixinCustom.setOutTradeNo(order.getOrderId());
-            weixinCustom.setTransactionId(order.getPayNumber());
+            weixinCustom.setTransactionId(order.getPayPlatformNo());
             weixinCustom.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.toString());
             weixinCustom.setMchCustomsNo(dtwSysData.getECommerceCode());
             weixinCustom.setSubOrderNo(order.getOrderId());
@@ -714,7 +714,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             customOrderHead.setPayCompanyCode(DtwConstant.WEIXIN_PAY_CUSTOM_CODE);
         }
 
-        customOrderHead.setPayNumber(order.getPayNumber());
+        customOrderHead.setPayNumber(order.getPayPlatformNo());
         customOrderHead.setOrderTotalAmount(order.getFinalAmount());
         customOrderHead.setOrderNo(order.getOrderId());
         customOrderHead.setFeeAmount(order.getCostFreight());
