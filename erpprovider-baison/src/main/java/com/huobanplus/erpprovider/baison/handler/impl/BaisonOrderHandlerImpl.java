@@ -126,13 +126,8 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
     @Override
     public EventResult orderQuery(BaisonOrderSearch baisonOrderSearch, BaisonSysData baisonSysData) {
 
-        Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("key", baisonSysData.getBaisonAppkey());
-        requestMap.put("requestTime", "");// TODO: 2016-12-27
-        requestMap.put("serviceType", BaisonConstant.QUERY_ORDER);
-        requestMap.put("data", JSON.toJSONString(baisonOrderSearch));
-        requestMap.put("version", baisonSysData.getVersion());
         try {
+            Map<String, Object> requestMap = buildRequestMap(baisonSysData, BaisonConstant.QUERY_ORDER, JSON.toJSONString(baisonOrderSearch));
             String sign = BaisonSignBuilder.buildSign(requestMap);
             requestMap.put("sign", sign);
 
