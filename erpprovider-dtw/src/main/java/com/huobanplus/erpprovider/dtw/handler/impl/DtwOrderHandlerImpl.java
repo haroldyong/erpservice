@@ -70,7 +70,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
         try {
             Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-            log.info(pushNewOrderEvent.getOrderInfoJson());
+            log.info("orderJson:" + pushNewOrderEvent.getOrderInfoJson());
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
             DtwSysData dtwSysData = JSON.parseObject(erpInfo.getSysDataJson(), DtwSysData.class);
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
@@ -260,7 +260,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         } else {
             return EventResult.resultWith(EventResultEnum.ERROR, "支付方式不支持", null);
         }
-        dtwOrder.setPayNumber(order.getPayPlatformNo());//(必填) 支付单号
+        dtwOrder.setPayNumber(order.getPayNumber());//(必填) 支付单号
         dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
         dtwOrder.setOrderGoodsAmount(order.getCostItem());//(必填)
         dtwOrder.setOrderNo(order.getOrderId());//(必填)
@@ -493,7 +493,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
             requestMap.put("partner", dtwSysData.getAliPartner());
             requestMap.put("out_request_no", order.getOrderId());
-            requestMap.put("trade_no", order.getPayPlatformNo());
+            requestMap.put("trade_no", order.getPayNumber());
             requestMap.put("merchant_customs_code", dtwSysData.getECommerceCode());
             requestMap.put("amount", order.getFinalAmount());
             requestMap.put("customs_place", DtwEnum.CustomerEnum.HANGZHOU.toString());
@@ -548,7 +548,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             weixinCustom.setAppid(dtwSysData.getWeiXinAppId());
             weixinCustom.setMchId(dtwSysData.getWeixinMchId());
             weixinCustom.setOutTradeNo(order.getOrderId());
-            weixinCustom.setTransactionId(order.getPayPlatformNo());
+            weixinCustom.setTransactionId(order.getPayNumber());
             weixinCustom.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.toString());
             weixinCustom.setMchCustomsNo(dtwSysData.getECommerceCode());
             weixinCustom.setSubOrderNo(order.getOrderId());
@@ -714,7 +714,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             customOrderHead.setPayCompanyCode(DtwConstant.WEIXIN_PAY_CUSTOM_CODE);
         }
 
-        customOrderHead.setPayNumber(order.getPayPlatformNo());
+        customOrderHead.setPayNumber(order.getPayNumber());
         customOrderHead.setOrderTotalAmount(order.getFinalAmount());
         customOrderHead.setOrderNo(order.getOrderId());
         customOrderHead.setFeeAmount(order.getCostFreight());

@@ -172,10 +172,6 @@ public class Order extends BaseInfo {
      */
     private String payNumber;
 
-    /**
-     * 支付成功后支付平台返回的支付单号
-     */
-    private String payPlatformNo;
 
     /**
      *  订单来源店铺code

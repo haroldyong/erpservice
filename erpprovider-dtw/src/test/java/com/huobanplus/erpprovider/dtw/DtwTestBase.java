@@ -64,7 +64,7 @@ public class DtwTestBase {
         mockOrderNo = SerialNo.create();//"20160825113538530780";
 
         mockDtwSysData = new DtwSysData();
-        mockDtwSysData.setPassKey("1c78cac2-b8b7-4764-9045-4810d3ef20e9");
+        mockDtwSysData.setPassKey("2c65dc1d-4bdd-48aa-893e-6dadb11c3bcb");
         mockDtwSysData.setECommerceName("扬州市新扬达进出口有限公司");
         mockDtwSysData.setECommerceCode("3210932722");
 
