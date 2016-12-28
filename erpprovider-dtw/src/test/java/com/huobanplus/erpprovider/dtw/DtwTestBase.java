@@ -64,7 +64,7 @@ public class DtwTestBase {
         mockOrderNo = SerialNo.create();//"20160825113538530780";
 
         mockDtwSysData = new DtwSysData();
-        mockDtwSysData.setPassKey("2c65dc1d-4bdd-48aa-893e-6dadb11c3bcb");
+        mockDtwSysData.setPassKey("97af559a-40d4-4962-a20c-1cf984640168");
         mockDtwSysData.setECommerceName("扬州市新扬达进出口有限公司");
         mockDtwSysData.setECommerceCode("3210932722");
 
@@ -75,9 +75,9 @@ public class DtwTestBase {
         mockDtwSysData.setAliPartner("2088421965473023");
         mockDtwSysData.setAliKey("k48u3xqezrpwhpuv8al265p515uhclr5");
 
-        mockDtwSysData.setWeixinKey("hzmeibanwangluokejiyouxiangongsi");
-        mockDtwSysData.setWeixinMchId("1342661701");
-        mockDtwSysData.setWeiXinAppId("gh_4dbf09a0a18e");
+        mockDtwSysData.setWeixinKey("a7b7e7e043d28c35ef98b15e7db503d5");
+        mockDtwSysData.setWeixinMchId("1335070101");
+        mockDtwSysData.setWeiXinAppId("wxfc149b79a2b3dcd7");
 
         mockDtwSysData.setRsaPublicKey("MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJFlixAXFom5VY6TZEveQ8KmiCbfBdj8zxg52WUEzX5VNaxqce2XU7N4rTZm4WFJjLgwJmMQK5VazIo46mr5bo8CAwEAAQ==");
         mockDtwSysData.setRsaPrivateKey("MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAkWWLEBcWiblVjpNkS95DwqaIJt8F2PzPGDnZZQTNflU1rGpx7ZdTs3itNmbhYUmMuDAmYxArlVrMijjqavlujwIDAQABAkBkq7tCs8m+KF4N7w3V3hpqryW8TFVfLYQy0PMuF8o0urUZ07S0AoOTvlmKTKRThn4rE4/oh7m3p3SJ5jyJpTAxAiEA+QUyLngSN5M95r+Mj/2DyXMb2LnblhkiDOJlWdzPWUkCIQCVeNAX89Q92xBNsixn2o7U/hv0GBC9xRrXYGkN0SYhFwIhAOFUSFIwKBvNyoeP8HsipSuWUy5LD13EpEEQYzFrUtyxAiBSOFyvcE6ln+T9+C55Cj5bZ1RVFw/Oc6fqJXxkP1IsDQIgIZBDSR1DOMweY3XPD4+8+o1koFNlgNjq2uCvB7t42Ms=");
@@ -97,15 +97,15 @@ public class DtwTestBase {
         orderItem.setItemId(178770);
         orderItem.setOrderId(mockOrderNo);
         orderItem.setUnionOrderId("2016062455965373");
-        orderItem.setProductBn("CSXJ0001");
-        orderItem.setName("婴儿配方奶粉0001");
+        orderItem.setProductBn("CSXJ0005");
+        orderItem.setName("全脂奶粉0005");
         orderItem.setCost(0.5);
         orderItem.setPrice(itemPirce);
         orderItem.setAmount(itemAmount);
         orderItem.setNum(itemNum);
         orderItem.setStandard("测试");
         orderItem.setCustomerId(296);
-        orderItem.setGoodBn("1901101000");
+        orderItem.setGoodBn("0402210000");
         mockOrderItems.add(orderItem);
 
 
