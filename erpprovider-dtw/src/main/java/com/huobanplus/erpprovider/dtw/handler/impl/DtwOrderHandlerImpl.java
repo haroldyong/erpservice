@@ -251,7 +251,8 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setPayType(DtwEnum.PaytypeEnum.Other.getCode());
         OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
 
-        if (paymentOptions == OrderEnum.PaymentOptions.ALIPAY_PC || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE) {
+        if (paymentOptions == OrderEnum.PaymentOptions.ALIPAY_PC || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE
+                || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE_WEB) {
             dtwOrder.setPayCompanyCode(DtwConstant.ALI_PAY_CUSTOM_CODE);
 
         } else if (paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_V3 || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY
@@ -626,6 +627,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         try {
 
             CustomOrder customOrder = convertToCustomOrder(order, dtwSysData);
+            if (customOrder == null) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "支付方式不支持", null);
+            }
             String requestXml = new XmlMapper().writeValueAsString(customOrder);
             requestXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" + requestXml;
 
@@ -708,10 +712,16 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrderHead.setIeFlag("I");
         customOrderHead.setPayType("03");
 
-        if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType()) == OrderEnum.PaymentOptions.ALIPAY_PC) {
-            customOrderHead.setPayCompanyCode("");
-        } else if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType()) == OrderEnum.PaymentOptions.WEIXINPAY_V3) {
+        OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
+        if (paymentOptions == OrderEnum.PaymentOptions.ALIPAY_PC || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE
+                || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE_WEB) {
+            customOrderHead.setPayCompanyCode(DtwConstant.ALI_PAY_CUSTOM_CODE);
+
+        } else if (paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_V3 || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY
+                || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_APP) {
             customOrderHead.setPayCompanyCode(DtwConstant.WEIXIN_PAY_CUSTOM_CODE);
+        } else {
+            return null;
         }
 
         customOrderHead.setPayNumber(order.getPayNumber());
