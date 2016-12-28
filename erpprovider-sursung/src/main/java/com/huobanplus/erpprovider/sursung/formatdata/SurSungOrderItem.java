@@ -72,7 +72,7 @@ public class SurSungOrderItem {
     @JSONField(name = "price")
     private double price;
 
-    @JSONField(name = "refund_status ")
+    @JSONField(name = "refund_status")
     private String refundStatus;
 
     @JSONField(name = "refund_qty")
