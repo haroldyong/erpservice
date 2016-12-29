@@ -13,6 +13,7 @@ package com.huobanplus.erpprovider.dtw.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.dtw.DtwTestBase;
+import com.huobanplus.erpprovider.dtw.common.DtwEnum;
 import com.huobanplus.erpprovider.dtw.formatdtw.DtwPurchaseOrder;
 import com.huobanplus.erpprovider.dtw.formatdtw.DtwPurchaseOrderItem;
 import com.huobanplus.erpservice.common.util.SerialNo;
@@ -49,11 +50,11 @@ public class DtwPurchaseHandlerTest extends DtwTestBase {
         List<DtwPurchaseOrderItem> dtwPurchaseOrderItems = new ArrayList<>();
         DtwPurchaseOrderItem dtwPurchaseOrderItem = new DtwPurchaseOrderItem();
         dtwPurchaseOrderItem.setMsgItem(1);
-        dtwPurchaseOrderItem.setPartNo("1090-0909-09767");
+        dtwPurchaseOrderItem.setPartNo("XYDCSXJ0013");
         dtwPurchaseOrderItem.setPartName("测试商品");
         dtwPurchaseOrderItem.setSpec("无规格");
         dtwPurchaseOrderItem.setInvoiceNo("10908080");
-        dtwPurchaseOrderItem.setHsCode("HS-101010");
+        dtwPurchaseOrderItem.setHsCode("1901109000");
         dtwPurchaseOrderItem.setBatch("1");
         dtwPurchaseOrderItem.setQty(3);
         dtwPurchaseOrderItem.setUnit("111");
@@ -61,7 +62,7 @@ public class DtwPurchaseHandlerTest extends DtwTestBase {
         dtwPurchaseOrderItem.setDref2("");
         dtwPurchaseOrderItem.setDref3("");
         dtwPurchaseOrderItem.setDref4("");
-        dtwPurchaseOrderItem.setCurrency("146");
+        dtwPurchaseOrderItem.setCurrency(DtwEnum.CurrencyEnum.RMB.getCode());
         dtwPurchaseOrderItem.setOriginCountry("304");
         dtwPurchaseOrderItem.setAmount(100);
         dtwPurchaseOrderItems.add(dtwPurchaseOrderItem);

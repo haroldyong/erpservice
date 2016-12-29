@@ -101,8 +101,8 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     @Test
     public void testPushPersonalDeclareOrder() {
 
-        Order order = JSON.parseObject(orderInfoJson, Order.class);
-        EventResult eventResult = dtwOrderHandler.pushPersonalDeclareOrder(order, mockDtwSysData);
+        mockOrder.setOrderId("20161229140157038627");
+        EventResult eventResult = dtwOrderHandler.pushPersonalDeclareOrder(mockOrder, mockDtwSysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
     }

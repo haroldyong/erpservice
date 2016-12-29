@@ -173,15 +173,20 @@ public class PurchaseOrderLogController {
 
         List<PurchaseOrderItem> purchaseOrderItems = new ArrayList<>();
 
-        for (int i = 1; i < rowNum; i++) {
+        for (int i = 1; i <= rowNum; i++) {
             XSSFRow hssfRow = sheet.getRow(i);
             PurchaseOrderItem purchaseOrderItem = new PurchaseOrderItem();
-            purchaseOrderItem.setProductBn(hssfRow.getCell(colMap.get("productBn")).getRawValue());
-            purchaseOrderItem.setProductName(hssfRow.getCell(colMap.get("productName")).getRawValue());
-            purchaseOrderItem.setStandard(hssfRow.getCell(colMap.get("standard")).getRawValue());
-            purchaseOrderItem.setGoodsBn(hssfRow.getCell(colMap.get("goodsBn")).getRawValue());
+            purchaseOrderItem.setProductBn(hssfRow.getCell(colMap.get("productBn")).getStringCellValue());
+            purchaseOrderItem.setProductName(hssfRow.getCell(colMap.get("productName")).getStringCellValue());
+            purchaseOrderItem.setStandard(hssfRow.getCell(colMap.get("standard")).getStringCellValue());
+            if (hssfRow.getCell(colMap.get("goodsBn")).getCellType() == 1) {// string
+                purchaseOrderItem.setGoodsBn(hssfRow.getCell(colMap.get("goodsBn")).getStringCellValue());
+            } else if (hssfRow.getCell(colMap.get("goodsBn")).getCellType() == 0) {
+                purchaseOrderItem.setGoodsBn(hssfRow.getCell(colMap.get("goodsBn")).getNumericCellValue() + "");
+            }
+
             purchaseOrderItem.setQty((int) hssfRow.getCell(colMap.get("qty")).getNumericCellValue());
-            purchaseOrderItem.setUnit(hssfRow.getCell(colMap.get("unit")).getRawValue());
+            purchaseOrderItem.setUnit(hssfRow.getCell(colMap.get("unit")).getStringCellValue());
             purchaseOrderItem.setAmount(hssfRow.getCell(colMap.get("amount")).getNumericCellValue());
 
             purchaseOrderItems.add(purchaseOrderItem);

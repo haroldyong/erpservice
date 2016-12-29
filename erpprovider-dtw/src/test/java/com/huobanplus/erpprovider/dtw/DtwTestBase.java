@@ -97,15 +97,15 @@ public class DtwTestBase {
         orderItem.setItemId(178770);
         orderItem.setOrderId(mockOrderNo);
         orderItem.setUnionOrderId("2016062455965373");
-        orderItem.setProductBn("CSXJ0005");
-        orderItem.setName("全脂奶粉0005");
+        orderItem.setProductBn("XYDCSXJ0013");
+        orderItem.setName("婴儿营养米粉0013");
         orderItem.setCost(0.5);
         orderItem.setPrice(itemPirce);
         orderItem.setAmount(itemAmount);
         orderItem.setNum(itemNum);
         orderItem.setStandard("测试");
         orderItem.setCustomerId(296);
-        orderItem.setGoodBn("0402210000");
+        orderItem.setGoodBn("1901109000");
         mockOrderItems.add(orderItem);
 
 

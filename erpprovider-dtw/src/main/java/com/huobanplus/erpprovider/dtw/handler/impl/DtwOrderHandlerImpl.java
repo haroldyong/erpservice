@@ -351,7 +351,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwPersonalDelcareInfo.setBuyerIdType("1");// 必填 1-身份证
         dtwPersonalDelcareInfo.setBuyerIdNumber(order.getBuyerPid());// 必填
         dtwPersonalDelcareInfo.setBuyerName(order.getBuyerName());// 必填
-        dtwPersonalDelcareInfo.setWorth(order.getFinalAmount());// 必填
+        dtwPersonalDelcareInfo.setWorth(order.getFinalAmount() - order.getTaxAmount());// 必填
         dtwPersonalDelcareInfo.setFeeAmount(order.getCostFreight());// 必填
         dtwPersonalDelcareInfo.setInsureAmount(0.0);// 必填
         dtwPersonalDelcareInfo.setCurrCode(DtwEnum.CurrencyEnum.RMB.getCode());
@@ -377,7 +377,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwGoodsDelcareItem.setTradeCurr(DtwEnum.CurrencyEnum.RMB.getCode());
             dtwGoodsDelcareItem.setTradeTotal(order.getFinalAmount());// 必填
             dtwGoodsDelcareItem.setDeclPrice(item.getPrice());// 必填
-            dtwGoodsDelcareItem.setDeclTotalPrice(Arith.mul(item.getPrice(), item.getNum()));// 必填
+            dtwGoodsDelcareItem.setDeclTotalPrice(item.getAmount());// 必填
 //            dtwGoodsDelcareItem.setUseTo("");
             dtwGoodsDelcareItem.setDeclareCount(item.getNum());// 必填
             dtwGoodsDelcareItem.setGoodsUnit(DtwEnum.UnitEnum.JIAN.getCode());// 必填
@@ -389,6 +389,20 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
             dtwItems.add(dtwGoodsDelcareItem);
         }
+
+        System.out.println("\n*********personal declare fee*******************");
+        System.out.println("declTotalPrice:" + order.getCostItem());
+        System.out.println("costfreight:" + order.getCostFreight());
+        System.out.println("insureAmount:" + dtwPersonalDelcareInfo.getInsureAmount());
+        System.out.println("worth:" + dtwPersonalDelcareInfo.getWorth());
+        System.out.println("\n*********personal declare fee*******************");
+
+        log.info("\n*********personal declare fee*******************");
+        log.info("declTotalPrice:" + order.getCostItem());
+        log.info("costfreight:" + order.getCostFreight());
+        log.info("insureAmount:" + dtwPersonalDelcareInfo.getInsureAmount());
+        log.info("worth:" + dtwPersonalDelcareInfo.getWorth());
+        log.info("\n*********personal declare fee*******************");
 
         dtwPersonalDelcareInfo.setItems(dtwItems);
 
@@ -406,7 +420,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             log.error("Server Request Failed:" + httpResult.getHttpContent());
             return EventResult.resultWith(EventResultEnum.ERROR, "服务器请求失败", null);
         }
-
     }
 
     @Override
