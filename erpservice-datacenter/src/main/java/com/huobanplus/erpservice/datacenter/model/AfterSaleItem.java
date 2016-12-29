@@ -20,22 +20,22 @@ import lombok.Data;
 public class AfterSaleItem {
 
     // 订单id
-    public String orderId;
+    private String orderId;
 
     // 货品编号
-    public String skuId;
+    private String skuId;
     // 退货数量
-    public int returnNum;
+    private int returnNum;
 
     // sku退款金额
-    public double amount;
+    private double amount;
     // 可选：退货，换货，补发，或者其他
-    public String type;
+    private String type;
     // 名称
-    public String name;
+    private String name;
 
-    public String pic;
+    private String pic;
     // 规格属性
-    public String properties;
+    private String properties;
 
 }

@@ -20,10 +20,12 @@ import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearchResult;
 import com.huobanplus.erpprovider.sursung.service.SurSungSyncChannelOrder;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil2;
-import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
-import com.huobanplus.erpservice.datacenter.model.*;
+import com.huobanplus.erpservice.datacenter.model.AfterSaleInfo;
+import com.huobanplus.erpservice.datacenter.model.AfterSaleItem;
+import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
@@ -57,16 +59,8 @@ public class SurSungHandlerTest extends SurSungTestBase {
     private SurSungSyncChannelOrder surSungSyncChannelOrder;
 
     @Test
+    @Rollback(value = false)
     public void testPushOrder() throws IOException {
-//        Order order = JSON.parseObject(orderInfoJson, Order.class);
-//        HttpClientUtil2.getInstance().initHttpClient();
-        for (int i = 0; i < 1; i++) {
-            String orderNo = SerialNo.create();
-            mockOrder.setOrderId(orderNo);
-            System.out.println("\norderNo:" + orderNo);
-            for (OrderItem orderItem : mockOrder.getOrderItems()) {
-                orderItem.setProductBn("BN-" + i);
-            }
 
             String orderInfoJson = JSON.toJSONString(mockOrder);
             PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
@@ -77,8 +71,6 @@ public class SurSungHandlerTest extends SurSungTestBase {
             System.out.println(eventResult.getResultCode());
             System.out.println(eventResult.getData());
             System.out.println(eventResult.getResultMsg());
-        }
-//        HttpClientUtil2.getInstance().close();
     }
 
     @Test
@@ -124,23 +116,23 @@ public class SurSungHandlerTest extends SurSungTestBase {
         AfterSaleInfo afterSaleInfo = new AfterSaleInfo();
 
         ReturnInfo returnInfo = new ReturnInfo();
-        afterSaleInfo.setOrderId("20161110194644997344");
+        afterSaleInfo.setOrderId("20161229134448035852");
         afterSaleInfo.setRemark("test");
         afterSaleInfo.setLogiCompany("顺丰快递");
         afterSaleInfo.setLogiNo("12345logino");
         afterSaleInfo.setAfterStatus(5);
         afterSaleInfo.setAfterSaleId("20161110194644997355");
-        afterSaleInfo.setRefund(110);
-        afterSaleInfo.setTotalAmount(120);
+        afterSaleInfo.setRefund(2);
+        afterSaleInfo.setTotalAmount(2);
         afterSaleInfo.setPayment(10);
 
         List<AfterSaleItem> afterSaleItems = new ArrayList<>();
         AfterSaleItem afterSaleItem = new AfterSaleItem();
-        afterSaleItem.setSkuId("BN-1234");
-        afterSaleItem.setAmount(10);
+        afterSaleItem.setSkuId("BN-001");
+        afterSaleItem.setAmount(2);
         afterSaleItem.setReturnNum(2);
         afterSaleItem.setType("其他");
-        afterSaleItem.setOrderId("20161110194644997344");
+        afterSaleItem.setOrderId("20161229134448035852");
         afterSaleItems.add(afterSaleItem);
 
         afterSaleInfo.setItems(afterSaleItems);
