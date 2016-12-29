@@ -383,7 +383,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwGoodsDelcareItem.setGoodsUnit(DtwEnum.UnitEnum.JIAN.getCode());// 必填
 //            dtwGoodsDelcareItem.setGoodsGrossWeight("");
             dtwGoodsDelcareItem.setFirstUnit(DtwEnum.UnitEnum.KG.getCode());// 必填 第一计量单位都是千克
-            dtwGoodsDelcareItem.setFirstCount(item.getWeight() / 1000);// 必填
+            dtwGoodsDelcareItem.setFirstCount(Arith.div(item.getWeight() * item.getNum(), 1000));// 必填
 //            dtwGoodsDelcareItem.setSecondUnit("");
 //            dtwGoodsDelcareItem.setSecondCount(0.0);
 
