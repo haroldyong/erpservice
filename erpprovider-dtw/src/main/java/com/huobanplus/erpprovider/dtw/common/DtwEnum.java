@@ -76,6 +76,7 @@ public interface DtwEnum {
 
     enum UnitEnum {
         JIAN("011", "件"),
+        KG("035", "千克"),
         GUAN("122", "罐");
 
         private String code;
