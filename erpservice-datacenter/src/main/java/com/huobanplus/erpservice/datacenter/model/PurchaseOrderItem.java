@@ -51,9 +51,14 @@ public class PurchaseOrderItem {
     private int qty;
 
     /**
-     * 单位
+     * 单位 三字代码
      */
     private String unit;
+
+    /**
+     * 单位名称
+     */
+    private String unitName;
 
     /**
      * 原产国

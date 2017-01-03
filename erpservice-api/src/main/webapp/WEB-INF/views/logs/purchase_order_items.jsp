@@ -98,7 +98,7 @@
                             <td class="txt40 c">${item.standard}</td>
                             <td class="txt40 c">${item.goodsBn}</td>
                             <td class="txt40 c">${item.qty}</td>
-                            <td class="txt40 c">${item.unit}</td>
+                            <td class="txt40 c">${item.unitName}</td>
                             <td class="txt40 c">${item.amount}</td>
                         </tr>
                     </c:forEach>

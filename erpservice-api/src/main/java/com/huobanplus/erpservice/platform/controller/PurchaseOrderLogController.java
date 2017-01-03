@@ -70,6 +70,8 @@ public class PurchaseOrderLogController {
 
     private static final Map<String, Integer> colMap = new HashMap<>();
 
+    private static final Map<String, String> unitMap = new HashMap<>();
+
     static {
         colMap.put("productBn", 0);
         colMap.put("productName", 1);
@@ -79,6 +81,12 @@ public class PurchaseOrderLogController {
         colMap.put("unit", 5);
         colMap.put("price", 6);
         colMap.put("amount", 7);
+
+        unitMap.put("罐", "122");
+        unitMap.put("件", "011");
+        unitMap.put("千克", "035");
+        unitMap.put("克", "036");
+        unitMap.put("毫升", "096");
 
     }
 
@@ -189,7 +197,9 @@ public class PurchaseOrderLogController {
             }
 
             purchaseOrderItem.setQty((int) hssfRow.getCell(colMap.get("qty")).getNumericCellValue());
-            purchaseOrderItem.setUnit(hssfRow.getCell(colMap.get("unit")).getStringCellValue());
+            String unitName = hssfRow.getCell(colMap.get("unit")).getStringCellValue();
+            purchaseOrderItem.setUnitName(unitName);
+            purchaseOrderItem.setUnit(unitMap.get(unitName));
             purchaseOrderItem.setAmount(hssfRow.getCell(colMap.get("amount")).getNumericCellValue());
 
             purchaseOrderItems.add(purchaseOrderItem);
