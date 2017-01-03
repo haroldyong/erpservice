@@ -175,6 +175,9 @@ public class PurchaseOrderLogController {
 
         for (int i = 1; i <= rowNum; i++) {
             XSSFRow hssfRow = sheet.getRow(i);
+            if (hssfRow.getCell(0) == null || hssfRow.getCell(0).getCellType() == 3) {
+                continue;
+            }
             PurchaseOrderItem purchaseOrderItem = new PurchaseOrderItem();
             purchaseOrderItem.setProductBn(hssfRow.getCell(colMap.get("productBn")).getStringCellValue());
             purchaseOrderItem.setProductName(hssfRow.getCell(colMap.get("productName")).getStringCellValue());

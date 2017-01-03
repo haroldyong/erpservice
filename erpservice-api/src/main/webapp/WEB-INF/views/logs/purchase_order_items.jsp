@@ -85,8 +85,6 @@
                         </th>
                         <th scope="col">单位
                         </th>
-                        <th scope="col">单价
-                        </th>
                         <th scope="col">总价
                         </th>
 
@@ -101,7 +99,6 @@
                             <td class="txt40 c">${item.goodsBn}</td>
                             <td class="txt40 c">${item.qty}</td>
                             <td class="txt40 c">${item.unit}</td>
-                            <td class="txt40 c">todo</td>
                             <td class="txt40 c">${item.amount}</td>
                         </tr>
                     </c:forEach>

@@ -65,4 +65,9 @@ public class PurchaseOrderItem {
      */
     private double amount;
 
+    /**
+     * 单价
+     */
+    private Double price;
+
 }
