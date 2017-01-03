@@ -11,8 +11,31 @@
 
 package com.huobanplus.erpprovider.baison.handler;
 
+import com.alibaba.fastjson.JSON;
+import com.huobanplus.erpprovider.baison.BaisonTestBase;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * Created by wuxiongliu on 2016-11-10.
  */
-public class BaisonOrderHandlerTest {
+public class BaisonOrderHandlerTest extends BaisonTestBase {
+
+    @Autowired
+    private BaisonOrderHandler baisonOrderHandler;
+
+    @Test
+    public void testPushOrder() {
+
+        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
+        pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
+        pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
+        pushNewOrderEvent.setErpInfo(mockErpInfo);
+        EventResult eventResult = baisonOrderHandler.pushOrder(pushNewOrderEvent);
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getData());
+        System.out.println(eventResult.getResultMsg());
+    }
 }

@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.baison.common.BaisonConstant;
 import com.huobanplus.erpprovider.baison.common.BaisonSysData;
 import com.huobanplus.erpprovider.baison.formatdata.BaisonOrder;
+import com.huobanplus.erpprovider.baison.formatdata.BaisonOrderItem;
 import com.huobanplus.erpprovider.baison.handler.BaisonOrderHandler;
 import com.huobanplus.erpprovider.baison.search.BaisonOrderSearch;
 import com.huobanplus.erpprovider.baison.util.BaisonUtil;
@@ -24,6 +25,7 @@ import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -37,7 +39,9 @@ import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -97,7 +101,7 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
 
         try {
             Map<String, Object> requestMap = BaisonUtil.buildRequestMap(baisonSysData, BaisonConstant.ADD_ORDER, JSON.toJSONString(baisonOrder));
-            HttpResult httpResult = HttpClientUtil.getInstance().get(baisonSysData.getRequestUrl(), requestMap);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(baisonSysData.getRequestUrl(), requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject respData = JSON.parseObject(httpResult.getHttpContent());
                 if (respData.getString("status").equals("api-success")) {
@@ -117,6 +121,43 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
 
         BaisonOrder baisonOrder = new BaisonOrder();
 
+        baisonOrder.setAddress("");
+        baisonOrder.setAddTime("");
+        baisonOrder.setOrderSn("");
+        baisonOrder.setSdCode("");
+        baisonOrder.setOrderStatus(1);
+        baisonOrder.setPayStatus(1);
+        baisonOrder.setConsignee("");
+        baisonOrder.setProvinceName("");
+        baisonOrder.setCityName("");
+        baisonOrder.setDistrictName("");
+        baisonOrder.setUserName("");
+        baisonOrder.setEmail("");
+        baisonOrder.setMobile("");
+        baisonOrder.setTel("");
+        baisonOrder.setZipcode("");
+        baisonOrder.setPosCode("");
+        baisonOrder.setSaleShopCode("");
+        baisonOrder.setPayCode("");
+        baisonOrder.setVipNo("");
+        baisonOrder.setShippingCode("");
+        baisonOrder.setShippingFee(1);
+        baisonOrder.setOrderAmount(1);
+        baisonOrder.setPayment(1);
+        baisonOrder.setSalerEmployeeNo("");
+
+        List<BaisonOrderItem> baisonOrderItems = new ArrayList<>();
+        for (OrderItem orderItem : order.getOrderItems()) {
+            BaisonOrderItem baisonOrderItem = new BaisonOrderItem();
+            baisonOrderItem.setTransactionPrice(1);
+            baisonOrderItem.setSkuSn("");
+            baisonOrderItem.setGoodsPrice(1);
+            baisonOrderItem.setDiscount(1);
+            baisonOrderItem.setGoodsNumber(1);
+            baisonOrderItem.setIsGift(1);
+            baisonOrderItems.add(baisonOrderItem);
+        }
+        baisonOrder.setOrderItems(baisonOrderItems);
         return baisonOrder;
     }
 
