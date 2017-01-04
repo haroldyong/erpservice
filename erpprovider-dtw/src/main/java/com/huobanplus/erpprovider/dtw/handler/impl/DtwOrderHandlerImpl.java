@@ -153,13 +153,20 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         // 支付单推送
         if (!dtwAllOrderStatus.isPayOrderSyncStatus()) {
             EventResult payOrderEvent = null;
-            if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType()) == OrderEnum.PaymentOptions.ALIPAY_PC) {// FIXME: 2016-07-27  可能空指针
+
+            OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
+
+            if (paymentOptions == OrderEnum.PaymentOptions.ALIPAY_PC || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE
+                    || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE_WEB) {
                 payOrderEvent = pushAliPayOrder(order, dtwSysData);
-            } else if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType()) == OrderEnum.PaymentOptions.WEIXINPAY_V3) {
+
+            } else if (paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_V3 || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY
+                    || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_APP) {
                 payOrderEvent = pushWeixinPayOrder(order, dtwSysData);
             } else {
                 payOrderEvent = EventResult.resultWith(EventResultEnum.ERROR, "不支持该支付", null);
             }
+
 
             if (payOrderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 dtwAllOrderStatus.setPayOrderSyncStatus(true);
@@ -569,6 +576,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             weixinCustom.setFeeType("CNY");
             weixinCustom.setCertType("IDCARD");
             weixinCustom.setCertId(order.getBuyerPid());
+            weixinCustom.setName(order.getBuyerName());
 
             //order_fee=transport_fee+product_fee  应付金额=物流费+商品价格
             weixinCustom.setOrderFee((int) (order.getFinalAmount() * 100));// 单位转换成分
