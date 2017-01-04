@@ -358,7 +358,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwPersonalDelcareInfo.setBuyerIdType("1");// 必填 1-身份证
         dtwPersonalDelcareInfo.setBuyerIdNumber(order.getBuyerPid());// 必填
         dtwPersonalDelcareInfo.setBuyerName(order.getBuyerName());// 必填
-        dtwPersonalDelcareInfo.setWorth(order.getFinalAmount() - order.getTaxAmount());// 必填
+        dtwPersonalDelcareInfo.setWorth(Arith.sub(order.getFinalAmount(), order.getTaxAmount()));// 必填
         dtwPersonalDelcareInfo.setFeeAmount(order.getCostFreight());// 必填
         dtwPersonalDelcareInfo.setInsureAmount(0.0);// 必填
         dtwPersonalDelcareInfo.setCurrCode(DtwEnum.CurrencyEnum.RMB.getCode());

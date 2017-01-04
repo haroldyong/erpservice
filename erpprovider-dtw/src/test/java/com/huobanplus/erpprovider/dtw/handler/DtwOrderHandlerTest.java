@@ -102,7 +102,9 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     public void testPushPersonalDeclareOrder() {
 
         mockOrder.setOrderId("20161229140157038627");
-        EventResult eventResult = dtwOrderHandler.pushPersonalDeclareOrder(mockOrder, mockDtwSysData);
+        String orderJson = "{\"orderId\":\"20170104164876938543\",\"memberId\":256362,\"userLoginName\":\"15067134475\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":500.000,\"orderName\":\"??????(?,M)(1)(?1)\",\"itemNum\":1,\"lastUpdateTime\":\"2017-01-04 16:22:12\",\"createTime\":\"2017-01-04 16:21:49\",\"shipName\":\"???\",\"shipArea\":\"??/???/???\",\"province\":\"??\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"???????????\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"15067134478\",\"costItem\":0.150,\"onlinePayAmount\":0.170,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":0.170,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"????V3\",\"payType\":9,\"customerId\":3447,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2017-01-04 16:22:12\",\"unionOrderId\":\"20170104248827519753\",\"receiveStatus\":0,\"sourceShop\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"362322199411050053\",\"buyerName\":\"???\",\"payNumber\":\"4006202001201701045167095606\",\"taxAmount\":0.020,\"orderItems\":[{\"itemId\":177071,\"orderId\":\"20170104164876938543\",\"unionOrderId\":\"20170104248827519753\",\"productBn\":\"XYDCSXJ0013\",\"name\":\"??????(?,M)(1)\",\"cost\":0.500,\"price\":0.150,\"amount\":0.150,\"num\":1,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":3447,\"goodBn\":\"1901109000\",\"standard\":\"?,M\",\"brief\":null,\"shipStatus\":0,\"weight\":0.0,\"unit\":null}],\"errorMessage\":null}";
+        Order order = JSON.parseObject(orderJson, Order.class);
+        EventResult eventResult = dtwOrderHandler.pushPersonalDeclareOrder(order, mockDtwSysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
     }
