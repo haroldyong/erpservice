@@ -69,7 +69,7 @@
 
                 <p style="float: right;margin-top: -26px;margin-right: 10px;">
                     <a class="btn-lit btn-middle"
-                       href="<c:url value="/erpService/platform/orderShipSyncs?erpUserType=1" />"
+                       href="<c:url value="/erpService/platform/orderShipSyncs?erpUserType=${erpUserType}" />"
                        style="margin-bottom: 3px;">
                         <span>返回</span>
                     </a>
