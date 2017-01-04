@@ -166,6 +166,6 @@ public class BaisonOrder {
     /**
      * 订单明细
      */
-    @JSONField(name = "orders")
+    @JSONField(name = "items")
     private List<BaisonOrderItem> orderItems;
 }

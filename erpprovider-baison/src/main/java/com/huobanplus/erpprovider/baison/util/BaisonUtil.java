@@ -43,6 +43,18 @@ public class BaisonUtil {
         return DigestUtils.md5Hex(stringBuilder.toString().getBytes("utf-8")).toLowerCase();
     }
 
+    public static String buildSign2(Map<String, Object> params, String secret) throws UnsupportedEncodingException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("key=").append(params.get("key")).append("&")
+                .append("requestTime=").append(params.get("requestTime")).append("&")
+                .append("secret=").append(secret).append("&")
+                .append("version=").append(params.get("version")).append("&")
+                .append("serviceType=").append(params.get("serviceType")).append("&")
+                .append("data=").append(params.get("data"));
+
+        return DigestUtils.md5Hex(sb.toString().getBytes("utf-8")).toLowerCase();
+    }
+
     public static Map<String, Object> buildRequestMap(BaisonSysData baisonSysData, String serviceType, String data) throws UnsupportedEncodingException {
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("key", baisonSysData.getBaisonAppkey());
@@ -50,7 +62,7 @@ public class BaisonUtil {
         requestMap.put("serviceType", serviceType);
         requestMap.put("data", data);
         requestMap.put("version", baisonSysData.getVersion());
-        String sign = BaisonUtil.buildSign(requestMap);
+        String sign = BaisonUtil.buildSign2(requestMap, baisonSysData.getBaisonAppSecret());
         requestMap.put("sign", sign);
         return requestMap;
     }
