@@ -52,7 +52,7 @@ public class ReturnRefundSyncLogServiceImpl implements ReturnRefundSyncLogServic
 
     @Override
     public ReturnRefundSyncLog findByOrderId(String orderId) {
-        return null;
+        return returnRefundSyncLogRepository.findByOrderId(orderId);
     }
 
     @Override
