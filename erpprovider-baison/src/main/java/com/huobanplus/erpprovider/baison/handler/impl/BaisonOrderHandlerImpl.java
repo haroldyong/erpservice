@@ -12,6 +12,7 @@
 package com.huobanplus.erpprovider.baison.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.baison.common.BaisonConstant;
 import com.huobanplus.erpprovider.baison.common.BaisonSysData;
@@ -23,6 +24,7 @@ import com.huobanplus.erpprovider.baison.util.BaisonUtil;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
@@ -80,7 +82,7 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
         orderDetailSyncLog.setSyncTime(now);
 
         try {
-            BaisonOrder baisonOrder = convert2ErpOrder(orderInfo);
+            BaisonOrder baisonOrder = convert2ErpOrder(orderInfo, baisonSysData);
             EventResult eventResult = orderPush(baisonOrder, baisonSysData);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
@@ -99,8 +101,13 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
 
     private EventResult orderPush(BaisonOrder baisonOrder, BaisonSysData baisonSysData) {
 
+        JSONObject requestObj = new JSONObject();
+        JSONArray orderArray = new JSONArray();
+        orderArray.add(baisonOrder);
+        requestObj.put("data", orderArray);
+
         try {
-            Map<String, Object> requestMap = BaisonUtil.buildRequestMap(baisonSysData, BaisonConstant.ADD_ORDER, JSON.toJSONString(baisonOrder));
+            Map<String, Object> requestMap = BaisonUtil.buildRequestMap(baisonSysData, BaisonConstant.ADD_ORDER, JSON.toJSONString(requestObj));
             HttpResult httpResult = HttpClientUtil.getInstance().post(baisonSysData.getRequestUrl(), requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject respData = JSON.parseObject(httpResult.getHttpContent());
@@ -117,44 +124,44 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
         }
     }
 
-    private BaisonOrder convert2ErpOrder(Order order) {
+    private BaisonOrder convert2ErpOrder(Order order, BaisonSysData baisonSysData) {
 
         BaisonOrder baisonOrder = new BaisonOrder();
 
-        baisonOrder.setAddress("");
-        baisonOrder.setAddTime("");
-        baisonOrder.setOrderSn("");
-        baisonOrder.setSdCode("");
+        baisonOrder.setAddress(order.getShipAddr());
+        baisonOrder.setAddTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
+        baisonOrder.setOrderSn(order.getOrderId());
+        baisonOrder.setSdCode(baisonSysData.getBaisonShopCode());
         baisonOrder.setOrderStatus(1);
-        baisonOrder.setPayStatus(1);
-        baisonOrder.setConsignee("");
-        baisonOrder.setProvinceName("");
-        baisonOrder.setCityName("");
-        baisonOrder.setDistrictName("");
-        baisonOrder.setUserName("");
-        baisonOrder.setEmail("");
-        baisonOrder.setMobile("");
-        baisonOrder.setTel("");
-        baisonOrder.setZipcode("");
-        baisonOrder.setPosCode("");
-        baisonOrder.setSaleShopCode("");
-        baisonOrder.setPayCode("");
-        baisonOrder.setVipNo("");
-        baisonOrder.setShippingCode("");
-        baisonOrder.setShippingFee(1);
-        baisonOrder.setOrderAmount(1);
-        baisonOrder.setPayment(1);
-        baisonOrder.setSalerEmployeeNo("");
+        baisonOrder.setPayStatus(2);
+        baisonOrder.setConsignee(order.getShipName());
+        baisonOrder.setProvinceName(order.getProvince());
+        baisonOrder.setCityName(order.getCity());
+        baisonOrder.setDistrictName(order.getDistrict());
+        baisonOrder.setUserName(order.getUserLoginName());
+        baisonOrder.setEmail(order.getShipEmail());
+        baisonOrder.setMobile(order.getShipMobile());
+        baisonOrder.setTel(order.getShipTel());
+        baisonOrder.setZipcode(order.getShipZip());
+        baisonOrder.setPosCode("");// O2O 门店代码
+        baisonOrder.setSaleShopCode("");// 下单门店代码
+        baisonOrder.setSalerEmployeeNo("");// 下单店员编号
+        baisonOrder.setPayCode("");// 支付方式代码
+        baisonOrder.setVipNo(order.getUserLoginName());
+        baisonOrder.setShippingCode(order.getLogiCode());
+        baisonOrder.setShippingFee(order.getCostFreight());
+        baisonOrder.setOrderAmount(order.getFinalAmount());
+        baisonOrder.setPayment(order.getFinalAmount());
 
         List<BaisonOrderItem> baisonOrderItems = new ArrayList<>();
         for (OrderItem orderItem : order.getOrderItems()) {
             BaisonOrderItem baisonOrderItem = new BaisonOrderItem();
-            baisonOrderItem.setTransactionPrice(1);
-            baisonOrderItem.setSkuSn("");
-            baisonOrderItem.setGoodsPrice(1);
+            baisonOrderItem.setTransactionPrice(orderItem.getPrice());
+            baisonOrderItem.setSkuSn(orderItem.getProductBn());
+            baisonOrderItem.setGoodsPrice(orderItem.getPrice());
             baisonOrderItem.setDiscount(1);
-            baisonOrderItem.setGoodsNumber(1);
-            baisonOrderItem.setIsGift(1);
+            baisonOrderItem.setGoodsNumber(orderItem.getNum());
+            baisonOrderItem.setIsGift(0);
             baisonOrderItems.add(baisonOrderItem);
         }
         baisonOrder.setOrderItems(baisonOrderItems);
