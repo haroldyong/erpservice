@@ -105,6 +105,7 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
         JSONArray orderArray = new JSONArray();
         orderArray.add(baisonOrder);
         requestObj.put("data", orderArray);
+        requestObj.put("total", "1");
 
         try {
             Map<String, Object> requestMap = BaisonUtil.buildRequestMap(baisonSysData, BaisonConstant.ADD_ORDER, JSON.toJSONString(requestObj));

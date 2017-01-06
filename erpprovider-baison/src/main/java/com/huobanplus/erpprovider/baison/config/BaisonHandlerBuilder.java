@@ -42,7 +42,7 @@ public class BaisonHandlerBuilder implements ERPHandlerBuilder {
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        if (info.getErpType() == ERPTypeEnum.ProviderType.DTW) {
+        if (info.getErpType() == ERPTypeEnum.ProviderType.BAISONE3) {
             return new ERPHandler() {
                 @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
