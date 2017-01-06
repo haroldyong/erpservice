@@ -375,7 +375,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         for (int i = 0; i < orderItems.size(); i++) {
             OrderItem item = orderItems.get(i);
             DtwGoodsDelcareItem dtwGoodsDelcareItem = new DtwGoodsDelcareItem();
-            dtwGoodsDelcareItem.setGoodsOrder(i);// 必填
+            dtwGoodsDelcareItem.setGoodsOrder(i + 1);// 必填
             dtwGoodsDelcareItem.setCodeTs(item.getProductBn());// 必填//商品HScode:填写商品海关编码
             dtwGoodsDelcareItem.setGoodsItemNo(item.getProductBn());// 必填
             dtwGoodsDelcareItem.setGoodsName(item.getName());// 必填
