@@ -579,9 +579,11 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             weixinCustom.setName(order.getBuyerName());
 
             //order_fee=transport_fee+product_fee  应付金额=物流费+商品价格
-            weixinCustom.setOrderFee((int) (order.getFinalAmount() * 100));// 单位转换成分
-            weixinCustom.setTransportFee((int) (order.getCostFreight() * 100));// 单位转换成分
-            weixinCustom.setProductFee((int) (order.getFinalAmount() * 100 - order.getCostFreight() * 100));// 单位转换成分
+            int orderFee = (int) (order.getOnlinePayAmount() * 100);
+            int transportFee = (int) (order.getCostFreight() * 100);
+            weixinCustom.setOrderFee(orderFee);// 单位转换成分
+            weixinCustom.setTransportFee(transportFee);// 单位转换成分
+            weixinCustom.setProductFee(orderFee - transportFee);// 单位转换成分
             weixinCustom.setDuty(0);// TODO: 2016-12-15 关税是否需要还是为0
 
 
@@ -754,7 +756,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrderHead.setCompanyName(dtwSysData.getECommerceName());
         customOrderHead.setTradeTime(order.getPayTime());
         customOrderHead.setCurrCode(DtwEnum.CurrencyEnum.RMB.getCode());
-        customOrderHead.setDiscount(order.getPmtAmount());
+        customOrderHead.setDiscount(order.getFinalAmount() - order.getOnlinePayAmount());
 
         customOrderHead.setConsigneeEmail(order.getShipEmail());
         customOrderHead.setConsigneeTel(order.getShipMobile());
