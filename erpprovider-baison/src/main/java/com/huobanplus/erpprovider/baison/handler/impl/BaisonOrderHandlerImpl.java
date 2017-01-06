@@ -174,16 +174,17 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
 
         try {
             Map<String, Object> requestMap = BaisonUtil.buildRequestMap(baisonSysData, BaisonConstant.QUERY_ORDER, JSON.toJSONString(baisonOrderSearch));
-            String sign = BaisonUtil.buildSign(requestMap);
-            requestMap.put("sign", sign);
 
-            HttpResult httpResult = HttpClientUtil.getInstance().get(baisonSysData.getRequestUrl(), requestMap);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(baisonSysData.getRequestUrl(), requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject jsonObj = JSON.parseObject(httpResult.getHttpContent());
                 String status = jsonObj.getString("status");
                 if (status.equals("api-success")) {
                     log.info("BaisonOrderHandlerImpl-orderQuery: get order detail success");
-                    return EventResult.resultWith(EventResultEnum.SUCCESS, jsonObj.getJSONObject("data"));
+
+                    JSONObject dataJson = jsonObj.getJSONObject("data");
+                    JSONArray orderJsonArray = dataJson.getJSONArray("orderListGets");
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, dataJson);
                 } else {
                     log.info("BaisonOrderHandlerImpl-orderQuery: get order detail failed,error message :" + jsonObj.getString("message"));
                     return EventResult.resultWith(EventResultEnum.ERROR, jsonObj.getString("message"), null);

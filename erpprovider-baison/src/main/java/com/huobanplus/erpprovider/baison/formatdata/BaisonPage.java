@@ -22,7 +22,7 @@ public class BaisonPage {
 
     private Integer totalResult;
 
-    private Integer pagesize;
+    private Integer pageSize;
 
     private Integer pageNo;
 

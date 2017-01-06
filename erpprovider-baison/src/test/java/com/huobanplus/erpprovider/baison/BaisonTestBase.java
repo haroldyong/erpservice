@@ -61,7 +61,7 @@ public class BaisonTestBase {
         mockBaisonSysData.setRequestUrl("http://121.199.182.139/e3test/webopm/web/?app_act=api/ec&app_mode=func");
         mockBaisonSysData.setBaisonAppkey("test");
         mockBaisonSysData.setBaisonAppSecret("9dc22981aaa41fb72c5b87dc3fb6d3c9");
-        mockBaisonSysData.setBaisonShopCode("ccc");
+        mockBaisonSysData.setBaisonShopCode("1200000002");
         mockBaisonSysData.setBaisonWarehouseCode("ddd");
         mockBaisonSysData.setVersion("1.0");
 

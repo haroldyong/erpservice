@@ -135,6 +135,8 @@
                         return sursungConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.WANGDIAN.getCode()%>:
                         return wangdianConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.BAISONE3.getCode()%>:
+                        return baisonConfigHandler;
                 }
                 return null;
             }
@@ -339,6 +341,9 @@
                                 </div>
                                 <div id="detailConfig_<%=ERPTypeEnum.ProviderType.WANGDIAN.getCode()%>">
                                     <%@include file="/detailConfig/wangdian_config.jsp" %>
+                                </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.BAISONE3.getCode()%>">
+                                    <%@include file="/detailConfig/baison_config.jsp" %>
                                 </div>
                             </div>
                         </div>

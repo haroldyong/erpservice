@@ -17,6 +17,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.baison.common.BaisonConstant;
 import com.huobanplus.erpprovider.baison.common.BaisonSysData;
 import com.huobanplus.erpprovider.baison.formatdata.BaisonPage;
+import com.huobanplus.erpprovider.baison.formatdata.BaisonQueryOrder;
+import com.huobanplus.erpprovider.baison.formatdata.BaisonQueryOrderItem;
 import com.huobanplus.erpprovider.baison.handler.BaisonOrderHandler;
 import com.huobanplus.erpprovider.baison.search.BaisonOrderSearch;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
@@ -81,7 +83,8 @@ public class BaisonDeliveryScheduleService {
             int totalPage = 0;
 
             BaisonOrderSearch baisonOrderSearch = new BaisonOrderSearch();
-            baisonOrderSearch.setStartModified(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
+            baisonOrderSearch.setSdCode(sysData.getBaisonShopCode());
+            baisonOrderSearch.setStartModified("2015-12-30 08:00:00");
             baisonOrderSearch.setEndModified(StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
             baisonOrderSearch.setPageNo(1);
             baisonOrderSearch.setPageSize(BaisonConstant.PAGE_SIZE);
@@ -101,23 +104,26 @@ public class BaisonDeliveryScheduleService {
                 // 获取查询结果data
                 JSONObject jsonData = (JSONObject) firstQueryEvent.getData();// 约定接口返回的数据是json对象的数据
 
-                String baisonPageStr = jsonData.getString("page");
-                BaisonPage baisonPage = JSON.parseObject(baisonPageStr, BaisonPage.class);
+                BaisonPage baisonPage = jsonData.getObject("page", BaisonPage.class);
                 totalCount = baisonPage.getTotalResult();
                 totalPage = baisonPage.getPageTotal();
 
                 JSONArray orderJsonArray = jsonData.getJSONArray("orderListGets");
                 List<OrderDeliveryInfo> tempToPush = convert2OrderDeliveryInfo(orderJsonArray);
-                // 第一次推送
-                batchDeliverEvent.setOrderDeliveryInfoList(tempToPush);// TODO: 2016-12-26
-                EventResult firstSyncEvent = erpUserHandler.handleEvent(batchDeliverEvent);
-                if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                    BatchDeliverResult batchDeliverResult = (BatchDeliverResult) firstQueryEvent.getData();
-                    successOrders.addAll(batchDeliverResult.getSuccessOrders());
-                    failedOrders.addAll(batchDeliverResult.getFailedOrders());
-                } else {
-                    failedOrders.addAll(tempToPush);
+                if (tempToPush.size() > 0) {
+                    // 第一次推送
+                    batchDeliverEvent.setOrderDeliveryInfoList(tempToPush);// TODO: 2016-12-26
+                    EventResult firstSyncEvent = erpUserHandler.handleEvent(batchDeliverEvent);
+                    if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        BatchDeliverResult batchDeliverResult = (BatchDeliverResult) firstSyncEvent.getData();
+                        successOrders.addAll(batchDeliverResult.getSuccessOrders());
+                        failedOrders.addAll(batchDeliverResult.getFailedOrders());
+                    } else {
+                        failedOrders.addAll(tempToPush);
+                    }
                 }
+
+
             }
 
             // 后几次查询& 推送
@@ -130,15 +136,17 @@ public class BaisonDeliveryScheduleService {
                     JSONArray orderJsonArray = jsonData.getJSONArray("orderListGets");
                     List<OrderDeliveryInfo> tempToPush = convert2OrderDeliveryInfo(orderJsonArray);
 
-                    // 后续几次推送
-                    batchDeliverEvent.setOrderDeliveryInfoList(tempToPush);
-                    EventResult nextSyncEvent = erpUserHandler.handleEvent(batchDeliverEvent);
-                    if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                        BatchDeliverResult batchDeliverResult = (BatchDeliverResult) firstQueryEvent.getData();
-                        successOrders.addAll(batchDeliverResult.getSuccessOrders());
-                        failedOrders.addAll(batchDeliverResult.getFailedOrders());
-                    } else {
-                        failedOrders.addAll(tempToPush);
+                    if (tempToPush.size() > 0) {
+                        // 后续几次推送
+                        batchDeliverEvent.setOrderDeliveryInfoList(tempToPush);
+                        EventResult nextSyncEvent = erpUserHandler.handleEvent(batchDeliverEvent);
+                        if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                            BatchDeliverResult batchDeliverResult = (BatchDeliverResult) nextSyncEvent.getData();
+                            successOrders.addAll(batchDeliverResult.getSuccessOrders());
+                            failedOrders.addAll(batchDeliverResult.getFailedOrders());
+                        } else {
+                            failedOrders.addAll(tempToPush);
+                        }
                     }
                 }
             }
@@ -146,8 +154,44 @@ public class BaisonDeliveryScheduleService {
         }
     }
 
-    List<OrderDeliveryInfo> convert2OrderDeliveryInfo(JSONArray baisonOrderArray) {
-        return null;
+    private List<OrderDeliveryInfo> convert2OrderDeliveryInfo(JSONArray baisonOrderArray) {
+
+        List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
+
+        for (Object o : baisonOrderArray) {
+            JSONObject obj = JSON.parseObject(o.toString());
+            BaisonQueryOrder baisonQueryOrder = obj.getObject("orderListGet", BaisonQueryOrder.class);
+//            System.out.println("\n-----------------Data----------------");
+//            System.out.println(baisonQueryOrder);
+//            System.out.println("\n-----------------Data----------------");
+
+            if (baisonQueryOrder.getShippingStatus().equals("7")) {// 已发货
+
+                OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
+                orderDeliveryInfo.setOrderId(baisonQueryOrder.getOrderSn());
+                orderDeliveryInfo.setLogiName(baisonQueryOrder.getShippingName());
+                orderDeliveryInfo.setLogiNo(baisonQueryOrder.getShippingSn());
+                orderDeliveryInfo.setLogiCode(baisonQueryOrder.getShippingCode());
+                orderDeliveryInfo.setFreight(baisonQueryOrder.getShippingFee());
+
+                StringBuilder deliverItemStr = new StringBuilder();
+
+                for (JSONObject jsonObject : baisonQueryOrder.getOrderDetails()) {
+                    BaisonQueryOrderItem baisonQueryOrderItem = jsonObject.getObject("orderDetailGet", BaisonQueryOrderItem.class);
+                    deliverItemStr.append(baisonQueryOrderItem.getGoods_sn())
+                            .append(",")
+                            .append(baisonQueryOrderItem.getGoods_number())
+                            .append("|");
+//                    System.out.println("\n************Detail**************");
+//                    System.out.println(baisonQueryOrderItem);
+//                    System.out.println("\n************Detail**************");
+                }
+                orderDeliveryInfo.setDeliverItemsStr(deliverItemStr.toString());
+                orderDeliveryInfoList.add(orderDeliveryInfo);
+
+            }
+        }
+        return orderDeliveryInfoList;
     }
 
     /**
