@@ -516,7 +516,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             requestMap.put("out_request_no", order.getOrderId());
             requestMap.put("trade_no", order.getPayNumber());
             requestMap.put("merchant_customs_code", dtwSysData.getECommerceCode());
-            requestMap.put("amount", order.getFinalAmount());
+            requestMap.put("amount", order.getOnlinePayAmount());
             requestMap.put("customs_place", DtwEnum.CustomerEnum.HANGZHOU.toString());
             requestMap.put("merchant_customs_name", dtwSysData.getECommerceName());
 //            requestMap.put("is_split", "n");
@@ -756,7 +756,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrderHead.setCompanyName(dtwSysData.getECommerceName());
         customOrderHead.setTradeTime(order.getPayTime());
         customOrderHead.setCurrCode(DtwEnum.CurrencyEnum.RMB.getCode());
-        customOrderHead.setDiscount(order.getFinalAmount() - order.getOnlinePayAmount());
+        customOrderHead.setDiscount(Arith.sub(order.getFinalAmount(), order.getOnlinePayAmount()));
 
         customOrderHead.setConsigneeEmail(order.getShipEmail());
         customOrderHead.setConsigneeTel(order.getShipMobile());
