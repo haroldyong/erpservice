@@ -23,8 +23,14 @@ import com.huobanplus.erpprovider.gy.service.GYSyncInventory;
 import com.huobanplus.erpprovider.kjyg.service.KjygScheduledService;
 import com.huobanplus.erpservice.SpringWebTest;
 import com.huobanplus.erpservice.commons.config.WebConfig;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
+import com.huobanplus.erpservice.eventhandler.ERPRegister;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +64,8 @@ public class OrderSyncTest extends SpringWebTest {
     private GYSyncInventory gySyncInventory;
     @Autowired
     private EDBSyncInventory edbSyncInventory;
+    @Autowired
+    private ERPRegister erpRegister;
 
     @Test
     public void orderShipSyncForEdb() throws Exception {
@@ -191,5 +199,28 @@ public class OrderSyncTest extends SpringWebTest {
         deliveries.add(delivery);
 
         gySyncDelivery.changeToSyncOrder(deliveries);
+    }
+
+    @Test
+    public void testtest() throws Exception {
+        List<OrderDeliveryInfo> orderDeliveryInfos = new ArrayList<>();
+        OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
+        orderDeliveryInfo.setDeliverItemsStr("D.B.03,1|BK.04,10|D.C.02,1|D.B.02,1|D.B.01,1|");
+        orderDeliveryInfo.setLogiCode("YTO");
+        orderDeliveryInfo.setLogiName("圆通速递");
+        orderDeliveryInfo.setLogiNo("12343928391");
+        orderDeliveryInfo.setOrderId("20161118521952452639");
+        orderDeliveryInfos.add(orderDeliveryInfo);
+
+        ERPInfo erpInfo = new ERPInfo(ERPTypeEnum.ProviderType.GY, "");
+        ERPUserInfo erpUserInfo = new ERPUserInfo(ERPTypeEnum.UserType.HUOBAN_MALL, 4886);
+        BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
+        batchDeliverEvent.setErpInfo(erpInfo);
+        batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfos);
+        batchDeliverEvent.setErpUserInfo(erpUserInfo);
+
+        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+        erpUserHandler.handleEvent(batchDeliverEvent);
+
     }
 }

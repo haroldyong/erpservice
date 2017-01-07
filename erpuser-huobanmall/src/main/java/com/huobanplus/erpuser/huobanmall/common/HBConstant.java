@@ -57,8 +57,6 @@ public class HBConstant {
 
     @Autowired
     private void initConstant(Environment environment) {
-        //"http://mallapi.51flashmall.com"
-        // http://mallapi.devpdmall.com
-        REQUEST_URL = environment.getProperty("huobanmall.pushUrl", "http://mallapi.51flashmall.com");
+        REQUEST_URL = environment.getProperty("huobanmall.pushUrl", "http://mallapi.pdmall.com");
     }
 }

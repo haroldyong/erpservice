@@ -246,7 +246,7 @@ public class EDBScheduledService {
                                 currentPageIndex++;
                                 //取下几笔数据
                                 for (int i = currentPageIndex; i <= totalPage; i++) {
-                                    edbOrderSearch.setPageIndex(currentPageIndex);
+                                    edbOrderSearch.setPageIndex(i);
                                     EventResult nextEventResult = edbOrderHandler.obtainOrderList(sysData, edbOrderSearch);
                                     if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                                         JSONObject nextResult = (JSONObject) nextEventResult.getData();
