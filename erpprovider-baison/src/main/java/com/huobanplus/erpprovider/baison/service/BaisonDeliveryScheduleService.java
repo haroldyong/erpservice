@@ -84,7 +84,7 @@ public class BaisonDeliveryScheduleService {
 
             BaisonOrderSearch baisonOrderSearch = new BaisonOrderSearch();
             baisonOrderSearch.setSdCode(sysData.getBaisonShopCode());
-            baisonOrderSearch.setStartModified("2015-12-30 08:00:00");
+            baisonOrderSearch.setStartModified(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
             baisonOrderSearch.setEndModified(StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
             baisonOrderSearch.setPageNo(1);
             baisonOrderSearch.setPageSize(BaisonConstant.PAGE_SIZE);
