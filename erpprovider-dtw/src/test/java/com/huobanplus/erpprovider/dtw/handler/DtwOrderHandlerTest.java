@@ -55,6 +55,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 //        System.out.println(result.getResultMsg());
 //    }
 
+
     @Test
     public void testWayBill() {
         DtwWayBill dtwWayBill = new DtwWayBill();
@@ -100,7 +101,9 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     @Test
     public void testPushPersonalDeclareOrder() {
 
-        Order order = JSON.parseObject(orderInfoJson, Order.class);
+        mockOrder.setOrderId("20161229140157038627");
+        String orderJson = "{\"orderId\":\"20170104164876938543\",\"memberId\":256362,\"userLoginName\":\"15067134475\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":500.000,\"orderName\":\"??????(?,M)(1)(?1)\",\"itemNum\":1,\"lastUpdateTime\":\"2017-01-04 16:22:12\",\"createTime\":\"2017-01-04 16:21:49\",\"shipName\":\"???\",\"shipArea\":\"??/???/???\",\"province\":\"??\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"???????????\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"15067134478\",\"costItem\":0.150,\"onlinePayAmount\":0.170,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":0.170,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"????V3\",\"payType\":9,\"customerId\":3447,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2017-01-04 16:22:12\",\"unionOrderId\":\"20170104248827519753\",\"receiveStatus\":0,\"sourceShop\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"362322199411050053\",\"buyerName\":\"???\",\"payNumber\":\"4006202001201701045167095606\",\"taxAmount\":0.020,\"orderItems\":[{\"itemId\":177071,\"orderId\":\"20170104164876938543\",\"unionOrderId\":\"20170104248827519753\",\"productBn\":\"XYDCSXJ0013\",\"name\":\"??????(?,M)(1)\",\"cost\":0.500,\"price\":0.150,\"amount\":0.150,\"num\":1,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":3447,\"goodBn\":\"1901109000\",\"standard\":\"?,M\",\"brief\":null,\"shipStatus\":0,\"weight\":0.0,\"unit\":null}],\"errorMessage\":null}";
+        Order order = JSON.parseObject(orderJson, Order.class);
         EventResult eventResult = dtwOrderHandler.pushPersonalDeclareOrder(order, mockDtwSysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
@@ -117,7 +120,12 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 
     @Test
     public void testPushAliPayOrder() {
-        EventResult eventResult = dtwOrderHandler.pushAliPayOrder(mockOrder, mockDtwSysData);
+        mockOrder.setOrderId("20161215608041164709");
+        mockOrder.setPayNumber("2016121521001004570220367991");
+        String orderJson = "{\"orderId\":\"20161215608041164709\",\"memberId\":256362,\"userLoginName\":\"S8AZBYFMDGZ\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":0.000,\"orderName\":\"??app????app??(???,XXS)(1)(?1)\",\"itemNum\":1,\"lastUpdateTime\":\"2016-12-15 10:24:46\",\"createTime\":\"2016-12-15 10:22:20\",\"shipName\":\"???\",\"shipArea\":\"??/???/???\",\"province\":\"??\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"???????????\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"15067134478\",\"costItem\":0.100,\"onlinePayAmount\":0.100,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":0.100,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"???\",\"payType\":1,\"customerId\":3447,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2016-12-15 10:24:47\",\"unionOrderId\":\"20161215733517365701\",\"receiveStatus\":0,\"sourceShop\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"362322199411050053\",\"buyerName\":\"???\",\"payNumber\":\"20161215394589117200\",\"orderItems\":[{\"itemId\":176873,\"orderId\":\"20161215608041164709\",\"unionOrderId\":\"20161215733517365701\",\"productBn\":\"CSXJ0001\",\"name\":\"??app????app??(???,XXS)(1)\",\"cost\":0.100,\"price\":0.100,\"amount\":0.100,\"num\":1,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":3447,\"goodBn\":\"1901101000\",\"standard\":\"???,XXS\",\"brief\":null,\"shipStatus\":0}],\"errorMessage\":null}";
+        Order order = JSON.parseObject(orderJson, Order.class);
+        order.setPayNumber("2016121521001004570220367991");
+        EventResult eventResult = dtwOrderHandler.pushAliPayOrder(order, mockDtwSysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultMsg());
@@ -128,7 +136,13 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         mockOrder.setPayNumber(SerialNo.create());
         mockOrder.setOrderId(SerialNo.create());
 
-        EventResult eventResult = dtwOrderHandler.pushWeixinPayOrder(mockOrder, mockDtwSysData);
+        String orderJson = "{\"orderId\":\"20170105182028729752\",\"memberId\":256362,\"userLoginName\":\"15067134475\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":500.000,\"orderName\":\"??????(?,M)(1)(?1)\",\"itemNum\":1,\"lastUpdateTime\":\"2017-01-05 17:46:34\",\"createTime\":\"2017-01-05 17:46:15\",\"shipName\":\"???\",\"shipArea\":\"??/???/???\",\"province\":\"??\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"???????????\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"15067134478\",\"costItem\":0.150,\"onlinePayAmount\":0.030,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":0.170,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"????V3\",\"payType\":9,\"customerId\":3447,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2017-01-05 17:46:35\",\"unionOrderId\":\"20170105090674315549\",\"receiveStatus\":0,\"sourceShop\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"362322199411050053\",\"buyerName\":\"???\",\"payNumber\":\"4006202001201701055298356442\",\"taxAmount\":0.020,\"orderItems\":[{\"itemId\":177084,\"orderId\":\"20170105182028729752\",\"unionOrderId\":\"20170105090674315549\",\"productBn\":\"XYDCSXJ0013\",\"name\":\"??????(?,M)(1)\",\"cost\":0.500,\"price\":0.150,\"amount\":0.150,\"num\":1,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":3447,\"goodBn\":\"1901109000\",\"standard\":\"?,M\",\"brief\":null,\"shipStatus\":0,\"weight\":0.0,\"unit\":null}],\"errorMessage\":null}";
+        String orderJson2 = "{\"orderId\":\"20161207974540631835\",\"memberId\":256362,\"userLoginName\":\"S8AZBYFMDGZ\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":0.000,\"orderName\":\"??app????app????app????app????app????app????app????app????app??(???,XXS)(1)(?1)\",\"itemNum\":1,\"lastUpdateTime\":\"2016-12-07 17:42:01\",\"createTime\":\"2016-12-07 17:41:30\",\"shipName\":\"???\",\"shipArea\":\"??/???/???\",\"province\":\"??\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"???????????\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"15067134478\",\"costItem\":0.100,\"onlinePayAmount\":0.100,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":0.100,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"????V3\",\"payType\":9,\"customerId\":3447,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2016-12-07 17:42:01\",\"unionOrderId\":\"20161207268060346380\",\"receiveStatus\":0,\"sourceShop\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"362322199411050053\",\"buyerName\":\"???\",\"payNumber\":\"20161207919917848518\",\"orderItems\":[{\"itemId\":176853,\"orderId\":\"20161207974540631835\",\"unionOrderId\":\"20161207268060346380\",\"productBn\":\"CSXJ0001\",\"name\":\"??app????app????app????app????app????app????app????app????app??(???,XXS)(1)\",\"cost\":0.100,\"price\":0.100,\"amount\":0.100,\"num\":1,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":3447,\"goodBn\":\"1901101000\",\"standard\":\"???,XXS\",\"brief\":null,\"shipStatus\":0}],\"errorMessage\":null}";
+        Order order = JSON.parseObject(orderJson, Order.class);
+        Order order2 = JSON.parseObject(orderJson2, Order.class);
+        order2.setPayNumber("4006202001201612072076863542");
+        order2.setPayType(9);
+        EventResult eventResult = dtwOrderHandler.pushWeixinPayOrder(order, mockDtwSysData);
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultMsg());
         System.out.println(eventResult.getResultCode());
@@ -140,7 +154,7 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         Order order = JSON.parseObject(orderInfoJson, Order.class);
         for (int i = 0; i < 1; i++) {
 
-            EventResult eventResult = dtwOrderHandler.pushCustomOrder(order, mockDtwSysData);
+            EventResult eventResult = dtwOrderHandler.pushCustomOrder(mockOrder, mockDtwSysData);
             System.out.println(eventResult.getResultCode());
             System.out.println(eventResult.getResultMsg());
         }
@@ -168,32 +182,32 @@ public class DtwOrderHandlerTest extends DtwTestBase {
         return goodPrice;
     }
 
-    @Test
-    public void testCaculateTaxPrice() {
-        double taxRate = Arith.div(mockDtwSysData.getTaxRate(), 100);
-        Order order = JSON.parseObject(orderInfoJson, Order.class);
-        List<OrderItem> orderItems = order.getOrderItems();
-        System.out.println("\n" + calculateTaxPrice(orderItems, taxRate));
-    }
+//    @Test
+//    public void testCaculateTaxPrice() {
+//        double taxRate = Arith.div(mockDtwSysData.getTaxRate(), 100);
+//        Order order = JSON.parseObject(orderInfoJson, Order.class);
+//        List<OrderItem> orderItems = order.getOrderItems();
+//        System.out.println("\n" + calculateTaxPrice(orderItems, taxRate));
+//    }
 
-    @Test
-    public void testCaculateGoodsPrice() {
-        double r = Arith.div(mockDtwSysData.getTaxRate(), 100);
+//    @Test
+//    public void testCaculateGoodsPrice() {
+//        double r = Arith.div(mockDtwSysData.getTaxRate(), 100);
+//
+//        System.out.println("\n" + caculateGoodsPrice(mockOrderItems, r));
+//    }
 
-        System.out.println("\n" + caculateGoodsPrice(mockOrderItems, r));
-    }
-
-    @Test
-    public void testPrice() {
-        double r = Arith.div(mockDtwSysData.getTaxRate(), 100);
-
-        System.out.println();
-        System.out.println("总金额：" + mockOrder.getFinalAmount());
-        System.out.println("运费：" + mockOrder.getCostFreight());
-        System.out.println("贷款:" + (mockOrder.getFinalAmount() - mockOrder.getCostFreight()));
-        System.out.println("税费：" + calculateTaxPrice(mockOrderItems, r));
-        System.out.println("商品费用：" + caculateGoodsPrice(mockOrderItems, r));
-    }
+//    @Test
+//    public void testPrice() {
+//        double r = Arith.div(mockDtwSysData.getTaxRate(), 100);
+//
+//        System.out.println();
+//        System.out.println("总金额：" + mockOrder.getFinalAmount());
+//        System.out.println("运费：" + mockOrder.getCostFreight());
+//        System.out.println("贷款:" + (mockOrder.getFinalAmount() - mockOrder.getCostFreight()));
+//        System.out.println("税费：" + calculateTaxPrice(mockOrderItems, r));
+//        System.out.println("商品费用：" + caculateGoodsPrice(mockOrderItems, r));
+//    }
 
     @Test
     public void testCustomBack() throws Exception {

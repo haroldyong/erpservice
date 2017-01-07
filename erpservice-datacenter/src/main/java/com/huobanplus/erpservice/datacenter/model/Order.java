@@ -90,6 +90,11 @@ public class Order extends BaseInfo {
     private double finalAmount;
 
     /**
+     * 订单税款
+     */
+    private double taxAmount;
+
+    /**
      * 订单优惠金额
      */
     private double pmtAmount;
@@ -163,9 +168,10 @@ public class Order extends BaseInfo {
     private String buyerName;
 
     /**
-     * 支付成功后支付平台返回的支付单号
+     * 支付成功后伙伴商城平台返回的支付单号
      */
     private String payNumber;
+
 
     /**
      *  订单来源店铺code

@@ -34,7 +34,7 @@ public class DtwUtil {
      * @return
      * @throws UnsupportedEncodingException
      */
-    public static String aliBuildSign(Map<String, Object> requestMap) throws UnsupportedEncodingException {
+    public static String aliBuildSign(Map<String, Object> requestMap, String secretKey) throws UnsupportedEncodingException {
         StringBuilder signStr = new StringBuilder();
         Iterator<Map.Entry<String, Object>> iterator = requestMap.entrySet().iterator();
 
@@ -44,9 +44,10 @@ public class DtwUtil {
             if (key.equals("sign") || key.equals("sign_type")) {
                 continue;
             }
-            signStr.append(key).append(next.getValue());
+            signStr.append(key).append("=").append(next.getValue()).append("&");
         }
-        return DigestUtils.md5Hex(signStr.toString().getBytes("utf-8")).toUpperCase();
+        signStr.deleteCharAt(signStr.lastIndexOf("&")).append(secretKey);// 删除最后一个&连接符后在拼接key
+        return DigestUtils.md5Hex(signStr.toString().getBytes("utf-8"));
     }
 
     /**

@@ -70,9 +70,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
         try {
             Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-            log.info(pushNewOrderEvent.getOrderInfoJson());
-//            order.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());
-//            order.setPayNumber("123456789");
+            log.info("orderJson:" + pushNewOrderEvent.getOrderInfoJson());
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
             DtwSysData dtwSysData = JSON.parseObject(erpInfo.getSysDataJson(), DtwSysData.class);
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
@@ -155,13 +153,20 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         // 支付单推送
         if (!dtwAllOrderStatus.isPayOrderSyncStatus()) {
             EventResult payOrderEvent = null;
-            if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType()) == OrderEnum.PaymentOptions.ALIPAY_PC) {// FIXME: 2016-07-27  可能空指针
+
+            OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
+
+            if (paymentOptions == OrderEnum.PaymentOptions.ALIPAY_PC || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE
+                    || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE_WEB) {
                 payOrderEvent = pushAliPayOrder(order, dtwSysData);
-            } else if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType()) == OrderEnum.PaymentOptions.WEIXINPAY_V3) {
+
+            } else if (paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_V3 || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY
+                    || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_APP) {
                 payOrderEvent = pushWeixinPayOrder(order, dtwSysData);
             } else {
                 payOrderEvent = EventResult.resultWith(EventResultEnum.ERROR, "不支持该支付", null);
             }
+
 
             if (payOrderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 dtwAllOrderStatus.setPayOrderSyncStatus(true);
@@ -217,9 +222,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
     public EventResult pushPlatformOrder(Order order, DtwSysData dtwSysData) {
 
-        double taxRate = Arith.div(dtwSysData.getTaxRate(), 100);
-        double taxPrice = calculateTaxPrice(order.getOrderItems(), taxRate);
-        double orderGoodsAmount = caculateGoodsPrice(order.getOrderItems(), taxRate);
+//        double taxRate = Arith.div(dtwSysData.getTaxRate(), 100);
+//        double taxPrice = calculateTaxPrice(order.getOrderItems(), taxRate);
+//        double orderGoodsAmount = caculateGoodsPrice(order.getOrderItems(), taxRate);
 
         Map<String, Object> requestMap = new HashMap<>();
         DtwOrder dtwOrder = new DtwOrder();
@@ -229,14 +234,13 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         for (int i = 0; i < orderItemList.size(); i++) {
             OrderItem orderItem = orderItemList.get(i);
             DtwOrderItem dtwOrderItem = new DtwOrderItem();
-            dtwOrderItem.setMsgitem(i);//(必填)
+            dtwOrderItem.setMsgitem(i + 1);//(必填)
             dtwOrderItem.setPartno(orderItem.getProductBn());//(必填)
             dtwOrderItem.setPartName(orderItem.getName());//(必填)
             dtwOrderItem.setSpec(orderItem.getStandard());//(必填)
             dtwOrderItem.setUnit(DtwEnum.UnitEnum.JIAN.getCode());
             dtwOrderItem.setCurrency(DtwEnum.CurrencyEnum.RMB.getCode());
-            double goodsPirce = Arith.sub(orderItem.getPrice(), Arith.mul(orderItem.getPrice(), taxRate));
-            dtwOrderItem.setAmount(Arith.mul(goodsPirce, orderItem.getNum()));//(必填)
+            dtwOrderItem.setAmount(orderItem.getAmount());//(必填)
             dtwOrderItem.setQty(orderItem.getNum());
             dtwOrderItemList.add(dtwOrderItem);
         }
@@ -252,35 +256,35 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         dtwOrder.setMsgid(order.getOrderId());//(必填)
         dtwOrder.setPayType(DtwEnum.PaytypeEnum.Other.getCode());
-        if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType())
-                == OrderEnum.PaymentOptions.ALIPAY_PC) {
-            dtwOrder.setPayCompanyCode("");
+        OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
 
-        } else if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType())
-                == OrderEnum.PaymentOptions.WEIXINPAY_V3) {
+        if (paymentOptions == OrderEnum.PaymentOptions.ALIPAY_PC || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE
+                || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE_WEB) {
+            dtwOrder.setPayCompanyCode(DtwConstant.ALI_PAY_CUSTOM_CODE);
+
+        } else if (paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_V3 || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY
+                || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_APP) {
             dtwOrder.setPayCompanyCode(DtwConstant.WEIXIN_PAY_CUSTOM_CODE);//(必填) 支付公司在海关的备案码
         } else {
             return EventResult.resultWith(EventResultEnum.ERROR, "支付方式不支持", null);
         }
         dtwOrder.setPayNumber(order.getPayNumber());//(必填) 支付单号
         dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
-        dtwOrder.setOrderGoodsAmount(orderGoodsAmount);//(必填)
+        dtwOrder.setOrderGoodsAmount(order.getCostItem());//(必填)
         dtwOrder.setOrderNo(order.getOrderId());//(必填)
-        dtwOrder.setOrderTaxAmount(taxPrice);
+        dtwOrder.setOrderTaxAmount(order.getTaxAmount());
         dtwOrder.setTotalCount(order.getItemNum());//(必填)
-        dtwOrder.setTotalAmount(orderGoodsAmount);//(必填)
+        dtwOrder.setTotalAmount(order.getCostItem());//(必填)
         dtwOrder.setLogisCompanyName("百世物流科技（中国）有限公司");//(必填)
         dtwOrder.setLogisCompanyCode("WL15041401");//(必填)
         dtwOrder.setPurchaserId(String.valueOf(order.getMemberId()));//(必填)
-        dtwOrder.setShipper(dtwSysData.getSenderName());
-        dtwOrder.setShipperPro("");
-        dtwOrder.setShipperCity("");
-        dtwOrder.setShipperDistrict("");
-        dtwOrder.setShipperAddress(dtwSysData.getSenderAddr());
-        dtwOrder.setShipperMobile("");
-        dtwOrder.setShipperTel("");
+        dtwOrder.setShipper(DtwConstant.SENDER_NAME);
+        dtwOrder.setShipperPro(DtwConstant.SENDER_PROVINCE);
+        dtwOrder.setShipperCity(DtwConstant.SENDER_CITY);
+        dtwOrder.setShipperDistrict(DtwConstant.SENDER_DISTRICT);
+        dtwOrder.setShipperAddress(DtwConstant.SENDER_ADDR);
+        dtwOrder.setShipperMobile(DtwConstant.SENDER_MOBILE);
         dtwOrder.setShipperCountry(DtwEnum.CountryEnum.CHINA.getCode());
-        dtwOrder.setShipperZip("");
         dtwOrder.setConsignee(order.getShipName());//(必填)
         dtwOrder.setConsigneePro(order.getProvince());//(必填)
         dtwOrder.setConsigneeCity(order.getCity());//(必填)
@@ -297,11 +301,20 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         System.out.println("\n**********************");
         System.out.println(JSON.toJSONString(dtwOrder));
-        System.out.println("税费:" + taxPrice);
+        System.out.println("税费:" + order.getTaxAmount());
         System.out.println("贷款：" + dtwOrder.getOrderGoodsAmount());
         System.out.println("成交总价：" + dtwOrder.getTotalAmount());
         System.out.println("订单总金额:" + dtwOrder.getOrderTotalAmount());
         System.out.println("\n**********************");
+
+        log.info("\n********Integrated Order**************");
+        log.info(JSON.toJSONString(dtwOrder));
+        log.info("tax:" + order.getTaxAmount());
+        log.info("costfreight:" + order.getCostFreight());
+        log.info("goodsAmount：" + dtwOrder.getOrderGoodsAmount());
+        log.info("totalAmount：" + dtwOrder.getTotalAmount());
+        log.info("orderTotalAmount:" + dtwOrder.getOrderTotalAmount());
+        log.info("\n**************************************");
 
         requestMap.put("data", JSON.toJSONString(dtwOrder));
 
@@ -314,7 +327,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
             }
         } else {
-            log.error("服务器请求失败:" + httpResult.getHttpContent());
+            log.error("Server Request Failed:" + httpResult.getHttpContent());
             return EventResult.resultWith(EventResultEnum.ERROR, "服务器请求失败", null);
         }
     }
@@ -326,8 +339,8 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         DtwPersonalDelcareInfo dtwPersonalDelcareInfo = new DtwPersonalDelcareInfo();
         dtwPersonalDelcareInfo.setPassKey(dtwSysData.getPassKey());// 必填
         dtwPersonalDelcareInfo.setMsgid(order.getOrderId());// 必填
-        dtwPersonalDelcareInfo.setCompanyName(dtwSysData.getCompanyName());// 必填
-        dtwPersonalDelcareInfo.setCompanyCode(dtwSysData.getCompanyCode());// 必填
+        dtwPersonalDelcareInfo.setCompanyName(dtwSysData.getECommerceName());// 必填
+        dtwPersonalDelcareInfo.setCompanyCode(dtwSysData.getECommerceCode());// 必填
 //        dtwPersonalDelcareInfo.setPreEntryNumber("");
         dtwPersonalDelcareInfo.setImportType(DtwEnum.ImportTypeEnum.BAOSHUI.getCode());// 2016/7/4 进口类型（0一般进口，1保税进口）
         dtwPersonalDelcareInfo.setOrderNo(order.getOrderId());// 必填
@@ -336,7 +349,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwPersonalDelcareInfo.setGrossWeight(order.getWeight());// 必填
         dtwPersonalDelcareInfo.setNetWeight(order.getWeight());// 必填
         dtwPersonalDelcareInfo.setRemark(order.getMemo());
-        dtwPersonalDelcareInfo.setSenderName(dtwSysData.getSenderAddr());// 必填
+        dtwPersonalDelcareInfo.setSenderName(DtwConstant.SENDER_NAME);// 必填
         dtwPersonalDelcareInfo.setConsignee(order.getShipName());// 必填
         dtwPersonalDelcareInfo.setSenderCity("");//非必填
         dtwPersonalDelcareInfo.setPaperType("");// 非必填
@@ -345,7 +358,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwPersonalDelcareInfo.setBuyerIdType("1");// 必填 1-身份证
         dtwPersonalDelcareInfo.setBuyerIdNumber(order.getBuyerPid());// 必填
         dtwPersonalDelcareInfo.setBuyerName(order.getBuyerName());// 必填
-        dtwPersonalDelcareInfo.setWorth(order.getFinalAmount());// 必填
+        dtwPersonalDelcareInfo.setWorth(Arith.sub(order.getFinalAmount(), order.getTaxAmount()));// 必填
         dtwPersonalDelcareInfo.setFeeAmount(order.getCostFreight());// 必填
         dtwPersonalDelcareInfo.setInsureAmount(0.0);// 必填
         dtwPersonalDelcareInfo.setCurrCode(DtwEnum.CurrencyEnum.RMB.getCode());
@@ -362,7 +375,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         for (int i = 0; i < orderItems.size(); i++) {
             OrderItem item = orderItems.get(i);
             DtwGoodsDelcareItem dtwGoodsDelcareItem = new DtwGoodsDelcareItem();
-            dtwGoodsDelcareItem.setGoodsOrder(i);// 必填
+            dtwGoodsDelcareItem.setGoodsOrder(i + 1);// 必填
             dtwGoodsDelcareItem.setCodeTs(item.getProductBn());// 必填//商品HScode:填写商品海关编码
             dtwGoodsDelcareItem.setGoodsItemNo(item.getProductBn());// 必填
             dtwGoodsDelcareItem.setGoodsName(item.getName());// 必填
@@ -371,18 +384,32 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             dtwGoodsDelcareItem.setTradeCurr(DtwEnum.CurrencyEnum.RMB.getCode());
             dtwGoodsDelcareItem.setTradeTotal(order.getFinalAmount());// 必填
             dtwGoodsDelcareItem.setDeclPrice(item.getPrice());// 必填
-            dtwGoodsDelcareItem.setDeclTotalPrice(Arith.mul(item.getPrice(), item.getNum()));// 必填
+            dtwGoodsDelcareItem.setDeclTotalPrice(item.getAmount());// 必填
 //            dtwGoodsDelcareItem.setUseTo("");
             dtwGoodsDelcareItem.setDeclareCount(item.getNum());// 必填
             dtwGoodsDelcareItem.setGoodsUnit(DtwEnum.UnitEnum.JIAN.getCode());// 必填
 //            dtwGoodsDelcareItem.setGoodsGrossWeight("");
-            dtwGoodsDelcareItem.setFirstUnit(DtwEnum.UnitEnum.JIAN.getCode());// 必填
-            dtwGoodsDelcareItem.setFirstCount(item.getNum());// 必填
+            dtwGoodsDelcareItem.setFirstUnit(DtwEnum.UnitEnum.KG.getCode());// 必填 第一计量单位都是千克
+            dtwGoodsDelcareItem.setFirstCount(Arith.div(item.getWeight() * item.getNum(), 1000));// 必填
 //            dtwGoodsDelcareItem.setSecondUnit("");
 //            dtwGoodsDelcareItem.setSecondCount(0.0);
 
             dtwItems.add(dtwGoodsDelcareItem);
         }
+
+        System.out.println("\n*********personal declare fee*******************");
+        System.out.println("declTotalPrice:" + order.getCostItem());
+        System.out.println("costfreight:" + order.getCostFreight());
+        System.out.println("insureAmount:" + dtwPersonalDelcareInfo.getInsureAmount());
+        System.out.println("worth:" + dtwPersonalDelcareInfo.getWorth());
+        System.out.println("\n*********personal declare fee*******************");
+
+        log.info("\n*********personal declare fee*******************");
+        log.info("declTotalPrice:" + order.getCostItem());
+        log.info("costfreight:" + order.getCostFreight());
+        log.info("insureAmount:" + dtwPersonalDelcareInfo.getInsureAmount());
+        log.info("worth:" + dtwPersonalDelcareInfo.getWorth());
+        log.info("\n*********personal declare fee*******************");
 
         dtwPersonalDelcareInfo.setItems(dtwItems);
 
@@ -397,10 +424,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
             }
         } else {
-            log.error("服务器请求失败:" + httpResult.getHttpContent());
+            log.error("Server Request Failed:" + httpResult.getHttpContent());
             return EventResult.resultWith(EventResultEnum.ERROR, "服务器请求失败", null);
         }
-
     }
 
     @Override
@@ -445,7 +471,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                     return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
                 }
             } else {
-                log.error("服务器请求失败:" + httpResult.getHttpContent());
+                log.error("Server Request Failed:" + httpResult.getHttpContent());
                 return EventResult.resultWith(EventResultEnum.ERROR, "服务器请求失败", null);
             }
 
@@ -469,7 +495,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                     return EventResult.resultWith(EventResultEnum.ERROR, result.getString("ErrMsg"), null);
                 }
             } else {
-                log.error("服务器请求失败:" + httpResult.getHttpContent());
+                log.info("Server Request Failed:" + httpResult.getHttpContent());
                 return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (Exception e) {
@@ -490,12 +516,12 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             requestMap.put("out_request_no", order.getOrderId());
             requestMap.put("trade_no", order.getPayNumber());
             requestMap.put("merchant_customs_code", dtwSysData.getECommerceCode());
-            requestMap.put("amount", order.getFinalAmount());
-            requestMap.put("customs_place", DtwEnum.CustomerEnum.HANGZHOU);
+            requestMap.put("amount", order.getOnlinePayAmount());
+            requestMap.put("customs_place", DtwEnum.CustomerEnum.HANGZHOU.toString());
             requestMap.put("merchant_customs_name", dtwSysData.getECommerceName());
 //            requestMap.put("is_split", "n");
 //            requestMap.put("sub_out_biz_no", "2015080811223212345453");
-            String sign = DtwUtil.aliBuildSign(requestMap);
+            String sign = DtwUtil.aliBuildSign(requestMap, dtwSysData.getAliKey());
             requestMap.put("sign", sign);
 
             HttpResult httpResult = HttpClientUtil.getInstance().get(DtwConstant.ALI_PAY_URL, requestMap);
@@ -506,22 +532,24 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
                 Element isSuccessElem = root.element("is_success");
                 if (isSuccessElem.getText().equals("T")) {
-                    Element resultCodeElem = root.element("result_code");
-                    if (resultCodeElem.equals("SUCCESS")) {
-                        log.info("大田推送支付宝支付单到海关");
+
+                    Element aliPayElem = root.element("response").element("alipay");
+                    Element resultCodeElem = aliPayElem.element("result_code");
+                    if (resultCodeElem.getText().equals("SUCCESS")) {
+                        log.info("ali pay order push success");
                         return EventResult.resultWith(EventResultEnum.SUCCESS);
                     } else {
-                        Element errorElem = root.element("detail_error_des");
-                        log.error("推送支付宝支付单到海关失败:" + errorElem.getText());
+                        Element errorElem = aliPayElem.element("detail_error_des");
+                        log.info("ali pay order push failed:" + errorElem.getText());
                         return EventResult.resultWith(EventResultEnum.ERROR, errorElem.getText(), null);
                     }
                 } else {
                     Element errorElem = root.element("error");
-                    log.error("推送支付宝支付单到海关失败:" + errorElem.getText());
+                    log.info("ali pay order push failed:" + errorElem.getText());
                     return EventResult.resultWith(EventResultEnum.ERROR, errorElem.getText(), null);
                 }
             } else {
-                log.error("服务器请求失败:" + httpResult.getHttpContent());
+                log.error("Server Request Failed:" + httpResult.getHttpContent());
                 return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (Exception e) {
@@ -534,26 +562,29 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     public EventResult pushWeixinPayOrder(Order order, DtwSysData dtwSysData) {
         try {
 
-            double taxRate = Arith.div(dtwSysData.getTaxRate(), 100);
-            double taxPrice = calculateTaxPrice(order.getOrderItems(), taxRate);
+//            double taxRate = Arith.div(dtwSysData.getTaxRate(), 100);
+//            double taxPrice = calculateTaxPrice(order.getOrderItems(), taxRate);
 
             WeixinCustom weixinCustom = new WeixinCustom();
             weixinCustom.setAppid(dtwSysData.getWeiXinAppId());
             weixinCustom.setMchId(dtwSysData.getWeixinMchId());
             weixinCustom.setOutTradeNo(order.getOrderId());
             weixinCustom.setTransactionId(order.getPayNumber());
-            weixinCustom.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.name());
-            weixinCustom.setMchCustomsNo(dtwSysData.getCompanyCode());
-            weixinCustom.setSubOrderNo(order.getOrderId() + "001");// TODO: 2016-09-10
+            weixinCustom.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.toString());
+            weixinCustom.setMchCustomsNo(dtwSysData.getECommerceCode());
+            weixinCustom.setSubOrderNo(order.getOrderId());
             weixinCustom.setFeeType("CNY");
             weixinCustom.setCertType("IDCARD");
             weixinCustom.setCertId(order.getBuyerPid());
+            weixinCustom.setName(order.getBuyerName());
 
             //order_fee=transport_fee+product_fee  应付金额=物流费+商品价格
-            weixinCustom.setOrderFee((int) (order.getFinalAmount() * 100));// 单位转换成分
-            weixinCustom.setTransportFee((int) (order.getCostFreight() * 100));// 单位转换成分
-            weixinCustom.setProductFee((int) (order.getFinalAmount() * 100 - order.getCostFreight() * 100));// 单位转换成分
-            weixinCustom.setDuty((int) (taxPrice * 100));
+            int orderFee = (int) (order.getOnlinePayAmount() * 100);
+            int transportFee = (int) (order.getCostFreight() * 100);
+            weixinCustom.setOrderFee(orderFee);// 单位转换成分
+            weixinCustom.setTransportFee(transportFee);// 单位转换成分
+            weixinCustom.setProductFee(orderFee - transportFee);// 单位转换成分
+            weixinCustom.setDuty(0);// TODO: 2016-12-15 关税是否需要还是为0
 
 
             Map<String, Object> requestMap = new TreeMap<>();
@@ -578,8 +609,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             weixinCustom.setSign(sign);
 
             String requestData = new XmlMapper().writeValueAsString(weixinCustom);
-
-
             HttpResult httpResult = HttpClientUtil.getInstance().post(DtwConstant.WEIXIN_PAY_URL, requestData);
 
             System.out.println("\n*********Weixin Request & Response Data******************");
@@ -594,19 +623,20 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 if (returnCodeElem.getText().equals("SUCCESS")) {
                     Element resultCode = root.element("result_code");
                     if (resultCode.getText().equals("SUCCESS")) {
+                        log.info("weixin pay order push success");
                         return EventResult.resultWith(EventResultEnum.SUCCESS);
                     } else {
                         Element errorMsgElem = root.element("err_code_des");
-                        log.error("推送微信支付单到海关失败:" + errorMsgElem.getText());
+                        log.info("weixin pay order push failed:" + errorMsgElem.getText());
                         return EventResult.resultWith(EventResultEnum.ERROR, errorMsgElem.getText(), null);
                     }
                 } else {
                     Element returnMsg = root.element("return_msg");
-                    log.error("推送微信支付单到海关失败:" + returnMsg.getText());
+                    log.info("weixin pay order push failed:" + returnMsg.getText());
                     return EventResult.resultWith(EventResultEnum.ERROR, returnMsg.getText(), null);
                 }
             } else {
-                log.error("服务器请求失败:" + httpResult.getHttpContent());
+                log.error("Server Request Failed:" + httpResult.getHttpContent());
                 return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (Exception e) {
@@ -620,6 +650,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         try {
 
             CustomOrder customOrder = convertToCustomOrder(order, dtwSysData);
+            if (customOrder == null) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "支付方式不支持", null);
+            }
             String requestXml = new XmlMapper().writeValueAsString(customOrder);
             requestXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" + requestXml;
 
@@ -632,13 +665,13 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
             // rsa 加密
             byte[] data = requestXml.getBytes("utf-8");
-            byte[] privateKeyCode = Base64.getDecoder().decode(DtwConstant.RSA_PRIVATE_KEY.getBytes("utf-8"));
-            byte[] aesKeyCode = Base64.getDecoder().decode(DtwConstant.AES_KEY.getBytes("utf-8"));
+            byte[] privateKeyCode = Base64.getDecoder().decode(dtwSysData.getRsaPrivateKey().getBytes("utf-8"));
+            byte[] aesKeyCode = Base64.getDecoder().decode(dtwSysData.getAesKey().getBytes("utf-8"));
 
             String encData = new String(Base64.getEncoder().encode(AESUtil.encrypt(data, aesKeyCode)), "utf-8");
             String sign = new String(Base64.getEncoder().encode(RSAUtil.sign(data, privateKeyCode)), "utf-8");
 
-            String result = DtwUtil.requestCustomWebService(encData, "IMPORTORDER", sign, dtwSysData.getCompanyCode());
+            String result = DtwUtil.requestCustomWebService(encData, "IMPORTORDER", sign, dtwSysData.getECommerceCode());
 
             Document document = DocumentHelper.parseText(result);
             Element root = document.getRootElement();
@@ -658,6 +691,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             System.out.println("\n**************Data pane end*******************");
 
             if (chkMark.getText().equals("1")) {// 数据初步没有问题且报文成功推送至海关
+                log.info("customerOrder push success");
                 return EventResult.resultWith(EventResultEnum.SUCCESS);
             } else {
                 String xpath = "/mo/body/list/jkfResult/resultList/jkfResultDetail/resultInfo";
@@ -666,7 +700,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 for (Element element : resultInfo) {
                     errorMsg.append(element.getText()).append(";");
                 }
-                log.error("海关订单推送失败：" + errorMsg);
+                log.info("customerOrder push failed：" + errorMsg);
                 return EventResult.resultWith(EventResultEnum.ERROR, errorMsg.toString(), null);
             }
 
@@ -680,11 +714,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
     private CustomOrder convertToCustomOrder(Order order, DtwSysData dtwSysData) {
 
-        double taxRate = Arith.div(dtwSysData.getTaxRate(), 100);
-        double taxPrice = calculateTaxPrice(order.getOrderItems(), taxRate);
-        double orderGoodsAmount = caculateGoodsPrice(order.getOrderItems(), taxRate);
-
-
         CustomOrder customOrder = new CustomOrder();
         CustomHead customHead = new CustomHead();
         customHead.setBusinessType("IMPORTORDER");
@@ -694,7 +723,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         CustomOrderInfo customOrderInfo = new CustomOrderInfo();
 
         CustomSign customSign = new CustomSign();
-        customSign.setCompanyCode(dtwSysData.getCompanyCode());
+        customSign.setCompanyCode(dtwSysData.getECommerceCode());
         customSign.setBusinessNo(order.getOrderId());//业务编号 使用订单编号
         customSign.setBusinessType("IMPORTORDER");
         customSign.setDeclareType("1");// 固定填写1
@@ -706,10 +735,16 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrderHead.setIeFlag("I");
         customOrderHead.setPayType("03");
 
-        if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType()) == OrderEnum.PaymentOptions.ALIPAY_PC) {
-            customOrderHead.setPayCompanyCode("");
-        } else if (EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType()) == OrderEnum.PaymentOptions.WEIXINPAY_V3) {
+        OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
+        if (paymentOptions == OrderEnum.PaymentOptions.ALIPAY_PC || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE
+                || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE_WEB) {
+            customOrderHead.setPayCompanyCode(DtwConstant.ALI_PAY_CUSTOM_CODE);
+
+        } else if (paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_V3 || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY
+                || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_APP) {
             customOrderHead.setPayCompanyCode(DtwConstant.WEIXIN_PAY_CUSTOM_CODE);
+        } else {
+            return null;
         }
 
         customOrderHead.setPayNumber(order.getPayNumber());
@@ -717,10 +752,11 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrderHead.setOrderNo(order.getOrderId());
         customOrderHead.setFeeAmount(order.getCostFreight());
         customOrderHead.setInsureAmount(0.0);
-        customOrderHead.setCompanyCode(dtwSysData.getCompanyCode());
-        customOrderHead.setCompanyName(dtwSysData.getCompanyName());
+        customOrderHead.setCompanyCode(dtwSysData.getECommerceCode());
+        customOrderHead.setCompanyName(dtwSysData.getECommerceName());
         customOrderHead.setTradeTime(order.getPayTime());
         customOrderHead.setCurrCode(DtwEnum.CurrencyEnum.RMB.getCode());
+        customOrderHead.setDiscount(Arith.sub(order.getFinalAmount(), order.getOnlinePayAmount()));
 
         customOrderHead.setConsigneeEmail(order.getShipEmail());
         customOrderHead.setConsigneeTel(order.getShipMobile());
@@ -729,10 +765,10 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrderHead.setTotalCount(order.getItemNum());
 //        customOrderHead.setPostMode();
         customOrderHead.setSenderCountry(DtwEnum.CountryEnum.CHINA.getCode());
-        customOrderHead.setSenderName(dtwSysData.getSenderName());
+        customOrderHead.setSenderName(DtwConstant.SENDER_NAME);
         customOrderHead.setPurchaserId(String.valueOf(order.getMemberId()));
-        customOrderHead.setLogisCompanyCode("WL15041401");
-        customOrderHead.setLogisCompanyName("百世物流科技（中国）有限公司");
+        customOrderHead.setLogisCompanyCode(DtwConstant.LOGISTIC_CODE);
+        customOrderHead.setLogisCompanyName(DtwConstant.LOGISTIC_NAME);
         customOrderHead.setZipCode(order.getShipZip());
         customOrderHead.setNote(order.getMemo());
 //        customOrderHead.setWayBills("");
@@ -750,13 +786,12 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             customOrderDetail.setGoodsModel(orderItem.getStandard());
             customOrderDetail.setCodeTs(orderItem.getGoodBn());
             customOrderDetail.setOriginCountry(DtwEnum.CountryEnum.CHINA.getCode());
-            double goodsPrice = Arith.sub(orderItem.getPrice(), Arith.mul(orderItem.getPrice(), taxRate));
-            customOrderDetail.setUnitPrice(goodsPrice);
+            customOrderDetail.setUnitPrice(orderItem.getPrice());
             customOrderDetail.setGoodsCount(orderItem.getNum());
             customOrderDetail.setGoodsUnit(DtwEnum.UnitEnum.JIAN.getCode());
+            customOrderDetail.setCurrency(DtwEnum.CurrencyEnum.RMB.getCode());
 //            customOrderDetail.setGrossWeight(0.0);//商品毛重 非必填
             customOrderDetails.add(customOrderDetail);
-
         }
 
         CustomGoodsPurchaser customGoodsPurchaser = new CustomGoodsPurchaser();
@@ -768,10 +803,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customGoodsPurchaser.setPaperNumber(order.getBuyerPid());
 //        customGoodsPurchaser.setAddress("");//地址 非必填
 
-
-        customOrderHead.setOrderTaxAmount(taxPrice);
-        customOrderHead.setOrderGoodsAmount(orderGoodsAmount);
-        customOrderHead.setTotalAmount(orderGoodsAmount);
+        customOrderHead.setOrderTaxAmount(order.getTaxAmount());
+        customOrderHead.setOrderGoodsAmount(order.getCostItem());
+        customOrderHead.setTotalAmount(order.getCostItem());
         customOrderInfo.setCustomSign(customSign);
         customOrderInfo.setCustomOrderHead(customOrderHead);
         customOrderInfo.setCustomOrderDetailList(customOrderDetails);
@@ -784,18 +818,18 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrder.setHead(customHead);
 
         System.out.println("\n**************海关订单费用**********************");
-        System.out.println("税费:" + taxPrice);
+        System.out.println("税费:" + order.getTaxAmount());
         System.out.println("贷款：" + customOrderHead.getOrderGoodsAmount());
         System.out.println("成交总价：" + customOrderHead.getTotalAmount());
         System.out.println("订单总金额:" + customOrderHead.getOrderTotalAmount());
         System.out.println("\n**************费用**********************");
 
-        log.info("\n**************海关订单费用**********************");
-        log.info("税费:" + taxPrice);
-        log.info("贷款：" + customOrderHead.getOrderGoodsAmount());
-        log.info("成交总价：" + customOrderHead.getTotalAmount());
-        log.info("订单总金额:" + customOrderHead.getOrderTotalAmount());
-        log.info("\n**************费用**********************");
+        log.info("\n**************CustomerOrder fee info**********************");
+        log.info("tax:" + order.getTaxAmount());
+        log.info("goodsAmount：" + customOrderHead.getOrderGoodsAmount());
+        log.info("totalAmount：" + customOrderHead.getTotalAmount());
+        log.info("order totalAmount:" + customOrderHead.getOrderTotalAmount());
+        log.info("\n**********************************************************");
 
         return customOrder;
     }
