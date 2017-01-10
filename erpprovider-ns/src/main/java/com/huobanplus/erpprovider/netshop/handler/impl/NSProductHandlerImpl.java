@@ -15,7 +15,6 @@ import com.huobanplus.erpprovider.netshop.bean.NSGoodItemResult;
 import com.huobanplus.erpprovider.netshop.bean.NSGoodResult;
 import com.huobanplus.erpprovider.netshop.exceptionhandler.NSExceptionHandler;
 import com.huobanplus.erpprovider.netshop.handler.NSProductHandler;
-import com.huobanplus.erpservice.common.httputil.HttpUtil;
 import com.huobanplus.erpservice.datacenter.model.MallGoods;
 import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
@@ -30,9 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 商品事件实现类
@@ -124,6 +121,7 @@ public class NSProductHandlerImpl implements NSProductHandler {
             List<ProInventoryInfo> inventoryInfoList = new ArrayList<>();
             ProInventoryInfo proInventoryInfo = new ProInventoryInfo();
             proInventoryInfo.setInventory(quantity);
+            proInventoryInfo.setSalableInventory(quantity);
             proInventoryInfo.setGoodBn(goodBn);
             proInventoryInfo.setProductBn(proBn);
             inventoryInfoList.add(proInventoryInfo);
@@ -136,14 +134,7 @@ public class NSProductHandlerImpl implements NSProductHandler {
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
                 return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, eventResult.getResultMsg());
             }
-            //todo 推送给伙伴商城
-            Map<String, String> requestData = new HashMap<>();
-            String response = HttpUtil.getInstance().doPost("", requestData);
-            if (response == null) {
-                return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, "服务器请求失败");
-            } else {
-                return EventResult.resultWith(EventResultEnum.SUCCESS, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</Result><GoodsType>OnSale</GoodsType><Cause></Cause></Rsp>");
-            }
+            return EventResult.resultWith(EventResultEnum.SUCCESS, "<?xml version='1.0' encoding='utf-8'?><Rsp><Result>1</Result><GoodsType>OnSale</GoodsType><Cause></Cause></Rsp>");
         } catch (Exception e) {
             return NSExceptionHandler.handleException(mType, EventResultEnum.ERROR, "服务器错误--" + e.getMessage());
         }

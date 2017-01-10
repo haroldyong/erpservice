@@ -74,4 +74,9 @@ public class OrderItem extends BaseInfo {
      * 发货状态
      */
     private int shipStatus;
+
+    /**
+     * 商品重量 单位g
+     */
+    private double weight;
 }

@@ -79,6 +79,12 @@ public class CustomOrderHead {
     private double orderGoodsAmount;
 
     /**
+     * 非现金抵扣价
+     */
+    @JacksonXmlProperty(localName = "discount")
+    private double discount;
+
+    /**
      * 运费 交易过程中商家向用户征收的运费，免邮
      */
     @JacksonXmlProperty(localName = "feeAmount")
