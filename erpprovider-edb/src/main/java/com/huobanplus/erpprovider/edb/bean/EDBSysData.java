@@ -33,4 +33,8 @@ public class EDBSysData {
     private String storageId;
     private String express;
     private String beginTime;
+    /**
+     * 指定库存同步的仓库编号集，逗号分隔
+     */
+    private String storageIds;
 }

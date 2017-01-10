@@ -28,6 +28,8 @@
             var shopId = $.trim($("#edb_shopId").val());
             var storageId = $.trim($("#edb_storageId").val());
             var express = $.trim($("#edb_express").val());
+            var storageIds = $.trim($("#edb_storageIds").val());
+
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入请求地址");
                 return null;
@@ -65,7 +67,10 @@
                 $.jBox.tip("请输入快递公司");
                 return null;
             }
-
+            if (storageIds.length == 0) {
+                $.jBox.tip("请输入库存同步仓库编号");
+                return null;
+            }
 
             var edbConfig = {
                 requestUrl: requestUrl,
@@ -77,6 +82,7 @@
                 shopId: shopId,
                 storageId: storageId,
                 express: express,
+                storageIds: storageIds
             };
             return JSON.stringify(edbConfig);
         },
@@ -90,6 +96,7 @@
             $("#edb_shopId").val(jsonData.shopId);
             $("#edb_storageId").val(jsonData.storageId);
             $("#edb_express").val(jsonData.express);
+            $("#edb_storageIds").val(jsonData.storageIds);
 
         }
     };
@@ -156,6 +163,13 @@
         <td>
             <input name="edb_express" type="text" value="" id="edb_express" class="input-normal"/>
             （E店宝客户端档案管理→仓库档案→快递公司设置查看）
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">指定库存同步仓库编号：</th>
+        <td>
+            <input name="edb_storageIds" type="text" value="" id="edb_storageIds" class="input-normal"/>
+            （多个仓库编号之间使用英文逗号分隔,例如12,34,56）
         </td>
     </tr>
     </tbody>

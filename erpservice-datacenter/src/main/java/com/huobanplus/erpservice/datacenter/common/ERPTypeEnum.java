@@ -27,7 +27,7 @@ public interface ERPTypeEnum {
         DTW(8, "大田跨境"),
         SURSUNG(9, "聚水潭ERP"),
         EDI(10, "杭州能容物联网科技（尽请期待）"),
-        WANGDIAN(11,"旺店通");
+        WANGDIAN(11, "旺店通（尽请期待）");
 
         private int code;
         private String name;

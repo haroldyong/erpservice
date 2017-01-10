@@ -23,8 +23,8 @@ public class GYStockInfo {
     /**
      * 仓库id
      */
-    @JSONField(name = "warehouse_id")
-    private String warehouseId;
+    @JSONField(name = "warehouse_code")
+    private String warehouseCode;
 
     /**
      * 规格代码

@@ -17,8 +17,10 @@ import com.huobanplus.erpprovider.netshop.handler.NSProductHandler;
 import com.huobanplus.erpprovider.netshop.util.Constant;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
+import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPSysDataInfoService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -46,6 +48,8 @@ import java.util.TreeMap;
 public class NetShopHandlerBuilder implements ERPHandlerBuilder {
     @Autowired
     private ERPDetailConfigService detailConfigService;
+    @Autowired
+    private ERPBaseConfigService erpBaseConfigService;
     @Autowired
     private ERPSysDataInfoService sysDataInfoService;
     @Autowired
@@ -140,11 +144,16 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                                         goodPageIndex = Integer.valueOf(goodPageIndexStr);
                                     }
                                     return productHandler.obtainGoods(goodsType, goodBn, goodsName, goodPageSize, goodPageIndex, erpUserInfo, method);
-//                                case Constant.SYNC_INVENTORY:
-//                                    String syncGoodBn = request.getParameter("ItemID");
-//                                    String syncProBn = request.getParameter("SkuID");
-//                                    int stock = Integer.parseInt(request.getParameter("Quantity"));
-//                                    return productHandler.syncInventory(syncGoodBn, syncProBn, stock, erpUserInfo, method);
+                                case Constant.SYNC_INVENTORY:
+                                    ERPBaseConfigEntity erpBaseConfigEntity = erpBaseConfigService.findByCustomerId(erpDetailConfig.getCustomerId(), erpUserType);
+                                    if (erpBaseConfigEntity.getIsSyncInventory() == 1) {
+                                        String syncGoodBn = request.getParameter("ItemID");
+                                        String syncProBn = request.getParameter("SkuID");
+                                        int stock = Integer.parseInt(request.getParameter("Quantity"));
+                                        return productHandler.syncInventory(syncGoodBn, syncProBn, stock, erpUserInfo, method);
+                                    } else {
+                                        return NSExceptionHandler.handleException(method, EventResultEnum.ERROR, "平台未开启库存同步");
+                                    }
                             }
                             return NSExceptionHandler.handleException(method, EventResultEnum.NO_DATA, "未找到数据源信息");
                         } else {

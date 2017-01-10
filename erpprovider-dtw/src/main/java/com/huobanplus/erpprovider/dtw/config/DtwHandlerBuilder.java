@@ -15,6 +15,7 @@ import com.huobanplus.erpprovider.dtw.common.DtwEnum;
 import com.huobanplus.erpprovider.dtw.common.DtwEventResult;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpprovider.dtw.handler.DtwOrderHandler;
+import com.huobanplus.erpprovider.dtw.handler.DtwPuchaseHandler;
 import com.huobanplus.erpprovider.dtw.util.AESUtil;
 import com.huobanplus.erpprovider.dtw.util.RSAUtil;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
@@ -28,6 +29,7 @@ import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogServi
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushPurchaseOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -56,6 +58,8 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
     @Autowired
     private DtwOrderHandler dtwOrderHandler;
     @Autowired
+    private DtwPuchaseHandler dtwPuchaseHandler;
+    @Autowired
     private ERPSysDataInfoService sysDataInfoService;
     @Autowired
     private ERPDetailConfigService detailConfigService;
@@ -82,6 +86,10 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
                         return dtwOrderHandler.pushOrder(pushNewOrderEvent);
+                    }
+                    if (erpBaseEvent instanceof PushPurchaseOrderEvent) {
+                        PushPurchaseOrderEvent pushPurchaseOrderEvent = (PushPurchaseOrderEvent) erpBaseEvent;
+                        return dtwPuchaseHandler.pushPurchaseOrder(pushPurchaseOrderEvent);
                     }
                     return null;
                 }
@@ -168,12 +176,13 @@ public class DtwHandlerBuilder implements ERPHandlerBuilder {
 
                         try {
                             DtwEventResult dtwEventResult = new DtwEventResult();
+                            String requestKey = request.getParameter("PassKey");
 
-                            List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserType(providerType, erpUserType);
+                            List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserTypeAndParamNameAndParamVal(providerType, erpUserType, "passKey", requestKey);
                             ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
                             DtwSysData dtwSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), DtwSysData.class);
                             String passKey = dtwSysData.getPassKey();
-                            String requestKey = request.getParameter("PassKey");
+
                             if (!passKey.equals(requestKey)) {
                                 dtwEventResult.setErrorCode(DtwEnum.ErrorCode.CHECK_ERROR.getCode());
                                 dtwEventResult.setErrMsg("PassKey 不一致");

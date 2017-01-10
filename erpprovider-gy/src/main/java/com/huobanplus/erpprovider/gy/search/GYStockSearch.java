@@ -49,4 +49,9 @@ public class GYStockSearch {
     @JSONField(name = "barcode")
     private String barCode;
 
+    /**
+     * 仓库代码
+     */
+    @JSONField(name = "warehouse_code")
+    private String warehouseCode;
 }

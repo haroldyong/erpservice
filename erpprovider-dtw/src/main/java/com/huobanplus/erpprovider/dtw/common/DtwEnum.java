@@ -19,7 +19,8 @@ public interface DtwEnum {
     enum CountryEnum {
         ASIA("100", "亚洲"),
         CHINA("142", "中国"),
-        SKOREA("133", "韩国");
+        SKOREA("133", "韩国"),
+        Germany("304", "德国");
         private String code;
         private String name;
 
@@ -75,6 +76,7 @@ public interface DtwEnum {
 
     enum UnitEnum {
         JIAN("011", "件"),
+        KG("035", "千克"),
         GUAN("122", "罐");
 
         private String code;
