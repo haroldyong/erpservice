@@ -278,12 +278,15 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setLogisCompanyName("百世物流科技（中国）有限公司");//(必填)
         dtwOrder.setLogisCompanyCode("WL15041401");//(必填)
         dtwOrder.setPurchaserId(String.valueOf(order.getMemberId()));//(必填)
-        dtwOrder.setShipper(DtwConstant.SENDER_NAME);
-        dtwOrder.setShipperPro(DtwConstant.SENDER_PROVINCE);
-        dtwOrder.setShipperCity(DtwConstant.SENDER_CITY);
-        dtwOrder.setShipperDistrict(DtwConstant.SENDER_DISTRICT);
-        dtwOrder.setShipperAddress(DtwConstant.SENDER_ADDR);
-        dtwOrder.setShipperMobile(DtwConstant.SENDER_MOBILE);
+
+        String[] senderInfo = dtwSysData.getSenderInfo().split(",");
+
+        dtwOrder.setShipper(senderInfo[0]);
+        dtwOrder.setShipperPro(senderInfo[1]);
+        dtwOrder.setShipperCity(senderInfo[2]);
+        dtwOrder.setShipperDistrict(senderInfo[3]);
+        dtwOrder.setShipperAddress(senderInfo[4]);
+        dtwOrder.setShipperMobile(senderInfo[5]);
         dtwOrder.setShipperCountry(DtwEnum.CountryEnum.CHINA.getCode());
         dtwOrder.setConsignee(order.getShipName());//(必填)
         dtwOrder.setConsigneePro(order.getProvince());//(必填)
@@ -349,7 +352,8 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwPersonalDelcareInfo.setGrossWeight(order.getWeight());// 必填
         dtwPersonalDelcareInfo.setNetWeight(order.getWeight());// 必填
         dtwPersonalDelcareInfo.setRemark(order.getMemo());
-        dtwPersonalDelcareInfo.setSenderName(DtwConstant.SENDER_NAME);// 必填
+        String[] senderInfo = dtwSysData.getSenderInfo().split(",");
+        dtwPersonalDelcareInfo.setSenderName(senderInfo[0]);// 必填
         dtwPersonalDelcareInfo.setConsignee(order.getShipName());// 必填
         dtwPersonalDelcareInfo.setSenderCity("");//非必填
         dtwPersonalDelcareInfo.setPaperType("");// 非必填
@@ -765,7 +769,9 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customOrderHead.setTotalCount(order.getItemNum());
 //        customOrderHead.setPostMode();
         customOrderHead.setSenderCountry(DtwEnum.CountryEnum.CHINA.getCode());
-        customOrderHead.setSenderName(DtwConstant.SENDER_NAME);
+
+        String[] senderInfo = dtwSysData.getSenderInfo().split(",");
+        customOrderHead.setSenderName(senderInfo[0]);
         customOrderHead.setPurchaserId(String.valueOf(order.getMemberId()));
         customOrderHead.setLogisCompanyCode(DtwConstant.LOGISTIC_CODE);
         customOrderHead.setLogisCompanyName(DtwConstant.LOGISTIC_NAME);

@@ -86,6 +86,7 @@ public class DtwTestBase {
         mockDtwSysData.setRsaPublicKey("MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJFlixAXFom5VY6TZEveQ8KmiCbfBdj8zxg52WUEzX5VNaxqce2XU7N4rTZm4WFJjLgwJmMQK5VazIo46mr5bo8CAwEAAQ==");
         mockDtwSysData.setRsaPrivateKey("MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAkWWLEBcWiblVjpNkS95DwqaIJt8F2PzPGDnZZQTNflU1rGpx7ZdTs3itNmbhYUmMuDAmYxArlVrMijjqavlujwIDAQABAkBkq7tCs8m+KF4N7w3V3hpqryW8TFVfLYQy0PMuF8o0urUZ07S0AoOTvlmKTKRThn4rE4/oh7m3p3SJ5jyJpTAxAiEA+QUyLngSN5M95r+Mj/2DyXMb2LnblhkiDOJlWdzPWUkCIQCVeNAX89Q92xBNsixn2o7U/hv0GBC9xRrXYGkN0SYhFwIhAOFUSFIwKBvNyoeP8HsipSuWUy5LD13EpEEQYzFrUtyxAiBSOFyvcE6ln+T9+C55Cj5bZ1RVFw/Oc6fqJXxkP1IsDQIgIZBDSR1DOMweY3XPD4+8+o1koFNlgNjq2uCvB7t42Ms=");
         mockDtwSysData.setAesKey("02oTDtoGk+2XpY0WOglyog==");
+        mockDtwSysData.setSenderInfo("吴雄琉,浙江省,杭州市,滨江区,浙江省杭州市滨江区智慧e谷,15067134475");
 
         double itemPirce = 10;
         int itemNum = 3;

@@ -26,6 +26,8 @@ public class DtwConstant {
 
     public static final String CUSTOM_WEBSERVICE_URL = "http://122.224.230.4:18003/newyorkWS/ws/ReceiveEncryptDeclare?wsdl";
 
+    public static final String CUSTOM_WEBSERVICE_URL2 = "http://122.224.230.4:18003/newyorkWS/ws/ReceiveCebDeclare?wsdl";
+
     public static final String CUSTOM_TARGET_NAMESPACE = "http://ws.newyork.zjport.gov.cn/";
 
     public static final String USER_PROCOTOL = "本人承诺所购买商品系个人合理自用，" +
