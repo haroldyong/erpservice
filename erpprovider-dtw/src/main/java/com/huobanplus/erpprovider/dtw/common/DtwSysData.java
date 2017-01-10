@@ -79,5 +79,9 @@ public class DtwSysData {
      */
     private String aesKey;
 
+    /**
+     * 发货人信息 逗号分隔的字符串: 发货人名称,发货人省份,发货人市,发货人区县,发货人地址,发货人手机
+     */
+    private String senderInfo;
 
 }

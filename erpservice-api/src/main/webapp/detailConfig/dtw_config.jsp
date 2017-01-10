@@ -32,6 +32,15 @@
             var rsaPrivateKey = $.trim($("#rsaPrivateKey").val());
             var aesKey = $.trim($("#aesKey").val());
 
+            var senderName = $.trim($("#senderName").val());
+            var senderProvince = $.trim($("#senderProvince").val());
+            var senderCity = $.trim($("#senderCity").val());
+            var senderDistrict = $.trim($("#senderDistrict").val());
+            var senderAddr = $.trim($("#senderAddr").val());
+            var senderMobile = $.trim($("#senderMobile").val());
+
+
+
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入大田接口地址");
                 return null;
@@ -81,7 +90,34 @@
                 return null;
             }
 
+            if (senderName.length == 0) {
+                $.jBox.tip("请输入发货人姓名");
+                return null;
+            }
+            if (senderProvince.length == 0) {
+                $.jBox.tip("请输入发货人省");
+                return null;
+            }
 
+            if (senderCity.length == 0) {
+                $.jBox.tip("请输入发货人市");
+                return null;
+            }
+            if (senderDistrict.length == 0) {
+                $.jBox.tip("请输入发货人区县");
+                return null;
+            }
+            if (senderAddr.length == 0) {
+                $.jBox.tip("请输入发货人地址");
+                return null;
+            }
+            if (senderMobile.length == 0) {
+                $.jBox.tip("请输入发货人手机号");
+                return null;
+            }
+
+
+            var senderInfo = senderName + "," + senderProvince + "," + senderCity + "," + senderDistrict + "," + senderAddr + "," + senderMobile;
 
             var dtwConfig = {
                 requestUrl: requestUrl,
@@ -95,7 +131,8 @@
                 aliKey: aliKey,
                 rsaPublicKey: rsaPublicKey,
                 rsaPrivateKey: rsaPrivateKey,
-                aesKey: aesKey
+                aesKey: aesKey,
+                senderInfo: senderInfo
             };
             return JSON.stringify(dtwConfig);
         },
@@ -112,6 +149,20 @@
             $("#rsaPublicKey").val(jsonData.rsaPublicKey);
             $("#rsaPrivateKey").val(jsonData.rsaPrivateKey);
             $("#aesKey").val(jsonData.aesKey);
+
+
+            var senderInfo = jsonData.senderInfo;
+            if (senderInfo) {
+                var senderInfoArray = senderInfo.split(",");
+                $("#senderName").val(senderInfoArray[0]);
+                $("#senderProvince").val(senderInfoArray[1]);
+                $("#senderCity").val(senderInfoArray[2]);
+                $("#senderDistrict").val(senderInfoArray[3]);
+                $("#senderAddr").val(senderInfoArray[4]);
+                $("#senderMobile").val(senderInfoArray[5]);
+            }
+
+
 
         }
     };
@@ -191,5 +242,47 @@
             <input name="aesKey" type="text" value="" id="aesKey" class="input-normal"/>
         </td>
     </tr>
+    <tr>
+        <th style="vertical-align: middle;">发货人名称：</th>
+        <td>
+            <input name="senderName" type="text" value="" id="senderName" class="input-normal"/>
+        </td>
+    </tr>
+
+    <tr>
+        <th style="vertical-align: middle;">发货人省份：</th>
+        <td>
+            <input name="senderProvince" type="text" value="" id="senderProvince" class="input-normal"/>
+        </td>
+    </tr>
+
+    <tr>
+        <th style="vertical-align: middle;">发货人市：</th>
+        <td>
+            <input name="senderCity" type="text" value="" id="senderCity" class="input-normal"/>
+        </td>
+    </tr>
+
+    <tr>
+        <th style="vertical-align: middle;">发货人区县：</th>
+        <td>
+            <input name="senderDistrict" type="text" value="" id="senderDistrict" class="input-normal"/>
+        </td>
+    </tr>
+
+    <tr>
+        <th style="vertical-align: middle;">发货人地址：</th>
+        <td>
+            <input name="senderAddr" type="text" value="" id="senderAddr" class="input-normal"/>
+        </td>
+    </tr>
+
+    <tr>
+        <th style="vertical-align: middle;">发货人手机：</th>
+        <td>
+            <input name="senderMobile" type="text" value="" id="senderMobile" class="input-normal"/>
+        </td>
+    </tr>
+
     </tbody>
 </table>
