@@ -12,6 +12,7 @@
 package com.huobanplus.erpprovider.baison.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.baison.common.BaisonConstant;
 import com.huobanplus.erpprovider.baison.common.BaisonSysData;
@@ -35,14 +36,21 @@ public class BaisonGoodsHandlerImpl implements BaisonGoodsHandler {
 
     @Override
     public EventResult queryGoodsStock(BaisonStockSearch baisonStockSearch, BaisonSysData baisonSysData) {
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(baisonStockSearch);
+
+        JSONObject requestObj = new JSONObject();
+        requestObj.put("kc_data", jsonArray);
+
         try {
-            Map<String, Object> requestMap = BaisonUtil.buildRequestMap(baisonSysData, BaisonConstant.GET_STOCK, JSON.toJSONString(baisonStockSearch));
-            HttpResult httpResult = HttpClientUtil.getInstance().get(baisonSysData.getRequestUrl(), requestMap);
+            Map<String, Object> requestMap = BaisonUtil.buildRequestMap(baisonSysData, BaisonConstant.GET_STOCK, JSON.toJSONString(requestObj));
+            HttpResult httpResult = HttpClientUtil.getInstance().post(baisonSysData.getRequestUrl(), requestMap);
 
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject respData = JSON.parseObject(httpResult.getHttpContent());
-                if (respData.getString("status").equals("api-success")) {
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                if (respData.getString("status").equals("SUCCESS")) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, respData.getJSONArray("data"));
                 } else {
                     return EventResult.resultWith(EventResultEnum.ERROR, respData.getString("message"), null);
                 }
@@ -50,8 +58,7 @@ public class BaisonGoodsHandlerImpl implements BaisonGoodsHandler {
                 return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
         } catch (Exception e) {
-
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
-        return null;
     }
 }

@@ -18,6 +18,7 @@ import com.huobanplus.erpprovider.baison.BaisonTestBase;
 import com.huobanplus.erpprovider.baison.formatdata.BaisonQueryOrder;
 import com.huobanplus.erpprovider.baison.formatdata.BaisonQueryOrderItem;
 import com.huobanplus.erpprovider.baison.search.BaisonOrderSearch;
+import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -25,6 +26,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,9 +55,9 @@ public class BaisonOrderHandlerTest extends BaisonTestBase {
     public void testOrderQuery() {
         BaisonOrderSearch baisonOrderSearch = new BaisonOrderSearch();
 //        baisonOrderSearch.setSdCode("1200000002");
-        baisonOrderSearch.setOrderSn("1111111111111111111");
-//        baisonOrderSearch.setStartModified("2015-12-30 08:00:00");
-//        baisonOrderSearch.setEndModified(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
+//        baisonOrderSearch.setOrderSn("1111111111111111111");
+        baisonOrderSearch.setStartModified("2015-12-30 08:00:00");
+        baisonOrderSearch.setEndModified(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
 
         baisonOrderSearch.setPageNo(1);
         baisonOrderSearch.setPageSize(1000);
