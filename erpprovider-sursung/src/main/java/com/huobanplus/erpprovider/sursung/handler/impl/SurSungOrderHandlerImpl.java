@@ -370,7 +370,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
 
             String afterSaleJson = pushAfterSaleEvent.getAfterSaleInfo();
             AfterSaleInfo afterSaleInfo = JSON.parseObject(afterSaleJson, AfterSaleInfo.class);
-            if (afterSaleInfo.getShipStatus() == 0) {// 未发货 // TODO: 2016-12-29
+            if (true || afterSaleInfo.getShipStatus() == 0) {// 未发货 // TODO: 2016-12-29
                 OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(afterSaleInfo.getOrderId());
                 String orderJson = orderDetailSyncLog.getOrderInfoJson();
                 Order order = JSON.parseObject(orderJson, Order.class);
@@ -392,7 +392,11 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
                     surSungOrderItem.setQty(item.getReturnNum());
                     surSungOrderItem.setName(item.getName());
                     surSungOrderItem.setOuterOiId(item.getOrderId());
-                    surSungOrderItem.setRefundStatus("success");
+                    if (afterSaleInfo.getAfterStatus() == 0) {
+                        surSungOrderItem.setRefundStatus("waiting");
+                    } else if (afterSaleInfo.getAfterStatus() == 1) {
+                        surSungOrderItem.setRefundStatus("success");
+                    }
                     surSungOrderItem.setRefundQty(item.getReturnNum());
                     refundAllAmount += item.getAmount();
                     surSungOrderItems.add(surSungOrderItem);
@@ -409,42 +413,42 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
 
                 eventResult = orderPush(requestUrl, requestData);
             } else {
-                List<AfterSaleItem> afterSaleItems = afterSaleInfo.getItems();
+//                List<AfterSaleItem> afterSaleItems = afterSaleInfo.getItems();
+////
+//                List<SurSungReturnRefundItem> surSungReturnRefundItems = new ArrayList<>();
+//                if (afterSaleItems != null) {
+//                    for (AfterSaleItem item : afterSaleItems) {
 //
-                List<SurSungReturnRefundItem> surSungReturnRefundItems = new ArrayList<>();
-                if (afterSaleItems != null) {
-                    for (AfterSaleItem item : afterSaleItems) {
-
-                        SurSungReturnRefundItem surSungReturnRefundItem = new SurSungReturnRefundItem();
-                        surSungReturnRefundItem.setOuterOiId(item.getOrderId());
-                        surSungReturnRefundItem.setSkuId(item.getSkuId());
-                        surSungReturnRefundItem.setQty(item.getReturnNum());
-                        surSungReturnRefundItem.setAmount(item.getAmount());
-                        surSungReturnRefundItem.setType("其他");
-                        surSungReturnRefundItems.add(surSungReturnRefundItem);
-                    }
-                }
-
-                SurSungReturnRefund surSungReturnRefund = new SurSungReturnRefund();
-                surSungReturnRefund.setShopId(surSungSysData.getShopId());
-                surSungReturnRefund.setOuterAsId(afterSaleInfo.getOrderId());
-                surSungReturnRefund.setSoId(afterSaleInfo.getOrderId());
-                surSungReturnRefund.setType("其他");
-                surSungReturnRefund.setLogiCompany(afterSaleInfo.getLogiCompany());
-                surSungReturnRefund.setLogiNo(afterSaleInfo.getLogiNo());
-                surSungReturnRefund.setShopStatus(SurSungConstant.AFTER_STATUS[afterSaleInfo.getAfterStatus()]);
-                surSungReturnRefund.setRemark(afterSaleInfo.getRemark());
-                surSungReturnRefund.setTotalAmount(afterSaleInfo.getTotalAmount());
-                surSungReturnRefund.setRefund(afterSaleInfo.getRefund());
-                surSungReturnRefund.setPayment(afterSaleInfo.getPayment());
-                surSungReturnRefund.setItems(surSungReturnRefundItems);
-
-                JSONArray jsonArray = new JSONArray();
-                jsonArray.add(surSungReturnRefund);
-                String requestData = JSON.toJSONString(jsonArray);
-                String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.AFTERSALE_UPLOAD, time, surSungSysData);
-
-                eventResult = returnRefundOrderPush(requestUrl, requestData);
+//                        SurSungReturnRefundItem surSungReturnRefundItem = new SurSungReturnRefundItem();
+//                        surSungReturnRefundItem.setOuterOiId(item.getOrderId());
+//                        surSungReturnRefundItem.setSkuId(item.getSkuId());
+//                        surSungReturnRefundItem.setQty(item.getReturnNum());
+//                        surSungReturnRefundItem.setAmount(item.getAmount());
+//                        surSungReturnRefundItem.setType("其他");
+//                        surSungReturnRefundItems.add(surSungReturnRefundItem);
+//                    }
+//                }
+//
+//                SurSungReturnRefund surSungReturnRefund = new SurSungReturnRefund();
+//                surSungReturnRefund.setShopId(surSungSysData.getShopId());
+//                surSungReturnRefund.setOuterAsId(afterSaleInfo.getOrderId());
+//                surSungReturnRefund.setSoId(afterSaleInfo.getOrderId());
+//                surSungReturnRefund.setType("其他");
+//                surSungReturnRefund.setLogiCompany(afterSaleInfo.getLogiCompany());
+//                surSungReturnRefund.setLogiNo(afterSaleInfo.getLogiNo());
+//                surSungReturnRefund.setShopStatus(SurSungConstant.AFTER_STATUS[afterSaleInfo.getAfterStatus()]);
+//                surSungReturnRefund.setRemark(afterSaleInfo.getRemark());
+//                surSungReturnRefund.setTotalAmount(afterSaleInfo.getTotalAmount());
+//                surSungReturnRefund.setRefund(afterSaleInfo.getRefund());
+//                surSungReturnRefund.setPayment(afterSaleInfo.getPayment());
+//                surSungReturnRefund.setItems(surSungReturnRefundItems);
+//
+//                JSONArray jsonArray = new JSONArray();
+//                jsonArray.add(surSungReturnRefund);
+//                String requestData = JSON.toJSONString(jsonArray);
+//                String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.AFTERSALE_UPLOAD, time, surSungSysData);
+//
+//                eventResult = returnRefundOrderPush(requestUrl, requestData);
 
             }
 
