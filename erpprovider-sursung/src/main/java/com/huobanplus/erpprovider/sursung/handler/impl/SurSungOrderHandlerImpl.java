@@ -123,7 +123,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
         }
     }
 
-    private SurSungOrder convert2ErpOrder(com.huobanplus.erpservice.datacenter.model.Order order, int shopId) {
+    private SurSungOrder convert2ErpOrder(Order order, int shopId) {
         SurSungOrder surSungOrder = new SurSungOrder();
         surSungOrder.setShopId(shopId);
         surSungOrder.setSoId(order.getOrderId());
@@ -359,89 +359,125 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
 
     @Override
     public EventResult returnRefundUpload(PushAfterSaleEvent pushAfterSaleEvent) {
-
-
-        ERPInfo erpInfo = pushAfterSaleEvent.getErpInfo();
-        SurSungSysData surSungSysData = JSON.parseObject(erpInfo.getSysDataJson(), SurSungSysData.class);
-        ERPUserInfo erpUserInfo = pushAfterSaleEvent.getErpUserInfo();
-
-        String afterSaleJson = pushAfterSaleEvent.getAfterSaleInfo();
-        AfterSaleInfo afterSaleInfo = JSON.parseObject(afterSaleJson, AfterSaleInfo.class);
-
-        List<AfterSaleItem> afterSaleItems = afterSaleInfo.getItems();
-
-        List<SurSungReturnRefundItem> surSungReturnRefundItems = new ArrayList<>();
-        if (afterSaleItems != null) {
-            for (AfterSaleItem item : afterSaleItems) {
-
-                SurSungReturnRefundItem surSungReturnRefundItem = new SurSungReturnRefundItem();
-                surSungReturnRefundItem.setOuterOiId(item.getOrderId());
-                surSungReturnRefundItem.setSkuId(item.getSkuId());
-                surSungReturnRefundItem.setQty(item.getReturnNum());
-                surSungReturnRefundItem.setAmount(item.getAmount());
-                surSungReturnRefundItem.setType("其他");
-//                surSungReturnRefundItem.setName("");
-//                surSungReturnRefundItem.setPropertiesValue("");
-                surSungReturnRefundItems.add(surSungReturnRefundItem);
-            }
-        }
-
-        SurSungReturnRefund surSungReturnRefund = new SurSungReturnRefund();
-        surSungReturnRefund.setShopId(surSungSysData.getShopId());
-        surSungReturnRefund.setOuterAsId(afterSaleInfo.getOrderId());
-        surSungReturnRefund.setSoId(afterSaleInfo.getOrderId());
-        surSungReturnRefund.setType("其他");
-        surSungReturnRefund.setLogiCompany(afterSaleInfo.getLogiCompany());
-        surSungReturnRefund.setLogiNo(afterSaleInfo.getLogiNo());
-        surSungReturnRefund.setShopStatus(SurSungConstant.AFTER_STATUS[afterSaleInfo.getAfterStatus()]);
-        surSungReturnRefund.setRemark(afterSaleInfo.getRemark());
-//        surSungReturnRefund.setGoodStatus("BUYER_NOT_RECEIVED");
-//        surSungReturnRefund.setQuestionType("");
-        surSungReturnRefund.setTotalAmount(afterSaleInfo.getTotalAmount());
-        surSungReturnRefund.setRefund(afterSaleInfo.getRefund());
-        surSungReturnRefund.setPayment(afterSaleInfo.getPayment());
-        surSungReturnRefund.setItems(surSungReturnRefundItems);
-//
-        Date now = new Date();
-
-        ReturnRefundSyncLog returnRefundSyncLog = returnRefundSyncLogService.findByOrderId(afterSaleInfo.getOrderId());
-        if (returnRefundSyncLog == null) {
-            returnRefundSyncLog = new ReturnRefundSyncLog();
-            returnRefundSyncLog.setCreateTime(now);
-        }
-        returnRefundSyncLog.setCustomerId(erpUserInfo.getCustomerId());
-        returnRefundSyncLog.setProviderType(erpInfo.getErpType());
-        returnRefundSyncLog.setUserType(erpUserInfo.getErpUserType());
-        returnRefundSyncLog.setOrderId(afterSaleInfo.getOrderId());
-        returnRefundSyncLog.setReturnInfoJson(afterSaleJson);
-        returnRefundSyncLog.setErpSysData(erpInfo.getSysDataJson());
-        returnRefundSyncLog.setSyncTime(now);
-//
-//
         try {
-            JSONArray jsonArray = new JSONArray();
-            jsonArray.add(surSungReturnRefund);
+            Date now = new Date();
             int time = (int) (now.getTime() / 1000);
+            EventResult eventResult = null;
 
-            String requestData = JSON.toJSONString(jsonArray);
-            String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.AFTERSALE_UPLOAD, time, surSungSysData);
+            ERPInfo erpInfo = pushAfterSaleEvent.getErpInfo();
+            SurSungSysData surSungSysData = JSON.parseObject(erpInfo.getSysDataJson(), SurSungSysData.class);
+            ERPUserInfo erpUserInfo = pushAfterSaleEvent.getErpUserInfo();
 
-            EventResult eventResult = returnRefundOrderPush(requestUrl, requestData);
+            String afterSaleJson = pushAfterSaleEvent.getAfterSaleInfo();
+            AfterSaleInfo afterSaleInfo = JSON.parseObject(afterSaleJson, AfterSaleInfo.class);
+            if (true || afterSaleInfo.getShipStatus() == 0) {// 未发货 // TODO: 2016-12-29
+                OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(afterSaleInfo.getOrderId());
+                String orderJson = orderDetailSyncLog.getOrderInfoJson();
+                Order order = JSON.parseObject(orderJson, Order.class);
+
+
+                SurSungOrder surSungOrder = convert2ErpOrder(order, surSungSysData.getShopId());
+
+                List<SurSungOrderItem> surSungOrderItems = new ArrayList<>();
+                List<AfterSaleItem> afterSaleItems = afterSaleInfo.getItems();
+                double refundAllAmount = 0.0;
+                for (AfterSaleItem item : afterSaleItems) {
+
+                    SurSungOrderItem surSungOrderItem = new SurSungOrderItem();
+                    surSungOrderItem.setSkuId(item.getSkuId());
+                    surSungOrderItem.setShopSkuId(item.getSkuId());
+                    surSungOrderItem.setPropertiesValue(item.getProperties());
+                    surSungOrderItem.setAmount(item.getAmount());
+                    surSungOrderItem.setBasePrice(item.getAmount());
+                    surSungOrderItem.setQty(item.getReturnNum());
+                    surSungOrderItem.setName(item.getName());
+                    surSungOrderItem.setOuterOiId(item.getOrderId());
+                    if (afterSaleInfo.getAfterStatus() == 0) {
+                        surSungOrderItem.setRefundStatus("waiting");
+                    } else if (afterSaleInfo.getAfterStatus() == 1) {
+                        surSungOrderItem.setRefundStatus("success");
+                    }
+                    surSungOrderItem.setRefundQty(item.getReturnNum());
+                    refundAllAmount += item.getAmount();
+                    surSungOrderItems.add(surSungOrderItem);
+                }
+                ;
+
+                surSungOrder.setSurSungOrderItems(surSungOrderItems);
+                surSungOrder.setPayAmount(surSungOrder.getPayAmount() - refundAllAmount);
+
+                JSONArray jsonArray = new JSONArray();
+                jsonArray.add(surSungOrder);
+                String requestData = JSON.toJSONString(jsonArray);
+                String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.ORDER_PUSH, time, surSungSysData);
+
+                eventResult = orderPush(requestUrl, requestData);
+            } else {
+//                List<AfterSaleItem> afterSaleItems = afterSaleInfo.getItems();
+////
+//                List<SurSungReturnRefundItem> surSungReturnRefundItems = new ArrayList<>();
+//                if (afterSaleItems != null) {
+//                    for (AfterSaleItem item : afterSaleItems) {
+//
+//                        SurSungReturnRefundItem surSungReturnRefundItem = new SurSungReturnRefundItem();
+//                        surSungReturnRefundItem.setOuterOiId(item.getOrderId());
+//                        surSungReturnRefundItem.setSkuId(item.getSkuId());
+//                        surSungReturnRefundItem.setQty(item.getReturnNum());
+//                        surSungReturnRefundItem.setAmount(item.getAmount());
+//                        surSungReturnRefundItem.setType("其他");
+//                        surSungReturnRefundItems.add(surSungReturnRefundItem);
+//                    }
+//                }
+//
+//                SurSungReturnRefund surSungReturnRefund = new SurSungReturnRefund();
+//                surSungReturnRefund.setShopId(surSungSysData.getShopId());
+//                surSungReturnRefund.setOuterAsId(afterSaleInfo.getOrderId());
+//                surSungReturnRefund.setSoId(afterSaleInfo.getOrderId());
+//                surSungReturnRefund.setType("其他");
+//                surSungReturnRefund.setLogiCompany(afterSaleInfo.getLogiCompany());
+//                surSungReturnRefund.setLogiNo(afterSaleInfo.getLogiNo());
+//                surSungReturnRefund.setShopStatus(SurSungConstant.AFTER_STATUS[afterSaleInfo.getAfterStatus()]);
+//                surSungReturnRefund.setRemark(afterSaleInfo.getRemark());
+//                surSungReturnRefund.setTotalAmount(afterSaleInfo.getTotalAmount());
+//                surSungReturnRefund.setRefund(afterSaleInfo.getRefund());
+//                surSungReturnRefund.setPayment(afterSaleInfo.getPayment());
+//                surSungReturnRefund.setItems(surSungReturnRefundItems);
+//
+//                JSONArray jsonArray = new JSONArray();
+//                jsonArray.add(surSungReturnRefund);
+//                String requestData = JSON.toJSONString(jsonArray);
+//                String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.AFTERSALE_UPLOAD, time, surSungSysData);
+//
+//                eventResult = returnRefundOrderPush(requestUrl, requestData);
+
+            }
+
+
+            ReturnRefundSyncLog returnRefundSyncLog = returnRefundSyncLogService.findByOrderId(afterSaleInfo.getOrderId());
+            if (returnRefundSyncLog == null) {
+                returnRefundSyncLog = new ReturnRefundSyncLog();
+                returnRefundSyncLog.setCreateTime(now);
+            }
+            returnRefundSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+            returnRefundSyncLog.setProviderType(erpInfo.getErpType());
+            returnRefundSyncLog.setUserType(erpUserInfo.getErpUserType());
+            returnRefundSyncLog.setOrderId(afterSaleInfo.getOrderId());
+            returnRefundSyncLog.setReturnInfoJson(afterSaleJson);
+            returnRefundSyncLog.setErpSysData(erpInfo.getSysDataJson());
+            returnRefundSyncLog.setSyncTime(now);
+
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 returnRefundSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
             } else {
                 returnRefundSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
                 returnRefundSyncLog.setErrorMsg(eventResult.getResultMsg());
             }
-
             returnRefundSyncLogService.save(returnRefundSyncLog);
             return eventResult;
 
         } catch (Exception e) {
-            log.error("SurSungOrderHandlerImpl-returnRefundUpload: " + e.getMessage());
-            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+            return EventResult.resultWith(EventResultEnum.ERROR);
         }
-
     }
 
     private EventResult returnRefundOrderPush(String requestUrl, String requestData) {

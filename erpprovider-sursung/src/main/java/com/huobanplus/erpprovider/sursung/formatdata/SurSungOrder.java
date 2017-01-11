@@ -120,7 +120,7 @@ public class SurSungOrder {
      * 抵扣金额
      */
     @JSONField(name = "free_amount")
-    private double freeAmount;
+    private Double freeAmount;
 
     /**
      * 运费
