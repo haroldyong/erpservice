@@ -24,6 +24,7 @@
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d - %m%n"/>
         </layout>
+        <param name="Encoding" value="UTF-8"/>
     </appender>
     <root>
         <level value="info"/>
