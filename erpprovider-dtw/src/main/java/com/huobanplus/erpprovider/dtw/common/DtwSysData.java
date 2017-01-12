@@ -23,6 +23,11 @@ public class DtwSysData {
     private String requestUrl;
 
     /**
+     * 海关接口地址
+     */
+    private String customUrl;
+
+    /**
      * passkey
      */
     private String passKey;
