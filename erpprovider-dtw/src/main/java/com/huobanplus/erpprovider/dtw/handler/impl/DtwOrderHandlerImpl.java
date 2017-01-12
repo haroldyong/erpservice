@@ -675,7 +675,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             String encData = new String(Base64.getEncoder().encode(AESUtil.encrypt(data, aesKeyCode)), "utf-8");
             String sign = new String(Base64.getEncoder().encode(RSAUtil.sign(data, privateKeyCode)), "utf-8");
 
-            String result = DtwUtil.requestCustomWebService(encData, "IMPORTORDER", sign, dtwSysData.getECommerceCode());
+            String result = DtwUtil.requestCustomWebService(dtwSysData.getCustomUrl(), encData, "IMPORTORDER", sign, dtwSysData.getECommerceCode());
 
             Document document = DocumentHelper.parseText(result);
             Element root = document.getRootElement();

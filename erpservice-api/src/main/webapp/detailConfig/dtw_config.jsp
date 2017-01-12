@@ -20,6 +20,7 @@
     var dtwConfigHandler = {
         getConfig: function () {
             var requestUrl = $.trim($("#requestUrl").val());
+            var customUrl = $.trim($("#customUrl").val());
             var passKey = $.trim($("#passKey").val());
             var eCommerceCode = $.trim($("#eCommerceCode").val());
             var eCommerceName = $.trim($("#eCommerceName").val());
@@ -43,6 +44,10 @@
 
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入大田接口地址");
+                return null;
+            }
+            if (customUrl.length == 0) {
+                $.jBox.tip("请输入海关接口地址");
                 return null;
             }
             if (passKey.length == 0) {
@@ -121,6 +126,7 @@
 
             var dtwConfig = {
                 requestUrl: requestUrl,
+                customUrl: customUrl,
                 passKey: passKey,
                 eCommerceCode: eCommerceCode,
                 eCommerceName: eCommerceName,
@@ -138,6 +144,7 @@
         },
         setValues: function (jsonData) {
             $("#requestUrl").val(jsonData.requestUrl);
+            $("#customUrl").val(jsonData.customUrl);
             $("#passKey").val(jsonData.passKey);
             $("#eCommerceCode").val(jsonData.eCommerceCode);
             $("#eCommerceName").val(jsonData.eCommerceName);
@@ -170,9 +177,15 @@
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
     <tbody>
     <tr>
-        <th style="vertical-align: middle;">请求地址：</th>
+        <th style="vertical-align: middle;">大田接口请求地址：</th>
         <td>
             <input type="text" value="" id="requestUrl" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">海关接口请求地址：</th>
+        <td>
+            <input type="text" value="" id="customUrl" class="input-normal"/>
         </td>
     </tr>
     <tr>
