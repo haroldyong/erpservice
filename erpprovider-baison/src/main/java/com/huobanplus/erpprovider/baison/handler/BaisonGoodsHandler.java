@@ -15,10 +15,12 @@ import com.huobanplus.erpprovider.baison.common.BaisonSysData;
 import com.huobanplus.erpprovider.baison.formatdata.BaisonStockSearch;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
+import java.util.List;
+
 /**
  * Created by wuxiongliu on 2016-12-27.
  */
 public interface BaisonGoodsHandler {
 
-    EventResult queryGoodsStock(BaisonStockSearch baisonStockSearch, BaisonSysData baisonSysData);
+    EventResult queryGoodsStock(List<BaisonStockSearch> baisonStockSearchList, BaisonSysData baisonSysData);
 }
