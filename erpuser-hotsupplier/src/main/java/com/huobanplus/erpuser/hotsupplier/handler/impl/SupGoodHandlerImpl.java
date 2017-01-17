@@ -10,6 +10,7 @@
 package com.huobanplus.erpuser.hotsupplier.handler.impl;
 
 import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
+import com.huobanplus.erpservice.datacenter.model.ProductSearchInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpuser.hotsupplier.handler.SupGoodHandler;
@@ -30,5 +31,10 @@ public class SupGoodHandlerImpl implements SupGoodHandler {
     @Override
     public EventResult syncProInventory(List<ProInventoryInfo> proInventoryInfoList, ERPUserInfo erpUserInfo) {
         return hbGoodHandler.syncProInventory(proInventoryInfoList, erpUserInfo);
+    }
+
+    @Override
+    public EventResult obtainProductListInfo(ProductSearchInfo productSearchInfos, ERPUserInfo erpUserInfo) {
+        return hbGoodHandler.obtainProductListInfo(productSearchInfos, erpUserInfo);
     }
 }

@@ -27,4 +27,5 @@ public class BaisondeliveryScheduleServiceTest extends BaisonTestBase {
     public void test() {
         baisonDeliveryScheduleService.syncOrderShip();
     }
+
 }

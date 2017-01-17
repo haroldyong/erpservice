@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.eventhandler.erpevent.pull;
 
+import com.huobanplus.erpservice.datacenter.model.ProductSearchInfo;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import lombok.Data;
 
@@ -17,4 +18,6 @@ import lombok.Data;
  */
 @Data
 public class GetProductInfoEvent extends ERPBaseEvent {
+
+    private ProductSearchInfo productSearchInfo;
 }

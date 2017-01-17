@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.baison.common.BaisonConstant;
 import com.huobanplus.erpprovider.baison.common.BaisonSysData;
+import com.huobanplus.erpprovider.baison.formatdata.BaisonStockResp;
 import com.huobanplus.erpprovider.baison.formatdata.BaisonStockSearch;
 import com.huobanplus.erpprovider.baison.handler.BaisonGoodsHandler;
 import com.huobanplus.erpprovider.baison.util.BaisonUtil;
@@ -45,11 +46,14 @@ public class BaisonGoodsHandlerImpl implements BaisonGoodsHandler {
         try {
             Map<String, Object> requestMap = BaisonUtil.buildRequestMap(baisonSysData, BaisonConstant.GET_STOCK, JSON.toJSONString(requestObj));
             HttpResult httpResult = HttpClientUtil.getInstance().post(baisonSysData.getRequestUrl(), requestMap);
+//            HttpResult httpResult = HttpClientUtil.getInstance().post("http://localhost:12306/stock", requestMap);
 
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject respData = JSON.parseObject(httpResult.getHttpContent());
                 if (respData.getString("status").equals("SUCCESS")) {
-                    return EventResult.resultWith(EventResultEnum.SUCCESS, respData.getString("message"), respData.getJSONArray("data"));
+                    String jsonArray = respData.getString("data");
+                    List<BaisonStockResp> baisonStockRespList = JSONObject.parseArray(jsonArray, BaisonStockResp.class);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, respData.getString("message"), baisonStockRespList);
                 } else {
                     return EventResult.resultWith(EventResultEnum.ERROR, respData.getString("message"), null);
                 }

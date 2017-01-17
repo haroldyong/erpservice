@@ -11,6 +11,7 @@
 
 package com.huobanplus.erpprovider.baison.formatdata;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 /**
@@ -22,20 +23,24 @@ public class BaisonStockSearch {
     /**
      * 商品编号
      */
-    private String spdm;
+    @JSONField(name = "spdm")
+    private String productBn;
 
     /**
      * 颜色代码
      */
-    private String gg1dm;
+    @JSONField(name = "gg1dm")
+    private String colorCode;
 
     /**
      * 尺码代码
      */
-    private String gg2dm;
+    @JSONField(name = "gg2dm")
+    private String sizeCode;
 
     /**
      * 仓库代码
      */
-    private String ckdm;
+    @JSONField(name = "ckdm")
+    private String warehouseCode;
 }

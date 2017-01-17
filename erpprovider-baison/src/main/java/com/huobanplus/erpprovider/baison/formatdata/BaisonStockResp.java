@@ -18,7 +18,7 @@ import lombok.Data;
  * Created by wuxiongliu on 2017-01-16.
  */
 @Data
-public class BaisonStcokResp {
+public class BaisonStockResp {
 
     @JSONField(name = "spdm")
     private String productBn;

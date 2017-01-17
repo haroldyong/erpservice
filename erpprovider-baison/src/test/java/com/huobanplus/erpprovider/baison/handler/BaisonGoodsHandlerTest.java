@@ -31,10 +31,10 @@ public class BaisonGoodsHandlerTest extends BaisonTestBase {
     @Test
     public void testQueryGoodsStock() {
         BaisonStockSearch baisonStockSearch = new BaisonStockSearch();
-        baisonStockSearch.setSpdm("KAJE82537");
+        baisonStockSearch.setProductBn("KAJE82537");
 //        baisonStockSearch.setGg1dm("C00738");
 //        baisonStockSearch.setGg2dm("XL");
-        baisonStockSearch.setCkdm("fulelp");
+        baisonStockSearch.setWarehouseCode("fulelp");
 
         List<BaisonStockSearch> baisonStockSearchList = new ArrayList<>();
         baisonStockSearchList.add(baisonStockSearch);
