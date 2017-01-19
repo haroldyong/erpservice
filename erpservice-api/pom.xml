@@ -148,11 +148,11 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>com.huobanplus.erpservice</groupId>-->
-        <!--<artifactId>erpprovider-wangdian</artifactId>-->
-        <!--<version>1.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.huobanplus.erpservice</groupId>
+            <artifactId>erpprovider-wangdian</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>com.huobanplus.erpservice</groupId>
