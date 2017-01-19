@@ -26,5 +26,12 @@ public interface BaisonOrderHandler {
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
 
+    /**
+     * 订单查询
+     *
+     * @param baisonOrderSearch
+     * @param baisonSysData
+     * @return
+     */
     EventResult orderQuery(BaisonOrderSearch baisonOrderSearch, BaisonSysData baisonSysData);
 }
