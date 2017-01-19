@@ -134,7 +134,6 @@ public class WangDianHandlerBuilder implements ERPHandlerBuilder {
 
                         return EventResult.resultWith(EventResultEnum.ERROR, response);
                     }
-
                     return null;
                 }
             };
