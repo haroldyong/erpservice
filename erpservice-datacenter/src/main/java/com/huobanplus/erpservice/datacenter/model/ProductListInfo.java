@@ -11,10 +11,8 @@
 
 package com.huobanplus.erpservice.datacenter.model;
 
-import com.alibaba.fastjson.JSON;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,29 +21,25 @@ import java.util.List;
 @Data
 public class ProductListInfo extends BaseInfo {
 
+    /**
+     * 总记录数
+     */
     private int recordCount;
+    /**
+     * 当前页
+     */
     private int pageIndex;
+    /**
+     * 每页大小
+     */
     private int pageSize;
+    /**
+     * 是否有下一页
+     */
     private boolean hasNext;
+
+    /**
+     * 货品列表
+     */
     private List<ProductInfo> products;
-
-    public static void main(String[] args) {
-
-        ProductListInfo productListInfo = new ProductListInfo();
-        productListInfo.setRecordCount(1000);
-        productListInfo.setPageIndex(1);
-        productListInfo.setPageSize(50);
-
-        List<ProductInfo> productInfoList = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            ProductInfo productInfo = new ProductInfo();
-            productInfo.setSkuId("sku-" + i);
-            productInfo.setWarehouseCode("code-" + i);
-            productInfoList.add(productInfo);
-        }
-
-        productListInfo.setProducts(productInfoList);
-
-        System.out.println(JSON.toJSONString(productListInfo));
-    }
 }

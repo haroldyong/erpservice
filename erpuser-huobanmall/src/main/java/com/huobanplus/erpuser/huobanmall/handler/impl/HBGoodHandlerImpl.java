@@ -70,7 +70,6 @@ public class HBGoodHandlerImpl implements HBGoodHandler {
             String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
             signMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpGood/todo", signMap);
-//            HttpResult httpResult = HttpClientUtil.getInstance().post("http://localhost:12306" + "/erp", signMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult<ProductListInfo> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<ProductListInfo>>() {
                 });

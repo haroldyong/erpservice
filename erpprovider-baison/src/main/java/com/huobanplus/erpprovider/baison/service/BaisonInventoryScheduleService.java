@@ -37,7 +37,6 @@ import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,7 +61,7 @@ public class BaisonInventoryScheduleService {
     @Autowired
     private ERPRegister erpRegister;
 
-    @Scheduled(cron = "0 0 */1 * * ?")
+    //    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void syncInventory() {
 
@@ -89,51 +88,53 @@ public class BaisonInventoryScheduleService {
                 getProductInfoEvent.setErpUserInfo(erpUserInfo);
                 getProductInfoEvent.setProductSearchInfo(productSearchInfo);
 
+                List<BaisonStockResp> baisonStcokRespList = new ArrayList<>();
+                List<ProInventoryInfo> proInventoryInfoList = new ArrayList<>();
+                SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
+                syncInventoryEvent.setErpInfo(erpInfo);
+                syncInventoryEvent.setErpUserInfo(erpUserInfo);
+
+                ProductListInfo productListInfo = null;
+                List<BaisonStockSearch> baisonStockSearchList = new ArrayList<>();
+
                 ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
                 EventResult firstObtainEvent = erpUserHandler.handleEvent(getProductInfoEvent);
                 if (firstObtainEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                    ProductListInfo productListInfo = (ProductListInfo) firstObtainEvent.getData();
+                    productListInfo = (ProductListInfo) firstObtainEvent.getData();
                     totalCount = productListInfo.getRecordCount();
 
-                    List<BaisonStockSearch> baisonStockSearchList = convert2SearchList(productListInfo.getProducts());
+                    baisonStockSearchList = convert2SearchList(productListInfo.getProducts());
                     EventResult firstQueryEvent = baisonGoodsHandler.queryGoodsStock(baisonStockSearchList, sysData);
                     if (firstQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                        List<BaisonStockResp> baisonStcokRespList = (List<BaisonStockResp>) firstQueryEvent.getData();// 接口返回的数据确认
-                        List<ProInventoryInfo> proInventoryInfoList = convert2InventoryInfo(baisonStcokRespList);
-
-                        SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
-                        syncInventoryEvent.setErpInfo(erpInfo);
-                        syncInventoryEvent.setErpUserInfo(erpUserInfo);
+                        baisonStcokRespList = (List<BaisonStockResp>) firstQueryEvent.getData();// 接口返回的数据确认
+                        proInventoryInfoList = convert2InventoryInfo(baisonStcokRespList);
                         syncInventoryEvent.setInventoryInfoList(proInventoryInfoList);
 
                         // 第一次同步库存到平台
                         EventResult firstSyncEvent = erpUserHandler.handleEvent(syncInventoryEvent);
                         if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {// 同步成功
                             failedList.addAll((List<ProInventoryInfo>) firstSyncEvent.getData());
+                        }
+                    }
+                }
+                // 后续几次
+                while (productListInfo != null && productListInfo.isHasNext()) {
 
-                            // 后续几次
-                            while (productListInfo.isHasNext()) {
+                    productSearchInfo.setPageIndex(++pageIndex);
+                    getProductInfoEvent.setProductSearchInfo(productSearchInfo);
+                    EventResult nextObtainEvent = erpUserHandler.handleEvent(getProductInfoEvent);
 
-                                productSearchInfo.setPageIndex(++pageIndex);
-                                getProductInfoEvent.setProductSearchInfo(productSearchInfo);
-                                EventResult nextObtainEvent = erpUserHandler.handleEvent(getProductInfoEvent);
-
-                                if (nextObtainEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                    productListInfo = (ProductListInfo) nextObtainEvent.getData();
-                                    baisonStockSearchList = convert2SearchList(productListInfo.getProducts());
-                                    EventResult nextQueryEvent = baisonGoodsHandler.queryGoodsStock(baisonStockSearchList, sysData);
-                                    if (nextQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                        baisonStcokRespList = (List<BaisonStockResp>) firstQueryEvent.getData();// 接口返回的数据确认
-                                        proInventoryInfoList = convert2InventoryInfo(baisonStcokRespList);
-                                        syncInventoryEvent.setInventoryInfoList(proInventoryInfoList);
-
-                                        EventResult nextSyncEvent = erpUserHandler.handleEvent(syncInventoryEvent);
-                                        if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                            failedList.addAll((List<ProInventoryInfo>) nextSyncEvent.getData());
-                                        }
-
-                                    }
-                                }
+                    if (nextObtainEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        productListInfo = (ProductListInfo) nextObtainEvent.getData();
+                        baisonStockSearchList = convert2SearchList(productListInfo.getProducts());
+                        EventResult nextQueryEvent = baisonGoodsHandler.queryGoodsStock(baisonStockSearchList, sysData);
+                        if (nextQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                            baisonStcokRespList = (List<BaisonStockResp>) nextQueryEvent.getData();// 接口返回的数据确认
+                            proInventoryInfoList = convert2InventoryInfo(baisonStcokRespList);
+                            syncInventoryEvent.setInventoryInfoList(proInventoryInfoList);
+                            EventResult nextSyncEvent = erpUserHandler.handleEvent(syncInventoryEvent);
+                            if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                failedList.addAll((List<ProInventoryInfo>) nextSyncEvent.getData());
                             }
                         }
                     }
@@ -193,7 +194,6 @@ public class BaisonInventoryScheduleService {
         baisonStockRespList.forEach(item -> {
             ProInventoryInfo proInventoryInfo = new ProInventoryInfo();
             proInventoryInfo.setProductBn(item.getProductBn());
-            proInventoryInfo.setGoodBn("TU16011502121");
             proInventoryInfo.setInventory(item.getNumber());
             proInventoryInfo.setSalableInventory(item.getNumber());
             inventoryInfoList.add(proInventoryInfo);

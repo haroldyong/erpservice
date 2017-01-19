@@ -62,7 +62,7 @@ public class BaisonTestBase {
         mockBaisonSysData.setBaisonAppkey("test");
         mockBaisonSysData.setBaisonAppSecret("9dc22981aaa41fb72c5b87dc3fb6d3c9");
         mockBaisonSysData.setBaisonShopCode("1200000002");
-        mockBaisonSysData.setBaisonWarehouseCode("ddd");
+        mockBaisonSysData.setBaisonWarehouseCode("fulelp");
         mockBaisonSysData.setVersion("1.0");
 
         String orderNo = SerialNo.create();
