@@ -61,6 +61,9 @@ public class BaisonInventoryScheduleService {
     @Autowired
     private ERPRegister erpRegister;
 
+    /**
+     * 库存同步
+     */
     //    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void syncInventory() {

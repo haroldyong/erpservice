@@ -38,8 +38,6 @@ public class BaisonGoodsHandlerImpl implements BaisonGoodsHandler {
     @Override
     public EventResult queryGoodsStock(List<BaisonStockSearch> baisonStockSearchList, BaisonSysData baisonSysData) {
 
-
-
         JSONObject requestObj = new JSONObject();
         requestObj.put("kc_data", baisonStockSearchList);
 

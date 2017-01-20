@@ -65,6 +65,9 @@ public class BaisonDeliveryScheduleService {
     @Autowired
     private ERPRegister erpRegister;
 
+    /**
+     * 发货同步
+     */
     public void syncOrderShip() {
 
         Date now = new Date();
@@ -154,6 +157,12 @@ public class BaisonDeliveryScheduleService {
         }
     }
 
+    /**
+     * 转换为平台发货单列表
+     *
+     * @param baisonOrderArray
+     * @return
+     */
     private List<OrderDeliveryInfo> convert2OrderDeliveryInfo(JSONArray baisonOrderArray) {
 
         List<OrderDeliveryInfo> orderDeliveryInfoList = new ArrayList<>();
@@ -161,9 +170,6 @@ public class BaisonDeliveryScheduleService {
         for (Object o : baisonOrderArray) {
             JSONObject obj = JSON.parseObject(o.toString());
             BaisonQueryOrder baisonQueryOrder = obj.getObject("orderListGet", BaisonQueryOrder.class);
-//            System.out.println("\n-----------------Data----------------");
-//            System.out.println(baisonQueryOrder);
-//            System.out.println("\n-----------------Data----------------");
 
             if (baisonQueryOrder.getShippingStatus().equals("7")) {// 已发货
 
@@ -182,9 +188,6 @@ public class BaisonDeliveryScheduleService {
                             .append(",")
                             .append(baisonQueryOrderItem.getGoods_number())
                             .append("|");
-//                    System.out.println("\n************Detail**************");
-//                    System.out.println(baisonQueryOrderItem);
-//                    System.out.println("\n************Detail**************");
                 }
                 orderDeliveryInfo.setDeliverItemsStr(deliverItemStr.toString());
                 orderDeliveryInfoList.add(orderDeliveryInfo);

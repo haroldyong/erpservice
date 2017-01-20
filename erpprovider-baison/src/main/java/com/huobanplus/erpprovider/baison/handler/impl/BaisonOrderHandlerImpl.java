@@ -181,9 +181,7 @@ public class BaisonOrderHandlerImpl implements BaisonOrderHandler {
                 String status = jsonObj.getString("status");
                 if (status.equals("api-success")) {
                     log.info("BaisonOrderHandlerImpl-orderQuery: get order detail success");
-
                     JSONObject dataJson = jsonObj.getJSONObject("data");
-                    JSONArray orderJsonArray = dataJson.getJSONArray("orderListGets");
                     return EventResult.resultWith(EventResultEnum.SUCCESS, dataJson);
                 } else {
                     log.info("BaisonOrderHandlerImpl-orderQuery: get order detail failed,error message :" + jsonObj.getString("message"));

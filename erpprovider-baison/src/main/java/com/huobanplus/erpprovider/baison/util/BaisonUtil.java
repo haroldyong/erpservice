@@ -55,6 +55,15 @@ public class BaisonUtil {
         return DigestUtils.md5Hex(sb.toString().getBytes("utf-8")).toLowerCase();
     }
 
+    /**
+     * 构建请求参数
+     *
+     * @param baisonSysData
+     * @param serviceType
+     * @param data
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     public static Map<String, Object> buildRequestMap(BaisonSysData baisonSysData, String serviceType, String data) throws UnsupportedEncodingException {
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("key", baisonSysData.getBaisonAppkey());

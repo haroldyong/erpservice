@@ -22,5 +22,12 @@ import java.util.List;
  */
 public interface BaisonGoodsHandler {
 
+    /**
+     * 查询商品库存
+     *
+     * @param baisonStockSearchList
+     * @param baisonSysData
+     * @return
+     */
     EventResult queryGoodsStock(List<BaisonStockSearch> baisonStockSearchList, BaisonSysData baisonSysData);
 }
