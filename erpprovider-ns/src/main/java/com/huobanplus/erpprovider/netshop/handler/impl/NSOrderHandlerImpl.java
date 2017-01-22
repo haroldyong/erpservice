@@ -144,7 +144,7 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
                 orderDetailResult.setBuyerId(orderBean.getUserLoginName());
             }
             orderDetailResult.setBuyerName(orderBean.getShipName());
-            if (StringUtil.isEmpty(orderBean.getBuyerPid())) {
+            if (StringUtil.isNotEmpty(orderBean.getBuyerPid())) {
                 orderDetailResult.setCardType(1);
                 orderDetailResult.setIdCard(orderBean.getBuyerPid());
             }
