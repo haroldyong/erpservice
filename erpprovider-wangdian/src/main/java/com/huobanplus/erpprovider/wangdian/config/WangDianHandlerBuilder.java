@@ -10,7 +10,6 @@
 package com.huobanplus.erpprovider.wangdian.config;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.wangdian.common.Constant;
 import com.huobanplus.erpprovider.wangdian.common.WangDianSysData;
@@ -36,7 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -103,14 +101,9 @@ public class WangDianHandlerBuilder implements ERPHandlerBuilder {
                                 case Constant.LOGISTICS_RETURN:
                                     JSONObject jsonObject = JSON.parseObject(content);
                                     JSONObject tradeList = jsonObject.getJSONObject("TradeList");
-                                    JSONArray jsonArray = tradeList.getJSONArray("Trade");
+                                    String jsonArrayStr = tradeList.getString("Trade");
 
-                                    List<WangDianLogistic> wangDianLogistics = new ArrayList<>();
-
-                                    jsonArray.forEach(obj -> {
-                                        WangDianLogistic wangDianLogistic = JSON.parseObject(obj.toString(), WangDianLogistic.class);
-                                        wangDianLogistics.add(wangDianLogistic);
-                                    });
+                                    List<WangDianLogistic> wangDianLogistics = JSON.parseArray(jsonArrayStr, WangDianLogistic.class);
                                     return wangDianOrderHandler.deliverOrder(wangDianLogistics, erpUserInfo, erpInfo);
                             }
 
@@ -134,7 +127,6 @@ public class WangDianHandlerBuilder implements ERPHandlerBuilder {
 
                         return EventResult.resultWith(EventResultEnum.ERROR, response);
                     }
-
                     return null;
                 }
             };

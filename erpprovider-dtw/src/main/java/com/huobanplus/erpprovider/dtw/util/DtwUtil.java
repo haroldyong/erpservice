@@ -87,12 +87,12 @@ public class DtwUtil {
         return result;
     }
 
-    public static String requestCustomWebService(String content, String msgType, String dataDigest, String sendCode) throws Exception {
+    public static String requestCustomWebService(String customUrl, String content, String msgType, String dataDigest, String sendCode) throws Exception {
         Service service = new Service();
 
         Call call = (Call) service.createCall();
         call.setTimeout(100000);
-        call.setTargetEndpointAddress(DtwConstant.CUSTOM_WEBSERVICE_URL);
+        call.setTargetEndpointAddress(customUrl);
         call.setOperationName(new QName(DtwConstant.CUSTOM_TARGET_NAMESPACE, "receive"));
         call.addParameter("content", org.apache.axis.encoding.XMLType.XSD_STRING, javax.xml.rpc.ParameterMode.IN);//报文密文
         call.addParameter("msgType", org.apache.axis.encoding.XMLType.XSD_STRING, javax.xml.rpc.ParameterMode.IN);//报文类型

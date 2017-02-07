@@ -20,10 +20,12 @@ import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
 import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearchResult;
 import com.huobanplus.erpprovider.sursung.service.SurSungSyncChannelOrder;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil2;
-import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
-import com.huobanplus.erpservice.datacenter.model.*;
+import com.huobanplus.erpservice.datacenter.model.AfterSaleInfo;
+import com.huobanplus.erpservice.datacenter.model.AfterSaleItem;
+import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
@@ -57,28 +59,19 @@ public class SurSungHandlerTest extends SurSungTestBase {
     private SurSungSyncChannelOrder surSungSyncChannelOrder;
 
     @Test
+    @Rollback(value = false)
     public void testPushOrder() throws IOException {
-//        Order order = JSON.parseObject(orderInfoJson, Order.class);
-//        HttpClientUtil2.getInstance().initHttpClient();
-        for (int i = 0; i < 1; i++) {
-            String orderNo = SerialNo.create();
-            mockOrder.setOrderId(orderNo);
-            System.out.println("\norderNo:" + orderNo);
-            for (OrderItem orderItem : mockOrder.getOrderItems()) {
-                orderItem.setProductBn("BN-" + i);
-            }
 
             String orderInfoJson = JSON.toJSONString(mockOrder);
+        String orderInfoJson2 = "{\"orderId\":\"20170111781536396208\",\"memberId\":256413,\"userLoginName\":\"13300000000\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":11.000,\"orderName\":\"??????333(l?,??)(1)(?1)\",\"itemNum\":1,\"lastUpdateTime\":\"2017-01-11 14:15:02\",\"createTime\":\"2017-01-11 14:15:02\",\"shipName\":\"??\",\"shipArea\":\"??/???/???\",\"province\":\"??\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"??????????\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"13300000000\",\"costItem\":0.100,\"onlinePayAmount\":0.00,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":0.110,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"?????????\",\"payType\":11,\"customerId\":3447,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2017-01-11 14:15:03\",\"unionOrderId\":\"20170111545400855630\",\"receiveStatus\":0,\"sourceShop\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"330721198888888888\",\"buyerName\":\"??\",\"payNumber\":null,\"taxAmount\":0.010,\"orderItems\":[{\"itemId\":177202,\"orderId\":\"20170111781536396208\",\"unionOrderId\":\"20170111545400855630\",\"productBn\":\"XYDCSXJ0001\",\"name\":\"??????333(l?,??)(1)\",\"cost\":0.050,\"price\":0.100,\"amount\":0.100,\"num\":1,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":3447,\"goodBn\":\"1901101000\",\"standard\":\"l?,??\",\"brief\":null,\"shipStatus\":0,\"weight\":0.0,\"unit\":null}],\"errorMessage\":null}";
             PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
-            pushNewOrderEvent.setOrderInfoJson(orderInfoJson);
+        pushNewOrderEvent.setOrderInfoJson(orderInfoJson2);
             pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
             pushNewOrderEvent.setErpInfo(mockErpInfo);
             EventResult eventResult = surSungOrderHandler.pushOrder(pushNewOrderEvent);
             System.out.println(eventResult.getResultCode());
             System.out.println(eventResult.getData());
             System.out.println(eventResult.getResultMsg());
-        }
-//        HttpClientUtil2.getInstance().close();
     }
 
     @Test
@@ -124,23 +117,23 @@ public class SurSungHandlerTest extends SurSungTestBase {
         AfterSaleInfo afterSaleInfo = new AfterSaleInfo();
 
         ReturnInfo returnInfo = new ReturnInfo();
-        afterSaleInfo.setOrderId("20161110194644997344");
+        afterSaleInfo.setOrderId("20170111105506222019");
         afterSaleInfo.setRemark("test");
         afterSaleInfo.setLogiCompany("顺丰快递");
         afterSaleInfo.setLogiNo("12345logino");
         afterSaleInfo.setAfterStatus(5);
         afterSaleInfo.setAfterSaleId("20161110194644997355");
-        afterSaleInfo.setRefund(110);
-        afterSaleInfo.setTotalAmount(120);
+        afterSaleInfo.setRefund(2);
+        afterSaleInfo.setTotalAmount(2);
         afterSaleInfo.setPayment(10);
 
         List<AfterSaleItem> afterSaleItems = new ArrayList<>();
         AfterSaleItem afterSaleItem = new AfterSaleItem();
-        afterSaleItem.setSkuId("BN-1234");
-        afterSaleItem.setAmount(10);
+        afterSaleItem.setSkuId("BN-001");
+        afterSaleItem.setAmount(2);
         afterSaleItem.setReturnNum(2);
         afterSaleItem.setType("其他");
-        afterSaleItem.setOrderId("20161110194644997344");
+        afterSaleItem.setOrderId("20161229134448035852");
         afterSaleItems.add(afterSaleItem);
 
         afterSaleInfo.setItems(afterSaleItems);
