@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.sap.service;
@@ -267,10 +267,6 @@ public class ScheduledService {
         log.info("本次订单重新推送共:" + totalNum);
         log.info("本次订单重新推送失败数:" + failedNum);
         log.info("本次订单重新推送成功数:" + (totalNum - failedNum));
-
-        System.out.println("本次订单重新推送共:" + totalNum);
-        System.out.println("本次订单重新推送失败数:" + failedNum);
-        System.out.println("本次订单重新推送成功数:" + (totalNum - failedNum));
 
     }
 }
