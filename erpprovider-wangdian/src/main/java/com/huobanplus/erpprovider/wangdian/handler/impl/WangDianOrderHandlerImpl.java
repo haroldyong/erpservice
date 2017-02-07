@@ -286,7 +286,7 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
                 LogisticResponse logisticResponse = new LogisticResponse();
                 logisticResponse.setOrderCode(failedOrder.getOrderId());
                 logisticResponse.setResultCode(1);
-                logisticResponse.setResultMsg("");
+                logisticResponse.setResultMsg(failedOrder.getRemark());
                 logisticResponses.add(logisticResponse);
             });
 

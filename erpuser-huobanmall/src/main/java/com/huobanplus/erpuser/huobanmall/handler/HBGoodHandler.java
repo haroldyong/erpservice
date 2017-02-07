@@ -10,6 +10,7 @@
 package com.huobanplus.erpuser.huobanmall.handler;
 
 import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
+import com.huobanplus.erpservice.datacenter.model.ProductSearchInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
@@ -27,4 +28,13 @@ public interface HBGoodHandler {
      * @return
      */
     EventResult syncProInventory(List<ProInventoryInfo> proInventoryInfoList, ERPUserInfo erpUserInfo);
+
+    /**
+     * 获取平台货品列表
+     *
+     * @param productSearchInfos
+     * @param erpUserInfo
+     * @return
+     */
+    EventResult obtainProductListInfo(ProductSearchInfo productSearchInfos, ERPUserInfo erpUserInfo);
 }

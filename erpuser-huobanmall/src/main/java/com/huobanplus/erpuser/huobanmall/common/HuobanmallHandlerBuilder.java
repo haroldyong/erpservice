@@ -12,6 +12,7 @@ package com.huobanplus.erpuser.huobanmall.common;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailListEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetProductInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushOrderListInfoEvent;
@@ -65,6 +66,9 @@ public class HuobanmallHandlerBuilder implements ERPUserHandlerBuilder {
                     SyncChannelOrderEvent syncChannelOrderEvent = (SyncChannelOrderEvent) erpBaseEvent;
                     return orderHandler.syncChannelOrderList(syncChannelOrderEvent.getOrderList(),
                             syncChannelOrderEvent.getErpUserInfo());
+                } else if (erpBaseEvent instanceof GetProductInfoEvent) {
+                    GetProductInfoEvent getProductInfoEvent = (GetProductInfoEvent) erpBaseEvent;
+                    return goodHandler.obtainProductListInfo(getProductInfoEvent.getProductSearchInfo(), getProductInfoEvent.getErpUserInfo());
                 }
                 return null;
             };

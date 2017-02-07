@@ -49,6 +49,7 @@ public class SurSungTestBase {
     protected SurSungSysData mockNormalSysData;
 
 
+
     protected ERPInfo mockErpInfo;
 
     protected ERPUserInfo mockErpUserInfo;
@@ -74,22 +75,35 @@ public class SurSungTestBase {
 
         String orderNo = SerialNo.create();
 
-        OrderItem orderItem = new OrderItem();
-        orderItem.setItemId(178770);
-        orderItem.setOrderId(orderNo);
-        orderItem.setUnionOrderId("2016062455965373");
-        orderItem.setProductBn("CSXJ0001");
-        orderItem.setName("婴儿配方奶粉0001");
-        orderItem.setCost(0.5);
-        orderItem.setPrice(1);
-        orderItem.setAmount(2);
-        orderItem.setNum(2);
-        orderItem.setStandard("测试");
-        orderItem.setCustomerId(296);
-        orderItem.setGoodBn("1901101000");
+        OrderItem item1 = new OrderItem();
+        item1.setItemId(1);
+        item1.setOrderId(orderNo);
+        item1.setProductBn("BN-001");
+        item1.setName("婴儿配方奶粉0001");
+        item1.setCost(1);
+        item1.setPrice(2);
+        item1.setAmount(2);
+        item1.setNum(1);
+        item1.setStandard("测试");
+        item1.setCustomerId(296);
+        item1.setGoodBn("GN-001");
+
+        OrderItem item2 = new OrderItem();
+        item2.setItemId(2);
+        item2.setOrderId(orderNo);
+        item2.setProductBn("BN-002");
+        item2.setName("婴儿配方奶粉0002");
+        item2.setCost(1);
+        item2.setPrice(2);
+        item2.setAmount(2);
+        item2.setNum(1);
+        item2.setStandard("测试");
+        item2.setCustomerId(296);
+        item2.setGoodBn("GN-002");
 
         mockOrderItems = new ArrayList<>();
-        mockOrderItems.add(orderItem);
+        mockOrderItems.add(item1);
+        mockOrderItems.add(item2);
 
         mockOrder = new Order();
         mockOrder.setOrderId(orderNo);
@@ -101,7 +115,7 @@ public class SurSungTestBase {
         mockOrder.setShipStatus(0);
         mockOrder.setWeight(100);
         mockOrder.setOrderName("测试商品(蓝色,42码)(10)(×10)");
-        mockOrder.setItemNum(12);
+        mockOrder.setItemNum(2);
         mockOrder.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN));
         mockOrder.setShipName("吴雄琉");
         mockOrder.setShipArea("浙江省/杭州市/滨江区");
@@ -113,11 +127,11 @@ public class SurSungTestBase {
         mockOrder.setShipTel("");
         mockOrder.setShipEmail("");
         mockOrder.setShipMobile("18705153968");
-        mockOrder.setCostItem(10);
+        mockOrder.setCostItem(4);
 //        mockOrder.setOnlinePayAmount();
         mockOrder.setCostFreight(0);
         mockOrder.setCurrency("CYN");
-        mockOrder.setFinalAmount(10);// 商品费用+商品费用*税率+运费
+        mockOrder.setFinalAmount(4);// 商品费用+商品费用*税率+运费
 
         mockOrder.setPaymentName("微信");
         mockOrder.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());//微信支付V3

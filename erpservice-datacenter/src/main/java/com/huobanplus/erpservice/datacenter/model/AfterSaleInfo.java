@@ -21,21 +21,23 @@ import java.util.List;
 @Data
 public class AfterSaleInfo {
 
-    public String afterSaleId;
-    public String orderId;
-    public String type;
-    public String logiCompany;
-    public String logiNo;
-    public int afterStatus;
-    public String remark;
-    public String questionType;
+    private String afterSaleId;
+    private String orderId;
+    private String type;
+    private String logiCompany;
+    private String logiNo;
+    private int afterStatus;
+    // 发货状态
+    private int shipStatus;
+    private String remark;
+    private String questionType;
     // 原始订单金额
-    public double totalAmount;
+    private double totalAmount;
     // 卖家应退金额
-    public double refund;
+    private double refund;
     // 卖家应补偿金额
-    public double payment;
+    private double payment;
 
-    public List<AfterSaleItem> items;
+    private List<AfterSaleItem> items;
 
 }
