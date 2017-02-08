@@ -583,10 +583,8 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
         Date now = new Date();
         int time = (int) (now.getTime() / 1000);
 
-        String remarkJson = pushRemarkEvent.getRemarkJson();
-        JSONObject remarkObj = JSON.parseObject(remarkJson);
-        String orderId = remarkObj.getString("orderId");
-        String remark = remarkObj.getString("remark");
+        String orderId = pushRemarkEvent.getOrderId();
+        String remark = pushRemarkEvent.getRemark();
 
         OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderId);
         if (orderDetailSyncLog == null) {

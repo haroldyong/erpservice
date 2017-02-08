@@ -147,14 +147,13 @@ public interface OrderProxyController {
     /**
      * @param erpInfo
      * @param erpUserInfo
-     * @param remarkJson
      * @return
      */
     @RequestMapping(value = "/pushRemark")
     @ResponseBody
     ApiResult pushRemark(@RequestAttribute ERPInfo erpInfo,
                          @RequestAttribute ERPUserInfo erpUserInfo,
-                         String remarkJson);
+                         String orderId, String remark);
 
 
 }

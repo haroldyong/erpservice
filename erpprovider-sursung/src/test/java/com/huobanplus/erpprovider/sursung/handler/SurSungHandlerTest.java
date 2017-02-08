@@ -10,7 +10,6 @@
 package com.huobanplus.erpprovider.sursung.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.sursung.SurSungTestBase;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungInventory;
@@ -324,10 +323,8 @@ public class SurSungHandlerTest extends SurSungTestBase {
         PushRemarkEvent pushRemarkEvent = new PushRemarkEvent();
         pushRemarkEvent.setErpInfo(mockErpInfo);
         pushRemarkEvent.setErpUserInfo(mockErpUserInfo);
-        JSONObject remarkObj = new JSONObject();
-        remarkObj.put("orderId", "20170208115901388039");
-        remarkObj.put("remark", "测试用的");
-        pushRemarkEvent.setRemarkJson(remarkObj.toJSONString());
+        pushRemarkEvent.setOrderId("20170208115901388039");
+        pushRemarkEvent.setRemark("测试用的");
 
         EventResult eventResult = surSungOrderHandler.pushRemark(pushRemarkEvent);
         System.out.println("*********************Data*********************");
