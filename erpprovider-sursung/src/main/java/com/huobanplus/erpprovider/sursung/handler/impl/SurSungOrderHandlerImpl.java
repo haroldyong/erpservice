@@ -576,4 +576,38 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
+
+    @Override
+    public EventResult pushRemark(PushRemarkEvent pushRemarkEvent) {
+
+        Date now = new Date();
+        int time = (int) (now.getTime() / 1000);
+
+        String remarkJson = pushRemarkEvent.getRemarkJson();
+        JSONObject remarkObj = JSON.parseObject(remarkJson);
+        String orderId = remarkObj.getString("orderId");
+        String remark = remarkObj.getString("remark");
+
+        OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(orderId);
+        if (orderDetailSyncLog == null) {
+            return EventResult.resultWith(EventResultEnum.ERROR, "该订单不存在", null);
+        }
+
+        ERPInfo erpInfo = pushRemarkEvent.getErpInfo();
+        SurSungSysData surSungSysData = JSON.parseObject(erpInfo.getSysDataJson(), SurSungSysData.class);
+
+        Order order = JSON.parseObject(orderDetailSyncLog.getOrderInfoJson(), Order.class);
+        order.setRemark(remark);
+        SurSungOrder surSungOrder = convert2ErpOrder(order, surSungSysData.getShopId());
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(surSungOrder);
+        try {
+            String requestData = JSON.toJSONString(jsonArray);
+            String requestUrl = SurSungUtil.createRequestUrl(SurSungConstant.ORDER_PUSH, time, surSungSysData);
+            return orderPush(requestUrl, requestData);
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
 }

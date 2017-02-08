@@ -21,10 +21,12 @@ import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPSysDataInfoService;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushAfterSaleEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushRemarkEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -76,7 +78,11 @@ public class SurSungHandlerBuilder implements ERPHandlerBuilder {
                         return surSungOrderHandler.cancelOrder(cancelOrderEvent);
 
                     }
-                    return null;
+                    if (erpBaseEvent instanceof PushRemarkEvent) {
+                        PushRemarkEvent pushRemarkEvent = (PushRemarkEvent) erpBaseEvent;
+                        return surSungOrderHandler.pushRemark(pushRemarkEvent);
+                    }
+                    return EventResult.resultWith(EventResultEnum.ERROR, "未找到对应处理事件", null);
                 }
 
                 @Override

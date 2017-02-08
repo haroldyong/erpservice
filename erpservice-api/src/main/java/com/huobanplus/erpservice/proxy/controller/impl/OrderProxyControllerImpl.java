@@ -134,7 +134,16 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     }
 
 
+    @Override
+    @RequestMapping("/pushRemark")
+    @ResponseBody
+    public ApiResult pushRemark(@RequestAttribute ERPInfo erpInfo, @RequestAttribute ERPUserInfo erpUserInfo, String remarkJson) {
 
-
-
+        log.info("remarkJson:" + remarkJson);
+        PushRemarkEvent pushRemarkEvent = new PushRemarkEvent();
+        pushRemarkEvent.setErpInfo(erpInfo);
+        pushRemarkEvent.setErpUserInfo(erpUserInfo);
+        pushRemarkEvent.setRemarkJson(remarkJson);
+        return orderProxyService.handleEvent(pushRemarkEvent);
+    }
 }

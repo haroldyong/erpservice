@@ -17,6 +17,7 @@ import com.huobanplus.erpprovider.sursung.search.SurSungOrderSearch;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushAfterSaleEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushRemarkEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -87,5 +88,13 @@ public interface SurSungOrderHandler {
      * @return
      */
     EventResult cancelOrder(CancelOrderEvent cancelOrderEvent);
+
+    /**
+     * 推送订单商家备注
+     *
+     * @param pushRemarkEvent
+     * @return
+     */
+    EventResult pushRemark(PushRemarkEvent pushRemarkEvent);
 
 }

@@ -10,6 +10,7 @@
 package com.huobanplus.erpprovider.sursung.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.sursung.SurSungTestBase;
 import com.huobanplus.erpprovider.sursung.common.SurSungSysData;
 import com.huobanplus.erpprovider.sursung.formatdata.SurSungInventory;
@@ -31,6 +32,7 @@ import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushAfterSaleEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushRemarkEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncChannelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -65,7 +67,7 @@ public class SurSungHandlerTest extends SurSungTestBase {
             String orderInfoJson = JSON.toJSONString(mockOrder);
         String orderInfoJson2 = "{\"orderId\":\"20170111781536396208\",\"memberId\":256413,\"userLoginName\":\"13300000000\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":11.000,\"orderName\":\"??????333(l?,??)(1)(?1)\",\"itemNum\":1,\"lastUpdateTime\":\"2017-01-11 14:15:02\",\"createTime\":\"2017-01-11 14:15:02\",\"shipName\":\"??\",\"shipArea\":\"??/???/???\",\"province\":\"??\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"??????????\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"13300000000\",\"costItem\":0.100,\"onlinePayAmount\":0.00,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":0.110,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"?????????\",\"payType\":11,\"customerId\":3447,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2017-01-11 14:15:03\",\"unionOrderId\":\"20170111545400855630\",\"receiveStatus\":0,\"sourceShop\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"330721198888888888\",\"buyerName\":\"??\",\"payNumber\":null,\"taxAmount\":0.010,\"orderItems\":[{\"itemId\":177202,\"orderId\":\"20170111781536396208\",\"unionOrderId\":\"20170111545400855630\",\"productBn\":\"XYDCSXJ0001\",\"name\":\"??????333(l?,??)(1)\",\"cost\":0.050,\"price\":0.100,\"amount\":0.100,\"num\":1,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":3447,\"goodBn\":\"1901101000\",\"standard\":\"l?,??\",\"brief\":null,\"shipStatus\":0,\"weight\":0.0,\"unit\":null}],\"errorMessage\":null}";
             PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
-        pushNewOrderEvent.setOrderInfoJson(orderInfoJson2);
+        pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
             pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
             pushNewOrderEvent.setErpInfo(mockErpInfo);
             EventResult eventResult = surSungOrderHandler.pushOrder(pushNewOrderEvent);
@@ -315,6 +317,23 @@ public class SurSungHandlerTest extends SurSungTestBase {
         System.out.println("\n*************");
         System.out.println(json);
         System.out.println("\n*************");
+    }
+
+    @Test
+    public void testPushRemark() {
+        PushRemarkEvent pushRemarkEvent = new PushRemarkEvent();
+        pushRemarkEvent.setErpInfo(mockErpInfo);
+        pushRemarkEvent.setErpUserInfo(mockErpUserInfo);
+        JSONObject remarkObj = new JSONObject();
+        remarkObj.put("orderId", "20170208115901388039");
+        remarkObj.put("remark", "测试用的");
+        pushRemarkEvent.setRemarkJson(remarkObj.toJSONString());
+
+        EventResult eventResult = surSungOrderHandler.pushRemark(pushRemarkEvent);
+        System.out.println("*********************Data*********************");
+        System.out.println(eventResult.getResultCode());
+        System.out.println(eventResult.getResultMsg());
+        System.out.println("*********************Data*********************");
     }
 
 }
