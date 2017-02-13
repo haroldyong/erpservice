@@ -26,6 +26,9 @@ public class BaisonQueryOrder {
     @JSONField(name = "order_sn")
     private String orderSn;
 
+    @JSONField(name = "deal_code")
+    private String dealCode;
+
     @JSONField(name = "shipping_status")
     private String shippingStatus;
 

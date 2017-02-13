@@ -41,6 +41,7 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.Jsr310Converters;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -68,6 +69,7 @@ public class BaisonDeliveryScheduleService {
     /**
      * 发货同步
      */
+    @Scheduled(cron = "0 0 */1 * * ?")
     public void syncOrderShip() {
 
         Date now = new Date();
@@ -89,6 +91,7 @@ public class BaisonDeliveryScheduleService {
             baisonOrderSearch.setSdCode(sysData.getBaisonShopCode());
             baisonOrderSearch.setStartModified(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
             baisonOrderSearch.setEndModified(StringUtil.DateFormat(now, StringUtil.TIME_PATTERN));
+            baisonOrderSearch.setAllowFields("all");
             baisonOrderSearch.setPageNo(1);
             baisonOrderSearch.setPageSize(BaisonConstant.PAGE_SIZE);
 
@@ -174,7 +177,7 @@ public class BaisonDeliveryScheduleService {
             if (baisonQueryOrder.getShippingStatus().equals("7")) {// 已发货
 
                 OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
-                orderDeliveryInfo.setOrderId(baisonQueryOrder.getOrderSn());
+                orderDeliveryInfo.setOrderId(baisonQueryOrder.getDealCode());
                 orderDeliveryInfo.setLogiName(baisonQueryOrder.getShippingName());
                 orderDeliveryInfo.setLogiNo(baisonQueryOrder.getShippingSn());
                 orderDeliveryInfo.setLogiCode(baisonQueryOrder.getShippingCode());

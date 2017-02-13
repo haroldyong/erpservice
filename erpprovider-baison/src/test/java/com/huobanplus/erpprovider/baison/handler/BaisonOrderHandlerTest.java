@@ -18,7 +18,6 @@ import com.huobanplus.erpprovider.baison.BaisonTestBase;
 import com.huobanplus.erpprovider.baison.formatdata.BaisonQueryOrder;
 import com.huobanplus.erpprovider.baison.formatdata.BaisonQueryOrderItem;
 import com.huobanplus.erpprovider.baison.search.BaisonOrderSearch;
-import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -26,7 +25,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,9 +38,10 @@ public class BaisonOrderHandlerTest extends BaisonTestBase {
     @Test
     public void testPushOrder() {
 
+        String orderJson = "{\"orderId\":\"20170213181872570356\",\"memberId\":256494,\"userLoginName\":\"15067134475\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":0.000,\"orderName\":\"百胜测试商品(蓝色,38码)(4)(×4)\",\"itemNum\":4,\"lastUpdateTime\":\"2017-02-13 14:50:17\",\"createTime\":\"2017-02-13 14:50:17\",\"shipName\":\"wxl\",\"shipArea\":\"北京/北京市/东城区\",\"province\":\"北京\",\"city\":\"北京市\",\"district\":\"东城区\",\"shipAddr\":\"北京北京市东城区四环五环六环\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"15601235456\",\"costItem\":4.000,\"onlinePayAmount\":0.00,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":4.000,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"预付款\",\"payType\":700,\"customerId\":296,\"supplierId\":17415,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2017-02-13 14:50:17\",\"unionOrderId\":\"20170213018236760855\",\"receiveStatus\":0,\"sourceShop\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"\",\"buyerName\":\"wxl\",\"payNumber\":null,\"taxAmount\":0.000,\"orderItems\":[{\"itemId\":177484,\"orderId\":\"20170213181872570356\",\"unionOrderId\":\"20170213018236760855\",\"productBn\":\"SKU-000-5\",\"name\":\"百胜测试商品(蓝色,38码)(4)\",\"cost\":1.000,\"price\":1.000,\"amount\":4.000,\"num\":4,\"sendNum\":0,\"refundNum\":0,\"supplierId\":17415,\"customerId\":296,\"goodBn\":\"HS-0000001\",\"standard\":\"蓝色,38码\",\"brief\":null,\"shipStatus\":0,\"weight\":0.0,\"unit\":null}],\"errorMessage\":null}";
         mockOrder.setOrderId("1111111111111111111");
         PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
-        pushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
+        pushNewOrderEvent.setOrderInfoJson(orderJson);
         pushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
         pushNewOrderEvent.setErpInfo(mockErpInfo);
         EventResult eventResult = baisonOrderHandler.pushOrder(pushNewOrderEvent);
@@ -54,10 +53,12 @@ public class BaisonOrderHandlerTest extends BaisonTestBase {
     @Test
     public void testOrderQuery() {
         BaisonOrderSearch baisonOrderSearch = new BaisonOrderSearch();
-//        baisonOrderSearch.setSdCode("1200000002");
+        baisonOrderSearch.setSdCode("07");
 //        baisonOrderSearch.setOrderSn("1111111111111111111");
-        baisonOrderSearch.setStartModified("2015-12-30 08:00:00");
-        baisonOrderSearch.setEndModified(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
+//        baisonOrderSearch.setStartModified("2015-12-30 08:00:00");
+//        baisonOrderSearch.setEndModified(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
+        baisonOrderSearch.setAllowFields("all");
+        baisonOrderSearch.setOrderSn("20170213004544470150");
 
         baisonOrderSearch.setPageNo(1);
         baisonOrderSearch.setPageSize(1000);
