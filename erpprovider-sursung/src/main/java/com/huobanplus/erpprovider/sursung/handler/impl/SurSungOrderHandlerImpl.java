@@ -151,7 +151,9 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
 //        surSungOrder.setSellerFlag(1);
 
         List<SurSungOrderItem> surSungOrderItems = new ArrayList<>();
-        order.getOrderItems().forEach(item -> {
+        int row = 0;
+        for (OrderItem item : order.getOrderItems()) {
+
             SurSungOrderItem surSungOrderItem = new SurSungOrderItem();
             surSungOrderItem.setSkuId(item.getProductBn());
             surSungOrderItem.setShopSkuId(item.getProductBn());
@@ -160,9 +162,10 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             surSungOrderItem.setBasePrice(item.getPrice());
             surSungOrderItem.setQty(item.getNum());
             surSungOrderItem.setName(item.getName());
-            surSungOrderItem.setOuterOiId(item.getOrderId());
+            surSungOrderItem.setOuterOiId(item.getOrderId() + (row++));
             surSungOrderItems.add(surSungOrderItem);
-        });
+        }
+        ;
 
         SursungPay sursungPay = new SursungPay();
         sursungPay.setAmount(order.getFinalAmount());

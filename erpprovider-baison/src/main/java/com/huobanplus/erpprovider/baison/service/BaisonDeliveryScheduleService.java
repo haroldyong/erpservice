@@ -39,10 +39,13 @@ import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.Jsr310Converters;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -55,6 +58,7 @@ import java.util.List;
 @Service
 public class BaisonDeliveryScheduleService {
 
+    private static final Log log = LogFactory.getLog(BaisonDeliveryScheduleService.class);
     @Autowired
     private OrderShipSyncLogService orderShipSyncLogService;
     @Autowired
@@ -70,10 +74,13 @@ public class BaisonDeliveryScheduleService {
      * 发货同步
      */
     @Scheduled(cron = "0 0 */1 * * ?")
+    @Transactional
     public void syncOrderShip() {
 
         Date now = new Date();
         List<ERPDetailConfigEntity> detailConfigEntityList = erpDetailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.BAISONE3);
+
+        log.info("order ship sync for baison start!");
         for (ERPDetailConfigEntity erpDetailConfigEntity : detailConfigEntityList) {
             BaisonSysData sysData = JSON.parseObject(erpDetailConfigEntity.getErpSysData(), BaisonSysData.class);
             int customerId = erpDetailConfigEntity.getCustomerId();
@@ -156,8 +163,9 @@ public class BaisonDeliveryScheduleService {
                     }
                 }
             }
-
         }
+
+        log.info("order ship sync for baison end!");
     }
 
     /**
