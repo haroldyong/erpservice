@@ -87,6 +87,30 @@
                     <table width="100%" border="0" cellpadding="0" cellspacing="0">
                         <tbody>
                         <tr>
+                            <th style="vertical-align: middle;">请求地址</th>
+                            <td style="text-align: left"><input type="text" name="requestUrl" id="requestUrl"
+                                                                class="input-normal"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="vertical-align: middle;">PassKey</th>
+                            <td style="text-align: left"><input type="text" name="passKey" id="passKey"
+                                                                class="input-normal"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="vertical-align: middle;">eCommerceName</th>
+                            <td style="text-align: left"><input type="text" name="eCommerceName" id="eCommerceName"
+                                                                class="input-normal"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="vertical-align: middle;">eCommerceCode</th>
+                            <td style="text-align: left"><input type="text" name="eCommerceCode" id="eCommerceCode"
+                                                                class="input-normal"/>
+                            </td>
+                        </tr>
+                        <tr>
                             <th style="vertical-align: middle;">提单号</th>
                             <td style="text-align: left"><input type="text" name="blno" id="blno" class="input-normal"/>
                             </td>
@@ -248,8 +272,29 @@
         $("#uploadFile").click(function () {
             var filePath = $.trim($("#sourceFile").val());
             console.log(filePath);
+            var requestUrl = $.trim($("#requestUrl").val());
+            var passKey = $.trim($("#passKey").val());
+            var eCommerceName = $.trim($("#eCommerceName").val());
+            var eCommerceCode = $.trim($("#eCommerceCode").val());
             var blno = $.trim($("#blno").val());
             var supplierId = $.trim($("#supplierId").val());
+
+            if (requestUrl.length == 0) {
+                $.jBox.tip("请输入请求地址");
+                return false;
+            }
+            if (passKey.length == 0) {
+                $.jBox.tip("请输入PassKey");
+                return false;
+            }
+            if (eCommerceName.length == 0) {
+                $.jBox.tip("请输入eCommerceName");
+                return false;
+            }
+            if (eCommerceCode.length == 0) {
+                $.jBox.tip("请输入eCommerceCode");
+                return false;
+            }
             if (blno.length == 0) {
                 $.jBox.tip("请输入提单号");
                 return false;

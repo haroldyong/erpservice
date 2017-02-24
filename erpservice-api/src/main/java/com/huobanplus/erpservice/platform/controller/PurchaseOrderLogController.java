@@ -12,6 +12,7 @@
 package com.huobanplus.erpservice.platform.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpservice.common.SysConstant;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
@@ -166,7 +167,11 @@ public class PurchaseOrderLogController {
                                           @RequestParam CommonsMultipartFile file,
                                           int erpUserType,
                                           String blno,
-                                          String supplierId) throws Exception {
+                                          String supplierId,
+                                          String passKey,
+                                          String eCommerceName,
+                                          String eCommerceCode,
+                                          String requestUrl) throws Exception {
 
         // read file
         XSSFWorkbook wb = new XSSFWorkbook(file.getInputStream());
@@ -211,9 +216,16 @@ public class PurchaseOrderLogController {
         ERPTypeEnum.UserType erpUserTypeEnum = EnumHelper.getEnumType(ERPTypeEnum.UserType.class, erpUserType);
         ERPDetailConfigEntity detailConfigEntity = erpDetailConfigService.findByCustomerIdAndDefault(customerId, erpUserTypeEnum);
         ERPInfo erpInfo = new ERPInfo(detailConfigEntity.getErpType(), detailConfigEntity.getErpSysData());
+        DtwSysData dtwSysData = new DtwSysData();
+        dtwSysData.setRequestUrl(requestUrl);
+        dtwSysData.setPassKey(passKey);
+        dtwSysData.setECommerceCode(eCommerceCode);
+        dtwSysData.setECommerceName(eCommerceName);
+
+        ERPInfo erpInfo1 = new ERPInfo(ERPTypeEnum.ProviderType.DTW, JSON.toJSONString(dtwSysData));
         ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserTypeEnum, customerId);
         PushPurchaseOrderEvent pushPurchaseOrderEvent = new PushPurchaseOrderEvent();
-        pushPurchaseOrderEvent.setErpInfo(erpInfo);
+        pushPurchaseOrderEvent.setErpInfo(erpInfo1);
         pushPurchaseOrderEvent.setErpUserInfo(erpUserInfo);
         pushPurchaseOrderEvent.setPurchaseOrderJson(JSON.toJSONString(purchaseOrder));
         orderProxyService.handleEvent(pushPurchaseOrderEvent);
