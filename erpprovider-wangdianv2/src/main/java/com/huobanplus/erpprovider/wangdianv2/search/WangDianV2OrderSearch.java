@@ -47,7 +47,7 @@ public class WangDianV2OrderSearch {
      * 110已完成
      */
     @JSONField(name = "status")
-    private String status;
+    private Integer status;
 
     /**
      * 查询起始时间,格式 年-月-日 时:分:秒
