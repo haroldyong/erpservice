@@ -47,7 +47,7 @@ public class WangDianV2ProductHandlerImpl implements WangDianV2ProductHandler {
             Map<String, Object> requestMap = new TreeMap<>();
 
             // 系统级参数
-            requestMap.put("sid", wangDianV2SysData.getSid());
+            requestMap.put("sid", wangDianV2SysData.getWangdianv2Sid());
             requestMap.put("appkey", wangDianV2SysData.getAppKey());
             requestMap.put("shop_no", wangDianV2SysData.getShopNo());
             requestMap.put("timestamp", now.getTime() / 1000);
@@ -71,7 +71,7 @@ public class WangDianV2ProductHandlerImpl implements WangDianV2ProductHandler {
             requestMap.put("sign", sign);
             log.info("order query request sign:" + sign);
 
-            HttpResult httpResult = HttpClientUtil.getInstance().post(wangDianV2SysData.getRequestUrl() + "/openapi2/trade_query.php", requestMap);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(wangDianV2SysData.getRequestUrl() + "/openapi2/stock_query.php", requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject resp = JSON.parseObject(httpResult.getHttpContent());
                 if (resp.getString("code").equals("0")) {

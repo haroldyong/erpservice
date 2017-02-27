@@ -80,7 +80,7 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
             Map<String, Object> requestMap = new TreeMap<>();
 
             // 系统级参数
-            requestMap.put("sid", wangDianV2SysData.getSid());
+            requestMap.put("sid", wangDianV2SysData.getWangdianv2Sid());
             requestMap.put("appkey", wangDianV2SysData.getAppKey());
 
             // 应用级参数
@@ -117,9 +117,9 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
         WangDianV2Order wangDianV2Order = new WangDianV2Order();
 
         wangDianV2Order.setTid(order.getOrderId());
-        wangDianV2Order.setTradeStatus(30);
-        wangDianV2Order.setPayStatus(2);
-        wangDianV2Order.setDeliveryTerm(1);
+        wangDianV2Order.setTradeStatus(30);//已付款待发货
+        wangDianV2Order.setPayStatus(2);// 已付款
+        wangDianV2Order.setDeliveryTerm(1);// 款到发货
         wangDianV2Order.setTradeTime(order.getCreateTime());
         wangDianV2Order.setPayTime(order.getPayTime());
         wangDianV2Order.setBuyerNick(order.getUserNickname());
@@ -135,9 +135,9 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
         wangDianV2Order.setInvoiceTitle("");
         wangDianV2Order.setBuyerMessage(order.getMemo());
         wangDianV2Order.setSellerMemo(order.getRemark());
-        wangDianV2Order.setSellerFlag("");// TODO: 2017-02-24
+        wangDianV2Order.setSellerFlag(0);// TODO: 2017-02-24
         wangDianV2Order.setPostAmount(order.getCostFreight());
-//        wangDianV2Order.setCodeAmount(0.0);
+        wangDianV2Order.setCodeAmount(0.0);
 //        wangDianV2Order.setExtCodFee("");
 //        wangDianV2Order.setOtherAmount("");
         wangDianV2Order.setPaid(order.getOnlinePayAmount());
@@ -159,9 +159,9 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
             wangDianV2OrderItem.setOid(orderItem.getOrderId() + count);
             wangDianV2OrderItem.setNum(orderItem.getNum());
             wangDianV2OrderItem.setPrice(orderItem.getPrice());
-            wangDianV2OrderItem.setStatus(30);
-            wangDianV2OrderItem.setRefundStatus(0);
-            wangDianV2OrderItem.setGoodsId(orderItem.getGoodBn());// TODO: 2017-02-24  
+            wangDianV2OrderItem.setStatus(30);// 代发货
+            wangDianV2OrderItem.setRefundStatus(0);//无退款
+            wangDianV2OrderItem.setGoodsId(orderItem.getGoodBn());// TODO: 2017-02-24
             wangDianV2OrderItem.setSpecId(orderItem.getProductBn());// TODO: 2017-02-24
             wangDianV2OrderItem.setGoodsNo(orderItem.getGoodBn());
             wangDianV2OrderItem.setSpecNo(orderItem.getProductBn());
@@ -203,7 +203,7 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
             Map<String, Object> requestMap = new TreeMap<>();
 
             // 系统级参数
-            requestMap.put("sid", wangDianV2SysData.getSid());
+            requestMap.put("sid", wangDianV2SysData.getWangdianv2Sid());
             requestMap.put("appkey", wangDianV2SysData.getAppKey());
             requestMap.put("shop_no", wangDianV2SysData.getShopNo());
             requestMap.put("timestamp", now.getTime() / 1000);

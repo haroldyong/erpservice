@@ -13,4 +13,5 @@ package com.huobanplus.erpprovider.wangdianv2.common;
 
 public class WangDianV2Constant {
 
+    public static final int PAGE_SIZE = 50;
 }

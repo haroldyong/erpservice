@@ -54,11 +54,11 @@ public class WangDianV2StockSearch {
      * 页号,从0页开始,默认为0
      */
     @JSONField(name = "page_no")
-    private String pageNo;
+    private int pageNo;
 
     /**
      * 分页大小,默认40,最大100
      */
     @JSONField(name = "page_size")
-    private String pageSize;
+    private int pageSize;
 }

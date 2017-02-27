@@ -170,7 +170,7 @@ public class WangDianV2Order {
      * 客服标旗，取值0-5
      */
     @JSONField(name = "seller_flag")
-    private String sellerFlag;
+    private int sellerFlag;
 
     /**
      * 邮费

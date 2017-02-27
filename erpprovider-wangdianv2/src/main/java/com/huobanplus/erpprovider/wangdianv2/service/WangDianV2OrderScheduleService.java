@@ -24,15 +24,18 @@ import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
+import com.huobanplus.erpservice.datacenter.model.BatchDeliverResult;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +72,7 @@ public class WangDianV2OrderScheduleService {
     @Scheduled(cron = "0 0 0/3 * * ? *")// 每隔三小时执行一次，因为旺店通的查询时间最大间隔为三小时
     @Transactional
     public void syncShip() {
-        Date now = new Date();
+        Date now = Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusMinutes(2));// 与服务器的时间有点误差啊
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
         log.info("order ship sync for wangdianv2 start!");
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.WANGDIANV2);
@@ -99,7 +102,7 @@ public class WangDianV2OrderScheduleService {
                     wangDianV2OrderSearch.setEndTime(nowStr);
                     wangDianV2OrderSearch.setPageNo(currentPageIndex);
                     wangDianV2OrderSearch.setPageSize(WangDianV2Constant.PAGE_SIZE);
-                    wangDianV2OrderSearch.setStatus(95);// 已发货的订单
+//                    wangDianV2OrderSearch.setStatus(95);// 已发货的订单
 
                     EventResult firstQueryEvent = wangDianV2OrderHandler.queryOrder(wangDianV2OrderSearch, sysData);
                     if (firstQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -108,7 +111,28 @@ public class WangDianV2OrderScheduleService {
                         JSONArray orderArray = firstQueryResp.getJSONArray("trades");
 
                         // convert to delivery order
-                        // push to platform
+                        List<OrderDeliveryInfo> orderDeliveryInfoList = convert2OrderDeliveryInfoList(orderArray, sysData);
+                        BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
+                        batchDeliverEvent.setErpUserInfo(erpUserInfo);
+                        batchDeliverEvent.setErpUserInfo(erpUserInfo);
+
+                        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+
+                        if (orderDeliveryInfoList.size() > 0) {
+
+                            batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
+                            // push to platform
+
+                            EventResult firstSyncEvent = erpUserHandler.handleEvent(batchDeliverEvent);
+                            if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncEvent.getData();
+                                failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
+                                successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
+                            } else {
+                                failedOrders.addAll(orderDeliveryInfoList);
+                            }
+                        }
+
 
                         // next pull
                         int totalPage = totalCount / WangDianV2Constant.PAGE_SIZE;
@@ -127,8 +151,19 @@ public class WangDianV2OrderScheduleService {
                                     JSONArray nextOrderArray = nextQueryResp.getJSONArray("trades");
 
                                     // convert to delivery order
-                                    // push to platform
-
+                                    orderDeliveryInfoList = convert2OrderDeliveryInfoList(nextOrderArray, sysData);
+                                    if (orderDeliveryInfoList.size() > 0) {
+                                        batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
+                                        // push to platform
+                                        EventResult nextSyncEvent = erpUserHandler.handleEvent(batchDeliverEvent);
+                                        if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                            BatchDeliverResult nextBatchDeliverResult = (BatchDeliverResult) nextSyncEvent.getData();
+                                            failedOrders.addAll(nextBatchDeliverResult.getFailedOrders());
+                                            successOrders.addAll(nextBatchDeliverResult.getSuccessOrders());
+                                        } else {
+                                            failedOrders.addAll(orderDeliveryInfoList);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -198,7 +233,7 @@ public class WangDianV2OrderScheduleService {
                     JSONObject goodsItemJsonObj = JSON.parseObject(goodsItemObj.toString());
                     sb.append(goodsItemJsonObj.getString("spec_no"))
                             .append(",")
-                            .append(goodsItemJsonObj.getInteger("num"))
+                            .append(goodsItemJsonObj.getDouble("num"))
                             .append("|");
                 }
                 orderDeliveryInfo.setDeliverItemsStr(sb.toString());

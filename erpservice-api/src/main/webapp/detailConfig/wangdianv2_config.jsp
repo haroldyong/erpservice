@@ -57,7 +57,7 @@
                 requestUrl: requestUrl,
                 wangdianv2Sid: sellerId,
                 appKey: appkey,
-                appSecret: appkey,
+                appSecret: appSecret,
                 warehouseNo: warehouseNo,
                 shopNo: shopNo
             };

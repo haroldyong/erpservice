@@ -80,7 +80,7 @@ public class WangDianV2OrderSearch {
     private String imgUrl;
 
     /**
-     * 订单编号
+     * 订单编号 erp平台生成的订单号，不是原始订单号
      */
     @JSONField(name = "trade_no")
     private String tradeNo;

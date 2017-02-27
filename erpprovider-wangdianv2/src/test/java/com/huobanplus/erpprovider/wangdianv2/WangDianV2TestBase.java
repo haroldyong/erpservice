@@ -59,7 +59,7 @@ public class WangDianV2TestBase {
 
         mockWangDianV2SysData = new WangDianV2SysData();
         mockWangDianV2SysData.setRequestUrl("http://121.41.177.115");
-        mockWangDianV2SysData.setSid("apidev2");
+        mockWangDianV2SysData.setWangdianv2Sid("apidev2");
         mockWangDianV2SysData.setAppKey("beiying2test");
         mockWangDianV2SysData.setAppSecret("12345");
         mockWangDianV2SysData.setShopNo("api_test");
@@ -75,7 +75,7 @@ public class WangDianV2TestBase {
         orderItem.setItemId(178770);
         orderItem.setOrderId(orderNo);
         orderItem.setUnionOrderId("2016062455965373");
-        orderItem.setProductBn("interface-test-001");
+        orderItem.setProductBn("hot123");
         orderItem.setName("婴儿配方奶粉0001");
         orderItem.setCost(0.5);
         orderItem.setPrice(1);
@@ -83,7 +83,7 @@ public class WangDianV2TestBase {
         orderItem.setNum(2);
         orderItem.setStandard("测试");
         orderItem.setCustomerId(296);
-        orderItem.setGoodBn("1901101000");
+        orderItem.setGoodBn("hot123");
 
         mockOrderItems = new ArrayList<>();
         mockOrderItems.add(orderItem);
@@ -112,9 +112,10 @@ public class WangDianV2TestBase {
         mockOrder.setShipMobile("18705153968");
         mockOrder.setCostItem(10);
 //        mockOrder.setOnlinePayAmount();
-        mockOrder.setCostFreight(0);
+        mockOrder.setCostFreight(8);
         mockOrder.setCurrency("CYN");
         mockOrder.setFinalAmount(10);// 商品费用+商品费用*税率+运费
+        mockOrder.setOnlinePayAmount(10);// 商品费用+商品费用*税率+运费
 
         mockOrder.setPaymentName("微信");
         mockOrder.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());//微信支付V3
@@ -123,6 +124,9 @@ public class WangDianV2TestBase {
         mockOrder.setBuyerPid("362322199411050053");
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         mockOrder.setPayNumber(SerialNo.create());
+
+        mockOrder.setMemo("用户备注");
+        mockOrder.setRemark("商家备注");
 
         mockOrder.setOrderItems(mockOrderItems);
 

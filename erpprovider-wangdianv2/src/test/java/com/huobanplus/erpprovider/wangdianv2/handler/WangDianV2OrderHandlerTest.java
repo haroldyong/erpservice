@@ -14,11 +14,16 @@ package com.huobanplus.erpprovider.wangdianv2.handler;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.wangdianv2.WangDianV2TestBase;
 import com.huobanplus.erpprovider.wangdianv2.search.WangDianV2OrderSearch;
+import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.convert.Jsr310Converters;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Created by wuxiongliu on 2016-11-02.
@@ -52,12 +57,15 @@ public class WangDianV2OrderHandlerTest extends WangDianV2TestBase {
     @Test
     public void testQueryOrder() {
         WangDianV2OrderSearch wangDianV2OrderSearch = new WangDianV2OrderSearch();
-        String startTime = "2017-02-24 07:10:10";
-        String endTime = "2017-02-24 10:10:10";
-        wangDianV2OrderSearch.setStartTime(startTime);
-        wangDianV2OrderSearch.setEndTime(endTime);
+        Date beginTime = Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusHours(3));
+        Date endTime = Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusMinutes(1));
+        wangDianV2OrderSearch.setStartTime(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
+        wangDianV2OrderSearch.setEndTime(StringUtil.DateFormat(endTime, StringUtil.TIME_PATTERN));
         wangDianV2OrderSearch.setPageNo(0);
-        wangDianV2OrderSearch.setWarehouseNo("api_test");
+//        wangDianV2OrderSearch.setWarehouseNo("api_test");
+        wangDianV2OrderSearch.setPageSize(10);
+//        wangDianV2OrderSearch.setTradeNo("JY201702270005");
+        wangDianV2OrderSearch.setStatus(95);
         EventResult eventResult = wangDianV2OrderHandler.queryOrder(wangDianV2OrderSearch, mockWangDianV2SysData);
         System.out.println("\n**************request result*************");
         System.out.println(eventResult.getResultCode());
