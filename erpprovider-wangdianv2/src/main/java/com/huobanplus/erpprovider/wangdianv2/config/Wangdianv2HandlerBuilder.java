@@ -11,14 +11,17 @@
 
 package com.huobanplus.erpprovider.wangdianv2.config;
 
+import com.huobanplus.erpprovider.wangdianv2.handler.WangDianV2OrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +31,9 @@ public class WangDianV2HandlerBuilder implements ERPHandlerBuilder {
 
     private static final Log log = LogFactory.getLog(WangDianV2HandlerBuilder.class);
 
+    @Autowired
+    private WangDianV2OrderHandler wangDianV2OrderHandler;
+
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
         if (info.getErpType() == ERPTypeEnum.ProviderType.WANGDIANV2) {
@@ -35,6 +41,10 @@ public class WangDianV2HandlerBuilder implements ERPHandlerBuilder {
 
                 @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
+                    if (erpBaseEvent instanceof PushNewOrderEvent) {
+                        PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
+                        return wangDianV2OrderHandler.pushOrder(pushNewOrderEvent);
+                    }
                     return null;
                 }
 

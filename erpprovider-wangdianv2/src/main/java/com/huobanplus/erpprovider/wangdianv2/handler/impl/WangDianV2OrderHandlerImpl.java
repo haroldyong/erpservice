@@ -38,6 +38,8 @@ import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -139,7 +141,7 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
         wangDianV2Order.setCodeAmount(0.0);
 //        wangDianV2Order.setExtCodFee("");
 //        wangDianV2Order.setOtherAmount("");
-        wangDianV2Order.setPaid(order.getOnlinePayAmount());
+        wangDianV2Order.setPaid(order.getFinalAmount());
 //        wangDianV2Order.setIdCardType("1");
 //        wangDianV2Order.setIdCard("");
 //        wangDianV2Order.setCustData("");
@@ -179,7 +181,7 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
         return wangDianV2Order;
     }
 
-    private EventResult orderPush(Map<String, Object> requestMap, WangDianV2SysData wangDianV2SysData) {
+    private EventResult orderPush(Map<String, Object> requestMap, WangDianV2SysData wangDianV2SysData) throws UnsupportedEncodingException {
 
         HttpResult httpResult = HttpClientUtil.getInstance().post(wangDianV2SysData.getRequestUrl() + "/openapi2/trade_push.php", requestMap);
         if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
@@ -187,7 +189,17 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
             if (resp.getString("code").equals("0")) {
                 return EventResult.resultWith(EventResultEnum.SUCCESS);
             } else {
-                return EventResult.resultWith(EventResultEnum.ERROR, resp.getString("message"), null);
+                JSONArray jsonArray = JSON.parseArray(resp.getString("message"));
+                JSONArray resultMsg = new JSONArray();
+
+                for (Object o : jsonArray) {
+                    JSONObject obj = JSON.parseObject(o.toString());
+                    JSONObject resultObj = new JSONObject();
+                    resultObj.put("tid", obj.getString("tid"));
+                    resultObj.put("error", URLDecoder.decode(obj.getString("error"), "utf-8"));
+                    resultMsg.add(resultObj);
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, resultMsg.toJSONString(), null);
             }
         } else {
             return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
