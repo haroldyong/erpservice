@@ -61,7 +61,7 @@ public class WangDianV2ProductScheduleService {
     @Autowired
     private ERPRegister erpRegister;
 
-    @Scheduled(cron = "0 0 0/3 * * ? *")// 每隔三小时执行一次，因为旺店通的查询时间最大间隔为三小时
+    @Scheduled(cron = "0 0 0/3 * * ? ")// 每隔三小时执行一次，因为旺店通的查询时间最大间隔为三小时
     @Transactional
     public void syncInventory() {
         Date now = Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusMinutes(2));

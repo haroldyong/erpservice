@@ -36,12 +36,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 /**
  * Created by wuxiongliu on 2017-03-02.
  */
+@Component
 public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
 
     private static final Log log = LogFactory.getLog(WangDianV2OrderHandlerImpl.class);
@@ -108,10 +110,6 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
             log.info("wangdianv2 order push exception:" + e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
-
-        // 记录日志
-
-
     }
 
     private WangDianV2Order convert2ErpOrder(Order order, WangDianV2SysData wangDianV2SysData) {
@@ -126,7 +124,7 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
         wangDianV2Order.setBuyerNick(order.getUserNickname());
         wangDianV2Order.setBuyerEmail("");// TODO: 2017-02-24
         wangDianV2Order.setPayId(order.getPayNumber());
-        wangDianV2Order.setPayAccount("wuxiongliu");// TODO: 2017-02-24
+        wangDianV2Order.setPayAccount("");// TODO: 2017-02-24
         wangDianV2Order.setReceiverName(order.getShipName());
         wangDianV2Order.setReceiverCity(order.getCity());
         wangDianV2Order.setReceiverTelno(order.getShipTel());

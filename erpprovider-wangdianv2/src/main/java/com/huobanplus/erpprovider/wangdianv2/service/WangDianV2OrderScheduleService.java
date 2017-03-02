@@ -69,7 +69,7 @@ public class WangDianV2OrderScheduleService {
     private WangDianV2OrderHandler wangDianV2OrderHandler;
 
 
-    @Scheduled(cron = "0 0 0/3 * * ? *")// 每隔三小时执行一次，因为旺店通的查询时间最大间隔为三小时
+    @Scheduled(cron = "0 0 0/3 * * ? ")// 每隔三小时执行一次，因为旺店通的查询时间最大间隔为三小时
     @Transactional
     public void syncShip() {
         Date now = Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusMinutes(2));// 与服务器的时间有点误差啊
@@ -220,7 +220,7 @@ public class WangDianV2OrderScheduleService {
             JSONObject itemJsonObj = JSON.parseObject(o.toString());
             if (itemJsonObj.getString("shop_no").equals(wangDianV2SysData.getShopNo())) {// 筛选出本店铺的订单
                 OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
-                orderDeliveryInfo.setOrderId(itemJsonObj.getString("trade_no"));
+                orderDeliveryInfo.setOrderId(itemJsonObj.getString("src_tids").split(",")[0]);
                 orderDeliveryInfo.setFreight(itemJsonObj.getDouble("post_amount"));
                 orderDeliveryInfo.setLogiCode(itemJsonObj.getString("logistics_code"));
                 orderDeliveryInfo.setLogiName("");// TODO: 2017-02-24
