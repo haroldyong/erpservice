@@ -124,9 +124,9 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
         wangDianV2Order.setTradeTime(order.getCreateTime());
         wangDianV2Order.setPayTime(order.getPayTime());
         wangDianV2Order.setBuyerNick(order.getUserNickname());
-        wangDianV2Order.setBuyerEmail("");// TODO: 2017-02-24
+        wangDianV2Order.setBuyerEmail("");
         wangDianV2Order.setPayId(order.getPayNumber());
-        wangDianV2Order.setPayAccount("");// TODO: 2017-02-24
+        wangDianV2Order.setPayAccount("");
         wangDianV2Order.setReceiverName(order.getShipName());
         wangDianV2Order.setReceiverCity(order.getCity());
         wangDianV2Order.setReceiverTelno(order.getShipTel());
@@ -136,7 +136,7 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
         wangDianV2Order.setInvoiceTitle("");
         wangDianV2Order.setBuyerMessage(order.getMemo());
         wangDianV2Order.setSellerMemo(order.getRemark());
-        wangDianV2Order.setSellerFlag(0);// TODO: 2017-02-24
+        wangDianV2Order.setSellerFlag(0);
         wangDianV2Order.setPostAmount(order.getCostFreight());
         wangDianV2Order.setCodeAmount(0.0);
 //        wangDianV2Order.setExtCodFee("");
@@ -160,7 +160,7 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
             wangDianV2OrderItem.setOid(orderItem.getOrderId() + count);
             wangDianV2OrderItem.setNum(orderItem.getNum());
             wangDianV2OrderItem.setPrice(orderItem.getPrice());
-            wangDianV2OrderItem.setStatus(30);// 代发货
+            wangDianV2OrderItem.setStatus(30);// 待发货
             wangDianV2OrderItem.setRefundStatus(0);//无退款
             wangDianV2OrderItem.setGoodsId(orderItem.getGoodBn());// TODO: 2017-02-24
             wangDianV2OrderItem.setSpecId(orderItem.getProductBn());// TODO: 2017-02-24
