@@ -88,6 +88,13 @@ public class PurchaseOrderLogController {
         unitMap.put("千克", "035");
         unitMap.put("克", "036");
         unitMap.put("毫升", "096");
+        unitMap.put("盒", "140");
+        unitMap.put("瓶", "142");
+        unitMap.put("支", "012");
+        unitMap.put("包", "125");
+        unitMap.put("片", "020");
+        unitMap.put("个", "007");
+
 
     }
 
