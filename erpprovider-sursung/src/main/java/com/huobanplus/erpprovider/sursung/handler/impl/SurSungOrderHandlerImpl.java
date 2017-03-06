@@ -162,7 +162,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             surSungOrderItem.setBasePrice(item.getPrice());
             surSungOrderItem.setQty(item.getNum());
             surSungOrderItem.setName(item.getName());
-            surSungOrderItem.setOuterOiId(item.getOrderId() + (row++));
+            surSungOrderItem.setOuterOiId(item.getOrderId() + item.getProductBn());
             surSungOrderItems.add(surSungOrderItem);
         }
         ;
@@ -394,7 +394,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
                     surSungOrderItem.setBasePrice(item.getAmount());
                     surSungOrderItem.setQty(item.getReturnNum());
                     surSungOrderItem.setName(item.getName());
-                    surSungOrderItem.setOuterOiId(item.getOrderId());
+                    surSungOrderItem.setOuterOiId(item.getOrderId() + item.getSkuId());
                     if (afterSaleInfo.getAfterStatus() == 0) {
                         surSungOrderItem.setRefundStatus("waiting");
                     } else if (afterSaleInfo.getAfterStatus() == 1) {
