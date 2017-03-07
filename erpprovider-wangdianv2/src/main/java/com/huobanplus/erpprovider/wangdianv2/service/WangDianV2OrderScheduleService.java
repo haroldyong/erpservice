@@ -22,11 +22,13 @@ import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
 import com.huobanplus.erpservice.datacenter.model.BatchDeliverResult;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
+import com.huobanplus.erpservice.datacenter.service.logs.AuditedOrderSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
@@ -63,6 +65,8 @@ public class WangDianV2OrderScheduleService {
     private OrderShipSyncLogService orderShipSyncLogService;
     @Autowired
     private ShipSyncDeliverInfoService shipSyncDeliverInfoService;
+    @Autowired
+    private AuditedOrderSyncLogService auditedOrderSyncLogService;
     @Autowired
     private ERPRegister erpRegister;
     @Autowired
@@ -102,7 +106,7 @@ public class WangDianV2OrderScheduleService {
                     wangDianV2OrderSearch.setEndTime(nowStr);
                     wangDianV2OrderSearch.setPageNo(currentPageIndex);
                     wangDianV2OrderSearch.setPageSize(WangDianV2Constant.PAGE_SIZE);
-//                    wangDianV2OrderSearch.setStatus(95);// 已发货的订单
+                    wangDianV2OrderSearch.setStatus(95);// 已发货的订单
 
                     EventResult firstQueryEvent = wangDianV2OrderHandler.queryOrder(wangDianV2OrderSearch, sysData);
                     if (firstQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -241,5 +245,141 @@ public class WangDianV2OrderScheduleService {
             }
         }
         return orderDeliveryInfoList;
+    }
+
+    /**
+     * 同步已审核订单
+     */
+    @Scheduled(cron = "0 0 0/3 * * ? ")// 每隔三小时执行一次，因为旺店通的查询时间最大间隔为三小时
+    public void syncAuditedOrder() {
+        Date now = Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusMinutes(2));// 与服务器的时间有点误差啊
+        String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
+        log.info("audited order sync for wangdianv2 start!");
+        List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.WANGDIANV2);
+        for (ERPDetailConfigEntity detailConfig : detailConfigs) {
+
+            if (detailConfig.getErpBaseConfig().getIsSyncDelivery() == 1) {
+                log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync audited order ");
+                try {
+                    ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
+                    ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
+                    WangDianV2SysData sysData = JSON.parseObject(detailConfig.getErpSysData(), WangDianV2SysData.class);
+
+                    //当前索引
+                    int currentPageIndex = 0;
+                    //是否是第一次同步,第一次同步beginTime则为当前时间的前三小时
+                    AuditedOrderSyncLog lastSyncLog = auditedOrderSyncLogService.findTop(erpUserInfo.getCustomerId(), ERPTypeEnum.ProviderType.WANGDIANV2);
+                    Date beginTime = lastSyncLog == null
+                            ? Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusHours(3))
+                            : lastSyncLog.getSyncTime();
+
+                    List<OrderDeliveryInfo> failedOrders = new ArrayList<>(); //失败的订单列表
+                    List<OrderDeliveryInfo> successOrders = new ArrayList<>(); //成功的订单列表
+                    int totalCount = 0; //总数量
+
+                    WangDianV2OrderSearch wangDianV2OrderSearch = new WangDianV2OrderSearch();
+                    wangDianV2OrderSearch.setStartTime(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
+                    wangDianV2OrderSearch.setEndTime(nowStr);
+                    wangDianV2OrderSearch.setPageNo(currentPageIndex);
+                    wangDianV2OrderSearch.setPageSize(WangDianV2Constant.PAGE_SIZE);
+                    wangDianV2OrderSearch.setStatus(55);// 已发货的订单
+
+                    EventResult firstQueryEvent = wangDianV2OrderHandler.queryOrder(wangDianV2OrderSearch, sysData);
+                    if (firstQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                        JSONObject firstQueryResp = (JSONObject) firstQueryEvent.getData();
+                        totalCount = firstQueryResp.getInteger("total_count");
+                        JSONArray orderArray = firstQueryResp.getJSONArray("trades");
+
+                        // convert to delivery order
+                        List<OrderDeliveryInfo> orderDeliveryInfoList = convert2OrderDeliveryInfoList(orderArray, sysData); // TODO: 2017-03-07  
+                        BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
+                        batchDeliverEvent.setErpUserInfo(erpUserInfo);
+                        batchDeliverEvent.setErpUserInfo(erpUserInfo);
+
+                        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+
+                        if (orderDeliveryInfoList.size() > 0) {
+
+                            batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
+                            // push to platform
+
+                            EventResult firstSyncEvent = erpUserHandler.handleEvent(batchDeliverEvent);
+                            if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncEvent.getData(); // TODO: 2017-03-07  
+                                failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
+                                successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
+                            } else {
+                                failedOrders.addAll(orderDeliveryInfoList);
+                            }
+                        }
+
+
+                        // next pull
+                        int totalPage = totalCount / WangDianV2Constant.PAGE_SIZE;
+                        if (totalCount % WangDianV2Constant.PAGE_SIZE != 0) {
+                            totalPage++;
+                        }
+
+                        if (totalPage > 1) {
+                            currentPageIndex++;
+                            //取下几笔数据
+                            for (int i = currentPageIndex; i <= totalPage; i++) {
+                                wangDianV2OrderSearch.setPageNo(i);
+                                EventResult nextQueryEvent = wangDianV2OrderHandler.queryOrder(wangDianV2OrderSearch, sysData);
+                                if (nextQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                    JSONObject nextQueryResp = (JSONObject) firstQueryEvent.getData();
+                                    JSONArray nextOrderArray = nextQueryResp.getJSONArray("trades");
+
+                                    // convert to delivery order
+                                    orderDeliveryInfoList = convert2OrderDeliveryInfoList(nextOrderArray, sysData);
+                                    if (orderDeliveryInfoList.size() > 0) {
+                                        batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
+                                        // push to platform
+                                        EventResult nextSyncEvent = erpUserHandler.handleEvent(batchDeliverEvent);
+                                        if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                            BatchDeliverResult nextBatchDeliverResult = (BatchDeliverResult) nextSyncEvent.getData();// TODO: 2017-03-07  
+                                            failedOrders.addAll(nextBatchDeliverResult.getFailedOrders());
+                                            successOrders.addAll(nextBatchDeliverResult.getSuccessOrders());
+                                        } else {
+                                            failedOrders.addAll(orderDeliveryInfoList);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (totalCount > 0) {
+                        int successCount = successOrders.size(), failedCount = failedOrders.size();
+                        //发货同步记录
+                        AuditedOrderSyncLog auditedOrderSyncLog = new AuditedOrderSyncLog();
+
+                        auditedOrderSyncLog.setProviderType(erpInfo.getErpType());
+                        auditedOrderSyncLog.setUserType(erpUserInfo.getErpUserType());
+                        auditedOrderSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+                        auditedOrderSyncLog.setTotalCount(totalCount);
+                        auditedOrderSyncLog.setSuccessCount(successCount);
+                        auditedOrderSyncLog.setFailedCount(failedCount);
+                        auditedOrderSyncLog.setSyncTime(now);
+                        if (successCount == 0) {
+                            auditedOrderSyncLog.setAuditedSyncStatus(OrderSyncStatus.AuditedSyncStatus.SYNC_FAILURE);
+                        }
+                        if (successCount > 0 && failedCount > 0) {
+                            auditedOrderSyncLog.setAuditedSyncStatus(OrderSyncStatus.AuditedSyncStatus.SYNC_PARTY_SUCCESS);
+                        }
+                        if (successCount > 0 && failedCount == 0) {
+                            auditedOrderSyncLog.setAuditedSyncStatus(OrderSyncStatus.AuditedSyncStatus.SYNC_SUCCESS);
+                        }
+
+                        auditedOrderSyncLogService.save(auditedOrderSyncLog);
+
+                    }
+
+                    log.info("wangdianv2 audited order sync end");
+                } catch (Exception e) {
+                    log.info("audited order sync exception caused by " + e.getMessage());
+                }
+            }
+        }
     }
 }
