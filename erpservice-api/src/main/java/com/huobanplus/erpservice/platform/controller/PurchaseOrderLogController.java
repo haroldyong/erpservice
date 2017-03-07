@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -191,6 +192,9 @@ public class PurchaseOrderLogController {
         purchaseOrder.setReceiveNo(SerialNo.create());
         purchaseOrder.setBolNo(blno);
 
+        DecimalFormat df = new DecimalFormat("0");
+
+
         List<PurchaseOrderItem> purchaseOrderItems = new ArrayList<>();
 
         for (int i = 1; i <= rowNum; i++) {
@@ -203,16 +207,17 @@ public class PurchaseOrderLogController {
             purchaseOrderItem.setProductName(hssfRow.getCell(colMap.get("productName")).getStringCellValue());
             purchaseOrderItem.setStandard(hssfRow.getCell(colMap.get("standard")).getStringCellValue());
             if (hssfRow.getCell(colMap.get("goodsBn")).getCellType() == 1) {// string
-                purchaseOrderItem.setGoodsBn(hssfRow.getCell(colMap.get("goodsBn")).getStringCellValue());
+                purchaseOrderItem.setGoodsBn(hssfRow.getCell(colMap.get("goodsBn")).getRawValue());
             } else if (hssfRow.getCell(colMap.get("goodsBn")).getCellType() == 0) {
-                purchaseOrderItem.setGoodsBn(hssfRow.getCell(colMap.get("goodsBn")).getNumericCellValue() + "");
+
+                purchaseOrderItem.setGoodsBn(df.format(hssfRow.getCell(colMap.get("goodsBn")).getNumericCellValue()));
             }
 
             purchaseOrderItem.setQty((int) hssfRow.getCell(colMap.get("qty")).getNumericCellValue());
             String unitName = hssfRow.getCell(colMap.get("unit")).getStringCellValue();
             purchaseOrderItem.setUnitName(unitName);
             purchaseOrderItem.setUnit(unitMap.get(unitName));
-            purchaseOrderItem.setAmount(hssfRow.getCell(colMap.get("amount")).getNumericCellValue());
+            purchaseOrderItem.setAmount(Double.parseDouble(df.format(hssfRow.getCell(colMap.get("amount")).getNumericCellValue())));
 
             purchaseOrderItems.add(purchaseOrderItem);
 
