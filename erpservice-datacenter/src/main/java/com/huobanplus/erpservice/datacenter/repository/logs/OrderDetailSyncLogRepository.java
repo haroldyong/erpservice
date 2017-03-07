@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpservice.datacenter.repository.logs;
@@ -28,4 +28,6 @@ public interface OrderDetailSyncLogRepository extends JpaRepository<OrderDetailS
     @Query("select l from OrderDetailSyncLog l where l.customerId=?1 and l.detailSyncStatus=?2 and l.providerType=?3 and l.syncTime > ?4")
     List<OrderDetailSyncLog> findByCustomerIdAndDetailSyncStatusAndProviderType(int customerId, OrderSyncStatus.DetailSyncStatus syncStatus,
                                                                                 ERPTypeEnum.ProviderType providerType, Date begin);
+
+    List<OrderDetailSyncLog> findBySyncStatus(OrderSyncStatus.DetailSyncStatus syncStatus);
 }
