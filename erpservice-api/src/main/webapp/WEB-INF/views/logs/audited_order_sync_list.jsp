@@ -119,17 +119,17 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="log" items="${orderShipSyncLogs.getContent()}">
+                        <c:forEach var="log" items="${auditedOrderSyncLogs.getContent()}">
                             <tr>
                                 <td class="txt40 c">${log.providerType.name}</td>
                                 <td class="txt40 c">${log.totalCount}</td>
                                 <td class="txt40 c">${log.successCount}</td>
                                 <td class="txt40 c">${log.failedCount}</td>
-                                <td class="txt40 c">${log.shipSyncStatus.name}</td>
+                                <td class="txt40 c">${log.auditedSyncStatus.name}</td>
                                 <td class="txt40 c"><fmt:formatDate value="${log.syncTime}"
                                                                     pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                 <td class="txt80 c">
-                                    <a href="<c:url value="/erpService/platform/shipSyncInfoList?erpUserType=${erpUserType}&shipSyncId=${log.id}" />">查看同步日志</a>
+                                    <a href="<c:url value="/erpService/platform/auditedOrderSyncInfoList?erpUserType=${erpUserType}&syncId=${log.id}" />">查看同步日志</a>
                                 </td>
                             </tr>
                         </c:forEach>

@@ -13,7 +13,9 @@ package com.huobanplus.erpservice.platform.controller;
 
 import com.huobanplus.erpservice.common.SysConstant;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
+import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncInfo;
 import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncLog;
+import com.huobanplus.erpservice.datacenter.service.logs.AuditedOrderSyncInfoService;
 import com.huobanplus.erpservice.datacenter.service.logs.AuditedOrderSyncLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +34,8 @@ public class AuditOrderLogController {
 
     @Autowired
     private AuditedOrderSyncLogService auditedOrderSyncLogService;
+    @Autowired
+    private AuditedOrderSyncInfoService auditedOrderSyncInfoService;
 
     @RequestMapping(value = "/auditedOrderSyncs", method = RequestMethod.GET)
     private String orderShipSyncs(
@@ -55,17 +59,18 @@ public class AuditOrderLogController {
     @RequestMapping(value = "/auditedOrderSyncInfoList", method = RequestMethod.GET)
     private String shipSyncFailureOrders(
             @RequestParam(required = false, defaultValue = "1") int pageIndex,
-            String orderId, long shipSyncId,
+            String orderId, long syncId,
             int erpUserType,
             Model model
     ) {
 
-        model.addAttribute("auditedOrderSyncInfoList", null);
+        Page<AuditedOrderSyncInfo> auditedOrderSyncInfos = auditedOrderSyncInfoService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, syncId, orderId);
+        model.addAttribute("auditedOrderSyncInfoList", auditedOrderSyncInfos);
         model.addAttribute("pageIndex", pageIndex);
         model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);
         model.addAttribute("erpUserType", erpUserType);
         model.addAttribute("orderId", orderId);
-        model.addAttribute("shipSyncId", shipSyncId);
+        model.addAttribute("syncId", syncId);
 
         return "logs/audited_order_sync_infos";
     }
