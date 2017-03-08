@@ -169,4 +169,11 @@ public class SupOrderHandlerImpl implements SupOrderHandler {
     public EventResult syncChannelOrderList(List<Order> orderList, ERPUserInfo erpUserInfo) {
         return hbOrderHandler.syncChannelOrderList(orderList, erpUserInfo);
     }
+
+    @Override
+    public EventResult pushAuditedOrderList(List<String> orderIds, ERPUserInfo erpUserInfo) {
+        return hbOrderHandler.pushAuditedOrderList(orderIds, erpUserInfo);
+    }
+
+
 }

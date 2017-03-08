@@ -11,7 +11,6 @@
 
 package com.huobanplus.erpservice.eventhandler.erpevent.push;
 
-import com.huobanplus.erpservice.datacenter.model.AuditedOrder;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
 import lombok.Data;
 
@@ -24,5 +23,5 @@ import java.util.List;
 @Data
 public class PushAuditedOrderEvent extends ERPBaseEvent {
 
-    private List<AuditedOrder> auditedOrders;
+    private List<String> orderIds;
 }

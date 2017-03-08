@@ -12,7 +12,6 @@
 package com.huobanplus.erpservice.datacenter.service.logs.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncInfo;
 import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncLog;
@@ -74,7 +73,7 @@ public class AuditedOrderSyncInfoServiceImpl implements AuditedOrderSyncInfoServ
             auditedOrderSyncInfo.setOrderId(auditedOrder.getOrderId());
             auditedOrderSyncInfo.setAuditedOrderSyncLog(auditedOrderSyncLog);
             auditedOrderSyncInfo.setRemark(auditedOrder.getRemark());
-            auditedOrderSyncInfo.setAuditedSyncStatus(EnumHelper.getEnumType(OrderSyncStatus.AuditedSyncStatus.class, auditedOrder.getAuditedStatus()));
+            auditedOrderSyncInfo.setAuditedSyncStatus(auditedSyncStatus);
             auditedOrderSyncInfo.setAuditedOrderJson(JSON.toJSONString(auditedOrder));
             auditedOrderSyncInfoList.add(auditedOrderSyncInfo);
         });

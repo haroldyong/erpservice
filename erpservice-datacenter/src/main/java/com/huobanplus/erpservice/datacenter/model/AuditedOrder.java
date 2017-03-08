@@ -22,7 +22,5 @@ public class AuditedOrder {
 
     private String orderId;
 
-    private int auditedStatus;
-
     private String remark;
 }

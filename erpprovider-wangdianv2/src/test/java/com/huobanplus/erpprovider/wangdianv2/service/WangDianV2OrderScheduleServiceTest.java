@@ -29,4 +29,9 @@ public class WangDianV2OrderScheduleServiceTest extends WangDianV2TestBase {
 
         wangDianV2OrderScheduleService.syncShip();
     }
+
+    @Test
+    public void testSyncAuditedOrder() {
+        wangDianV2OrderScheduleService.syncAuditedOrder();
+    }
 }

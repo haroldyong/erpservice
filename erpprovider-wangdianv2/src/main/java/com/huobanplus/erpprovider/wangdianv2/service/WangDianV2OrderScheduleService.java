@@ -18,7 +18,6 @@ import com.huobanplus.erpprovider.wangdianv2.common.WangDianV2Constant;
 import com.huobanplus.erpprovider.wangdianv2.common.WangDianV2SysData;
 import com.huobanplus.erpprovider.wangdianv2.handler.WangDianV2OrderHandler;
 import com.huobanplus.erpprovider.wangdianv2.search.WangDianV2OrderSearch;
-import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
@@ -255,19 +254,15 @@ public class WangDianV2OrderScheduleService {
         return orderDeliveryInfoList;
     }
 
-    private List<AuditedOrder> convert2AuditedOrderList(JSONArray jsonArray, WangDianV2SysData wangDianV2SysData) {
-        List<AuditedOrder> auditedOrderList = new ArrayList<>();
+    private List<String> convert2AuditedOrderList(JSONArray jsonArray, WangDianV2SysData wangDianV2SysData) {
+        List<String> orderIds = new ArrayList<>();
         for (Object o : jsonArray) {
             JSONObject itemJsonObj = JSON.parseObject(o.toString());
             if (itemJsonObj.getString("shop_no").equals(wangDianV2SysData.getShopNo())) {// 筛选出本店铺的订单
-                AuditedOrder auditedOrder = new AuditedOrder();
-                auditedOrder.setOrderId(itemJsonObj.getString("src_tids").split(",")[0]);
-                auditedOrder.setAuditedStatus(OrderEnum.AuditStatus.AUDITED.getCode());
-
-                auditedOrderList.add(auditedOrder);
+                orderIds.add(itemJsonObj.getString("src_tids").split(",")[0]);
             }
         }
-        return auditedOrderList;
+        return orderIds;
     }
 
     /**
@@ -281,7 +276,7 @@ public class WangDianV2OrderScheduleService {
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.WANGDIANV2);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
 
-            if (detailConfig.getErpBaseConfig().getIsSyncDelivery() == 1) {
+            if (detailConfig.getErpBaseConfig().getIsSyncDelivery() == 1) { // TODO: 2017-03-08
                 log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync audited order ");
                 try {
                     ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
@@ -314,16 +309,16 @@ public class WangDianV2OrderScheduleService {
                         JSONArray orderArray = firstQueryResp.getJSONArray("trades");
 
                         // convert to delivery order
-                        List<AuditedOrder> auditedOrderList = convert2AuditedOrderList(orderArray, sysData); // TODO: 2017-03-07
+                        List<String> orderIds = convert2AuditedOrderList(orderArray, sysData); // TODO: 2017-03-07
                         PushAuditedOrderEvent pushAuditedOrderEvent = new PushAuditedOrderEvent();
                         pushAuditedOrderEvent.setErpUserInfo(erpUserInfo);
                         pushAuditedOrderEvent.setErpUserInfo(erpUserInfo);
 
                         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
 
-                        if (auditedOrderList.size() > 0) {
+                        if (orderIds.size() > 0) {
 
-                            pushAuditedOrderEvent.setAuditedOrders(auditedOrderList);
+                            pushAuditedOrderEvent.setOrderIds(orderIds);
                             // push to platform
 
                             EventResult firstSyncEvent = erpUserHandler.handleEvent(pushAuditedOrderEvent);
@@ -331,8 +326,6 @@ public class WangDianV2OrderScheduleService {
                                 BatchAuditedOrderResult firstBatchAuditedOrderResult = (BatchAuditedOrderResult) firstSyncEvent.getData(); // TODO: 2017-03-07
                                 failedOrders.addAll(firstBatchAuditedOrderResult.getFailedOrders());
                                 successOrders.addAll(firstBatchAuditedOrderResult.getSuccessOrders());
-                            } else {
-                                failedOrders.addAll(auditedOrderList);
                             }
                         }
 
@@ -354,17 +347,15 @@ public class WangDianV2OrderScheduleService {
                                     JSONArray nextOrderArray = nextQueryResp.getJSONArray("trades");
 
                                     // convert to delivery order
-                                    auditedOrderList = convert2AuditedOrderList(nextOrderArray, sysData);
-                                    if (auditedOrderList.size() > 0) {
-                                        pushAuditedOrderEvent.setAuditedOrders(auditedOrderList);
+                                    orderIds = convert2AuditedOrderList(nextOrderArray, sysData);
+                                    if (orderIds.size() > 0) {
+                                        pushAuditedOrderEvent.setOrderIds(orderIds);
                                         // push to platform
                                         EventResult nextSyncEvent = erpUserHandler.handleEvent(pushAuditedOrderEvent);
                                         if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                                             BatchAuditedOrderResult nexBatchAuditedOrderResult = (BatchAuditedOrderResult) nextSyncEvent.getData();
                                             failedOrders.addAll(nexBatchAuditedOrderResult.getFailedOrders());
                                             successOrders.addAll(nexBatchAuditedOrderResult.getSuccessOrders());
-                                        } else {
-                                            failedOrders.addAll(auditedOrderList);
                                         }
                                     }
                                 }
@@ -399,6 +390,7 @@ public class WangDianV2OrderScheduleService {
                         auditedOrderSyncInfoService.auditedOrderInfoList(auditedOrderSyncInfoList, failedOrders, auditedOrderSyncLog, OrderSyncStatus.AuditedSyncStatus.SYNC_FAILURE);
                         auditedOrderSyncInfoService.auditedOrderInfoList(auditedOrderSyncInfoList, successOrders, auditedOrderSyncLog, OrderSyncStatus.AuditedSyncStatus.SYNC_SUCCESS);
 
+                        auditedOrderSyncInfoService.batchSave(auditedOrderSyncInfoList);
                     }
 
                     log.info("wangdianv2 audited order sync end");

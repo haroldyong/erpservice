@@ -10,16 +10,15 @@
 package com.huobanplus.erpuser.hotsupplier.config;
 
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailListEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetProductInfoEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushOrderListInfoEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.*;
 import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncChannelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncInventoryEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandlerBuilder;
 import com.huobanplus.erpuser.hotsupplier.handler.SupGoodHandler;
@@ -68,6 +67,9 @@ public class SupplierHandlerBuilder implements ERPUserHandlerBuilder {
                     GetProductInfoEvent getProductInfoEvent = (GetProductInfoEvent) erpBaseEvent;
                     return goodHandler.obtainProductListInfo(getProductInfoEvent.getProductSearchInfo(), getProductInfoEvent.getErpUserInfo());
 
+                } else if (erpBaseEvent instanceof PushAuditedOrderEvent) {
+                    PushAuditedOrderEvent pushAuditedOrderEvent = (PushAuditedOrderEvent) erpBaseEvent;
+                    return EventResult.resultWith(EventResultEnum.SUCCESS); // TODO: 2017-03-08
                 }
                 return null;
             };
