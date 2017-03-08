@@ -89,6 +89,6 @@ public class OrderDetailSyncLogServiceImpl implements OrderDetailSyncLogService 
 
     @Override
     public List<OrderDetailSyncLog> findBySyncStatus(OrderSyncStatus.DetailSyncStatus syncStatus) {
-        return orderDetailSyncLogRepository.findBySyncStatus(syncStatus);
+        return orderDetailSyncLogRepository.findByDetailSyncStatus(syncStatus);
     }
 }

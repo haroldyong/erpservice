@@ -5,7 +5,7 @@
   ~
   ~ (c) Copyright Hangzhou Hot Technology Co., Ltd.
   ~ Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
-  ~ 2013-2016. All rights reserved.
+  ~ 2013-2017. All rights reserved.
   -->
 
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" profile="!container"
@@ -13,18 +13,18 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url"
-                  value="jdbc:mysql://localhost:3306/hoterpservice_dev?useUnicode=true&amp;characterEncoding=UTF8"/>
-        <property name="username" value="root"/>
-        <property name="password" value="12345"/>
-        <!--<property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>-->
-        <!--&lt;!&ndash;<property name="url" value="jdbc:jtds:sqlserver://115.28.160.96:1433;DatabaseName=HotPdMall_Test"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;<property name="username" value="mall"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;<property name="password" value="root123"/>&ndash;&gt;-->
-        <!--<property name="url" value="jdbc:jtds:sqlserver://192.168.1.146:1433;DatabaseName=Dev_Erp"/>-->
-        <!--<property name="username" value="hotdev"/>-->
-        <!--<property name="password" value="hot@1234"/>-->
+        <!--<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
+        <!--<property name="url"-->
+        <!--value="jdbc:mysql://localhost:3306/hoterpservice_dev?useUnicode=true&amp;characterEncoding=UTF8"/>-->
+        <!--<property name="username" value="root"/>-->
+        <!--<property name="password" value="12345"/>-->
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <!--<property name="url" value="jdbc:jtds:sqlserver://115.28.160.96:1433;DatabaseName=HotPdMall_Test"/>-->
+        <!--<property name="username" value="mall"/>-->
+        <!--<property name="password" value="root123"/>-->
+        <property name="url" value="jdbc:jtds:sqlserver://192.168.1.146:1433;DatabaseName=Dev_Erp"/>
+        <property name="username" value="hotdev"/>
+        <property name="password" value="hot@1234"/>
     </bean>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -39,8 +39,8 @@
         </property>
         <property name="jpaPropertyMap">
             <map>
-                <entry key="javax.persistence.schema-generation.database.action" value="create"/>
-                <!--<entry key="javax.persistence.schema-generation.database.action" value="drop-and-create"/>-->
+                <!--<entry key="javax.persistence.schema-generation.database.action" value="create"/>-->
+                <entry key="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
                 <entry key="eclipselink.weaving" value="false"/>
                 <entry key="eclipselink.logging.level" value="FINE"/>
             </map>

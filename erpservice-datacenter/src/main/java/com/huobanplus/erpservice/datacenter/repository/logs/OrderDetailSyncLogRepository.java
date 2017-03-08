@@ -29,5 +29,5 @@ public interface OrderDetailSyncLogRepository extends JpaRepository<OrderDetailS
     List<OrderDetailSyncLog> findByCustomerIdAndDetailSyncStatusAndProviderType(int customerId, OrderSyncStatus.DetailSyncStatus syncStatus,
                                                                                 ERPTypeEnum.ProviderType providerType, Date begin);
 
-    List<OrderDetailSyncLog> findBySyncStatus(OrderSyncStatus.DetailSyncStatus syncStatus);
+    List<OrderDetailSyncLog> findByDetailSyncStatus(OrderSyncStatus.DetailSyncStatus syncStatus);
 }
