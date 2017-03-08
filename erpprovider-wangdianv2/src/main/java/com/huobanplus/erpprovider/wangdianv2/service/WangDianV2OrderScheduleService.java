@@ -22,16 +22,12 @@ import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
-import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncInfo;
 import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
-import com.huobanplus.erpservice.datacenter.model.AuditedOrder;
-import com.huobanplus.erpservice.datacenter.model.BatchAuditedOrderResult;
 import com.huobanplus.erpservice.datacenter.model.BatchDeliverResult;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
-import com.huobanplus.erpservice.datacenter.service.logs.AuditedOrderSyncInfoService;
 import com.huobanplus.erpservice.datacenter.service.logs.AuditedOrderSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
@@ -72,8 +68,6 @@ public class WangDianV2OrderScheduleService {
     private ShipSyncDeliverInfoService shipSyncDeliverInfoService;
     @Autowired
     private AuditedOrderSyncLogService auditedOrderSyncLogService;
-    @Autowired
-    private AuditedOrderSyncInfoService auditedOrderSyncInfoService;
     @Autowired
     private ERPRegister erpRegister;
     @Autowired
@@ -291,16 +285,17 @@ public class WangDianV2OrderScheduleService {
                             ? Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusHours(3))
                             : lastSyncLog.getSyncTime();
 
-                    List<AuditedOrder> failedOrders = new ArrayList<>(); //失败的订单列表
-                    List<AuditedOrder> successOrders = new ArrayList<>(); //成功的订单列表
                     int totalCount = 0; //总数量
+                    int successCount = 0;
+                    int failedCount = 0;
+                    List<String> auditedOrders = new ArrayList<>();
 
                     WangDianV2OrderSearch wangDianV2OrderSearch = new WangDianV2OrderSearch();
                     wangDianV2OrderSearch.setStartTime(StringUtil.DateFormat(beginTime, StringUtil.TIME_PATTERN));
                     wangDianV2OrderSearch.setEndTime(nowStr);
                     wangDianV2OrderSearch.setPageNo(currentPageIndex);
                     wangDianV2OrderSearch.setPageSize(WangDianV2Constant.PAGE_SIZE);
-                    wangDianV2OrderSearch.setStatus(55);// 已审核订单
+//                    wangDianV2OrderSearch.setStatus(55);// 已审核订单
 
                     EventResult firstQueryEvent = wangDianV2OrderHandler.queryOrder(wangDianV2OrderSearch, sysData);
                     if (firstQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -318,17 +313,16 @@ public class WangDianV2OrderScheduleService {
 
                         if (orderIds.size() > 0) {
 
+                            auditedOrders.addAll(orderIds);
                             pushAuditedOrderEvent.setOrderIds(orderIds);
                             // push to platform
-
                             EventResult firstSyncEvent = erpUserHandler.handleEvent(pushAuditedOrderEvent);
                             if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                BatchAuditedOrderResult firstBatchAuditedOrderResult = (BatchAuditedOrderResult) firstSyncEvent.getData(); // TODO: 2017-03-07
-                                failedOrders.addAll(firstBatchAuditedOrderResult.getFailedOrders());
-                                successOrders.addAll(firstBatchAuditedOrderResult.getSuccessOrders());
+                                successCount++;
+                            } else {
+                                failedCount++;
                             }
                         }
-
 
                         // next pull
                         int totalPage = totalCount / WangDianV2Constant.PAGE_SIZE;
@@ -349,13 +343,14 @@ public class WangDianV2OrderScheduleService {
                                     // convert to delivery order
                                     orderIds = convert2AuditedOrderList(nextOrderArray, sysData);
                                     if (orderIds.size() > 0) {
+                                        auditedOrders.addAll(orderIds);
                                         pushAuditedOrderEvent.setOrderIds(orderIds);
                                         // push to platform
                                         EventResult nextSyncEvent = erpUserHandler.handleEvent(pushAuditedOrderEvent);
                                         if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                            BatchAuditedOrderResult nexBatchAuditedOrderResult = (BatchAuditedOrderResult) nextSyncEvent.getData();
-                                            failedOrders.addAll(nexBatchAuditedOrderResult.getFailedOrders());
-                                            successOrders.addAll(nexBatchAuditedOrderResult.getSuccessOrders());
+                                            successCount++;
+                                        } else {
+                                            failedCount++;
                                         }
                                     }
                                 }
@@ -364,7 +359,6 @@ public class WangDianV2OrderScheduleService {
                     }
 
                     if (totalCount > 0) {
-                        int successCount = successOrders.size(), failedCount = failedOrders.size();
                         //发货同步记录
                         AuditedOrderSyncLog auditedOrderSyncLog = new AuditedOrderSyncLog();
 
@@ -372,9 +366,8 @@ public class WangDianV2OrderScheduleService {
                         auditedOrderSyncLog.setUserType(erpUserInfo.getErpUserType());
                         auditedOrderSyncLog.setCustomerId(erpUserInfo.getCustomerId());
                         auditedOrderSyncLog.setTotalCount(totalCount);
-                        auditedOrderSyncLog.setSuccessCount(successCount);
-                        auditedOrderSyncLog.setFailedCount(failedCount);
                         auditedOrderSyncLog.setSyncTime(now);
+                        auditedOrderSyncLog.setOrderJson(JSON.toJSONString(auditedOrders));
                         if (successCount == 0) {
                             auditedOrderSyncLog.setAuditedSyncStatus(OrderSyncStatus.AuditedSyncStatus.SYNC_FAILURE);
                         }
@@ -384,13 +377,7 @@ public class WangDianV2OrderScheduleService {
                         if (successCount > 0 && failedCount == 0) {
                             auditedOrderSyncLog.setAuditedSyncStatus(OrderSyncStatus.AuditedSyncStatus.SYNC_SUCCESS);
                         }
-
-                        auditedOrderSyncLog = auditedOrderSyncLogService.save(auditedOrderSyncLog);
-                        List<AuditedOrderSyncInfo> auditedOrderSyncInfoList = new ArrayList<>();
-                        auditedOrderSyncInfoService.auditedOrderInfoList(auditedOrderSyncInfoList, failedOrders, auditedOrderSyncLog, OrderSyncStatus.AuditedSyncStatus.SYNC_FAILURE);
-                        auditedOrderSyncInfoService.auditedOrderInfoList(auditedOrderSyncInfoList, successOrders, auditedOrderSyncLog, OrderSyncStatus.AuditedSyncStatus.SYNC_SUCCESS);
-
-                        auditedOrderSyncInfoService.batchSave(auditedOrderSyncInfoList);
+                        auditedOrderSyncLogService.save(auditedOrderSyncLog);
                     }
 
                     log.info("wangdianv2 audited order sync end");

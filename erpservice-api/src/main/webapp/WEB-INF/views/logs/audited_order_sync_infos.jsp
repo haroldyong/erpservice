@@ -33,27 +33,6 @@
     <script src="<c:url value="/resource/scripts/lib/jquery.utils.js" />" type="text/javascript"></script>
     <script src="<c:url value="/resource/scripts/admin.js" />"></script>
 
-    <script type="text/javascript">
-        var erpUserType = ${erpUserType};
-        var ajaxUrl = "<c:url value="/erpService/platform/reSyncOrderShip" />";
-        function reSyncShip(id) {
-            J.jboxConfirm("确定要同步吗?", function () {
-                $.jBox.tip("正在同步", "loading");
-                J.GetJsonRespons(ajaxUrl, {
-                    id: id,
-                    erpUserType: erpUserType
-                }, function (json) {
-                    if (json.resultCode == 2000) {
-                        $.jBox.tip("推送成功", "success");
-                        window.location.reload();
-                    } else {
-                        $.jBox.tip("推送失败", "error");
-                    }
-                }, function () {
-                }, J.PostMethod)
-            });
-        }
-    </script>
 </head>
 <body>
 <div class="container">
@@ -65,7 +44,7 @@
             <div class="h">
                 <span class="icon-sprite icon-magnifier"></span>
 
-                <h3>订单信息同步记录</h3>
+                <h3>审核订单同步记录详情</h3>
 
                 <p style="float: right;margin-top: -26px;margin-right: 10px;">
                     <a class="btn-lit btn-middle"
@@ -85,30 +64,6 @@
             <div class="br corner">
             </div>
             <div class="cnt-wp" style="padding: 35px 10px 10px;">
-                <div class="cnt">
-                    <div class="search-bar">
-                        <div>
-                            <input type="hidden" name="erpUserType" value="${erpUserType}"/>
-                            <input type="hidden" name="shipSyncId" value="${shipSyncId}"/>
-
-                            <label class="first ">订单编号：</label>
-                            <input name="orderId" type="text"
-                                   class="input-normal" value="${orderId}"/>
-
-                            <label>
-                                <a class="btn-lit btn-middle" href="javascript:$('#searchForm').submit();"
-                                   style="margin-bottom: 3px;">
-                                    <span>查询</span>
-                                </a>
-                                <a class="btn-lit btn-middle"
-                                   href="<c:url value="/erpService/platform/shipSyncDeliverInfoses?erpUserType=${erpUserType}&shipSyncId=${shipSyncId}" />"
-                                   style="margin-bottom: 3px;">
-                                    <span>显示全部</span>
-                                </a>
-                            </label>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -131,31 +86,12 @@
                         <tr class="even">
                             <th scope="col">订单编号
                             </th>
-                            <th scope="col">物流公司
-                            </th>
-                            <th scope="col">物流单号
-                            </th>
-                            <th scope="col">同步状态
-                            </th>
-                            <th scope="col">备注
-                            </th>
-                            <th scope="col">操作
-                            </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="log" items="${shipSyncDeliverInfoList.getContent()}">
+                        <c:forEach var="id" items="${orderIds}">
                             <tr>
-                                <td class="txt40 c">${log.orderDeliveryInfo.orderId}</td>
-                                <td class="txt40 c">${log.orderDeliveryInfo.logiName}</td>
-                                <td class="txt40 c">${log.orderDeliveryInfo.logiNo}</td>
-                                <td class="txt40 c">${log.shipSyncStatus.name}</td>
-                                <td class="txt40 c">${log.orderDeliveryInfo.remark}</td>
-                                <td class="txt80 c">
-                                    <c:if test="${log.shipSyncStatus.code!=0}">
-                                        <a href="javascript:reSyncShip(${log.id})">重新同步</a>
-                                    </c:if>
-                                </td>
+                                <td class="txt40 c">${id}</td>
                             </tr>
                         </c:forEach>
 

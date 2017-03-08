@@ -14,7 +14,7 @@ package com.huobanplus.erpservice.datacenter.service.logs.impl;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncLog;
-import com.huobanplus.erpservice.datacenter.repository.logs.AuditedOrderSyncLogREpository;
+import com.huobanplus.erpservice.datacenter.repository.logs.AuditedOrderSyncLogRepository;
 import com.huobanplus.erpservice.datacenter.service.logs.AuditedOrderSyncLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,7 +37,7 @@ import java.util.List;
 public class AuditedOrderSyncLogServiceImpl implements AuditedOrderSyncLogService {
 
     @Autowired
-    private AuditedOrderSyncLogREpository auditedOrderSyncLogREpository;
+    private AuditedOrderSyncLogRepository auditedOrderSyncLogREpository;
 
     @Override
     public AuditedOrderSyncLog save(AuditedOrderSyncLog auditedOrderSyncLog) {
@@ -67,5 +67,10 @@ public class AuditedOrderSyncLogServiceImpl implements AuditedOrderSyncLogServic
 
         return auditedOrderSyncLogREpository.findAll(specification,
                 new PageRequest(pageIndex - 1, pageSize, new Sort(Sort.Direction.DESC, "syncTime")));
+    }
+
+    @Override
+    public AuditedOrderSyncLog findOne(long syncId) {
+        return auditedOrderSyncLogREpository.findOne(syncId);
     }
 }

@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
  * Created by wuxiongliu on 2017-03-07.
  */
 @Repository
-public interface AuditedOrderSyncLogREpository extends JpaRepository<AuditedOrderSyncLog, Long>, JpaSpecificationExecutor<AuditedOrderSyncLog> {
+public interface AuditedOrderSyncLogRepository extends JpaRepository<AuditedOrderSyncLog, Long>, JpaSpecificationExecutor<AuditedOrderSyncLog> {
 
     AuditedOrderSyncLog findTopByCustomerIdAndProviderTypeOrderByIdDesc(int customerId, ERPTypeEnum.ProviderType providerType);
 }

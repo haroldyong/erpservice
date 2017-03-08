@@ -53,41 +53,18 @@ public class AuditedOrderSyncLog {
      * 本次同步订单数量
      */
     private int totalCount;
-    /**
-     * 成功数量
-     */
-    private int successCount;
-    /**
-     * 失败数量
-     */
-    private int failedCount;
+
 
     /**
      * 最后一次同步状态
      */
     private OrderSyncStatus.AuditedSyncStatus auditedSyncStatus;
 
-    /**
-     * 订单详细信息
-     */
     @Lob
     private String orderJson;
 
-    /**
-     * 事件信息
-     */
-    @Lob
-    private String erpSysData;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date syncTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createTime;
-
-    /**
-     * 错误信息（不在页面显示,只作为一个记录）
-     */
-    @Lob
-    private String errorMsg;
 }

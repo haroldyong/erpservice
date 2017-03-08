@@ -11,11 +11,10 @@
 
 package com.huobanplus.erpservice.platform.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpservice.common.SysConstant;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
-import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncInfo;
 import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncLog;
-import com.huobanplus.erpservice.datacenter.service.logs.AuditedOrderSyncInfoService;
 import com.huobanplus.erpservice.datacenter.service.logs.AuditedOrderSyncLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +23,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * Created by wuxiongliu on 2017-03-08.
@@ -34,8 +35,6 @@ public class AuditOrderLogController {
 
     @Autowired
     private AuditedOrderSyncLogService auditedOrderSyncLogService;
-    @Autowired
-    private AuditedOrderSyncInfoService auditedOrderSyncInfoService;
 
     @RequestMapping(value = "/auditedOrderSyncs", method = RequestMethod.GET)
     private String orderShipSyncs(
@@ -64,10 +63,9 @@ public class AuditOrderLogController {
             Model model
     ) {
 
-        Page<AuditedOrderSyncInfo> auditedOrderSyncInfos = auditedOrderSyncInfoService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_SIZE, syncId, orderId);
-        model.addAttribute("auditedOrderSyncInfoList", auditedOrderSyncInfos);
-        model.addAttribute("pageIndex", pageIndex);
-        model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_SIZE);
+        AuditedOrderSyncLog auditedOrderSyncLog = auditedOrderSyncLogService.findOne(syncId);
+        List<String> orderIds = JSON.parseArray(auditedOrderSyncLog.getOrderJson(), String.class);
+        model.addAttribute("orderIds", orderIds);
         model.addAttribute("erpUserType", erpUserType);
         model.addAttribute("orderId", orderId);
         model.addAttribute("syncId", syncId);

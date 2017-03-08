@@ -32,4 +32,6 @@ public interface AuditedOrderSyncLogService {
     AuditedOrderSyncLog findTop(int customerId, ERPTypeEnum.ProviderType providerType);
 
     Page<AuditedOrderSyncLog> findAll(int pageIndex, int pageSize, String beginTime, String endTime, int customerId);
+
+    AuditedOrderSyncLog findOne(long syncId);
 }

@@ -44,7 +44,7 @@
             <div class="h">
                 <span class="icon-sprite icon-magnifier"></span>
 
-                <h3>订单信息同步记录</h3>
+                <h3>审核订单同步记录</h3>
             </div>
             <div class="tl corner">
             </div>
@@ -106,10 +106,6 @@
                             </th>
                             <th scope="col">同步总数
                             </th>
-                            <th scope="col">成功数量
-                            </th>
-                            <th scope="col">失败数量
-                            </th>
                             <th scope="col">同步状态
                             </th>
                             <th scope="col">同步时间
@@ -123,8 +119,6 @@
                             <tr>
                                 <td class="txt40 c">${log.providerType.name}</td>
                                 <td class="txt40 c">${log.totalCount}</td>
-                                <td class="txt40 c">${log.successCount}</td>
-                                <td class="txt40 c">${log.failedCount}</td>
                                 <td class="txt40 c">${log.auditedSyncStatus.name}</td>
                                 <td class="txt40 c"><fmt:formatDate value="${log.syncTime}"
                                                                     pattern="yyyy-MM-dd HH:mm:ss"/></td>
