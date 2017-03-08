@@ -159,4 +159,28 @@ public interface OrderEnum {
             this.name = name;
         }
     }
+
+    enum AuditStatus implements ICommonEnum {
+        UNAUDITED(0, "未审核"),
+        AUDITED(1, "已审核");
+
+        private int code;
+        private String name;
+
+
+        AuditStatus(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        @Override
+        public int getCode() {
+            return this.code;
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
+    }
 }

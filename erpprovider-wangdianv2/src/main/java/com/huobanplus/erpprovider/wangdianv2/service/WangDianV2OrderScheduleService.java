@@ -18,22 +18,28 @@ import com.huobanplus.erpprovider.wangdianv2.common.WangDianV2Constant;
 import com.huobanplus.erpprovider.wangdianv2.common.WangDianV2SysData;
 import com.huobanplus.erpprovider.wangdianv2.handler.WangDianV2OrderHandler;
 import com.huobanplus.erpprovider.wangdianv2.search.WangDianV2OrderSearch;
+import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncInfo;
 import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.ShipSyncDeliverInfo;
+import com.huobanplus.erpservice.datacenter.model.AuditedOrder;
+import com.huobanplus.erpservice.datacenter.model.BatchAuditedOrderResult;
 import com.huobanplus.erpservice.datacenter.model.BatchDeliverResult;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
+import com.huobanplus.erpservice.datacenter.service.logs.AuditedOrderSyncInfoService;
 import com.huobanplus.erpservice.datacenter.service.logs.AuditedOrderSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderShipSyncLogService;
 import com.huobanplus.erpservice.datacenter.service.logs.ShipSyncDeliverInfoService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushAuditedOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -67,6 +73,8 @@ public class WangDianV2OrderScheduleService {
     private ShipSyncDeliverInfoService shipSyncDeliverInfoService;
     @Autowired
     private AuditedOrderSyncLogService auditedOrderSyncLogService;
+    @Autowired
+    private AuditedOrderSyncInfoService auditedOrderSyncInfoService;
     @Autowired
     private ERPRegister erpRegister;
     @Autowired
@@ -247,6 +255,21 @@ public class WangDianV2OrderScheduleService {
         return orderDeliveryInfoList;
     }
 
+    private List<AuditedOrder> convert2AuditedOrderList(JSONArray jsonArray, WangDianV2SysData wangDianV2SysData) {
+        List<AuditedOrder> auditedOrderList = new ArrayList<>();
+        for (Object o : jsonArray) {
+            JSONObject itemJsonObj = JSON.parseObject(o.toString());
+            if (itemJsonObj.getString("shop_no").equals(wangDianV2SysData.getShopNo())) {// 筛选出本店铺的订单
+                AuditedOrder auditedOrder = new AuditedOrder();
+                auditedOrder.setOrderId(itemJsonObj.getString("src_tids").split(",")[0]);
+                auditedOrder.setAuditedStatus(OrderEnum.AuditStatus.AUDITED.getCode());
+
+                auditedOrderList.add(auditedOrder);
+            }
+        }
+        return auditedOrderList;
+    }
+
     /**
      * 同步已审核订单
      */
@@ -273,8 +296,8 @@ public class WangDianV2OrderScheduleService {
                             ? Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusHours(3))
                             : lastSyncLog.getSyncTime();
 
-                    List<OrderDeliveryInfo> failedOrders = new ArrayList<>(); //失败的订单列表
-                    List<OrderDeliveryInfo> successOrders = new ArrayList<>(); //成功的订单列表
+                    List<AuditedOrder> failedOrders = new ArrayList<>(); //失败的订单列表
+                    List<AuditedOrder> successOrders = new ArrayList<>(); //成功的订单列表
                     int totalCount = 0; //总数量
 
                     WangDianV2OrderSearch wangDianV2OrderSearch = new WangDianV2OrderSearch();
@@ -282,7 +305,7 @@ public class WangDianV2OrderScheduleService {
                     wangDianV2OrderSearch.setEndTime(nowStr);
                     wangDianV2OrderSearch.setPageNo(currentPageIndex);
                     wangDianV2OrderSearch.setPageSize(WangDianV2Constant.PAGE_SIZE);
-                    wangDianV2OrderSearch.setStatus(55);// 已发货的订单
+                    wangDianV2OrderSearch.setStatus(55);// 已审核订单
 
                     EventResult firstQueryEvent = wangDianV2OrderHandler.queryOrder(wangDianV2OrderSearch, sysData);
                     if (firstQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -291,25 +314,25 @@ public class WangDianV2OrderScheduleService {
                         JSONArray orderArray = firstQueryResp.getJSONArray("trades");
 
                         // convert to delivery order
-                        List<OrderDeliveryInfo> orderDeliveryInfoList = convert2OrderDeliveryInfoList(orderArray, sysData); // TODO: 2017-03-07  
-                        BatchDeliverEvent batchDeliverEvent = new BatchDeliverEvent();
-                        batchDeliverEvent.setErpUserInfo(erpUserInfo);
-                        batchDeliverEvent.setErpUserInfo(erpUserInfo);
+                        List<AuditedOrder> auditedOrderList = convert2AuditedOrderList(orderArray, sysData); // TODO: 2017-03-07
+                        PushAuditedOrderEvent pushAuditedOrderEvent = new PushAuditedOrderEvent();
+                        pushAuditedOrderEvent.setErpUserInfo(erpUserInfo);
+                        pushAuditedOrderEvent.setErpUserInfo(erpUserInfo);
 
                         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
 
-                        if (orderDeliveryInfoList.size() > 0) {
+                        if (auditedOrderList.size() > 0) {
 
-                            batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
+                            pushAuditedOrderEvent.setAuditedOrders(auditedOrderList);
                             // push to platform
 
-                            EventResult firstSyncEvent = erpUserHandler.handleEvent(batchDeliverEvent);
+                            EventResult firstSyncEvent = erpUserHandler.handleEvent(pushAuditedOrderEvent);
                             if (firstSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncEvent.getData(); // TODO: 2017-03-07  
-                                failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
-                                successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
+                                BatchAuditedOrderResult firstBatchAuditedOrderResult = (BatchAuditedOrderResult) firstSyncEvent.getData(); // TODO: 2017-03-07
+                                failedOrders.addAll(firstBatchAuditedOrderResult.getFailedOrders());
+                                successOrders.addAll(firstBatchAuditedOrderResult.getSuccessOrders());
                             } else {
-                                failedOrders.addAll(orderDeliveryInfoList);
+                                failedOrders.addAll(auditedOrderList);
                             }
                         }
 
@@ -331,17 +354,17 @@ public class WangDianV2OrderScheduleService {
                                     JSONArray nextOrderArray = nextQueryResp.getJSONArray("trades");
 
                                     // convert to delivery order
-                                    orderDeliveryInfoList = convert2OrderDeliveryInfoList(nextOrderArray, sysData);
-                                    if (orderDeliveryInfoList.size() > 0) {
-                                        batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
+                                    auditedOrderList = convert2AuditedOrderList(nextOrderArray, sysData);
+                                    if (auditedOrderList.size() > 0) {
+                                        pushAuditedOrderEvent.setAuditedOrders(auditedOrderList);
                                         // push to platform
-                                        EventResult nextSyncEvent = erpUserHandler.handleEvent(batchDeliverEvent);
+                                        EventResult nextSyncEvent = erpUserHandler.handleEvent(pushAuditedOrderEvent);
                                         if (nextSyncEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                            BatchDeliverResult nextBatchDeliverResult = (BatchDeliverResult) nextSyncEvent.getData();// TODO: 2017-03-07  
-                                            failedOrders.addAll(nextBatchDeliverResult.getFailedOrders());
-                                            successOrders.addAll(nextBatchDeliverResult.getSuccessOrders());
+                                            BatchAuditedOrderResult nexBatchAuditedOrderResult = (BatchAuditedOrderResult) nextSyncEvent.getData();
+                                            failedOrders.addAll(nexBatchAuditedOrderResult.getFailedOrders());
+                                            successOrders.addAll(nexBatchAuditedOrderResult.getSuccessOrders());
                                         } else {
-                                            failedOrders.addAll(orderDeliveryInfoList);
+                                            failedOrders.addAll(auditedOrderList);
                                         }
                                     }
                                 }
@@ -371,7 +394,10 @@ public class WangDianV2OrderScheduleService {
                             auditedOrderSyncLog.setAuditedSyncStatus(OrderSyncStatus.AuditedSyncStatus.SYNC_SUCCESS);
                         }
 
-                        auditedOrderSyncLogService.save(auditedOrderSyncLog);
+                        auditedOrderSyncLog = auditedOrderSyncLogService.save(auditedOrderSyncLog);
+                        List<AuditedOrderSyncInfo> auditedOrderSyncInfoList = new ArrayList<>();
+                        auditedOrderSyncInfoService.auditedOrderInfoList(auditedOrderSyncInfoList, failedOrders, auditedOrderSyncLog, OrderSyncStatus.AuditedSyncStatus.SYNC_FAILURE);
+                        auditedOrderSyncInfoService.auditedOrderInfoList(auditedOrderSyncInfoList, successOrders, auditedOrderSyncLog, OrderSyncStatus.AuditedSyncStatus.SYNC_SUCCESS);
 
                     }
 

@@ -13,6 +13,7 @@ package com.huobanplus.erpservice.datacenter.service.logs;
 
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncLog;
+import org.springframework.data.domain.Page;
 
 /**
  * Created by wuxiongliu on 2017-03-07.
@@ -29,4 +30,6 @@ public interface AuditedOrderSyncLogService {
      * @return
      */
     AuditedOrderSyncLog findTop(int customerId, ERPTypeEnum.ProviderType providerType);
+
+    Page<AuditedOrderSyncLog> findAll(int pageIndex, int pageSize, String beginTime, String endTime, int customerId);
 }
