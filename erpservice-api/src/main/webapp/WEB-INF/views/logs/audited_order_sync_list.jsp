@@ -33,6 +33,28 @@
     <script src="<c:url value="/resource/scripts/lib/jquery.utils.js" />" type="text/javascript"></script>
     <script src="<c:url value="/resource/scripts/admin.js" />"></script>
     <script src="<c:url value="/resource/scripts/lib/My97DatePicker/WdatePicker.js" />" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        var erpUserType = ${erpUserType};
+        var ajaxUrl = "<c:url value="/erpService/platform/reSyncAuditedOrder" />";
+        function reSyncShip(id) {
+            J.jboxConfirm("确定要同步吗?", function () {
+                $.jBox.tip("正在同步", "loading");
+                J.GetJsonRespons(ajaxUrl, {
+                    id: id,
+                    erpUserType: erpUserType
+                }, function (json) {
+                    if (json.resultCode == 2000) {
+                        $.jBox.tip("推送成功", "success");
+                        window.location.reload();
+                    } else {
+                        $.jBox.tip("推送失败", "error");
+                    }
+                }, function () {
+                }, J.PostMethod)
+            });
+        }
+    </script>
 </head>
 <body>
 <div class="container">
@@ -123,6 +145,9 @@
                                 <td class="txt40 c"><fmt:formatDate value="${log.syncTime}"
                                                                     pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                 <td class="txt80 c">
+                                    <c:if test="${log.auditedSyncStatus.code!=0}">
+                                        <a href="javascript:reSyncShip(${log.id})">重新同步</a>
+                                    </c:if>
                                     <a href="<c:url value="/erpService/platform/auditedOrderSyncInfoList?erpUserType=${erpUserType}&syncId=${log.id}" />">查看同步日志</a>
                                 </td>
                             </tr>

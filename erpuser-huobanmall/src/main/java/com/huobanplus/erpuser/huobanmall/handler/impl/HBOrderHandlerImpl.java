@@ -235,47 +235,24 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
     public EventResult pushAuditedOrderList(List<String> orderIds, ERPUserInfo erpUserInfo) {
         Map<String, Object> requestMap = new TreeMap<>();
         try {
-            requestMap.put("orderIds", JSON.toJSONString(orderIds));
+            requestMap.put("orderListJson", JSON.toJSONString(orderIds));
             requestMap.put("customerId", erpUserInfo.getCustomerId());
             requestMap.put("timestamp", new Date().getTime());
 
             String sign = SignBuilder.buildSignIgnoreEmpty(requestMap, null, HBConstant.SECRET_KEY);
             requestMap.put("sign", sign);
 
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderChecked", requestMap);
 
-            // mock data
-            List<AuditedOrder> successOrders = new ArrayList<>();
-            List<AuditedOrder> failedOrders = new ArrayList<>();
-
-            AuditedOrder success = new AuditedOrder();
-            success.setOrderId("111111111");
-            success.setRemark("");
-
-            AuditedOrder fail = new AuditedOrder();
-            fail.setOrderId("22222222");
-            fail.setRemark("订单不存在");
-
-
-            successOrders.add(success);
-            failedOrders.add(fail);
-
-            BatchAuditedOrderResult batchAuditedOrderResult = new BatchAuditedOrderResult();
-            batchAuditedOrderResult.setFailedOrders(failedOrders);
-            batchAuditedOrderResult.setSuccessOrders(successOrders);
-
-            return EventResult.resultWith(EventResultEnum.SUCCESS, batchAuditedOrderResult);
-
-//            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/PushAuditedOrder", requestMap);
-//
-//            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-//                ApiResult<BatchAuditedOrderResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchAuditedOrderResult>>() {
-//                });
-//                if (apiResult.getCode() == 200) {
-//                    return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
-//                }
-//                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
-//            }
-//            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                ApiResult<BatchAuditedOrderResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchAuditedOrderResult>>() {
+                });
+                if (apiResult.getCode() == 200) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
 
         } catch (Exception e) {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);

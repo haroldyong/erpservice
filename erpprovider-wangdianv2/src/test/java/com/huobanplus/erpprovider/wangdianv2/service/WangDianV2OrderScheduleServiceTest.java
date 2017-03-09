@@ -14,7 +14,6 @@ package com.huobanplus.erpprovider.wangdianv2.service;
 import com.huobanplus.erpprovider.wangdianv2.WangDianV2TestBase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 
 /**
  * Created by wuxiongliu on 2017-02-27.
@@ -32,9 +31,8 @@ public class WangDianV2OrderScheduleServiceTest extends WangDianV2TestBase {
     }
 
     @Test
-    @Rollback(value = false)
     public void testSyncAuditedOrder() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             wangDianV2OrderScheduleService.syncAuditedOrder();
         }
     }

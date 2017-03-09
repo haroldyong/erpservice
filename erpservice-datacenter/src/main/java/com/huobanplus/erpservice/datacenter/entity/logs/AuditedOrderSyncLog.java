@@ -62,6 +62,8 @@ public class AuditedOrderSyncLog {
 
     @Lob
     private String orderJson;
+    @Lob
+    private String erpSysData;
 
 
     @Temporal(TemporalType.TIMESTAMP)

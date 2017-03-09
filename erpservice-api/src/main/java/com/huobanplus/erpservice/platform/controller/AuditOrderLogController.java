@@ -13,9 +13,19 @@ package com.huobanplus.erpservice.platform.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpservice.common.SysConstant;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
+import com.huobanplus.erpservice.commons.bean.ApiResult;
+import com.huobanplus.erpservice.commons.bean.ResultCode;
 import com.huobanplus.erpservice.datacenter.entity.logs.AuditedOrderSyncLog;
 import com.huobanplus.erpservice.datacenter.service.logs.AuditedOrderSyncLogService;
+import com.huobanplus.erpservice.eventhandler.ERPRegister;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushAuditedOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.eventhandler.userhandler.ERPUserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -23,6 +33,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -35,6 +46,8 @@ public class AuditOrderLogController {
 
     @Autowired
     private AuditedOrderSyncLogService auditedOrderSyncLogService;
+    @Autowired
+    private ERPRegister erpRegister;
 
     @RequestMapping(value = "/auditedOrderSyncs", method = RequestMethod.GET)
     private String orderShipSyncs(
@@ -71,5 +84,33 @@ public class AuditOrderLogController {
         model.addAttribute("syncId", syncId);
 
         return "logs/audited_order_sync_infos";
+    }
+
+    @RequestMapping(value = "/reSyncAuditedOrder")
+    @ResponseBody
+    private ApiResult resyncAuditedOrder(long id) {
+        AuditedOrderSyncLog auditedOrderSyncLog = auditedOrderSyncLogService.findOne(id);
+        if (auditedOrderSyncLog == null) {
+            return ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, "未找到该同步日志");
+        }
+
+        List<String> orderIds = JSON.parseArray(auditedOrderSyncLog.getOrderJson(), String.class);
+        ERPUserInfo erpUserInfo = new ERPUserInfo(auditedOrderSyncLog.getUserType(), auditedOrderSyncLog.getCustomerId());
+        ERPInfo erpInfo = new ERPInfo(auditedOrderSyncLog.getProviderType(), auditedOrderSyncLog.getErpSysData());
+        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+
+        PushAuditedOrderEvent pushAuditedOrderEvent = new PushAuditedOrderEvent();
+        pushAuditedOrderEvent.setOrderIds(orderIds);
+        pushAuditedOrderEvent.setErpUserInfo(erpUserInfo);
+        pushAuditedOrderEvent.setErpInfo(erpInfo);
+
+        EventResult eventResult = erpUserHandler.handleEvent(pushAuditedOrderEvent);
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            auditedOrderSyncLog.setAuditedSyncStatus(OrderSyncStatus.AuditedSyncStatus.SYNC_SUCCESS);
+            auditedOrderSyncLogService.save(auditedOrderSyncLog);
+            return ApiResult.resultWith(ResultCode.SUCCESS);
+        } else {
+            return ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST);
+        }
     }
 }

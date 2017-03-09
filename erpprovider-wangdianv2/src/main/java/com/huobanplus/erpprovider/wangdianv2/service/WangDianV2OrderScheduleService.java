@@ -303,8 +303,7 @@ public class WangDianV2OrderScheduleService {
                         totalCount = firstQueryResp.getInteger("total_count");
                         JSONArray orderArray = firstQueryResp.getJSONArray("trades");
 
-                        // convert to delivery order
-                        List<String> orderIds = convert2AuditedOrderList(orderArray, sysData); // TODO: 2017-03-07
+                        List<String> orderIds = convert2AuditedOrderList(orderArray, sysData);
                         PushAuditedOrderEvent pushAuditedOrderEvent = new PushAuditedOrderEvent();
                         pushAuditedOrderEvent.setErpUserInfo(erpUserInfo);
                         pushAuditedOrderEvent.setErpUserInfo(erpUserInfo);
@@ -340,7 +339,6 @@ public class WangDianV2OrderScheduleService {
                                     JSONObject nextQueryResp = (JSONObject) firstQueryEvent.getData();
                                     JSONArray nextOrderArray = nextQueryResp.getJSONArray("trades");
 
-                                    // convert to delivery order
                                     orderIds = convert2AuditedOrderList(nextOrderArray, sysData);
                                     if (orderIds.size() > 0) {
                                         auditedOrders.addAll(orderIds);
@@ -368,6 +366,7 @@ public class WangDianV2OrderScheduleService {
                         auditedOrderSyncLog.setTotalCount(totalCount);
                         auditedOrderSyncLog.setSyncTime(now);
                         auditedOrderSyncLog.setOrderJson(JSON.toJSONString(auditedOrders));
+                        auditedOrderSyncLog.setErpSysData(JSON.toJSONString(sysData));
                         if (successCount == 0) {
                             auditedOrderSyncLog.setAuditedSyncStatus(OrderSyncStatus.AuditedSyncStatus.SYNC_FAILURE);
                         }
