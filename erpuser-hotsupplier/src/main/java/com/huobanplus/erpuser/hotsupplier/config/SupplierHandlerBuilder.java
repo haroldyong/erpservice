@@ -13,10 +13,7 @@ import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailListEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetProductInfoEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.BatchDeliverEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushOrderListInfoEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.*;
 import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncChannelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.sync.SyncInventoryEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -68,6 +65,9 @@ public class SupplierHandlerBuilder implements ERPUserHandlerBuilder {
                     GetProductInfoEvent getProductInfoEvent = (GetProductInfoEvent) erpBaseEvent;
                     return goodHandler.obtainProductListInfo(getProductInfoEvent.getProductSearchInfo(), getProductInfoEvent.getErpUserInfo());
 
+                } else if (erpBaseEvent instanceof PushAuditedOrderEvent) {
+                    PushAuditedOrderEvent pushAuditedOrderEvent = (PushAuditedOrderEvent) erpBaseEvent;
+                    return orderHandler.pushAuditedOrderList(pushAuditedOrderEvent.getOrderIds(), pushAuditedOrderEvent.getErpUserInfo());
                 }
                 return null;
             };

@@ -79,4 +79,12 @@ public interface SupOrderHandler {
      * @return
      */
     EventResult syncChannelOrderList(List<Order> orderList, ERPUserInfo erpUserInfo);
+
+    /**
+     * 推送已审核单到平台
+     *
+     * @param orderIds
+     * @return
+     */
+    EventResult pushAuditedOrderList(List<String> orderIds, ERPUserInfo erpUserInfo);
 }
