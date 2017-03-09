@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpservice.datacenter.service.logs;
@@ -67,4 +67,6 @@ public interface OrderDetailSyncLogService {
                                                                   OrderSyncStatus.DetailSyncStatus syncStatus,
                                                                   ERPTypeEnum.ProviderType providerType,
                                                                   Date beginTime);
+
+    List<OrderDetailSyncLog> findBySyncStatus(OrderSyncStatus.DetailSyncStatus syncStatus);
 }

@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.sap.service;
@@ -37,7 +37,7 @@ public class SAPScheduleServiceTest extends SAPTestBase {
 //    private SAPOrderHandler sapOrderHandler;
 
     @Autowired
-    private ScheduledService scheduledService;
+    private SapScheduledService sapScheduledService;
 
 
     private Order mockOrder;
@@ -80,12 +80,12 @@ public class SAPScheduleServiceTest extends SAPTestBase {
 
     @Test
     public void assertNotNull() {
-        Assert.assertNotNull(scheduledService);
+        Assert.assertNotNull(sapScheduledService);
     }
 
     @Test
     public void testSyncOrderShip() {
-        scheduledService.syncOrderShip();
+        sapScheduledService.syncOrderShip();
     }
 
 

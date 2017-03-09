@@ -53,8 +53,8 @@ import java.util.List;
  * Created by allan on 12/24/15.
  */
 @Service
-public class ScheduledService {
-    private static final Log log = LogFactory.getLog(ScheduledService.class);
+public class SapScheduledService {
+    private static final Log log = LogFactory.getLog(SapScheduledService.class);
 
     @Autowired
     private ERPDetailConfigService detailConfigService;
