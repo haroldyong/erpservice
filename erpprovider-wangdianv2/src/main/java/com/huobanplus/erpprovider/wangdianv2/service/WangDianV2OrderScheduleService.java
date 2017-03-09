@@ -295,7 +295,7 @@ public class WangDianV2OrderScheduleService {
                     wangDianV2OrderSearch.setEndTime(nowStr);
                     wangDianV2OrderSearch.setPageNo(currentPageIndex);
                     wangDianV2OrderSearch.setPageSize(WangDianV2Constant.PAGE_SIZE);
-//                    wangDianV2OrderSearch.setStatus(55);// 已审核订单
+                    wangDianV2OrderSearch.setStatus(55);// 已审核订单
 
                     EventResult firstQueryEvent = wangDianV2OrderHandler.queryOrder(wangDianV2OrderSearch, sysData);
                     if (firstQueryEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {

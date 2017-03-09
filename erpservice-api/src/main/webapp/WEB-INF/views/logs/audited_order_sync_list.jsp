@@ -148,7 +148,7 @@
                                     <c:if test="${log.auditedSyncStatus.code!=0}">
                                         <a href="javascript:reSyncShip(${log.id})">重新同步</a>
                                     </c:if>
-                                    <a href="<c:url value="/erpService/platform/auditedOrderSyncInfoList?erpUserType=${erpUserType}&syncId=${log.id}" />">查看同步日志</a>
+                                        <%--<a href="<c:url value="/erpService/platform/auditedOrderSyncInfoList?erpUserType=${erpUserType}&syncId=${log.id}" />">查看同步日志</a>--%>
                                 </td>
                             </tr>
                         </c:forEach>
