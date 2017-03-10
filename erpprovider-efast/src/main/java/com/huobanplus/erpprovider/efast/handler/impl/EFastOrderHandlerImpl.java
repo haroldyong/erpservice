@@ -50,7 +50,7 @@ public class EFastOrderHandlerImpl implements EFastOrderHandler {
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
-        log.info("efast order:" + pushNewOrderEvent.getOrderInfoJson());
+//        log.info("efast order:" + pushNewOrderEvent.getOrderInfoJson());
 
         Date now = new Date();
         Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);

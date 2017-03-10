@@ -201,12 +201,6 @@ public class SurSungSyncChannelOrder {
                     }
 
 
-                    log.info("\n**************sursung channel order sync****************");
-                    log.info("totalAmount:" + totalSyncNum);
-                    log.info("failed:" + failedOrders.size());
-                    log.info("success:" + (totalSyncNum - failedOrders.size()));
-                    log.info("\n******************************");
-
                     // 记录日志
                     syncLog(failedOrders, totalSyncNum - failedOrders.size(), totalSyncNum, erpUserInfo, erpInfo);
 

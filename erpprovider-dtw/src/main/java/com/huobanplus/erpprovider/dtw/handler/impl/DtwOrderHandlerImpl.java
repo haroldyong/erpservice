@@ -70,7 +70,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
         try {
             Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-            log.info("orderJson:" + pushNewOrderEvent.getOrderInfoJson());
+//            log.info("orderJson:" + pushNewOrderEvent.getOrderInfoJson());
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
             DtwSysData dtwSysData = JSON.parseObject(erpInfo.getSysDataJson(), DtwSysData.class);
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();

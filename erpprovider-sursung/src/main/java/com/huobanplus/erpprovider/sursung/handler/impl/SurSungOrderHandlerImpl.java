@@ -76,7 +76,7 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
 
         Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-        log.info("order:" + pushNewOrderEvent.getOrderInfoJson());
+//        log.info("order:" + pushNewOrderEvent.getOrderInfoJson());
         Date now = new Date();
         int time = (int) (now.getTime() / 1000);
 
