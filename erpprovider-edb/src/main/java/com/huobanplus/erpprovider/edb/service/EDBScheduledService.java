@@ -176,7 +176,8 @@ public class EDBScheduledService {
      * 结束时间均为同步开始时间
      * 每个一小时进行一次同步
      */
-    @Scheduled(cron = "0 0 */1 * * ?")
+//    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 */30 * * * ?")
     @Transactional
     public void syncOrderShip() {
         Date now = new Date();
