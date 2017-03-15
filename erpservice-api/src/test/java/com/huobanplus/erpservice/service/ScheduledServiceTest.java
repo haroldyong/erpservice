@@ -16,6 +16,9 @@ import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,5 +74,17 @@ public class ScheduledServiceTest {
     @Test
     public void testRePushFailedOrder() throws Exception {
 
+    }
+
+    @Autowired
+    private HBOrderHandler orderHandler;
+
+    @Test
+    public void testGetOrderListInfo() throws Exception {
+        OrderSearchInfo orderSearchInfo = new OrderSearchInfo();
+        orderSearchInfo.setPageIndex(1);
+        orderSearchInfo.setPageSize(10);
+        ERPUserInfo userInfo = new ERPUserInfo(ERPTypeEnum.UserType.HUOBAN_MALL, 296);
+        orderHandler.obtainOrderList(orderSearchInfo, userInfo);
     }
 }

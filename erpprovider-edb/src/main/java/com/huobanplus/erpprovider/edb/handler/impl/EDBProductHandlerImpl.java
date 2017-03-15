@@ -50,6 +50,7 @@ public class EDBProductHandlerImpl extends BaseHandler implements EDBProductHand
             requestData.put("sign", getSign(signMap, sysData));
 
             HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), requestData);
+
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent()).getJSONObject("Success");
                 if (result != null) {

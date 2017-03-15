@@ -21,6 +21,8 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpuser.huobanmall.common.ApiResult;
 import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -34,6 +36,7 @@ import java.util.*;
  */
 @Service
 public class HBOrderHandlerImpl implements HBOrderHandler {
+    private static final Log log = LogFactory.getLog(HBOrderHandlerImpl.class);
 
     @Override
     @SuppressWarnings("Duplicates")
@@ -109,6 +112,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             Map<String, Object> requestMap = new HashMap<>(signMap);
             requestMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderList", requestMap);
+            log.info("getOrderList content----->" + httpResult.getHttpContent());
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult<OrderListInfo> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<OrderListInfo>>() {
                 });

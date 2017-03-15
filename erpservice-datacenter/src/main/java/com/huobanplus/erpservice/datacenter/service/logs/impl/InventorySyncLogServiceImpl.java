@@ -17,6 +17,8 @@ import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
 import com.huobanplus.erpservice.datacenter.repository.logs.InventorySyncLogRepository;
 import com.huobanplus.erpservice.datacenter.service.logs.InventorySyncDetailService;
 import com.huobanplus.erpservice.datacenter.service.logs.InventorySyncLogService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +38,8 @@ import java.util.List;
  */
 @Service
 public class InventorySyncLogServiceImpl implements InventorySyncLogService {
+    private static final Log log = LogFactory.getLog(InventorySyncLogServiceImpl.class);
+
     @Autowired
     private InventorySyncLogRepository inventorySyncLogRepository;
     @Autowired
@@ -100,7 +104,6 @@ public class InventorySyncLogServiceImpl implements InventorySyncLogService {
             inventorySyncLog.setInventorySyncStatus(OrderSyncStatus.InventorySyncStatus.SYNC_SUCCESS);
         }
         inventorySyncLog = this.save(inventorySyncLog);
-
         inventorySyncDetailService.batchSaveInventoryInfo(proInventoryInfoList, inventorySyncLog);
     }
 }
