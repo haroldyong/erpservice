@@ -118,7 +118,7 @@ public class EDBSyncInventory {
                             if (totalCount % EDBConstant.PAGE_SIZE != 0) {
                                 totalPage++;
                             }
-                            log.info("totalPage----------->" + totalPage);
+                            log.info("totalPage----------->" + totalPage + "--->totalCount-->" + totalCount);
                             if (totalPage > 1) {
                                 currentPageIndex++;
                                 for (int index = currentPageIndex; index <= totalPage; index++) {
@@ -126,7 +126,8 @@ public class EDBSyncInventory {
                                     EventResult nextEventResult = productHandler.getProInventoryInfo(sysData, stockSearch);
 
                                     if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                        List<ProInventoryInfo> nextResult = toProInventoryInfo(proStockInfoList);
+                                        List<EDBProStockInfo> nextEdbProStockInfos = (List<EDBProStockInfo>) nextEventResult.getData();
+                                        List<ProInventoryInfo> nextResult = toProInventoryInfo(nextEdbProStockInfos);
                                         syncInventoryEvent.setInventoryInfoList(nextResult);
 
                                         EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);

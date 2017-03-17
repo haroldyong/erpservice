@@ -176,7 +176,8 @@ public class EDBScheduledService {
      * 结束时间均为同步开始时间
      * 每个一小时进行一次同步
      */
-    @Scheduled(cron = "0 0 */1 * * ?")
+//    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 */30 * * * ?")
     @Transactional
     public void syncOrderShip() {
         Date now = new Date();
@@ -231,8 +232,11 @@ public class EDBScheduledService {
                             batchDeliverEvent.setOrderDeliveryInfoList(first);
                             ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
                             EventResult firstSyncResult = erpUserHandler.handleEvent(batchDeliverEvent);
+                            log.info("fistsyncresult-->" + firstSyncResult.getResultCode() + "--->" + firstSyncResult.getResultMsg());
                             if (firstSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                log.info("firstSyncResult success");
                                 BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
+                                log.info("is this place error?");
                                 failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
                                 successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
                             }
@@ -259,9 +263,9 @@ public class EDBScheduledService {
                                         EventResult nextSyncResult = erpUserHandler.handleEvent(batchDeliverEvent); //使用者同步
 
                                         if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                            BatchDeliverResult firstBatchDeliverResult = (BatchDeliverResult) firstSyncResult.getData();
-                                            failedOrders.addAll(firstBatchDeliverResult.getFailedOrders());
-                                            successOrders.addAll(firstBatchDeliverResult.getSuccessOrders());
+                                            BatchDeliverResult nextBatchDeliverResult = (BatchDeliverResult) nextSyncResult.getData();
+                                            failedOrders.addAll(nextBatchDeliverResult.getFailedOrders());
+                                            successOrders.addAll(nextBatchDeliverResult.getSuccessOrders());
                                         }
                                     }
                                 }
@@ -301,8 +305,6 @@ public class EDBScheduledService {
                 } catch (Exception e) {
                     log.error(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "发生错误", e);
                 }
-            } else {
-                log.info("edb customer " + detailConfig.getCustomerId() + " not open sync delivery");
             }
         }
         log.info("edb ship sync end");

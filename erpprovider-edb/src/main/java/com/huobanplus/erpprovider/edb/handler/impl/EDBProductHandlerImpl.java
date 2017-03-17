@@ -48,7 +48,6 @@ public class EDBProductHandlerImpl extends BaseHandler implements EDBProductHand
             requestData.put("store_id", storeSearch.getStoreId());
             Map<String, Object> signMap = new TreeMap<>(requestData);
             requestData.put("sign", getSign(signMap, sysData));
-
             HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), requestData);
 
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {

@@ -112,7 +112,6 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             Map<String, Object> requestMap = new HashMap<>(signMap);
             requestMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderList", requestMap);
-            log.info("getOrderList content----->" + httpResult.getHttpContent());
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult<OrderListInfo> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<OrderListInfo>>() {
                 });
@@ -193,6 +192,8 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult<BatchDeliverResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchDeliverResult>>() {
                 });
+                log.info("json cast successfully");
+                log.info("api result data-->" + apiResult.getData() + "api reuslt data type-->" + apiResult.getData().getClass().getTypeName());
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }
