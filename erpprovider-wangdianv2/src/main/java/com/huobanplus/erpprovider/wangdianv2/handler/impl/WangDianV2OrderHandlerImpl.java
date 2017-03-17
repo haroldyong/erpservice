@@ -57,7 +57,7 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
         try {
             Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-            log.info("wangdianv2 request order json:" + pushNewOrderEvent.getOrderInfoJson());
+//            log.info("wangdianv2 request order json:" + pushNewOrderEvent.getOrderInfoJson());
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
             WangDianV2SysData wangDianV2SysData = JSON.parseObject(erpInfo.getSysDataJson(), WangDianV2SysData.class);
@@ -235,7 +235,6 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
 
             String sign = WangDianV2SignBuilder.buildSign(requestMap, wangDianV2SysData.getAppSecret());
             requestMap.put("sign", sign);
-            log.info("order query request sign:" + sign);
 
             HttpResult httpResult = HttpClientUtil.getInstance().post(wangDianV2SysData.getRequestUrl() + "/openapi2/trade_query.php", requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {

@@ -17,7 +17,7 @@ import lombok.Data;
  */
 @Data
 public class EDBProStockInfo {
-    @JSONField(name = "product_no")
+    @JSONField(name = "bar_code")
     private String productBn;
     @JSONField(name = "product_name")
     private String productName;

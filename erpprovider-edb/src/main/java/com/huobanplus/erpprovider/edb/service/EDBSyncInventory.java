@@ -53,7 +53,8 @@ public class EDBSyncInventory {
     @Autowired
     private ERPRegister erpRegister;
 
-    @Scheduled(cron = "0 0 */1 * * ?")
+    //    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 */30 * * * ?")
     @Transactional
     public void syncInventoryForEDB() {
         Date now = new Date();
@@ -117,19 +118,22 @@ public class EDBSyncInventory {
                             if (totalCount % EDBConstant.PAGE_SIZE != 0) {
                                 totalPage++;
                             }
-
+                            log.info("totalPage----------->" + totalPage + "--->totalCount-->" + totalCount);
                             if (totalPage > 1) {
                                 currentPageIndex++;
                                 for (int index = currentPageIndex; index <= totalPage; index++) {
                                     stockSearch.setPageIndex(index);
                                     EventResult nextEventResult = productHandler.getProInventoryInfo(sysData, stockSearch);
+
                                     if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                        List<ProInventoryInfo> nextResult = toProInventoryInfo(proStockInfoList);
+                                        List<EDBProStockInfo> nextEdbProStockInfos = (List<EDBProStockInfo>) nextEventResult.getData();
+                                        List<ProInventoryInfo> nextResult = toProInventoryInfo(nextEdbProStockInfos);
                                         syncInventoryEvent.setInventoryInfoList(nextResult);
 
                                         EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
+
                                         if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                            failedList.addAll((List<ProInventoryInfo>) firstSyncResult.getData());
+                                            failedList.addAll((List<ProInventoryInfo>) nextSyncResult.getData());
                                         } else {
                                             log.info("库存同步失败--" + nextEventResult.getResultMsg());
                                             return;
@@ -143,7 +147,7 @@ public class EDBSyncInventory {
                         }
                     }
                 }
-                log.info("inventory sync totalCount------->" + totalCount);
+                log.info("failedCount--->" + failedList.size());
                 if (totalCount > 0) {
                     inventorySyncLogService.saveLogAndDetail(
                             erpUserInfo.getErpUserType(),
