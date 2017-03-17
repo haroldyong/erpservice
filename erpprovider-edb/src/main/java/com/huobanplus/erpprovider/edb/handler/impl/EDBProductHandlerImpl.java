@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb.handler.impl;
@@ -50,6 +50,7 @@ public class EDBProductHandlerImpl extends BaseHandler implements EDBProductHand
             requestData.put("sign", getSign(signMap, sysData));
 
             HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), requestData);
+
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject result = JSON.parseObject(httpResult.getHttpContent()).getJSONObject("Success");
                 if (result != null) {

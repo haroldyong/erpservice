@@ -143,6 +143,7 @@ public class EDBSyncInventory {
                         }
                     }
                 }
+                log.info("inventory sync totalCount------->" + totalCount);
                 if (totalCount > 0) {
                     inventorySyncLogService.saveLogAndDetail(
                             erpUserInfo.getErpUserType(),
