@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb.service;
@@ -177,7 +177,7 @@ public class EDBScheduledService {
      * 每个一小时进行一次同步
      */
 //    @Scheduled(cron = "0 0 */1 * * ?")
-    @Scheduled(cron = "0 */30 * * * ?")
+    @Scheduled(cron = "0 */10 * * * ?")
     @Transactional
     public void syncOrderShip() {
         Date now = new Date();
