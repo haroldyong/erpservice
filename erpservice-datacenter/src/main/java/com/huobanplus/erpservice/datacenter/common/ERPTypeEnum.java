@@ -28,7 +28,8 @@ public interface ERPTypeEnum {
         SURSUNG(9, "聚水潭ERP"),
         EDI(10, "杭州能容物联网科技（尽请期待）"),
         WANGDIAN(11, "旺店通"),
-        BAISONE3(12, "百胜E3");;
+        BAISONE3(12, "百胜E3"),
+        WANGDIANV2(13, "旺店通V2");
 
         private int code;
         private String name;

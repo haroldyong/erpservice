@@ -55,7 +55,7 @@ public class WangDianOrderHandlerImpl implements WangDianOrderHandler {
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
-        log.info("order:" + pushNewOrderEvent.getOrderInfoJson());
+//        log.info("order:" + pushNewOrderEvent.getOrderInfoJson());
 
         Date now = new Date();
         Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);

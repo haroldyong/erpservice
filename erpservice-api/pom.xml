@@ -4,7 +4,7 @@
   ~
   ~ (c) Copyright Hangzhou Hot Technology Co., Ltd.
   ~ Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
-  ~ 2013-2016. All rights reserved.
+  ~ 2013-2017. All rights reserved.
   -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
@@ -159,6 +159,12 @@
             <artifactId>erpprovider-baison</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>com.huobanplus.erpservice</groupId>-->
+        <!--<artifactId>erpprovider-wangdianv2</artifactId>-->
+        <!--<version>1.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>

@@ -21,6 +21,8 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpuser.huobanmall.common.ApiResult;
 import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -34,6 +36,7 @@ import java.util.*;
  */
 @Service
 public class HBOrderHandlerImpl implements HBOrderHandler {
+    private static final Log log = LogFactory.getLog(HBOrderHandlerImpl.class);
 
     @Override
     @SuppressWarnings("Duplicates")
@@ -189,6 +192,8 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult<BatchDeliverResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchDeliverResult>>() {
                 });
+                log.info("json cast successfully");
+                log.info("api result data-->" + apiResult.getData() + "api reuslt data type-->" + apiResult.getData().getClass().getTypeName());
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }
@@ -218,6 +223,34 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
 
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult<BatchPushOrderResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchPushOrderResult>>() {
+                });
+                if (apiResult.getCode() == 200) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public EventResult pushAuditedOrderList(List<String> orderIds, ERPUserInfo erpUserInfo) {
+        Map<String, Object> requestMap = new TreeMap<>();
+        try {
+            requestMap.put("orderListJson", JSON.toJSONString(orderIds));
+            requestMap.put("customerId", erpUserInfo.getCustomerId());
+            requestMap.put("timestamp", new Date().getTime());
+
+            String sign = SignBuilder.buildSignIgnoreEmpty(requestMap, null, HBConstant.SECRET_KEY);
+            requestMap.put("sign", sign);
+
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderChecked", requestMap);
+
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                ApiResult<BatchAuditedOrderResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchAuditedOrderResult>>() {
                 });
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());

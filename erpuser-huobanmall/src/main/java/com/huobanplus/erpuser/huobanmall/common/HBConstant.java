@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpuser.huobanmall.common;
@@ -57,6 +57,6 @@ public class HBConstant {
 
     @Autowired
     private void initConstant(Environment environment) {
-        REQUEST_URL = environment.getProperty("huobanmall.pushUrl", "http://mallapi.51flashmall.com");
+        REQUEST_URL = environment.getProperty("huobanmall.pushUrl", "http://mallapi.xingzhuangmall.com");
     }
 }

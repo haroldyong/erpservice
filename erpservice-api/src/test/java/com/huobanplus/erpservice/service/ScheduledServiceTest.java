@@ -10,12 +10,18 @@
 package com.huobanplus.erpservice.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.service.EDBSyncInventory;
 import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
+import com.huobanplus.erpservice.datacenter.model.OrderListInfo;
+import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
+import com.huobanplus.erpuser.huobanmall.common.ApiResult;
+import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +47,8 @@ public class ScheduledServiceTest {
 
     @Autowired
     private EDBSyncInventory syncInventory;
+    @Autowired
+    private HBOrderHandler orderHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -71,5 +79,32 @@ public class ScheduledServiceTest {
     @Test
     public void testRePushFailedOrder() throws Exception {
 
+    }
+
+    @Test
+    public void testGetOrderListInfo() throws Exception {
+//        OrderSearchInfo orderSearchInfo = new OrderSearchInfo();
+//        orderSearchInfo.setPageIndex(1);
+//        orderSearchInfo.setPageSize(10);
+//        ERPUserInfo userInfo = new ERPUserInfo(ERPTypeEnum.UserType.HUOBAN_MALL, 296);
+//        orderHandler.obtainOrderList(orderSearchInfo, userInfo);
+
+
+        String testStr = "";
+
+        ApiResult<OrderListInfo> apiResult = JSON.parseObject(testStr, new TypeReference<ApiResult<OrderListInfo>>() {
+        });
+
+        String test = "";
+    }
+
+    @Test
+    public void testObtainOrderList() throws Exception {
+        OrderSearchInfo orderSearchInfo = new OrderSearchInfo();
+        orderSearchInfo.setBeginTime("2017-03-03 13:06:35");
+        orderSearchInfo.setEndTime("2017-03-18 13:06:35");
+        orderSearchInfo.setPageIndex(1);
+        orderSearchInfo.setPageSize(200);
+        orderHandler.obtainOrderList(orderSearchInfo, new ERPUserInfo(ERPTypeEnum.UserType.HUOBAN_SUPPLIER, 7630));
     }
 }
