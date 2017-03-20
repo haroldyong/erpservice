@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpservice.datacenter.model;
@@ -174,7 +174,7 @@ public class Order extends BaseInfo {
 
 
     /**
-     *  订单来源店铺code
+     * 订单来源店铺code
      */
     private int sourceShop;
 
@@ -182,6 +182,10 @@ public class Order extends BaseInfo {
      * 订单推送失败信息
      */
     private String errorMessage;
+    /**
+     * 已支付金额
+     */
+    private double payedAmount;
 
     /**
      * 订单明细

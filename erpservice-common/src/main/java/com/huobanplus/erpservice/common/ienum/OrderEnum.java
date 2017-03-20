@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpservice.common.ienum;
@@ -123,6 +123,7 @@ public interface OrderEnum {
         ALIPAY_MOBILE(1, "支付宝手机网页即时到账"),
         ALIPAY_MOBILE_WEB(11, "支付宝移动网站支付"),
         WEIXINPAY(2, "微信支付"),
+        PAY_ON_DELIVERY(6, "货到付款"),
         ALIPAY_PC(7, "支付宝网页即时到账"),
         REDEMPTION(8, "提货券"),
         WEIXINPAY_V3(9, "微信支付V3"),
@@ -169,6 +170,39 @@ public interface OrderEnum {
 
 
         AuditStatus(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        @Override
+        public int getCode() {
+            return this.code;
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
+    }
+
+    /**
+     * 售后状态
+     */
+    enum AfterSalesStatus implements ICommonEnum {
+        NORMAL(-1, "正常"),
+        APPLYING(0, "售后申请中"),
+        REFUNDING(1, "退款中"),
+        REFUSED(2, "拒绝售后"),
+        REFUND_SUCCESS(3, "退款成功"),
+        CANCELED(4, "售后已取消"),
+        WAITING_RETURN(5, "等待买家退货"),
+        WAITING_CONFIRM_RETURN(6, "买家退货等待确认");
+
+        private int code;
+        private String name;
+
+
+        AfterSalesStatus(int code, String name) {
             this.code = code;
             this.name = name;
         }

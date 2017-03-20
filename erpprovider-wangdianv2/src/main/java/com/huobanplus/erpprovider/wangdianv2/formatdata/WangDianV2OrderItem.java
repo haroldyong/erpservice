@@ -57,13 +57,13 @@ public class WangDianV2OrderItem {
      * 平台上货品的ID(货品表主键)goods_id和spec_id不能同时为空
      */
     @JSONField(name = "goods_id")
-    private String goodsId;
+    private int goodsId;
 
     /**
      * 平台上规格的ID(规格表主键)goods_id和spec_id不能同时为空
      */
     @JSONField(name = "spec_id")
-    private String specId;
+    private int specId;
 
     /**
      * 货品编码(商家编码)

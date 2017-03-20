@@ -12,6 +12,7 @@ package com.huobanplus.erpprovider.wangdianv2.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.huobanplus.erpprovider.wangdianv2.common.WangDianV2Enum;
 import com.huobanplus.erpprovider.wangdianv2.common.WangDianV2SysData;
 import com.huobanplus.erpprovider.wangdianv2.formatdata.WangDianV2Order;
 import com.huobanplus.erpprovider.wangdianv2.formatdata.WangDianV2OrderItem;
@@ -20,6 +21,8 @@ import com.huobanplus.erpprovider.wangdianv2.search.WangDianV2OrderSearch;
 import com.huobanplus.erpprovider.wangdianv2.util.WangDianV2SignBuilder;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
+import com.huobanplus.erpservice.common.ienum.EnumHelper;
+import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
@@ -35,6 +38,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -112,14 +116,17 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
     }
 
     private WangDianV2Order convert2ErpOrder(Order order, WangDianV2SysData wangDianV2SysData) {
+        OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
+
         WangDianV2Order wangDianV2Order = new WangDianV2Order();
 
         wangDianV2Order.setTid(order.getOrderId());
-        wangDianV2Order.setTradeStatus(30);//已付款待发货
-        wangDianV2Order.setPayStatus(2);// 已付款
-        wangDianV2Order.setDeliveryTerm(1);// 款到发货
+        wangDianV2Order.setTradeStatus(WangDianV2Enum.TradeStatus.toWangDianV2(order.getPayType(), order.getPayStatus()).getCode());
+        wangDianV2Order.setPayStatus(WangDianV2Enum.PayStatus.toWangDianV2(order.getPayStatus()).getCode());// 已付款
+//        wangDianV2Order.setDeliveryTerm(paymentOptions == OrderEnum.PaymentOptions.PAY_ON_DELIVERY ? 2 : 1);// 款到发货
         wangDianV2Order.setTradeTime(order.getCreateTime());
         wangDianV2Order.setPayTime(order.getPayTime());
+        wangDianV2Order.setPayTime(StringUtils.isEmpty(order.getPayTime()) ? "0000-00-00 00:00:00" : order.getPayTime());
         wangDianV2Order.setBuyerNick(order.getUserNickname());
         wangDianV2Order.setBuyerEmail("");
         wangDianV2Order.setPayId(order.getPayNumber());
@@ -129,13 +136,21 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
         wangDianV2Order.setReceiverTelno(order.getShipTel());
         wangDianV2Order.setReceiverZip(order.getShipZip());
         wangDianV2Order.setLogisticsType(-1);
-        wangDianV2Order.setInvoiceType(0);
-        wangDianV2Order.setInvoiceTitle("");
+        wangDianV2Order.setInvoiceType(order.getIsTax());
+        wangDianV2Order.setInvoiceTitle(order.getTaxCompany());
         wangDianV2Order.setBuyerMessage(order.getMemo());
         wangDianV2Order.setSellerMemo(order.getRemark());
-        wangDianV2Order.setSellerFlag(0);
+        wangDianV2Order.setSellerFlag(0);// TODO: 20/03/2017 客服标旗,对应伙伴商城的
         wangDianV2Order.setPostAmount(order.getCostFreight());
-        wangDianV2Order.setCodeAmount(0.0);
+        if (paymentOptions == OrderEnum.PaymentOptions.PAY_ON_DELIVERY) {
+            wangDianV2Order.setDeliveryTerm(2);
+            wangDianV2Order.setCodeAmount(order.getFinalAmount());
+        } else {
+            wangDianV2Order.setDeliveryTerm(1);
+            wangDianV2Order.setCodeAmount(0.00);
+        }
+        wangDianV2Order.setPaid(order.getPayedAmount());
+//        wangDianV2Order.setCodeAmount(0.0);
 //        wangDianV2Order.setExtCodFee("");
 //        wangDianV2Order.setOtherAmount("");
         wangDianV2Order.setPaid(order.getFinalAmount());
@@ -157,14 +172,14 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
             wangDianV2OrderItem.setOid(orderItem.getOrderId() + count);
             wangDianV2OrderItem.setNum(orderItem.getNum());
             wangDianV2OrderItem.setPrice(orderItem.getPrice());
-            wangDianV2OrderItem.setStatus(30);// 待发货
-            wangDianV2OrderItem.setRefundStatus(0);//无退款
-            wangDianV2OrderItem.setGoodsId(orderItem.getGoodBn());// TODO: 2017-02-24
-            wangDianV2OrderItem.setSpecId(orderItem.getProductBn());// TODO: 2017-02-24
+            wangDianV2OrderItem.setStatus(wangDianV2Order.getTradeStatus()); // TODO: 20/03/2017 订单货品需要根据状态
+            wangDianV2OrderItem.setRefundStatus(WangDianV2Enum.RefundStatus.toWangDianV2(orderItem.getRefundStatus()).getCode());//无退款
+            wangDianV2OrderItem.setGoodsId(orderItem.getGoodId());
+            wangDianV2OrderItem.setSpecId(orderItem.getProductId());
             wangDianV2OrderItem.setGoodsNo(orderItem.getGoodBn());
             wangDianV2OrderItem.setSpecNo(orderItem.getProductBn());
-            wangDianV2OrderItem.setGoodsName(orderItem.getName());// TODO: 2017-02-24
-            wangDianV2OrderItem.setSpecName(orderItem.getName());
+            wangDianV2OrderItem.setGoodsName(orderItem.getName());
+            wangDianV2OrderItem.setSpecName(orderItem.getStandard());
             wangDianV2OrderItem.setAdjustAmount("0");
             wangDianV2OrderItem.setDiscount("0");
             wangDianV2OrderItem.setShareDiscount("0");
@@ -172,7 +187,6 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
 
             wangDianV2OrderItems.add(wangDianV2OrderItem);
         }
-        ;
 
         wangDianV2Order.setOrderList(wangDianV2OrderItems);
         return wangDianV2Order;
