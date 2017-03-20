@@ -13,8 +13,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.wangdianv2.common.WangDianV2SysData;
-import com.huobanplus.erpprovider.wangdianv2.formatdata.WangDianV2Order;
-import com.huobanplus.erpprovider.wangdianv2.formatdata.WangDianV2OrderItem;
+import com.huobanplus.erpprovider.wangdianv2.formatdata.WangDianV2Order1;
+import com.huobanplus.erpprovider.wangdianv2.formatdata.WangDianV2OrderItem1;
 import com.huobanplus.erpprovider.wangdianv2.handler.WangDianV2OrderHandler;
 import com.huobanplus.erpprovider.wangdianv2.search.WangDianV2OrderSearch;
 import com.huobanplus.erpprovider.wangdianv2.util.WangDianV2SignBuilder;
@@ -74,7 +74,7 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
             orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
             orderDetailSyncLog.setSyncTime(now);
 
-            WangDianV2Order wangDianV2Order = convert2ErpOrder(order, wangDianV2SysData);
+            WangDianV2Order1 wangDianV2Order = convert2ErpOrder(order, wangDianV2SysData);
             JSONArray orderArray = new JSONArray();
             orderArray.add(wangDianV2Order);
 
@@ -111,8 +111,8 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
         }
     }
 
-    private WangDianV2Order convert2ErpOrder(Order order, WangDianV2SysData wangDianV2SysData) {
-        WangDianV2Order wangDianV2Order = new WangDianV2Order();
+    private WangDianV2Order1 convert2ErpOrder(Order order, WangDianV2SysData wangDianV2SysData) {
+        WangDianV2Order1 wangDianV2Order = new WangDianV2Order1();
 
         wangDianV2Order.setTid(order.getOrderId());
         wangDianV2Order.setTradeStatus(30);//已付款待发货
@@ -148,12 +148,12 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
         wangDianV2Order.setReceiverAddress(order.getShipAddr());
 
         List<OrderItem> orderItems = order.getOrderItems();
-        List<WangDianV2OrderItem> wangDianV2OrderItems = new ArrayList<>();
+        List<WangDianV2OrderItem1> wangDianV2OrderItems = new ArrayList<>();
 
         int count = 0;
         for (OrderItem orderItem : orderItems) {
 
-            WangDianV2OrderItem wangDianV2OrderItem = new WangDianV2OrderItem();
+            WangDianV2OrderItem1 wangDianV2OrderItem = new WangDianV2OrderItem1();
             wangDianV2OrderItem.setOid(orderItem.getOrderId() + count);
             wangDianV2OrderItem.setNum(orderItem.getNum());
             wangDianV2OrderItem.setPrice(orderItem.getPrice());
