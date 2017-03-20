@@ -99,7 +99,6 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
             EventResult eventResult = orderPush(requestMap, wangDianV2SysData);
             if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
-                log.info("wangdianv2 order push success");
             } else {
                 orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
                 orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
