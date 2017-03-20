@@ -4,13 +4,15 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpuser.huobanmall.handler.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.util.SignBuilder;
@@ -37,6 +39,8 @@ import java.util.*;
 @Service
 public class HBOrderHandlerImpl implements HBOrderHandler {
     private static final Log log = LogFactory.getLog(HBOrderHandlerImpl.class);
+
+    private final Gson gson = new Gson();
 
     @Override
     @SuppressWarnings("Duplicates")
@@ -113,8 +117,11 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             requestMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderList", requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                ApiResult<OrderListInfo> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<OrderListInfo>>() {
-                });
+//                ApiResult<OrderListInfo> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<OrderListInfo>>() {
+//                });
+                ApiResult<OrderListInfo> apiResult = gson.fromJson(httpResult.getHttpContent(), new TypeToken<ApiResult<OrderListInfo>>() {
+                }.getType());
+
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }
@@ -183,17 +190,22 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
     @Override
     public EventResult batchDeliver(List<OrderDeliveryInfo> orderDeliveryInfoList, ERPUserInfo erpUserInfo) {
         Map<String, Object> requestMap = new TreeMap<>();
-        requestMap.put("lstDeliveryInfoJson", JSON.toJSONString(orderDeliveryInfoList));
+        requestMap.put("lstDeliveryInfoJson", gson.toJson(orderDeliveryInfoList));
         requestMap.put("customerId", erpUserInfo.getCustomerId());
         try {
             String sign = SignBuilder.buildSignIgnoreEmpty(requestMap, null, HBConstant.SECRET_KEY);
             requestMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/BatchDeliver", requestMap);
+            log.info("http result content---->" + httpResult.getHttpContent());
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                ApiResult<BatchDeliverResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchDeliverResult>>() {
-                });
+//                ApiResult<BatchDeliverResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchDeliverResult>>() {
+//                });
+
+                ApiResult<BatchDeliverResult> apiResult = gson.fromJson(httpResult.getHttpContent(), new TypeToken<ApiResult<BatchDeliverResult>>() {
+                }.getType());
+
                 log.info("json cast successfully");
-                log.info("api result data-->" + apiResult.getData() + "api reuslt data type-->" + apiResult.getData().getClass().getTypeName());
+
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }
