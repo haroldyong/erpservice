@@ -13,7 +13,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
-public class WangDianV2OrderItem1 {
+public class WangDianV2OrderItem {
     /**
      * 平台订单货品表主键,子订单唯一标识
      */

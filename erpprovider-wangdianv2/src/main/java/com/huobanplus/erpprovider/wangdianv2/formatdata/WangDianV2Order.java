@@ -15,7 +15,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class WangDianV2Order1 {
+public class WangDianV2Order {
 
     /**
      * 平台订单编号
@@ -222,6 +222,6 @@ public class WangDianV2Order1 {
      * 子订单信息(货品信息)
      */
     @JSONField(name = "order_list")
-    private List<WangDianV2OrderItem1> orderList;
+    private List<WangDianV2OrderItem> orderList;
 
 }
