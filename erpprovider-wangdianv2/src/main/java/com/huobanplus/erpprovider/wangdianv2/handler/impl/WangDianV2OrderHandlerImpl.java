@@ -1,12 +1,10 @@
 /*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
  *
- *  * 版权所有:杭州火图科技有限公司
- *  * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼在地图中查看
- *  *
- *  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
- *  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- *  * 2013-2016. All rights reserved.
- *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.wangdianv2.handler.impl;
@@ -57,7 +55,6 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
         try {
             Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-//            log.info("wangdianv2 request order json:" + pushNewOrderEvent.getOrderInfoJson());
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
             WangDianV2SysData wangDianV2SysData = JSON.parseObject(erpInfo.getSysDataJson(), WangDianV2SysData.class);
