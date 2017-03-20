@@ -11,6 +11,8 @@ package com.huobanplus.erpservice.service;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.huobanplus.erpprovider.edb.bean.EDBSysData;
 import com.huobanplus.erpprovider.edb.service.EDBSyncInventory;
@@ -19,6 +21,7 @@ import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.model.BatchDeliverResult;
+import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderListInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -97,6 +100,10 @@ public class ScheduledServiceTest {
 
 //        ApiResult<OrderListInfo> apiResult = JSON.parseObject(testStr, new TypeReference<ApiResult<OrderListInfo>>() {
 //        });
+        Gson gson = new Gson();
+
+        JsonArray jsonArray = gson.fromJson(testStr, JsonObject.class).getAsJsonObject("data").getAsJsonArray("failedOrders");
+        gson.fromJson(jsonArray, Order.class);
 
         ApiResult<BatchDeliverResult> apiResult = new Gson().fromJson(testStr, new TypeToken<ApiResult<BatchDeliverResult>>() {
         }.getType());

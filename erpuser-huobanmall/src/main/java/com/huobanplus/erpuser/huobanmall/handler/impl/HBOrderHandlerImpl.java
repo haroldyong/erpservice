@@ -122,6 +122,8 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
                 ApiResult<OrderListInfo> apiResult = gson.fromJson(httpResult.getHttpContent(), new TypeToken<ApiResult<OrderListInfo>>() {
                 }.getType());
 
+                log.info("json cast successfully");
+
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }
@@ -148,8 +150,11 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             requestMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/OrderDetail", requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                ApiResult<Order> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<Order>>() {
-                });
+//                ApiResult<Order> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<Order>>() {
+//                });
+                ApiResult<Order> apiResult = gson.fromJson(httpResult.getHttpContent(), new TypeToken<ApiResult<Order>>() {
+                }.getType());
+                
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }
@@ -196,15 +201,12 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             String sign = SignBuilder.buildSignIgnoreEmpty(requestMap, null, HBConstant.SECRET_KEY);
             requestMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/BatchDeliver", requestMap);
-            log.info("http result content---->" + httpResult.getHttpContent());
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
 //                ApiResult<BatchDeliverResult> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<BatchDeliverResult>>() {
 //                });
 
                 ApiResult<BatchDeliverResult> apiResult = gson.fromJson(httpResult.getHttpContent(), new TypeToken<ApiResult<BatchDeliverResult>>() {
                 }.getType());
-
-                log.info("json cast successfully");
 
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
