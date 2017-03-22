@@ -12,10 +12,13 @@ package com.huobanplus.erpprovider.wangdianv2.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.huobanplus.erpprovider.wangdianv2.common.WangDianV2Constant;
 import com.huobanplus.erpprovider.wangdianv2.common.WangDianV2Enum;
 import com.huobanplus.erpprovider.wangdianv2.common.WangDianV2SysData;
 import com.huobanplus.erpprovider.wangdianv2.formatdata.WangDianV2Order;
 import com.huobanplus.erpprovider.wangdianv2.formatdata.WangDianV2OrderItem;
+import com.huobanplus.erpprovider.wangdianv2.formatdata.WangDianV2SyncAck;
+import com.huobanplus.erpprovider.wangdianv2.handler.WangDianV2HandlerBase;
 import com.huobanplus.erpprovider.wangdianv2.handler.WangDianV2OrderHandler;
 import com.huobanplus.erpprovider.wangdianv2.search.WangDianV2OrderSearch;
 import com.huobanplus.erpprovider.wangdianv2.util.WangDianV2SignBuilder;
@@ -48,7 +51,7 @@ import java.util.*;
  * Created by wuxiongliu on 2017-03-02.
  */
 @Component
-public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
+public class WangDianV2OrderHandlerImpl extends WangDianV2HandlerBase implements WangDianV2OrderHandler {
 
     private static final Log log = LogFactory.getLog(WangDianV2OrderHandlerImpl.class);
 
@@ -85,14 +88,12 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
             // 构建请求参数
             Map<String, Object> requestMap = new TreeMap<>();
 
-            // 系统级参数
-            requestMap.put("sid", wangDianV2SysData.getWangdianv2Sid());
-            requestMap.put("appkey", wangDianV2SysData.getAppKey());
+            //系统级参数
+            setSysDataRequestMap(requestMap, wangDianV2SysData);
 
-            // 应用级参数
+            //应用级参数
             requestMap.put("shop_no", wangDianV2SysData.getShopNo());
             requestMap.put("trade_list", JSON.toJSONString(orderArray));
-            requestMap.put("timestamp", now.getTime() / 1000);
 
             String sign = WangDianV2SignBuilder.buildSign(requestMap, wangDianV2SysData.getAppSecret());
             requestMap.put("sign", sign);
@@ -219,15 +220,11 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
     @Override
     public EventResult queryOrder(WangDianV2OrderSearch wangDianV2OrderSearch, WangDianV2SysData wangDianV2SysData) {
         try {
-            Date now = new Date();
             // 构建请求参数
             Map<String, Object> requestMap = new TreeMap<>();
 
             // 系统级参数
-            requestMap.put("sid", wangDianV2SysData.getWangdianv2Sid());
-            requestMap.put("appkey", wangDianV2SysData.getAppKey());
-            requestMap.put("shop_no", wangDianV2SysData.getShopNo());
-            requestMap.put("timestamp", now.getTime() / 1000);
+            setSysDataRequestMap(requestMap, wangDianV2SysData);
 
             // 应用级参数
             requestMap.put("status", wangDianV2OrderSearch.getStatus());
@@ -258,6 +255,66 @@ public class WangDianV2OrderHandlerImpl implements WangDianV2OrderHandler {
                 return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
             }
 
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public EventResult logisticsSyncQuery(WangDianV2SysData wangDianV2SysData) {
+        try {
+            // 构建请求参数
+            Map<String, Object> requestMap = new TreeMap<>();
+
+            // 系统级参数
+            setSysDataRequestMap(requestMap, wangDianV2SysData);
+
+            //应用级参数
+            requestMap.put("limit", WangDianV2Constant.PAGE_SIZE);
+            requestMap.put("shop_no", wangDianV2SysData.getShopNo());
+
+            String sign = WangDianV2SignBuilder.buildSign(requestMap, wangDianV2SysData.getAppSecret());
+            requestMap.put("sign", sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(wangDianV2SysData.getRequestUrl() + "/openapi2/logistics_sync_query.php", requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject resp = JSON.parseObject(httpResult.getHttpContent());
+                if ("0".equals(resp.getString("code"))) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, resp.getJSONArray("trades"));
+                } else {
+                    return EventResult.resultWith(EventResultEnum.ERROR, resp.getString("message"), null);
+                }
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            }
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public EventResult logisticsSyncAck(List<WangDianV2SyncAck> syncAckList, WangDianV2SysData wangDianV2SysData) {
+        try {
+            Map<String, Object> requestMap = new TreeMap<>();
+
+            setSysDataRequestMap(requestMap, wangDianV2SysData);
+
+            requestMap.put("logistics_list", JSON.toJSONString(syncAckList));
+
+            String sign = WangDianV2SignBuilder.buildSign(requestMap, wangDianV2SysData.getAppSecret());
+            requestMap.put("sign", sign);
+
+            HttpResult httpResult = HttpClientUtil.getInstance().post(wangDianV2SysData.getRequestUrl() + "/openapi2/logistics_sync_ack.php", requestMap);
+
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject resp = JSON.parseObject(httpResult.getHttpContent());
+                if ("0".equals(resp.getString("code"))) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                } else {
+                    return EventResult.resultWith(EventResultEnum.ERROR, resp.getString("message"), null);
+                }
+            } else {
+                return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+            }
         } catch (Exception e) {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
