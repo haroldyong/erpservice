@@ -72,7 +72,7 @@ public class WangDianV2OrderScheduleService {
     @Autowired
     private WangDianV2OrderHandler wangDianV2OrderHandler;
 
-    @Scheduled(cron = "*/70 * * * * ? ")
+    @Scheduled(cron = "* */70 * * * ? ")
     @Transactional
     public void syncShip() {
         log.info("order ship sync for wangdianv2 start!");
@@ -363,7 +363,8 @@ public class WangDianV2OrderScheduleService {
     /**
      * 同步已审核订单
      */
-    @Scheduled(cron = "0 0 0/3 * * ? ")// 每隔三小时执行一次，因为旺店通的查询时间最大间隔为三小时
+    @Scheduled(cron = "0 */70 * * * ? ")// 每隔三小时执行一次，因为旺店通的查询时间最大间隔为三小时
+    @Transactional
     public void syncAuditedOrder() {
         Date now = Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusMinutes(2));// 与服务器的时间有点误差啊
         String nowStr = StringUtil.DateFormat(now, StringUtil.TIME_PATTERN);
