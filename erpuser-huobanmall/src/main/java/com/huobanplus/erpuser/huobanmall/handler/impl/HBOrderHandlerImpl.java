@@ -154,7 +154,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
 //                });
                 ApiResult<Order> apiResult = gson.fromJson(httpResult.getHttpContent(), new TypeToken<ApiResult<Order>>() {
                 }.getType());
-                
+
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }

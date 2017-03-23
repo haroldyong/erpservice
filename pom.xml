@@ -38,7 +38,7 @@
         <!--<module>erpprovider-edi</module>-->
         <module>erpprovider-wangdian</module>
         <module>erpprovider-baison</module>
-        <!--<module>erpprovider-wangdianv2</module>-->
+        <module>erpprovider-wangdianv2</module>
         <!--<module>erpprovider-efast</module>-->
     </modules>
 

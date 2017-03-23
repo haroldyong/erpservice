@@ -1,12 +1,10 @@
 /*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
  *
- *  * 版权所有:杭州火图科技有限公司
- *  * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼在地图中查看
- *  *
- *  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
- *  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- *  * 2013-2016. All rights reserved.
- *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.wangdianv2.formatdata;
@@ -59,13 +57,13 @@ public class WangDianV2OrderItem {
      * 平台上货品的ID(货品表主键)goods_id和spec_id不能同时为空
      */
     @JSONField(name = "goods_id")
-    private String goodsId;
+    private int goodsId;
 
     /**
      * 平台上规格的ID(规格表主键)goods_id和spec_id不能同时为空
      */
     @JSONField(name = "spec_id")
-    private String specId;
+    private int specId;
 
     /**
      * 货品编码(商家编码)

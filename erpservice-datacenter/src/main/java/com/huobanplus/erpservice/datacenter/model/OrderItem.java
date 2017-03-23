@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpservice.datacenter.model;
@@ -21,6 +21,14 @@ public class OrderItem extends BaseInfo {
     private Integer itemId;
     private String orderId;
     private String unionOrderId;
+    /**
+     * 平台商品id
+     */
+    private int goodId;
+    /**
+     * 平台货品id
+     */
+    private int productId;
     private String productBn;
     private String name;
     /**
@@ -79,4 +87,9 @@ public class OrderItem extends BaseInfo {
      * 商品重量 单位g
      */
     private double weight;
+
+    /**
+     * 退款状态（售后状态）{@link}
+     */
+    private int refundStatus;
 }

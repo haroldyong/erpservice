@@ -1,12 +1,10 @@
 /*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
  *
- *  * 版权所有:杭州火图科技有限公司
- *  * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼在地图中查看
- *  *
- *  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
- *  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- *  * 2013-2016. All rights reserved.
- *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.wangdianv2;
@@ -84,6 +82,9 @@ public class WangDianV2TestBase {
         orderItem.setStandard("测试");
         orderItem.setCustomerId(296);
         orderItem.setGoodBn("hot123");
+        orderItem.setGoodId(999999);
+        orderItem.setProductId(999999);
+        orderItem.setRefundStatus(-1);
 
         mockOrderItems = new ArrayList<>();
         mockOrderItems.add(orderItem);
@@ -94,11 +95,11 @@ public class WangDianV2TestBase {
         mockOrder.setUserLoginName(UUID.randomUUID().toString());
         mockOrder.setConfirm(1);
         mockOrder.setOrderStatus(0);
-        mockOrder.setPayStatus(1);
+        mockOrder.setPayStatus(OrderEnum.PayStatus.PAYED.getCode());
         mockOrder.setShipStatus(0);
         mockOrder.setWeight(100);
         mockOrder.setOrderName("测试商品(蓝色,42码)(10)(×10)");
-        mockOrder.setItemNum(12);
+        mockOrder.setItemNum(1);
         mockOrder.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.DATE_PATTERN));
         mockOrder.setShipName("吴雄琉");
         mockOrder.setShipArea("浙江省/杭州市/滨江区");
@@ -115,10 +116,10 @@ public class WangDianV2TestBase {
         mockOrder.setCostFreight(8);
         mockOrder.setCurrency("CYN");
         mockOrder.setFinalAmount(10);// 商品费用+商品费用*税率+运费
-        mockOrder.setOnlinePayAmount(10);// 商品费用+商品费用*税率+运费
+        mockOrder.setOnlinePayAmount(0);// 商品费用+商品费用*税率+运费
 
-        mockOrder.setPaymentName("微信");
-        mockOrder.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());//微信支付V3
+        mockOrder.setPaymentName(OrderEnum.PaymentOptions.WEIXINPAY_V3.getName());
+        mockOrder.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());//货到付款
 
         mockOrder.setBuyerName("吴雄琉");
         mockOrder.setBuyerPid("362322199411050053");
