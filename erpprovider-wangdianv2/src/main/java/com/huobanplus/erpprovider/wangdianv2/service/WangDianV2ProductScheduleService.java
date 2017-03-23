@@ -1,12 +1,10 @@
 /*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
  *
- *  * 版权所有:杭州火图科技有限公司
- *  * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼在地图中查看
- *  *
- *  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
- *  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- *  * 2013-2016. All rights reserved.
- *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.wangdianv2.service;
@@ -61,7 +59,7 @@ public class WangDianV2ProductScheduleService {
     @Autowired
     private ERPRegister erpRegister;
 
-    @Scheduled(cron = "0 0 0/3 * * ? ")// 每隔三小时执行一次，因为旺店通的查询时间最大间隔为三小时
+    @Scheduled(cron = "0 */70 * * * ? ")// 每隔三小时执行一次，因为旺店通的查询时间最大间隔为三小时
     @Transactional
     public void syncInventory() {
         Date now = Jsr310Converters.LocalDateTimeToDateConverter.INSTANCE.convert(LocalDateTime.now().minusMinutes(2));
