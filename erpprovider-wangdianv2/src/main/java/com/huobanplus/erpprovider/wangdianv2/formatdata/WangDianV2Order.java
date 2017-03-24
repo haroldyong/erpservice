@@ -179,20 +179,20 @@ public class WangDianV2Order {
     /**
      * 货到付款金额
      */
-    @JSONField(name = "code_amount")
+    @JSONField(name = "cod_amount")
     private double codeAmount;
 
     /**
      * 货到付款买家费用，这个钱卖家收不回来，是收快递公司直接收走，但在快递单是要打印出来，否则快递收款就错了
      */
     @JSONField(name = "ext_cod_fee")
-    private String extCodFee;
+    private double extCodFee;
 
     /**
      * 其他金额
      */
     @JSONField(name = "other_amount")
-    private String otherAmount;
+    private double otherAmount;
 
     /**
      * 已支付金额，未付款情况下paid应为0，(货到付款时也可也不为0，表示只有一部分是货到付款)

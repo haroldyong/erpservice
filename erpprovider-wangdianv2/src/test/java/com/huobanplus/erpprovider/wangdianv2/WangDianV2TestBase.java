@@ -56,14 +56,22 @@ public class WangDianV2TestBase {
     public void setUp() {
 
         mockWangDianV2SysData = new WangDianV2SysData();
-        mockWangDianV2SysData.setRequestUrl("http://121.41.177.115");
-        mockWangDianV2SysData.setWangdianv2Sid("apidev2");
-        mockWangDianV2SysData.setAppKey("beiying2test");
-        mockWangDianV2SysData.setAppSecret("12345");
-        mockWangDianV2SysData.setShopNo("api_test");
-        mockWangDianV2SysData.setShopName("API公共测试");
-        mockWangDianV2SysData.setWarehouseNo("api_test");
-        mockWangDianV2SysData.setWarehouseName("API公共测试");
+//        mockWangDianV2SysData.setRequestUrl("http://121.41.177.115");
+//        mockWangDianV2SysData.setWangdianv2Sid("apidev2");
+//        mockWangDianV2SysData.setAppKey("beiying2test");
+//        mockWangDianV2SysData.setAppSecret("12345");
+//        mockWangDianV2SysData.setShopNo("api_test");
+//        mockWangDianV2SysData.setShopName("API公共测试");
+//        mockWangDianV2SysData.setWarehouseNo("api_test");
+//        mockWangDianV2SysData.setWarehouseName("API公共测试");
+        mockWangDianV2SysData.setRequestUrl("http://api.wangdian.cn");
+        mockWangDianV2SysData.setWangdianv2Sid("nuoke2");
+        mockWangDianV2SysData.setAppKey("nuoke2-gw");
+        mockWangDianV2SysData.setAppSecret("6bdf29d3afba83bcd111e2ef0d35fce5");
+        mockWangDianV2SysData.setShopNo("029");
+//        mockWangDianV2SysData.setShopName("API公共测试");
+        mockWangDianV2SysData.setWarehouseNo("CK001");
+//        mockWangDianV2SysData.setWarehouseName("API公共测试");
 
         // TODO: 2016-11-07
 

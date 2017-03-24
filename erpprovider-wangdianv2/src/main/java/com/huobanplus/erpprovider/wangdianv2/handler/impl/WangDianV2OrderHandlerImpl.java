@@ -44,7 +44,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -149,6 +148,8 @@ public class WangDianV2OrderHandlerImpl extends WangDianV2HandlerBase implements
             wangDianV2Order.setDeliveryTerm(1);
             wangDianV2Order.setCodeAmount(0.00);
         }
+        wangDianV2Order.setExtCodFee(0.00);
+        wangDianV2Order.setOtherAmount(0.00);
         wangDianV2Order.setPaid(order.getPayedAmount());
 //        wangDianV2Order.setCodeAmount(0.0);
 //        wangDianV2Order.setExtCodFee("");
@@ -200,17 +201,19 @@ public class WangDianV2OrderHandlerImpl extends WangDianV2HandlerBase implements
             if (resp.getString("code").equals("0")) {
                 return EventResult.resultWith(EventResultEnum.SUCCESS);
             } else {
-                JSONArray jsonArray = JSON.parseArray(resp.getString("message"));
-                JSONArray resultMsg = new JSONArray();
-
-                for (Object o : jsonArray) {
-                    JSONObject obj = JSON.parseObject(o.toString());
-                    JSONObject resultObj = new JSONObject();
-                    resultObj.put("tid", obj.getString("tid"));
-                    resultObj.put("error", URLDecoder.decode(obj.getString("error"), "utf-8"));
-                    resultMsg.add(resultObj);
-                }
-                return EventResult.resultWith(EventResultEnum.ERROR, resultMsg.toJSONString(), null);
+                String message = resp.getString("message");
+                return EventResult.resultWith(EventResultEnum.ERROR, message, null);
+//                JSONArray jsonArray = JSON.parseArray(resp.getString("message"));
+//                JSONArray resultMsg = new JSONArray();
+//
+//                for (Object o : jsonArray) {
+//                    JSONObject obj = JSON.parseObject(o.toString());
+//                    JSONObject resultObj = new JSONObject();
+//                    resultObj.put("tid", obj.getString("tid"));
+//                    resultObj.put("error", URLDecoder.decode(obj.getString("error"), "utf-8"));
+//                    resultMsg.add(resultObj);
+//                }
+//                return EventResult.resultWith(EventResultEnum.ERROR, resultMsg.toJSONString(), null);
             }
         } else {
             return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
