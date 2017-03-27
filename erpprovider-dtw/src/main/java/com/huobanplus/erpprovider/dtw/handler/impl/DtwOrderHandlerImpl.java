@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.dtw.handler.impl;
@@ -302,23 +302,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setNetWeight(order.getWeight());
         dtwOrder.setIeFlag(73);//(必填) 73:进口 79:出口
 
-        System.out.println("\n**********************");
-        System.out.println(JSON.toJSONString(dtwOrder));
-        System.out.println("税费:" + order.getTaxAmount());
-        System.out.println("贷款：" + dtwOrder.getOrderGoodsAmount());
-        System.out.println("成交总价：" + dtwOrder.getTotalAmount());
-        System.out.println("订单总金额:" + dtwOrder.getOrderTotalAmount());
-        System.out.println("\n**********************");
-
-        log.info("\n********Integrated Order**************");
-        log.info(JSON.toJSONString(dtwOrder));
-        log.info("tax:" + order.getTaxAmount());
-        log.info("costfreight:" + order.getCostFreight());
-        log.info("goodsAmount：" + dtwOrder.getOrderGoodsAmount());
-        log.info("totalAmount：" + dtwOrder.getTotalAmount());
-        log.info("orderTotalAmount:" + dtwOrder.getOrderTotalAmount());
-        log.info("\n**************************************");
-
         requestMap.put("data", JSON.toJSONString(dtwOrder));
 
         HttpResult httpResult = HttpClientUtil.getInstance().post(dtwSysData.getRequestUrl() + "/QBIntegratedOrder", requestMap);
@@ -400,20 +383,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
             dtwItems.add(dtwGoodsDelcareItem);
         }
-
-        System.out.println("\n*********personal declare fee*******************");
-        System.out.println("declTotalPrice:" + order.getCostItem());
-        System.out.println("costfreight:" + order.getCostFreight());
-        System.out.println("insureAmount:" + dtwPersonalDelcareInfo.getInsureAmount());
-        System.out.println("worth:" + dtwPersonalDelcareInfo.getWorth());
-        System.out.println("\n*********personal declare fee*******************");
-
-        log.info("\n*********personal declare fee*******************");
-        log.info("declTotalPrice:" + order.getCostItem());
-        log.info("costfreight:" + order.getCostFreight());
-        log.info("insureAmount:" + dtwPersonalDelcareInfo.getInsureAmount());
-        log.info("worth:" + dtwPersonalDelcareInfo.getWorth());
-        log.info("\n*********personal declare fee*******************");
 
         dtwPersonalDelcareInfo.setItems(dtwItems);
 
@@ -615,10 +584,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             String requestData = new XmlMapper().writeValueAsString(weixinCustom);
             HttpResult httpResult = HttpClientUtil.getInstance().post(DtwConstant.WEIXIN_PAY_URL, requestData);
 
-            System.out.println("\n*********Weixin Request & Response Data******************");
-            System.out.println("request:" + requestData);
-            System.out.println("response:" + httpResult.getHttpContent());
-            System.out.println("\n*********Weixin Request & Response Data******************");
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 String xmlResp = httpResult.getHttpContent();
                 Document document = DocumentHelper.parseText(xmlResp);
@@ -684,15 +649,6 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                     .element("jkfResult")
                     .element("chkMark");
 
-            System.out.println("\n**************Data pane begin*******************");
-            System.out.println("请求数据xml：" + requestXml);
-            System.out.println("加密后的数据：" + encData);
-            System.out.println("签名：" + sign);
-            System.out.println("AES秘钥：" + DtwConstant.AES_KEY);
-            System.out.println("RSA秘钥：" + DtwConstant.RSA_PRIVATE_KEY);
-            System.out.println("请求结果：" + result);
-            System.out.println("请求业务处理结果：" + chkMark.getText());
-            System.out.println("\n**************Data pane end*******************");
 
             if (chkMark.getText().equals("1")) {// 数据初步没有问题且报文成功推送至海关
                 log.info("customerOrder push success");
