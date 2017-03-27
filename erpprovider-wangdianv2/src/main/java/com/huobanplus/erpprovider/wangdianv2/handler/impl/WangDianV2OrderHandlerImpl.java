@@ -187,6 +187,7 @@ public class WangDianV2OrderHandlerImpl extends WangDianV2HandlerBase implements
             wangDianV2OrderItem.setCid("");
 
             wangDianV2OrderItems.add(wangDianV2OrderItem);
+            count++;
         }
 
         wangDianV2Order.setOrderList(wangDianV2OrderItems);
