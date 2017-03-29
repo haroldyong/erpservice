@@ -154,7 +154,7 @@ public class WangDianV2OrderHandlerImpl extends WangDianV2HandlerBase implements
 //        wangDianV2Order.setCodeAmount(0.0);
 //        wangDianV2Order.setExtCodFee("");
 //        wangDianV2Order.setOtherAmount("");
-//        wangDianV2Order.setPaid(order.getFinalAmount());
+        wangDianV2Order.setPaid(order.getFinalAmount());// TODO: 29/03/2017 已付款金额有问题
 //        wangDianV2Order.setIdCardType("1");
 //        wangDianV2Order.setIdCard("");
 //        wangDianV2Order.setCustData("");

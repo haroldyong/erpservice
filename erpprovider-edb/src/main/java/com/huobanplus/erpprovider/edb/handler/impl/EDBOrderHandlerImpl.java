@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb.handler.impl;
@@ -307,7 +307,7 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
 
             Map<String, Object> requestData = getSysRequestData(EDBConstant.CREATE_ORDER, sysData);
-            requestData.put("xmlvalues", xmlValues);
+            requestData.put("xmlvalues", StringUtil.filterEmoji(xmlValues));
             Map<String, Object> signMap = new TreeMap<>(requestData);
 
             requestData.put("sign", getSign(signMap, sysData));
