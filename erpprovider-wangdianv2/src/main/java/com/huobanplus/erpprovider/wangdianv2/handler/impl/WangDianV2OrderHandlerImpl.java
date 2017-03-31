@@ -44,6 +44,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -154,7 +155,7 @@ public class WangDianV2OrderHandlerImpl extends WangDianV2HandlerBase implements
 //        wangDianV2Order.setCodeAmount(0.0);
 //        wangDianV2Order.setExtCodFee("");
 //        wangDianV2Order.setOtherAmount("");
-        wangDianV2Order.setPaid(order.getFinalAmount());// TODO: 29/03/2017 已付款金额有问题
+//        wangDianV2Order.setPaid(order.getFinalAmount());// TODO: 29/03/2017 已付款金额有问题
 //        wangDianV2Order.setIdCardType("1");
 //        wangDianV2Order.setIdCard("");
 //        wangDianV2Order.setCustData("");
@@ -167,8 +168,16 @@ public class WangDianV2OrderHandlerImpl extends WangDianV2HandlerBase implements
         List<WangDianV2OrderItem> wangDianV2OrderItems = new ArrayList<>();
 
         int count = 0;
+        double discountedAmount = 0;
         for (OrderItem orderItem : orderItems) {
-
+            double discount;
+            if (count == orderItems.size() - 1) {
+                discount = orderItem.getAmount() / order.getCostItem() * order.getPmtAmount();
+                discount = new BigDecimal(discount).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                discountedAmount += discount;
+            } else {
+                discount = order.getPmtAmount() - discountedAmount;
+            }
             WangDianV2OrderItem wangDianV2OrderItem = new WangDianV2OrderItem();
             wangDianV2OrderItem.setOid(orderItem.getOrderId() + count);
             wangDianV2OrderItem.setNum(orderItem.getNum());
@@ -182,7 +191,7 @@ public class WangDianV2OrderHandlerImpl extends WangDianV2HandlerBase implements
             wangDianV2OrderItem.setGoodsName(orderItem.getName());
             wangDianV2OrderItem.setSpecName(orderItem.getStandard());
             wangDianV2OrderItem.setAdjustAmount("0");
-            wangDianV2OrderItem.setDiscount("0");
+            wangDianV2OrderItem.setDiscount(String.valueOf(discount));
             wangDianV2OrderItem.setShareDiscount("0");
             wangDianV2OrderItem.setCid("");
 
