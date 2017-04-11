@@ -94,8 +94,26 @@ public class WangDianV2TestBase {
         orderItem.setProductId(999999);
         orderItem.setRefundStatus(-1);
 
+        OrderItem orderItem1 = new OrderItem();
+        orderItem.setItemId(178771);
+        orderItem.setOrderId(orderNo);
+        orderItem.setUnionOrderId("2016062455965373");
+        orderItem.setProductBn("hot1234");
+        orderItem.setName("婴儿配方奶粉0002");
+        orderItem.setCost(0.5);
+        orderItem.setPrice(1);
+        orderItem.setAmount(1);
+        orderItem.setNum(1);
+        orderItem.setStandard("测试");
+        orderItem.setCustomerId(296);
+        orderItem.setGoodBn("hot123");
+        orderItem.setGoodId(999999);
+        orderItem.setProductId(999998);
+        orderItem.setRefundStatus(-1);
+
         mockOrderItems = new ArrayList<>();
         mockOrderItems.add(orderItem);
+        mockOrderItems.add(orderItem1);
 
         mockOrder = new Order();
         mockOrder.setOrderId(orderNo);
@@ -124,6 +142,7 @@ public class WangDianV2TestBase {
         mockOrder.setCostFreight(8);
         mockOrder.setCurrency("CYN");
         mockOrder.setFinalAmount(10);// 商品费用+商品费用*税率+运费
+        mockOrder.setPmtAmount(3);
         mockOrder.setOnlinePayAmount(0);// 商品费用+商品费用*税率+运费
 
         mockOrder.setPaymentName(OrderEnum.PaymentOptions.WEIXINPAY_V3.getName());
