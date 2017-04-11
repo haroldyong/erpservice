@@ -35,7 +35,7 @@ public interface WangDianV2Enum {
 
         public static TradeStatus toWangDianV2(OrderEnum.PaymentOptions paymentOptions, OrderEnum.PayStatus payStatus) {
             if (paymentOptions == OrderEnum.PaymentOptions.PAY_ON_DELIVERY) {
-                return TradeStatus.NOT_CONFIRM;
+                return TradeStatus.PAYED;
             } else {
                 switch (payStatus) {
                     case PAYED:
