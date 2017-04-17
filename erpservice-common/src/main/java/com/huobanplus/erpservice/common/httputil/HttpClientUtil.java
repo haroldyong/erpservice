@@ -17,6 +17,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
@@ -66,6 +67,20 @@ public class HttpClientUtil {
                 return new HttpResult(response.getStatusLine().getStatusCode(), EntityUtils.toString(response.getEntity()));
             }
 
+        } catch (IOException e) {
+            return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+
+    }
+
+    public HttpResult post(String url, String requestData) {
+        try (CloseableHttpClient httpClient = createHttpClient()) {
+            StringEntity stringEntity = new StringEntity(requestData, "utf-8");
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setEntity(stringEntity);
+            try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                return new HttpResult(response.getStatusLine().getStatusCode(), EntityUtils.toString(response.getEntity()));
+            }
         } catch (IOException e) {
             return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }

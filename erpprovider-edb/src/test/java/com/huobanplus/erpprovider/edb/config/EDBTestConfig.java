@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.edb.config;
@@ -22,9 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Configuration
 @ComponentScan({
         "com.huobanplus.erpprovider.edb",
-        "com.huobanplus.erpservice.eventhandler",
-        "com.huobanplus.erpuser.huobanmall",
-        "com.huobanplus.erpuser.hotsupplier"
+        "com.huobanplus.erpservice.eventhandler"
 })
 @Import({DataCenterConfig.class})
 public class EDBTestConfig {
