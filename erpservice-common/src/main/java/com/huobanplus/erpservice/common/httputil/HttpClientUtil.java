@@ -16,6 +16,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -24,7 +25,9 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -85,5 +88,30 @@ public class HttpClientUtil {
             return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
+    }
+
+    public HttpResult get(String url, Map requestMap) {
+        try (CloseableHttpClient httpClient = createHttpClient()) {
+            StringBuilder finalUrl = new StringBuilder(url);
+            Iterator iterator = requestMap.entrySet().iterator();
+            int index = 0;
+            while (iterator.hasNext()) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                if (entry.getValue() != null) {
+                    if (index == 0) {
+                        finalUrl.append("?").append(entry.getKey()).append("=").append(entry.getValue());
+                    } else {
+                        finalUrl.append("&").append(entry.getKey()).append("=").append(URLEncoder.encode(String.valueOf(entry.getValue()), StringUtil.UTF8));
+                    }
+                }
+                index++;
+            }
+            HttpGet httpGet = new HttpGet(finalUrl.toString());
+            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
+                return new HttpResult(response.getStatusLine().getStatusCode(), EntityUtils.toString(response.getEntity()));
+            }
+        } catch (IOException e) {
+            return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 }
