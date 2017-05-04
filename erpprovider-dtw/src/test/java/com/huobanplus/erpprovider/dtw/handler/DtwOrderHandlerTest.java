@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.dtw.handler;
@@ -12,15 +12,19 @@ package com.huobanplus.erpprovider.dtw.handler;
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.dtw.DtwTestBase;
 import com.huobanplus.erpprovider.dtw.common.DtwConstant;
+import com.huobanplus.erpprovider.dtw.common.DtwSysData;
 import com.huobanplus.erpprovider.dtw.formatdtw.DtwWayBill;
 import com.huobanplus.erpprovider.dtw.util.AESUtil;
 import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
 import com.huobanplus.erpprovider.dtw.util.RSAUtil;
 import com.huobanplus.erpservice.common.util.SerialNo;
+import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.junit.Assert;
 import org.junit.Test;
@@ -85,17 +89,44 @@ public class DtwOrderHandlerTest extends DtwTestBase {
     @Test
     public void testPushOrder() {
 
-        mockPushNewOrderEvent = new PushNewOrderEvent();
-        mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
-        mockPushNewOrderEvent.setErpInfo(mockErpInfo);
-        mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
-        for (int i = 0; i < 10; i++) {
+//        mockPushNewOrderEvent = new PushNewOrderEvent();
+//        mockPushNewOrderEvent.setOrderInfoJson(JSON.toJSONString(mockOrder));
+//        mockPushNewOrderEvent.setErpInfo(mockErpInfo);
+//        mockPushNewOrderEvent.setErpUserInfo(mockErpUserInfo);
+//        for (int i = 0; i < 10; i++) {
+//
+//            EventResult result = dtwOrderHandler.pushOrder(mockPushNewOrderEvent);
+//            System.out.println(result.getData());
+//            System.out.println(result.getResultMsg());
+//            System.out.println(result.getResultCode());
+//        }
 
-            EventResult result = dtwOrderHandler.pushOrder(mockPushNewOrderEvent);
-            System.out.println(result.getData());
-            System.out.println(result.getResultMsg());
-            System.out.println(result.getResultCode());
-        }
+        DtwSysData sysData = new DtwSysData();
+        sysData.setRequestUrl("http://qp.dtw.com.cn:88/api");
+        sysData.setCustomUrl("http://api.kjeport.com/newyorkWS/ws/ReceiveEncryptDeclare?wsdl");
+        sysData.setPassKey("fa69e2f3-5c84-42db-930a-9e1823a05481");
+        sysData.setECommerceCode("3210932722");
+        sysData.setECommerceName("扬州市新扬达进出口有限公司");
+        sysData.setWeiXinAppId("gh_3b938ec78657");
+        sysData.setWeixinMchId("1335070101");
+        sysData.setWeixinKey("f54fcb5c9fe40198a9527fc5a3a10878");
+        sysData.setAliPartner("2088421965473023");
+        sysData.setAliKey("k48u3xqezrpwhuv8al265p515uhclr5");
+        sysData.setRsaPublicKey("MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKQXBbqcqlSmePCMMpRH/4i0iDDuCfpGds1kCyYdca09EyQMXWGD1qHXfpr1v9BMfJcBackmMXeHzjfyF7BMgacCAwEAAQ==");
+        sysData.setRsaPrivateKey("MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEApBcFupyqVKZ48IwylEf/iLSIMO4J+kZ2zWQLJh1xrT0TJAxdYYPWodd+mvW/0Ex8lwFpySYxd4fON/IXsEyBpwIDAQABAkA3FouT1NjSRnk/uLGaWnmNeZ5nXuL2pQVpevbLOwNY9yX8zBLTgkBoEFumx6bPNKx4/2BPnj5M8seOzf+iRn/BAiEA+BwWMzJ0QWNUF1bOdLQn2XCwabda6TFE9gtts75b93cCIQCpTum4KaZI0eCPF58kTs8rB9VrCG7OTJ/rxchV4u2zUQIhAPWiQOxQ8D3oS9GLdHyf+6/PXChdidjCmYaKTAKe3MgDAiBQ25otVN7QWkOXsx1S1ryD/XrEYkOhDOE3Vb7mnbkN8QIhAJxwW3ck6y8lSxWQOxttRGKZ/sEtR100kGucxxxEGoJQ");
+        sysData.setAesKey("PED1eJ88viohIxl8Mj27MQ==");
+        sysData.setSenderInfo("吴彩霞,江苏省,扬州市,邗江区,京华城路168号京华城3楼dmcn德国生活馆,18344724881");
+
+        String orderInfoJson = "{\"orderId\":\"20170426921641835199\",\"memberId\":2837857,\"userLoginName\":\"18868129859\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":0.000,\"orderName\":\"爱他美奶粉2+段(1)(×1)\",\"itemNum\":1,\"lastUpdateTime\":\"2017-04-26 10:35:17\",\"createTime\":\"2017-04-26 10:35:09\",\"shipName\":\"向琴\",\"shipArea\":\"浙江省/杭州市/江干区\",\"province\":\"浙江省\",\"city\":\"杭州市\",\"district\":\"江干区\",\"shipAddr\":\"浙江省杭州市江干区普福路\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"18868129859\",\"costItem\":149.000,\"onlinePayAmount\":154.000,\"costFreight\":5.000,\"currency\":\"CNY\",\"finalAmount\":154.000,\"pmtAmount\":0.000,\"memo\":\"测试订单，不要发货\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"微信支付V3\",\"payType\":9,\"customerId\":7176,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2017-04-26 10:35:16\",\"unionOrderId\":\"20170426747272725596\",\"receiveStatus\":0,\"sourceShop\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"430626198801208024\",\"buyerName\":\"向琴\",\"payNumber\":\"4006132001201704268384113419\",\"taxAmount\":0.000,\"orderItems\":[{\"itemId\":710118,\"orderId\":\"20170426921641835199\",\"unionOrderId\":\"20170426747272725596\",\"goodId\":34432,\"productId\":223807,\"productBn\":\"1AT01006\",\"name\":\"爱他美奶粉2+段(1)\",\"cost\":0.000,\"price\":149.000,\"amount\":149.000,\"num\":1,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":7176,\"goodBn\":\"1901101000\",\"standard\":\"无规格\",\"brief\":null,\"shipStatus\":0,\"weight\":0.0,\"unit\":null,\"refundStatus\":-1}],\"errorMessage\":null,\"payedAmount\":0.000}";
+
+        PushNewOrderEvent pushNewOrderEvent = new PushNewOrderEvent();
+        ERPInfo erpInfo = new ERPInfo(ERPTypeEnum.ProviderType.DTW, JSON.toJSONString(sysData));
+        ERPUserInfo erpUserInfo = new ERPUserInfo(ERPTypeEnum.UserType.HUOBAN_MALL, 7176);
+        pushNewOrderEvent.setErpInfo(erpInfo);
+        pushNewOrderEvent.setErpUserInfo(erpUserInfo);
+        pushNewOrderEvent.setOrderInfoJson(orderInfoJson);
+
+        dtwOrderHandler.pushOrder(pushNewOrderEvent);
     }
 
     @Test

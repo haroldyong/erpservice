@@ -544,6 +544,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             weixinCustom.setOutTradeNo(order.getOrderId());
             weixinCustom.setTransactionId(order.getPayNumber());
             weixinCustom.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.toString());
+            weixinCustom.setCustoms("HANGZHOU_ZS");
             weixinCustom.setMchCustomsNo(dtwSysData.getECommerceCode());
             weixinCustom.setSubOrderNo(order.getOrderId());
             weixinCustom.setFeeType("CNY");

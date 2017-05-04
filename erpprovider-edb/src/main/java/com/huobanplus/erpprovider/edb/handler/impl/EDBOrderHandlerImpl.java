@@ -67,7 +67,9 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
+        log.info("开始推送订单，商户id：" + pushNewOrderEvent.getErpUserInfo().getCustomerId());
         Order orderInfo = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+        log.info("订单号：" + orderInfo.getOrderId());
 
         ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
         EDBSysData sysData = JSON.parseObject(erpInfo.getSysDataJson(), EDBSysData.class);
