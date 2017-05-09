@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.netshop.handler.impl;
@@ -160,6 +160,8 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
             orderDetailResult.setCurrency("CNY");
             orderDetailResult.setPostage(orderBean.getCostFreight());
             orderDetailResult.setPayAccount(orderBean.getPaymentName());
+            orderDetailResult.setCardType(1);
+            orderDetailResult.setIdCard(orderBean.getBuyerPid());
 //            orderDetailResult.setPayID(orderBean);
             orderDetailResult.setLogisticsName(orderBean.getLogiName());
             orderDetailResult.setChargetype("担保交易"); // FIXME: 2016/7/4  针对支付宝，微信支付这类

@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.dtw.common;
@@ -54,7 +54,7 @@ public class DtwConstant {
     public static final String SENDER_MOBILE = "15067134476";
 
     public static final String LOGISTIC_CODE = "WL15041401";
-    public static final String LOGISTIC_NAME = "百世物流科技（中国）有限公司";
+    public static final String LOGISTIC_NAME = "杭州百世网络技术有限公司";
 
     public static final String BUSINESS_TYPE = "IMPORTORDER";
 
