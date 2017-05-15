@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.convert.Jsr310Converters;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -81,9 +80,7 @@ public class WangDianV2OrderHandlerTest extends WangDianV2TestBase {
 
     @Test
     public void testDecode() throws UnsupportedEncodingException {
-        String str = " \u672a\u4ed8\u6b3e\u8ba2\u5355\u4e0d\u53ef\u53d1\u8d27 ";
-        String decodeStr = URLDecoder.decode(str, "utf-8");
-        System.out.println(decodeStr);
+
     }
 
     @Test

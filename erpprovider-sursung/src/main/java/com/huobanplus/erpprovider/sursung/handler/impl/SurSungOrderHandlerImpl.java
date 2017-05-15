@@ -1,10 +1,10 @@
 /*
  * 版权所有:杭州火图科技有限公司
- * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼在地图中查看
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.sursung.handler.impl;
@@ -25,6 +25,8 @@ import com.huobanplus.erpprovider.sursung.util.SurSungUtil;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil2;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
+import com.huobanplus.erpservice.common.ienum.EnumHelper;
+import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderShipSyncLog;
@@ -163,6 +165,12 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             surSungOrderItem.setQty(item.getNum());
             surSungOrderItem.setName(item.getName());
             surSungOrderItem.setOuterOiId(item.getOrderId() + item.getProductBn());
+            OrderEnum.AfterSalesStatus afterSalesStatus = EnumHelper.getEnumType(OrderEnum.AfterSalesStatus.class, item.getRefundStatus());
+            surSungOrderItem.setRefundStatus(surSungOrderItem.toRefundStatus(afterSalesStatus));
+
+            log.info("surSungOrderItem refundstatus--->" + surSungOrderItem.getRefundStatus());
+            log.info("orderItem afterSalesStatus--->" + afterSalesStatus.getName());
+
             surSungOrderItems.add(surSungOrderItem);
         }
         ;
