@@ -175,7 +175,8 @@ public class NSOrderHandlerImpl implements NSOrderHandler {
                 orderItemResult.setGoodsName(item.getName());
                 orderItemResult.setGoodsSpec(item.getStandard());
                 orderItemResult.setCount(item.getNum());
-                orderItemResult.setPrice(item.getAmount());
+//                orderItemResult.setPrice(item.getAmount());
+                orderItemResult.setPrice(item.getPrice());
                 orderItemResults.add(orderItemResult);
             });
 
