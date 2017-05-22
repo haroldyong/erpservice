@@ -4,7 +4,7 @@
   ~
   ~ (c) Copyright Hangzhou Hot Technology Co., Ltd.
   ~ Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
-  ~ 2013-2016. All rights reserved.
+  ~ 2013-2017. All rights reserved.
   --%>
 
 <%--
@@ -25,6 +25,8 @@
             var jcoUser = $.trim($("#sap_jcoUser").val());
             var jcoPass = $.trim($("#sap_jcoPass").val());
             var sapRouter = $.trim($("#sap_sapRouter").val());
+            var sapShopName = $.trim($("#sap_shopName").val());
+
             if (host.length == 0) {
                 $.jBox.tip("请输入SAP服务器");
                 return null;
@@ -49,13 +51,18 @@
                 $.jBox.tip("请输入SAP路由");
                 return null;
             }
+            if (sapShopName.length == 0) {
+                $.jBox.tip("请输入店铺名称");
+                return null;
+            }
             var edbConfig = {
                 host: host,
                 sysNo: sysNo,
                 client: client,
                 jcoUser: jcoUser,
                 jcoPass: jcoPass,
-                sapRouter: sapRouter
+                sapRouter: sapRouter,
+                shopName: sapShopName
             };
             return JSON.stringify(edbConfig);
         },
@@ -66,6 +73,7 @@
             $("#sap_jcoUser").val(jsonData.jcoUser);
             $("#sap_jcoPass").val(jsonData.jcoPass);
             $("#sap_sapRouter").val(jsonData.sapRouter);
+            $("#sap_shopName").val(jsonData.shopName);
 
         }
     };
@@ -106,6 +114,12 @@
         <th style="vertical-align: middle;">SAP路由（JCO_SAPROUTER）：</th>
         <td>
             <input name="sapRouter" type="text" value="" id="sap_sapRouter" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">店铺编号：</th>
+        <td>
+            <input name="sapShopName" type="text" value="" id="sap_shopName" class="input-normal"/>
         </td>
     </tr>
     </tbody>

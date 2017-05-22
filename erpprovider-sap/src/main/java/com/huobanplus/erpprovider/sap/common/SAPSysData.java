@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.sap.common;
@@ -42,4 +42,8 @@ public class SAPSysData {
      * SAP路由
      */
     private String sapRouter;
+    /**
+     * 店铺名称
+     */
+    private String shopName;
 }

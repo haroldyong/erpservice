@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.sap.config;
@@ -13,6 +13,7 @@ import com.huobanplus.erpprovider.sap.handler.SAPOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRefundStatusUpdate;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
@@ -42,6 +43,10 @@ public class SAPHandlerBuilder implements ERPHandlerBuilder {
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
                         return sapOrderHandler.pushOrder(pushNewOrderEvent);
+                    }
+                    if (erpBaseEvent instanceof OrderRefundStatusUpdate) {
+                        OrderRefundStatusUpdate orderRefundStatusUpdate = (OrderRefundStatusUpdate) erpBaseEvent;
+                        return sapOrderHandler.pushRefund(orderRefundStatusUpdate);
                     }
                     return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT);
                 }

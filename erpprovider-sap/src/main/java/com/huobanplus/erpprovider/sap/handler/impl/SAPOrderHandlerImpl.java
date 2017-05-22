@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.sap.handler.impl;
@@ -22,6 +22,7 @@ import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRefundStatusUpdate;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -90,6 +91,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
             sapSaleOrderInfo.setOrderType("ZWRE");
             sapSaleOrderInfo.setProvederFactory("1000");
         }
+        sapSaleOrderInfo.setShopName(sysData.getShopName());
         sapSaleOrderInfo.setOrderSaleFrom("售达方");
         sapSaleOrderInfo.setNumId(orderInfo.getOrderId());
         sapSaleOrderInfo.setCustomName(orderInfo.getShipName());
@@ -141,6 +143,30 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         return eventResult;
     }
 
+    @Override
+    public EventResult pushRefund(OrderRefundStatusUpdate orderRefundStatusUpdate) {
+        log.info("sap start to push refund");
+
+        JCoFunction jCoFunction;
+        try {
+            SAPSysData sysData = JSON.parseObject(orderRefundStatusUpdate.getErpInfo().getSysDataJson(), SAPSysData.class);
+            JCoDestination jCoDestination = ConnectHelper.connect(sysData, orderRefundStatusUpdate.getErpUserInfo());
+            jCoFunction = jCoDestination.getRepository().getFunction("ZWS_DN_UPDATE");
+            if (jCoFunction == null) {
+                log.info("SAP中没有ZWS_DN_UPDATE方法");
+                return EventResult.resultWith(EventResultEnum.ERROR);
+            }
+            jCoFunction.getImportParameterList().setValue("INPUT_ZORDER", orderRefundStatusUpdate.getOrderRefundStatusInfo().getOrderId());
+            jCoFunction.execute(jCoDestination);
+            String responseMsg = jCoFunction.getExportParameterList().getString("OUTPUT_MESSAGE");
+            log.info("sap push refund response---->" + responseMsg);
+            return EventResult.resultWith(EventResultEnum.SUCCESS);
+        } catch (Exception ex) {
+            log.info("JCO异常:" + ex.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, ex.getMessage(), null);
+        }
+    }
+
     private EventResult orderPush(SAPSysData sysData, ERPUserInfo erpUserInfo, SAPSaleOrderInfo sapSaleOrderInfo) {
         JCoFunction jCoFunction;
         JCoTable jCoTable;
@@ -162,7 +188,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                         sapSaleOrderInfo.getPmtAmount() * percent;
                 double netPrice = sapOrderItem.getPrice() - sapOrderItem.getPrice() - subPmtAmount; //净价 市场价-销售价-优惠金额
                 jCoTable.appendRow();
-                jCoTable.setValue("ZKONDM", "01");
+                jCoTable.setValue("ZKONDM", sysData.getShopName());
                 jCoTable.setValue("ZTYPE", sapSaleOrderInfo.getOrderType());
                 //jCoTable.setValue("KUNNR",sapSaleOrderInfo.getOrderSaleFrom());
                 jCoTable.setValue("ZORDER", sapSaleOrderInfo.getNumId());
