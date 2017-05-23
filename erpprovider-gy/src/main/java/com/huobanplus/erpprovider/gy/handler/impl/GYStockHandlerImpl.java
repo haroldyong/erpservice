@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.gy.handler.impl;
@@ -60,7 +60,6 @@ public class GYStockHandlerImpl extends GYBaseHandler implements GYStockHandler 
                     return EventResult.resultWith(EventResultEnum.SUCCESS, stockResponse);
                 } else {
                     log.info("错误信息：" + result.getString("errorDesc"));
-                    log.info("请求数据报文：" + requestData);
                     return EventResult.resultWith(EventResultEnum.ERROR, result.getString("errorDesc"), null);
                 }
             } else {
