@@ -88,21 +88,19 @@ public class SurSungHandlerBuilder implements ERPHandlerBuilder {
                     log.info("************SurSung**********");
 
                     String uniqueID = (String) request.getAttribute("uniqueID");
-
-                    List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserTypeAndParamNameAndParamVal(providerType, erpUserType,"shopId",uniqueID);
-                    ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
-                    SurSungSysData surSungSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), SurSungSysData.class);
-
-                    String method = request.getParameter("method");
-                    String partnerId = request.getParameter("partnerid");
-                    String token = request.getParameter("token");
-                    int ts = Integer.valueOf(request.getParameter("ts"));
-                    String sign = request.getParameter("sign");
-
-
-                    ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
-                    ERPInfo erpInfo = new ERPInfo(erpDetailConfig.getErpType(), erpDetailConfig.getErpSysData());
                     try {
+                        List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserTypeAndParamNameAndParamVal(providerType, erpUserType, "shopId", uniqueID);
+                        ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
+                        SurSungSysData surSungSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), SurSungSysData.class);
+
+                        String method = request.getParameter("method");
+                        String partnerId = request.getParameter("partnerid");
+                        String token = request.getParameter("token");
+                        int ts = Integer.valueOf(request.getParameter("ts"));
+                        String sign = request.getParameter("sign");
+
+                        ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
+                        ERPInfo erpInfo = new ERPInfo(erpDetailConfig.getErpType(), erpDetailConfig.getErpSysData());
                         InputStream in = request.getInputStream();
                         String postBody = StreamUtils.copyToString(in, Charset.forName("utf-8"));
                         log.info("method:" + method);

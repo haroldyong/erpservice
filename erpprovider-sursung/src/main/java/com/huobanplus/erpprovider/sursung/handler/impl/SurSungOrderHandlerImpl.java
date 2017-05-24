@@ -262,7 +262,6 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             batchDeliverEvent.setErpUserInfo(erpUserInfo);
             batchDeliverEvent.setOrderDeliveryInfoList(orderDeliveryInfoList);
             EventResult eventResult = erpUserHandler.handleEvent(batchDeliverEvent);
-
             OrderShipSyncLog orderShipSyncLog = new OrderShipSyncLog();
             orderShipSyncLog.setProviderType(erpInfo.getErpType());
             orderShipSyncLog.setUserType(erpUserInfo.getErpUserType());
@@ -272,7 +271,6 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
             orderShipSyncLog.setSyncTime(new Date());
 
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
-
 
                 log.info("SurSungOrderHandlerImpl-logisticUpload: 发货同步失败 " + eventResult.getResultMsg());
                 orderShipSyncLog.setSuccessCount(0);
@@ -288,7 +286,6 @@ public class SurSungOrderHandlerImpl implements SurSungOrderHandler {
 
                 return SurSungExceptionHandler.handleException(false, eventResult.getResultMsg());
             } else {
-
                 BatchDeliverResult batchDeliverResult = (BatchDeliverResult) eventResult.getData();
                 List<OrderDeliveryInfo> successOrder = batchDeliverResult.getSuccessOrders();
                 List<OrderDeliveryInfo> failedOrder = batchDeliverResult.getFailedOrders();
