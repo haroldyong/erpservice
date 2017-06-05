@@ -140,6 +140,10 @@ public class SAPSaleOrderInfo {
      */
     private double freight;
     /**
+     * 订单金额
+     */
+    private double finalAmount;
+    /**
      * 店铺名称
      */
     private String shopName;

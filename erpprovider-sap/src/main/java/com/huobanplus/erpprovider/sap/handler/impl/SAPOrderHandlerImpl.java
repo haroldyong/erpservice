@@ -35,7 +35,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -101,6 +100,7 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setShipAddr(orderInfo.getShipAddr());
         sapSaleOrderInfo.setPmtAmount(orderInfo.getPmtAmount());
         sapSaleOrderInfo.setCostItem(orderInfo.getCostItem());
+        sapSaleOrderInfo.setFinalAmount(orderInfo.getFinalAmount());
         //sapSaleOrderInfo.setGoodsInfo("产品组");
 //        sapSaleOrderInfo.setMaterialCode("物料编码");
 //        sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
@@ -208,7 +208,10 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
                 jCoTable.setValue("VRKME", sapSaleOrderInfo.getOrganization());
                 //jCoTable.setValue("WERKS", sapSaleOrderInfo.getProvederFactory());
                 //jCoTable.setValue("LGORT", sapSaleOrderInfo.getGoodsAddr());
-                jCoTable.setValue("NETPR", BigDecimal.valueOf(netPrice).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                if (index == 0) {
+//                    jCoTable.setValue("NETPR", BigDecimal.valueOf(netPrice).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                    jCoTable.setValue("NETPR", sapSaleOrderInfo.getFinalAmount() - sapSaleOrderInfo.getFreight());
+                }
 
                 //到时order 中需传递发票相关信息
                 jCoTable.setValue("ZFP", sapSaleOrderInfo.isInvoiceIsopen() ? "X" : null);

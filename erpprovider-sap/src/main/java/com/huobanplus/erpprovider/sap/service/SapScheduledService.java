@@ -226,7 +226,7 @@ public class SapScheduledService {
     /**
      * 定时重新推送失败的订单
      */
-    @Scheduled(cron = "0 0 */1 * * ?")
+//    @Scheduled(cron = "0 0 */1 * * ?")
     @Transactional
     public void rePushFailedOrder() {
 
