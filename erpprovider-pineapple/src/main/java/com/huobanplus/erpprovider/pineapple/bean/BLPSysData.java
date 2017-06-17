@@ -1,18 +1,14 @@
 package com.huobanplus.erpprovider.pineapple.bean;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * Created by hxh on 2017-06-06.
  */
-@Getter
-@Setter
+@Data
 public class BLPSysData {
-    private String method;
-    private String appkey;
+    private String appKey;
     private String token;
-    private String bizcontent;
-    private String sign;
-    
+    private String bizContent;
+    private String appSecret;
 }
