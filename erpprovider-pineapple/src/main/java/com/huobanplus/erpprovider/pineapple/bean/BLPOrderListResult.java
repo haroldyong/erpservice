@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 public class BLPOrderListResult {
 
-
     @JSONField(name = "OrderNos")
     private List<String> orderNos;
 
