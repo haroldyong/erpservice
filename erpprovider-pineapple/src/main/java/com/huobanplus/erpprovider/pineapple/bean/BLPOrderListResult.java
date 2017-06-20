@@ -1,7 +1,6 @@
 package com.huobanplus.erpprovider.pineapple.bean;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -10,18 +9,17 @@ import java.util.List;
  * Created by hxh on 2017-06-16.
  */
 @Data
-@JacksonXmlRootElement(localName = "Orders")
 public class BLPOrderListResult {
 
-    @JacksonXmlProperty(localName = "OrderNos")
+    @JsonProperty("OrderNos")
     private List<String> orderNos;
 
-    @JacksonXmlProperty(localName = "Page")
+    @JsonProperty("Page")
     private int page;
 
-    @JacksonXmlProperty(localName = "Size")
+    @JsonProperty("Size")
     private int size;
 
-    @JacksonXmlProperty(localName = "numtotalorder")
+    @JsonProperty("numtotalorder")
     private int numTotalOrder;
 }

@@ -189,6 +189,6 @@ public class ERPConfigController {
             result = "error";
         }
         request.getSession().setAttribute("resultCode", result);
-        return "redirect: erpConfig?erpUserType=" + erpUserType;
+        return "redirect:erpConfig?erpUserType=" + erpUserType;
     }
 }

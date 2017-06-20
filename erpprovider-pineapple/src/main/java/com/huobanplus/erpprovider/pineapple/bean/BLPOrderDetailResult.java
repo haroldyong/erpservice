@@ -1,7 +1,6 @@
 package com.huobanplus.erpprovider.pineapple.bean;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,120 +10,119 @@ import java.util.List;
  * Created by hxh on 2017-06-16.
  */
 @Data
-@JacksonXmlRootElement(localName = "Order")
 public class BLPOrderDetailResult {
-    @JacksonXmlProperty(localName = "PlatOrderNo")
+    @JsonProperty("PlatOrderNo")
     private String PlatOrderNo;
 
-    @JacksonXmlProperty(localName = "tradeStatus")
+    @JsonProperty("tradeStatus")
     private String tradeStatus;
 
-    @JacksonXmlProperty(localName = "tradeStatusdescription")
+    @JsonProperty("tradeStatusdescription")
     private String tradeStatusDescription;
 
-    @JacksonXmlProperty(localName = "tradetime")
+    @JsonProperty("tradetime")
     private String tradeTime;
 
-    @JacksonXmlProperty(localName = "payorderno")
+    @JsonProperty("payorderno")
     private String payOrderNo;
 
-    @JacksonXmlProperty(localName = "address")
+    @JsonProperty("address")
     private String address;
 
-    @JacksonXmlProperty(localName = "zip")
+    @JsonProperty("zip")
     private String zip;
 
-    @JacksonXmlProperty(localName = "phone")
+    @JsonProperty("phone")
     private String phone;
 
-    @JacksonXmlProperty(localName = "country")
+    @JsonProperty("country")
     private String country;
 
-    @JacksonXmlProperty(localName = "province")
+    @JsonProperty("province")
     private String province;
 
-    @JacksonXmlProperty(localName = "city")
+    @JsonProperty("city")
     private String city;
 
-    @JacksonXmlProperty(localName = "town")
+    @JsonProperty("town")
     private String town;
 
-    @JacksonXmlProperty(localName = "area")
+    @JsonProperty("area")
     private String area;
 
-    @JacksonXmlProperty(localName = "mobile")
+    @JsonProperty("mobile")
     private String mobile;
 
-    @JacksonXmlProperty(localName = "email")
+    @JsonProperty("email")
     private String email;
 
-    @JacksonXmlProperty(localName = "customerremark")
+    @JsonProperty("customerremark")
     private String customerRemark;
 
-    @JacksonXmlProperty(localName = "sellerremark")
+    @JsonProperty("sellerremark")
     private double sellerRemark;
 
-    @JacksonXmlProperty(localName = "postfee")
+    @JsonProperty("postfee")
     private BigDecimal postFee;
 
-    @JacksonXmlProperty(localName = "goodsfee")
+    @JsonProperty("goodsfee")
     private BigDecimal goodsFee;
 
-    @JacksonXmlProperty(localName = "totalmoney")
+    @JsonProperty("totalmoney")
     private BigDecimal totalMoney;
 
-    @JacksonXmlProperty(localName = "favourablemoney")
+    @JsonProperty("favourablemoney")
     private BigDecimal favourableMoney;
 
-    @JacksonXmlProperty(localName = "commissionvalue")
+    @JsonProperty("commissionvalue")
     private BigDecimal commissionValue;
 
-    @JacksonXmlProperty(localName = "taxamount")
+    @JsonProperty("taxamount")
     private BigDecimal taxAmount;
 
-    @JacksonXmlProperty(localName = "tariffamount")
+    @JsonProperty("tariffamount")
     private BigDecimal tariffAmount;
 
-    @JacksonXmlProperty(localName = "addedvalueamount")
+    @JsonProperty("addedvalueamount")
     private BigDecimal addedValueAmount;
 
-    @JacksonXmlProperty(localName = "consumptiondutyamount")
+    @JsonProperty("consumptiondutyamount")
     private BigDecimal consumptionDutyAmount;
 
-    @JacksonXmlProperty(localName = "sendstyle")
+    @JsonProperty("sendstyle")
     private String sendStyle;
 
-    @JacksonXmlProperty(localName = "qq")
+    @JsonProperty("qq")
     private String qq;
 
-    @JacksonXmlProperty(localName = "paytime")
+    @JsonProperty("paytime")
     private String payTime;
 
-    @JacksonXmlProperty(localName = "invoicetitle")
+    @JsonProperty("invoicetitle")
     private String invoiceTitle;
 
-    @JacksonXmlProperty(localName = "codservicefee")
+    @JsonProperty("codservicefee")
     private BigDecimal codServiceFee;
 
-    @JacksonXmlProperty(localName = "cardtype")
+    @JsonProperty("cardtype")
     private String cardType;
 
-    @JacksonXmlProperty(localName = "idcard")
+    @JsonProperty("idcard")
     private String idCard;
 
-    @JacksonXmlProperty(localName = "idcardtruename")
+    @JsonProperty("idcardtruename")
     private String idCardTrueName;
 
-    @JacksonXmlProperty(localName = "receivername")
+    @JsonProperty("receivername")
     private String receiverName;
 
-    @JacksonXmlProperty(localName = "nick")
+    @JsonProperty("nick")
     private String nick;
 
-    @JacksonXmlProperty(localName = "ShouldPayType")
+    @JsonProperty("ShouldPayType")
     private String ShouldPayType;
 
-    @JacksonXmlProperty(localName = "goodinfos")
+    @JsonProperty("goodinfos")
     private List<BLPOrderItemResult> goodInfoList;
 
 }

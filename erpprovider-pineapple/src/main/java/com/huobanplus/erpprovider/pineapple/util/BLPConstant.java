@@ -2,7 +2,7 @@ package com.huobanplus.erpprovider.pineapple.util;
 
 /**
  * 常用工具类
- *
+ * <p>
  * Created by hxh on 2017-06-06.
  */
 public class BLPConstant {
@@ -17,9 +17,9 @@ public class BLPConstant {
     public final static String OBTAIN_ORDER_LIST = "GetOrder";
 
     /**
-     * 发货通知
+     * 订单发货
      */
-    public final static String DELIVER_INFO = "mSndGoods";
+    public final static String DELIVER_INFO = "Send";
 
     /**
      * 退款检测
@@ -29,8 +29,9 @@ public class BLPConstant {
     /**
      * 库存同步
      */
-    public final static String SYNC_INVENTORY = "mSysGoods";
+    public final static String SYNC_STOCK = "SyncStock";
 
+    public final static String SYNC_REMARK = "UpdateSellerMemo";
 
 
 }

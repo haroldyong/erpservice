@@ -1,6 +1,6 @@
 package com.huobanplus.erpprovider.pineapple.bean;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -10,40 +10,40 @@ import java.math.BigDecimal;
  */
 @Data
 public class BLPOrderItemResult {
-    @JacksonXmlProperty(localName = "ProductId")
+    @JsonProperty("ProductId")
     private String ProductId;
 
-    @JacksonXmlProperty(localName = "suborderno")
+    @JsonProperty("suborderno")
     private String suborderNo;
 
-    @JacksonXmlProperty(localName = "tradegoodsno")
+    @JsonProperty("tradegoodsno")
     private String tradeGoodsNo;
 
-    @JacksonXmlProperty(localName = "tradegoodsname")
+    @JsonProperty("tradegoodsname")
     private String tradeGoodsName;
 
-    @JacksonXmlProperty(localName = "tradegoodsspec")
+    @JsonProperty("tradegoodsspec")
     private String tradeGoodsSpec;
 
-    @JacksonXmlProperty(localName = "goodscount")
+    @JsonProperty("goodscount")
     private int goodsCount;
 
-    @JacksonXmlProperty(localName = "Remark")
+    @JsonProperty("Remark")
     private String remark;
 
-    @JacksonXmlProperty(localName = "price")
+    @JsonProperty("price")
     private BigDecimal price;
 
-    @JacksonXmlProperty(localName = "discountmoney")
+    @JsonProperty("discountmoney")
     private BigDecimal discountMoney;
 
-    @JacksonXmlProperty(localName = "taxamount")
+    @JsonProperty("taxamount")
     private BigDecimal taxAmount;
 
-    @JacksonXmlProperty(localName = "refundStatus")
+    @JsonProperty("refundStatus")
     private String refundStatus;
 
-    @JacksonXmlProperty(localName = "Status")
+    @JsonProperty("Status")
     private String Status;
 
 }

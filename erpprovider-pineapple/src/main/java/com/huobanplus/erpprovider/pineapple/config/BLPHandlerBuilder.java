@@ -1,14 +1,17 @@
 package com.huobanplus.erpprovider.pineapple.config;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.pineapple.bean.BLPSysData;
-import com.huobanplus.erpprovider.pineapple.exceptionhandler.BLPExceptionHandler;
 import com.huobanplus.erpprovider.pineapple.handler.BLPOrderHandler;
+import com.huobanplus.erpprovider.pineapple.handler.BLPProductHandler;
 import com.huobanplus.erpprovider.pineapple.util.BLPConstant;
 import com.huobanplus.erpservice.common.util.SignBuilder;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
+import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
+import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPSysDataInfoService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
@@ -19,6 +22,7 @@ import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +35,7 @@ import java.util.TreeMap;
 /**
  * Created by hxh on 2017-06-06.
  */
+@Component
 public class BLPHandlerBuilder implements ERPHandlerBuilder {
 
     @Autowired
@@ -41,6 +46,12 @@ public class BLPHandlerBuilder implements ERPHandlerBuilder {
 
     @Autowired
     private BLPOrderHandler blpOrderHandler;
+
+    @Autowired
+    private BLPProductHandler blpProductHandler;
+
+    @Autowired
+    private ERPBaseConfigService erpBaseConfigService;
 
     /**
      * 根据erp信息判断是否由该erp-provider处理
@@ -62,7 +73,7 @@ public class BLPHandlerBuilder implements ERPHandlerBuilder {
                     String method = request.getParameter("method");
                     String requestSign = request.getParameter("sign");
                     if (StringUtils.isEmpty(requestSign)) {
-                        return BLPExceptionHandler.handleException(method, EventResultEnum.NO_SIGN, "签名参数未传");
+                        return EventResult.resultWith(EventResultEnum.NO_SIGN,"sign签名未传");
                     }
                     //签名验证
                     Map<String, String[]> paramMap = request.getParameterMap();
@@ -84,25 +95,57 @@ public class BLPHandlerBuilder implements ERPHandlerBuilder {
                     try {
                         sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, appSecret);
                     } catch (UnsupportedEncodingException e) {
-                        return BLPExceptionHandler.handleException(method, EventResultEnum.ERROR, e.getMessage());
+                        return EventResult.resultWith(EventResultEnum.WRONG_SIGN,"签名格式不对");
                     }
                     if (sign.toLowerCase().equals(requestSign)) {
                         //开始处理
                         //得到erpUserInfo
                         ERPUserInfo erpUserInfo = new ERPUserInfo(erpUserType, erpDetailConfig.getCustomerId());
+                        String requestData = "";
+                        JSONObject json = null;
                         switch (method) {
                             case BLPConstant.OBTAIN_ORDER_LIST:
-                                int orderStatus = Integer.parseInt(request.getParameter("OrderStatus"));
-                                int pageSize = Integer.parseInt(request.getParameter("PageSize"));
-                                Integer pageIndex = Integer.parseInt(request.getParameter("PageIndex"));
-                                String platOrderNo = request.getParameter("PlatOrderNo");
-                                String startTime = request.getParameter("StartTime");
-                                String endTime = request.getParameter("EndTime");
+                                /**获取请求参数*/
+                                requestData = request.getParameter("bizcontent");
+                                json = JSONObject.parseObject(requestData);
+                                int orderStatus = Integer.parseInt(json.getString("OrderStatus"));
+                                int pageSize = Integer.parseInt(json.getString("PageSize"));
+                                Integer pageIndex = Integer.parseInt(json.getString("PageIndex"));
+                                String platOrderNo = json.getString("PlatOrderNo");
+                                String startTime = json.getString("StartTime");
+                                String endTime = json.getString("EndTime");
                                 return blpOrderHandler.obtainOrderInfoList(platOrderNo, orderStatus, pageSize, pageIndex, startTime, method, erpUserInfo, endTime);
+                            case BLPConstant.SYNC_STOCK:
+                                ERPBaseConfigEntity erpBaseConfigEntity = erpBaseConfigService.findByCustomerId(erpDetailConfig.getCustomerId(), erpUserType);
+                                /**判断是否开启库存同步*/
+                                if (erpBaseConfigEntity.getIsSyncInventory() == 1) {
+                                    /**获取请求参数*/
+                                    requestData = request.getParameter("bizcontent");
+                                    json = JSONObject.parseObject(requestData);
+                                    String platProductId = json.getString("PlatProductID");
+                                    String skuId = json.getString("PlatProductID");
+                                    String outId = json.getString("OuterID");
+                                    int quantity = Integer.parseInt(json.getString("Quantity"));
+                                    String outSkuId = json.getString("OutSkuID");
+                                    return blpProductHandler.syncStock(platProductId, skuId, outId, outSkuId, quantity, erpUserInfo, method);
+                                } else {
+                                    return EventResult.resultWith(EventResultEnum.ERROR, "平台未开启库存同步");
+                                }
+                            case BLPConstant.DELIVER_INFO:
+                                /**获取请求参数*/
+                                requestData = request.getParameter("bizcontent");
+                                json = JSONObject.parseObject(requestData);
+                                String orderId = json.getString("PlatOrderNo");
+                                String logiName = json.getString("LogisticName");
+                                String logiNo = json.getString("LogisticNo");
+                                if (StringUtils.isEmpty(orderId)) {
+                                    return EventResult.resultWith(EventResultEnum.BAD_REQUEST_PARAM,"订单号未传");
+                                }
+                                return blpOrderHandler.deliverOrder(orderId, logiName, logiNo, erpUserInfo, method);
                         }
-                        return BLPExceptionHandler.handleException(method, EventResultEnum.NO_DATA, "未找到数据源信息");
+                        return EventResult.resultWith(EventResultEnum.NO_DATA,"未找到数据源信息");
                     } else {
-                        return BLPExceptionHandler.handleException(method, EventResultEnum.WRONG_SIGN, "签名错误");
+                        return EventResult.resultWith(EventResultEnum.WRONG_SIGN,"签名错误");
                     }
                 }
             };
