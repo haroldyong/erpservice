@@ -1,6 +1,6 @@
 package com.huobanplus.erpprovider.pineapple.bean;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.List;
@@ -11,15 +11,16 @@ import java.util.List;
 @Data
 public class BLPOrderListResult {
 
-    @JsonProperty("OrderNos")
+
+    @JSONField(name = "OrderNos")
     private List<String> orderNos;
 
-    @JsonProperty("Page")
+    @JSONField(name = "Page")
     private int page;
 
-    @JsonProperty("Size")
+    @JSONField(name = "Size")
     private int size;
 
-    @JsonProperty("numtotalorder")
+    @JSONField(name = "numtotalorder")
     private int numTotalOrder;
 }

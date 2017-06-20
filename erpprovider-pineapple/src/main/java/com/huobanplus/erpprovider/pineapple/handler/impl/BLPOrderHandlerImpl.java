@@ -1,7 +1,7 @@
 package com.huobanplus.erpprovider.pineapple.handler.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.pineapple.bean.BLPOrderDetailResult;
 import com.huobanplus.erpprovider.pineapple.bean.BLPOrderItemResult;
 import com.huobanplus.erpprovider.pineapple.bean.BLPOrderListResult;
@@ -45,7 +45,7 @@ public class BLPOrderHandlerImpl implements BLPOrderHandler {
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         //得到erp使用者的事件处理器
         if (erpUserHandler == null) {
-            return EventResult.resultWith(EventResultEnum.NO_DATA, "未找到数据源信息");
+            return EventResult.resultWith(EventResultEnum.NO_DATA, "未找到数据源信息", null);
         }
         /**判断是否查询单个订单*/
         if (!StringUtils.isEmpty(platOrderNo)) {
@@ -56,7 +56,7 @@ public class BLPOrderHandlerImpl implements BLPOrderHandler {
             /**获取订单*/
             EventResult eventResult = erpUserHandler.handleEvent(orderDetailEvent);
             if (eventResult == null) {
-                return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件");
+                return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件", null);
             }
             if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
                 return EventResult.resultWith(EventResultEnum.ERROR, eventResult.getResultMsg());
@@ -108,12 +108,7 @@ public class BLPOrderHandlerImpl implements BLPOrderHandler {
                 orderItemResult.setRefundStatus(item.getRefundStatus() + "");
             });
             orderDetailResult.setGoodInfoList(orderItemResults);
-            String resultString = null;
-            try {
-                resultString = new ObjectMapper().writeValueAsString(orderDetailResult);
-            } catch (JsonProcessingException e) {
-                return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage());
-            }
+            String resultString = JSON.toJSONString(orderDetailResult);
             return EventResult.resultWith(EventResultEnum.SUCCESS, resultString);
         } else {
             /**查询订单列表*/
@@ -153,12 +148,7 @@ public class BLPOrderHandlerImpl implements BLPOrderHandler {
             orderListResult.setPage(orderListInfo.getPageIndex());
             orderListResult.setSize(orderListInfo.getPageSize());
             orderListResult.setOrderNos(orderIdList);
-            String orderResultString = null;
-            try {
-                orderResultString = new ObjectMapper().writeValueAsString(orderListResult);
-            } catch (JsonProcessingException e) {
-                return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage());
-            }
+            String orderResultString = JSON.toJSONString(orderListResult);
             return EventResult.resultWith(EventResultEnum.SUCCESS, orderResultString);
         }
     }
@@ -168,7 +158,7 @@ public class BLPOrderHandlerImpl implements BLPOrderHandler {
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         //得到erp使用者的事件处理器
         if (erpUserHandler == null) {
-            return EventResult.resultWith(EventResultEnum.NO_DATA, "未找到数据源信息");
+            return EventResult.resultWith(EventResultEnum.NO_DATA, "未找到数据源信息", null);
         }
         /**查询单个订单*/
         GetOrderDetailEvent orderDetailEvent = new GetOrderDetailEvent();
@@ -176,7 +166,7 @@ public class BLPOrderHandlerImpl implements BLPOrderHandler {
         orderDetailEvent.setOrderId(OrderId);
         EventResult eventResult = erpUserHandler.handleEvent(orderDetailEvent);
         if (eventResult == null) {
-            return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件");
+            return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件", null);
         }
         if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
             return EventResult.resultWith(EventResultEnum.ERROR, eventResult.getResultMsg());
@@ -191,7 +181,7 @@ public class BLPOrderHandlerImpl implements BLPOrderHandler {
     public EventResult deliverOrder(String orderId, String logiName, String logiNo, ERPUserInfo erpUserInfo, String method) {
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {
-            return EventResult.resultWith(EventResultEnum.NO_DATA, "未找到数据源");
+            return EventResult.resultWith(EventResultEnum.NO_DATA, "未找到数据源", null);
         }
         PushDeliveryInfoEvent pushDeliveryInfoEvent = new PushDeliveryInfoEvent();
         OrderDeliveryInfo orderDeliveryInfo = new OrderDeliveryInfo();
@@ -202,12 +192,14 @@ public class BLPOrderHandlerImpl implements BLPOrderHandler {
         pushDeliveryInfoEvent.setErpUserInfo(erpUserInfo);
         EventResult eventResult = erpUserHandler.handleEvent(pushDeliveryInfoEvent);
         if (eventResult == null) {
-            return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件");
+            return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件", null);
         }
         if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
             return EventResult.resultWith(EventResultEnum.ERROR, eventResult.getResultMsg());
         }
-        return EventResult.resultWith(EventResultEnum.SUCCESS, "发货成功");
+        JSONObject jsonResult = new JSONObject();
+        jsonResult.put("message", "发货成功");
+        return EventResult.resultWith(EventResultEnum.SUCCESS, "发货成功", jsonResult.toJSONString());
     }
 
 }

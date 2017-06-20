@@ -1,6 +1,6 @@
 package com.huobanplus.erpprovider.pineapple.bean;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -10,40 +10,40 @@ import java.math.BigDecimal;
  */
 @Data
 public class BLPOrderItemResult {
-    @JsonProperty("ProductId")
+    @JSONField(name = "ProductId")
     private String ProductId;
 
-    @JsonProperty("suborderno")
+    @JSONField(name = "suborderno")
     private String suborderNo;
 
-    @JsonProperty("tradegoodsno")
+    @JSONField(name = "tradegoodsno")
     private String tradeGoodsNo;
 
-    @JsonProperty("tradegoodsname")
+    @JSONField(name = "tradegoodsname")
     private String tradeGoodsName;
 
-    @JsonProperty("tradegoodsspec")
+    @JSONField(name = "tradegoodsspec")
     private String tradeGoodsSpec;
 
-    @JsonProperty("goodscount")
+    @JSONField(name = "goodscount")
     private int goodsCount;
 
-    @JsonProperty("Remark")
+    @JSONField(name = "Remark")
     private String remark;
 
-    @JsonProperty("price")
+    @JSONField(name = "price")
     private BigDecimal price;
 
-    @JsonProperty("discountmoney")
+    @JSONField(name = "discountmoney")
     private BigDecimal discountMoney;
 
-    @JsonProperty("taxamount")
+    @JSONField(name = "taxamount")
     private BigDecimal taxAmount;
 
-    @JsonProperty("refundStatus")
+    @JSONField(name = "refundStatus")
     private String refundStatus;
 
-    @JsonProperty("Status")
+    @JSONField(name = "Status")
     private String Status;
 
 }

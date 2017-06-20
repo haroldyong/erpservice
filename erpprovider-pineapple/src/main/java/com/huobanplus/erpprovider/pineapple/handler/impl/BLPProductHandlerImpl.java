@@ -28,7 +28,7 @@ public class BLPProductHandlerImpl implements BLPProductHandler {
     public EventResult syncStock(String platProductID, String skuId, String outerId, String outSkuId, int quantity, ERPUserInfo erpUserInfo, String method) {
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
         if (erpUserHandler == null) {
-            return EventResult.resultWith(EventResultEnum.NO_DATA, "未找到数据源信息");
+            return EventResult.resultWith(EventResultEnum.NO_DATA, "未找到数据源信息", null);
         }
         SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
         syncInventoryEvent.setErpUserInfo(erpUserInfo);
@@ -40,7 +40,7 @@ public class BLPProductHandlerImpl implements BLPProductHandler {
         syncInventoryEvent.setInventoryInfoList(inventoryInfoList);
         EventResult eventResult = erpUserHandler.handleEvent(syncInventoryEvent);
         if (eventResult == null) {
-            return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件");
+            return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件", null);
         }
         if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
             return EventResult.resultWith(EventResultEnum.ERROR, eventResult.getResultMsg());

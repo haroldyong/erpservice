@@ -143,7 +143,7 @@ public class BLPHandlerBuilder implements ERPHandlerBuilder {
                                 }
                                 return blpOrderHandler.deliverOrder(orderId, logiName, logiNo, erpUserInfo, method);
                         }
-                        return EventResult.resultWith(EventResultEnum.NO_DATA,"未找到数据源信息");
+                        return EventResult.resultWith(EventResultEnum.NO_DATA,"未找到数据源信息",null);
                     } else {
                         return EventResult.resultWith(EventResultEnum.WRONG_SIGN,"签名错误");
                     }

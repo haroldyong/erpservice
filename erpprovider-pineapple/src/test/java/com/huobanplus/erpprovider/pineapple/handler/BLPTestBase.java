@@ -1,8 +1,9 @@
 package com.huobanplus.erpprovider.pineapple.handler;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huobanplus.erpprovider.pineapple.bean.BLPOrderDetailResult;
+import com.huobanplus.erpprovider.pineapple.config.BLPConfig;
 import com.huobanplus.erpprovider.pineapple.config.BLPTestConfig;
 import com.huobanplus.erpprovider.pineapple.util.BLPConstant;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
@@ -29,6 +30,7 @@ public class BLPTestBase {
     private BLPOrderHandler blpOrderHandler;
     @Test
     public void test1(){
+        BLPConfig blpConfig = new BLPConfig();
         ERPUserInfo erpUserInfo = new ERPUserInfo();
         erpUserInfo.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);
         erpUserInfo.setCustomerId(7297);
@@ -41,7 +43,8 @@ public class BLPTestBase {
         blpOrderDetailResult.setNick("11");
         blpOrderDetailResult.setTradeStatus("2");
         blpOrderDetailResult.setCardType("3");
-        String s = new ObjectMapper().writeValueAsString(blpOrderDetailResult);
+        blpOrderDetailResult.setTradeStatusDescription("djsa");
+        String s = JSON.toJSONString(blpOrderDetailResult);
         System.out.println(s);
     }
 
