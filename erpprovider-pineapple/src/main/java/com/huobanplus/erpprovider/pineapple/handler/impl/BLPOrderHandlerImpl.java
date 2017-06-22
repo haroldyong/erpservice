@@ -12,11 +12,14 @@ import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderListInfo;
+import com.huobanplus.erpservice.datacenter.model.OrderRemarkUpdateInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
+import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailListEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRemarkUpdate;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -39,6 +42,9 @@ import java.util.List;
 public class BLPOrderHandlerImpl implements BLPOrderHandler {
     @Autowired
     private ERPRegister erpRegister;
+
+    @Autowired
+    private OrderDetailSyncLogService orderDetailSyncLogService;
 
     @Override
     public EventResult obtainOrderInfoList(String platOrderNo, int orderStatus, int pageSize, Integer pageIndex, String startTime, String method, ERPUserInfo erpUserInfo, String endTime) {
@@ -188,5 +194,47 @@ public class BLPOrderHandlerImpl implements BLPOrderHandler {
             return EventResult.resultWith(EventResultEnum.ERROR, "服务器错误" + e.getMessage(), null);
         }
     }
+
+
+    @Override
+    public EventResult  updateSellerMemo(String platOrderNo, String sellerMemo, String sellerFlag, ERPUserInfo erpUserInfo, String method) {
+        try {
+            ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+            if (erpUserHandler == null){
+                return EventResult.resultWith(EventResultEnum.NO_DATA,"未找到数据源");
+            }
+            OrderRemarkUpdate orderRemarkUpdate = new OrderRemarkUpdate();
+            OrderRemarkUpdateInfo orderRemarkUpdateInfo = new OrderRemarkUpdateInfo();
+            orderRemarkUpdateInfo.setOrderId(platOrderNo);
+            orderRemarkUpdateInfo.setRemark(sellerMemo);
+            orderRemarkUpdateInfo.setRemark(sellerFlag);
+            orderRemarkUpdate.setOrderRemarkUpdateInfo(orderRemarkUpdateInfo);
+            orderRemarkUpdate.setErpUserInfo(erpUserInfo);
+            EventResult eventResultRemark = erpUserHandler.handleEvent(orderRemarkUpdate);
+            if (eventResultRemark == null){
+                return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件");
+            }
+            if (eventResultRemark.getResultCode() != EventResultEnum.SUCCESS.getResultCode()){
+                return EventResult.resultWith(EventResultEnum.ERROR, eventResultRemark.getResultMsg());
+            }
+            return EventResult.resultWith(EventResultEnum.SUCCESS, "发货成功");
+        }catch (Exception e){
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage());
+        }
+    }
+
+ /*   *//**
+     * 日志记录
+     *
+     * @param orderInfo
+     * @param erpUserInfo
+     * @param erpInfo
+     * @param pushNewOrderEvent
+     * @param isSuccess
+     * @param errorMsg
+     *//*
+    private void saveLog(Order orderInfo, ERPUserInfo erpUserInfo, ERPInfo erpInfo, PushNewOrderEvent pushNewOrderEvent, boolean isSuccess, String errorMsg) {
+
+    }*/
 
 }
