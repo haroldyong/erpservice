@@ -3,7 +3,6 @@ package com.huobanplus.erpprovider.pineapple.handler;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.huobanplus.erpprovider.pineapple.bean.BLPOrderDetailResult;
-import com.huobanplus.erpprovider.pineapple.config.BLPConfig;
 import com.huobanplus.erpprovider.pineapple.config.BLPTestConfig;
 import com.huobanplus.erpprovider.pineapple.util.BLPConstant;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
@@ -28,17 +27,24 @@ public class BLPTestBase {
 
     @Autowired
     private BLPOrderHandler blpOrderHandler;
+
+    @Autowired
+    private BLPProductHandler blpProductHandler;
+
     @Test
-    public void test1(){
-        BLPConfig blpConfig = new BLPConfig();
+    public void testObtainOrderInfo() {
+//        BLPConfig blpConfig = new BLPConfig();
         ERPUserInfo erpUserInfo = new ERPUserInfo();
         erpUserInfo.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);
-        erpUserInfo.setCustomerId(7297);
-        EventResult eventResult = blpOrderHandler.obtainOrderInfoList("20182270207", 1, 10, 1, "2016-07-26 10:59:10", BLPConstant.OBTAIN_ORDER_LIST, erpUserInfo, "2016-08-02 10:59:10");
+        erpUserInfo.setCustomerId(3447);
+        EventResult eventResult = blpOrderHandler.obtainOrderInfoList("20170620701474696543", 1, 10, 1, "2016-07-26 10:59:10", BLPConstant.OBTAIN_ORDER_LIST, erpUserInfo, "2016-08-02 10:59:10");
         System.out.println(eventResult.getData());
+        EventResult eventResult1 = blpOrderHandler.obtainOrderInfoList("", 1, 20, 1, "", BLPConstant.OBTAIN_ORDER_LIST, erpUserInfo, "");
+        System.out.println(eventResult1.getData());
     }
+
     @Test
-    public void test2() throws JsonProcessingException {
+    public void testJson() throws JsonProcessingException {
         BLPOrderDetailResult blpOrderDetailResult = new BLPOrderDetailResult();
         blpOrderDetailResult.setNick("11");
         blpOrderDetailResult.setTradeStatus("2");
@@ -46,6 +52,25 @@ public class BLPTestBase {
         blpOrderDetailResult.setTradeStatusDescription("djsa");
         String s = JSON.toJSONString(blpOrderDetailResult);
         System.out.println(s);
+    }
+
+    @Test
+    public void testDeliverInfo() {
+        ERPUserInfo erpUserInfo = new ERPUserInfo();
+        erpUserInfo.setErpUserType(ERPTypeEnum.UserType.HUOBAN_SUPPLIER);
+        erpUserInfo.setCustomerId(3447);
+        EventResult eventResult = blpOrderHandler.deliverOrder("20170613125629896564 ", "顺风", "WR6685851555", erpUserInfo, BLPConstant.DELIVER_INFO);
+        System.out.println(eventResult.getData());
+    }
+
+    @Test
+    public void testSynStock() {
+        ERPUserInfo erpUserInfo = new ERPUserInfo();
+        erpUserInfo.setErpUserType(ERPTypeEnum.UserType.HUOBAN_SUPPLIER);
+        erpUserInfo.setCustomerId(3447);
+        EventResult eventResult = blpProductHandler.syncStock("20170620701474696543", 10, erpUserInfo, BLPConstant.SYNC_STOCK);
+        System.out.println(eventResult.getData());
+
     }
 
 }

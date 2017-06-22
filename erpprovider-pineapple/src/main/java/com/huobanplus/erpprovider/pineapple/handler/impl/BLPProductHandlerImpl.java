@@ -25,28 +25,32 @@ public class BLPProductHandlerImpl implements BLPProductHandler {
     private ERPRegister erpRegister;
 
     @Override
-    public EventResult syncStock(String platProductID, String skuId, String outerId, String outSkuId, int quantity, ERPUserInfo erpUserInfo, String method) {
-        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-        if (erpUserHandler == null) {
-            return EventResult.resultWith(EventResultEnum.NO_DATA, "未找到数据源信息", null);
+    public EventResult syncStock(String platProductId, int quantity, ERPUserInfo erpUserInfo, String method) {
+        try {
+            ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+            if (erpUserHandler == null) {
+                return EventResult.resultWith(EventResultEnum.NO_DATA, "未找到数据源信息", null);
+            }
+            SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
+            syncInventoryEvent.setErpUserInfo(erpUserInfo);
+            List<ProInventoryInfo> inventoryInfoList = new ArrayList<>();
+            ProInventoryInfo proInventoryInfo = new ProInventoryInfo();
+            proInventoryInfo.setInventory(quantity);
+            proInventoryInfo.setSalableInventory(quantity);
+            inventoryInfoList.add(proInventoryInfo);
+            syncInventoryEvent.setInventoryInfoList(inventoryInfoList);
+            EventResult eventResult = erpUserHandler.handleEvent(syncInventoryEvent);
+            if (eventResult == null) {
+                return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件", null);
+            }
+            if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
+                return EventResult.resultWith(EventResultEnum.ERROR, eventResult.getResultMsg());
+            }
+            JSONObject resultJson = new JSONObject();
+            resultJson.put("Quantity", quantity);
+            return EventResult.resultWith(EventResultEnum.SUCCESS, "库存同步成功", resultJson.toJSONString());
+        } catch (Exception e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, "服务器错误" + e.getMessage(), null);
         }
-        SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
-        syncInventoryEvent.setErpUserInfo(erpUserInfo);
-        List<ProInventoryInfo> inventoryInfoList = new ArrayList<>();
-        ProInventoryInfo proInventoryInfo = new ProInventoryInfo();
-        proInventoryInfo.setInventory(quantity);
-        proInventoryInfo.setSalableInventory(quantity);
-        inventoryInfoList.add(proInventoryInfo);
-        syncInventoryEvent.setInventoryInfoList(inventoryInfoList);
-        EventResult eventResult = erpUserHandler.handleEvent(syncInventoryEvent);
-        if (eventResult == null) {
-            return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT, "不支持的ERP事件", null);
-        }
-        if (eventResult.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
-            return EventResult.resultWith(EventResultEnum.ERROR, eventResult.getResultMsg());
-        }
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("Quantity", quantity);
-        return EventResult.resultWith(EventResultEnum.SUCCESS, resultJson.toJSONString());
     }
 }
