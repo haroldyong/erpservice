@@ -23,15 +23,6 @@ public interface BLPOrderHandler {
      */
     EventResult obtainOrderInfoList(String platOrderNo,int orderStatus, int pageSize, Integer pageIndex, String startTime,String method,ERPUserInfo erpUserInfo, String endTime);
 
-    /**
-     * 退款检测
-     *
-     * @param OrderId
-     * @param erpUserInfo
-     * @param method
-     * @return
-     */
-    EventResult refundCheck(String OrderId,ERPUserInfo erpUserInfo, String method);
 
     /**
      *订单发货
@@ -44,4 +35,18 @@ public interface BLPOrderHandler {
      * @return
      */
     EventResult deliverOrder(String orderId, String logiName, String logiNo, ERPUserInfo erpUserInfo, String method);
+
+
+    /**
+     * 修改订单备注
+     *
+     * @param platOrderNo 平台订单号
+     * @param sellerMemo 卖家交易备注
+     * @param sellerFlag 卖家旗帜
+     * @param method    方法名
+     * @param erpUserInfo erp使用者信息
+     * @return
+     */
+    EventResult updateSellerMemo(String platOrderNo, String sellerMemo, String sellerFlag, ERPUserInfo erpUserInfo,String method);
+
 }

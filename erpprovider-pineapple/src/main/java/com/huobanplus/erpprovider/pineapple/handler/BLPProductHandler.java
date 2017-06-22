@@ -13,8 +13,8 @@ public interface BLPProductHandler {
      * @param platProductID 平台商品ID
      * @param skuId         平台子规格ID
      * @param outerId       外部商家编码
-     * @param outSkuId      库存数量
-     * @param quantity      外部商家SKU编号
+     * @param outSkuId      外部商家SKU编号
+     * @param quantity      库存数量
      * @param erpUserInfo   erp使用者这信息
      * @param method        调用方法名
      * @return

@@ -277,4 +277,21 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
+
+    @Override
+    public EventResult orderRemarkUpdate(OrderRemarkUpdateInfo orderRemarkUpdateInfo, ERPUserInfo erpUserInfo) {
+        Map<String,Object> signMap = HBConstant.buildSignMap(orderRemarkUpdateInfo);
+        signMap.put("customerId",erpUserInfo.getCustomerId());
+        signMap.put("erpUserType", erpUserInfo.getErpUserType().getCode());
+        signMap.put("timestamp",new Date().getTime());
+        try {
+            String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
+            Map<String,Object> requestMap = new HashMap<>(signMap);
+            requestMap.put("sign",sign);
+
+        }catch (Exception e){
+            //TODO 修改订单备注
+        }
+        return null;
+    }
 }

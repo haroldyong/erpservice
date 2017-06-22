@@ -1,6 +1,6 @@
 package com.huobanplus.erpprovider.pineapple.bean;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,118 +11,118 @@ import java.util.List;
  */
 @Data
 public class BLPOrderDetailResult {
-    @JsonProperty("PlatOrderNo")
+    @JSONField(name="PlatOrderNo")
     private String PlatOrderNo;
 
-    @JsonProperty("tradeStatus")
+    @JSONField(name="tradeStatus")
     private String tradeStatus;
 
-    @JsonProperty("tradeStatusdescription")
+    @JSONField(name="tradeStatusdescription")
     private String tradeStatusDescription;
 
-    @JsonProperty("tradetime")
+    @JSONField(name="tradetime")
     private String tradeTime;
 
-    @JsonProperty("payorderno")
+    @JSONField(name="payorderno")
     private String payOrderNo;
 
-    @JsonProperty("address")
+    @JSONField(name="address")
     private String address;
 
-    @JsonProperty("zip")
+    @JSONField(name="zip")
     private String zip;
 
-    @JsonProperty("phone")
+    @JSONField(name="phone")
     private String phone;
 
-    @JsonProperty("country")
+    @JSONField(name="country")
     private String country;
 
-    @JsonProperty("province")
+    @JSONField(name="province")
     private String province;
 
-    @JsonProperty("city")
+    @JSONField(name="city")
     private String city;
 
-    @JsonProperty("town")
+    @JSONField(name="town")
     private String town;
 
-    @JsonProperty("area")
+    @JSONField(name="area")
     private String area;
 
-    @JsonProperty("mobile")
+    @JSONField(name="mobile")
     private String mobile;
 
-    @JsonProperty("email")
+    @JSONField(name="email")
     private String email;
 
-    @JsonProperty("customerremark")
+    @JSONField(name="customerremark")
     private String customerRemark;
 
-    @JsonProperty("sellerremark")
+    @JSONField(name="sellerremark")
     private double sellerRemark;
 
-    @JsonProperty("postfee")
+    @JSONField(name="postfee")
     private BigDecimal postFee;
 
-    @JsonProperty("goodsfee")
+    @JSONField(name="goodsfee")
     private BigDecimal goodsFee;
 
-    @JsonProperty("totalmoney")
+    @JSONField(name="totalmoney")
     private BigDecimal totalMoney;
 
-    @JsonProperty("favourablemoney")
+    @JSONField(name="favourablemoney")
     private BigDecimal favourableMoney;
 
-    @JsonProperty("commissionvalue")
+    @JSONField(name="commissionvalue")
     private BigDecimal commissionValue;
 
-    @JsonProperty("taxamount")
+    @JSONField(name="taxamount")
     private BigDecimal taxAmount;
 
-    @JsonProperty("tariffamount")
+    @JSONField(name="tariffamount")
     private BigDecimal tariffAmount;
 
-    @JsonProperty("addedvalueamount")
+    @JSONField(name="addedvalueamount")
     private BigDecimal addedValueAmount;
 
-    @JsonProperty("consumptiondutyamount")
+    @JSONField(name="consumptiondutyamount")
     private BigDecimal consumptionDutyAmount;
 
-    @JsonProperty("sendstyle")
+    @JSONField(name="sendstyle")
     private String sendStyle;
 
-    @JsonProperty("qq")
+    @JSONField(name="qq")
     private String qq;
 
-    @JsonProperty("paytime")
+    @JSONField(name="paytime")
     private String payTime;
 
-    @JsonProperty("invoicetitle")
+    @JSONField(name="invoicetitle")
     private String invoiceTitle;
 
-    @JsonProperty("codservicefee")
+    @JSONField(name="codservicefee")
     private BigDecimal codServiceFee;
 
-    @JsonProperty("cardtype")
+    @JSONField(name="cardtype")
     private String cardType;
 
-    @JsonProperty("idcard")
+    @JSONField(name="idcard")
     private String idCard;
 
-    @JsonProperty("idcardtruename")
+    @JSONField(name="idcardtruename")
     private String idCardTrueName;
 
-    @JsonProperty("receivername")
+    @JSONField(name="receivername")
     private String receiverName;
 
-    @JsonProperty("nick")
+    @JSONField(name="nick")
     private String nick;
 
-    @JsonProperty("ShouldPayType")
+    @JSONField(name="ShouldPayType")
     private String ShouldPayType;
 
-    @JsonProperty("goodinfos")
+    @JSONField(name="goodinfos")
     private List<BLPOrderItemResult> goodInfoList;
 
 }
