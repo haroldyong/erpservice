@@ -11,118 +11,118 @@ import java.util.List;
  */
 @Data
 public class BLPOrderDetailResult {
-    @JSONField(name="PlatOrderNo")
+    @JSONField(name = "PlatOrderNo")
     private String PlatOrderNo;
 
-    @JSONField(name="tradeStatus")
+    @JSONField(name = "tradeStatus")
     private String tradeStatus;
 
-    @JSONField(name="tradeStatusdescription")
+    @JSONField(name = "tradeStatusdescription")
     private String tradeStatusDescription;
 
-    @JSONField(name="tradetime")
+    @JSONField(name = "tradetime")
     private String tradeTime;
 
-    @JSONField(name="payorderno")
+    @JSONField(name = "payorderno")
     private String payOrderNo;
 
-    @JSONField(name="address")
+    @JSONField(name = "address")
     private String address;
 
-    @JSONField(name="zip")
+    @JSONField(name = "zip")
     private String zip;
 
-    @JSONField(name="phone")
+    @JSONField(name = "phone")
     private String phone;
 
-    @JSONField(name="country")
+    @JSONField(name = "country")
     private String country;
 
-    @JSONField(name="province")
+    @JSONField(name = "province")
     private String province;
 
-    @JSONField(name="city")
+    @JSONField(name = "city")
     private String city;
 
-    @JSONField(name="town")
+    @JSONField(name = "town")
     private String town;
 
-    @JSONField(name="area")
+    @JSONField(name = "area")
     private String area;
 
-    @JSONField(name="mobile")
+    @JSONField(name = "mobile")
     private String mobile;
 
-    @JSONField(name="email")
+    @JSONField(name = "email")
     private String email;
 
-    @JSONField(name="customerremark")
+    @JSONField(name = "customerremark")
     private String customerRemark;
 
-    @JSONField(name="sellerremark")
+    @JSONField(name = "sellerremark")
     private double sellerRemark;
 
-    @JSONField(name="postfee")
+    @JSONField(name = "postfee")
     private BigDecimal postFee;
 
-    @JSONField(name="goodsfee")
+    @JSONField(name = "goodsfee")
     private BigDecimal goodsFee;
 
-    @JSONField(name="totalmoney")
+    @JSONField(name = "totalmoney")
     private BigDecimal totalMoney;
 
-    @JSONField(name="favourablemoney")
+    @JSONField(name = "favourablemoney")
     private BigDecimal favourableMoney;
 
-    @JSONField(name="commissionvalue")
+    @JSONField(name = "commissionvalue")
     private BigDecimal commissionValue;
 
-    @JSONField(name="taxamount")
+    @JSONField(name = "taxamount")
     private BigDecimal taxAmount;
 
-    @JSONField(name="tariffamount")
+    @JSONField(name = "tariffamount")
     private BigDecimal tariffAmount;
 
-    @JSONField(name="addedvalueamount")
+    @JSONField(name = "addedvalueamount")
     private BigDecimal addedValueAmount;
 
-    @JSONField(name="consumptiondutyamount")
+    @JSONField(name = "consumptiondutyamount")
     private BigDecimal consumptionDutyAmount;
 
-    @JSONField(name="sendstyle")
+    @JSONField(name = "sendstyle")
     private String sendStyle;
 
-    @JSONField(name="qq")
+    @JSONField(name = "qq")
     private String qq;
 
-    @JSONField(name="paytime")
+    @JSONField(name = "paytime")
     private String payTime;
 
-    @JSONField(name="invoicetitle")
+    @JSONField(name = "invoicetitle")
     private String invoiceTitle;
 
-    @JSONField(name="codservicefee")
+    @JSONField(name = "codservicefee")
     private BigDecimal codServiceFee;
 
-    @JSONField(name="cardtype")
+    @JSONField(name = "cardtype")
     private String cardType;
 
-    @JSONField(name="idcard")
+    @JSONField(name = "idcard")
     private String idCard;
 
-    @JSONField(name="idcardtruename")
+    @JSONField(name = "idcardtruename")
     private String idCardTrueName;
 
-    @JSONField(name="receivername")
+    @JSONField(name = "receivername")
     private String receiverName;
 
-    @JSONField(name="nick")
+    @JSONField(name = "nick")
     private String nick;
 
-    @JSONField(name="ShouldPayType")
+    @JSONField(name = "ShouldPayType")
     private String ShouldPayType;
 
-    @JSONField(name="goodinfos")
+    @JSONField(name = "goodinfos")
     private List<BLPOrderItemResult> goodInfoList;
 
 }

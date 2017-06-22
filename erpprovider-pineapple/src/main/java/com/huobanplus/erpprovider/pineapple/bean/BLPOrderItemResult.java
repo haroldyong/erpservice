@@ -10,40 +10,40 @@ import java.math.BigDecimal;
  */
 @Data
 public class BLPOrderItemResult {
-    @JSONField(name="ProductId")
+    @JSONField(name = "ProductId")
     private String ProductId;
 
-    @JSONField(name="suborderno")
+    @JSONField(name = "suborderno")
     private String suborderNo;
 
-    @JSONField(name="tradegoodsno")
+    @JSONField(name = "tradegoodsno")
     private String tradeGoodsNo;
 
-    @JSONField(name="tradegoodsname")
+    @JSONField(name = "tradegoodsname")
     private String tradeGoodsName;
 
-    @JSONField(name="tradegoodsspec")
+    @JSONField(name = "tradegoodsspec")
     private String tradeGoodsSpec;
 
-    @JSONField(name="goodscount")
+    @JSONField(name = "goodscount")
     private int goodsCount;
 
-    @JSONField(name="Remark")
+    @JSONField(name = "Remark")
     private String remark;
 
-    @JSONField(name="price")
+    @JSONField(name = "price")
     private BigDecimal price;
 
-    @JSONField(name="discountmoney")
+    @JSONField(name = "discountmoney")
     private BigDecimal discountMoney;
 
-    @JSONField(name="taxamount")
+    @JSONField(name = "taxamount")
     private BigDecimal taxAmount;
 
-    @JSONField(name="refundStatus")
+    @JSONField(name = "refundStatus")
     private String refundStatus;
 
-    @JSONField(name="Status")
+    @JSONField(name = "Status")
     private String Status;
 
 }

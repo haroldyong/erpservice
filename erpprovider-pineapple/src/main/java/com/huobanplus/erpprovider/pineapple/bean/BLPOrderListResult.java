@@ -11,15 +11,15 @@ import java.util.List;
 @Data
 public class BLPOrderListResult {
 
-    @JSONField(name="OrderNos")
+    @JSONField(name = "OrderNos")
     private List<String> orderNos;
 
-    @JSONField(name="Page")
+    @JSONField(name = "Page")
     private int page;
 
-    @JSONField(name="Size")
+    @JSONField(name = "Size")
     private int size;
 
-    @JSONField(name="numtotalorder")
+    @JSONField(name = "numtotalorder")
     private int numTotalOrder;
 }
