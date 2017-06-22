@@ -86,7 +86,7 @@ public class BLPHandlerBuilder implements ERPHandlerBuilder {
                             return str1.toLowerCase().compareTo(str2.toLowerCase());
                         }
                     });
-                    //根据akkKey查询指定erp信息
+                    //根据appKey查询指定erp信息
                     List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserTypeAndParamNameAndParamVal(providerType, erpUserType, "appkey", paramMap.get("appkey")[0]);
                     ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
                     BLPSysData blpSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), BLPSysData.class);
