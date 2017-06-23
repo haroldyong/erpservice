@@ -10,5 +10,5 @@ public class BLPSysData {
     private String appKey;
     private String token;
     private String bizContent;
-    private String appSecret;
+    private String sign;
 }

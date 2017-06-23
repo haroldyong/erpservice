@@ -22,7 +22,7 @@
             var appKey = $.trim($("#blp_appKey").val());
             var token = $.trim($("#blp_token").val());
             var bizContent = $.trim($("#blp_bizContent").val());
-            var appSecret = $.trim($("#blp_appSecret").val());
+            var sign = $.trim($("#blp_sign").val());
 
             if (appKey.length == 0) {
                 $.jBox.tip("请输入应用编号");
@@ -37,14 +37,14 @@
                 $.jBox.tip("请输入业务参数");
                 return null;
             }
-            if (appSecret.length == 0) {
+            if (sign.length == 0) {
                 $.jBox.tip("请输入应用钥匙")
             }
             var blpConfig = {
                 appKey: appKey,
                 token: token,
                 bizContent: bizContent,
-                appSecret: appSecret
+                sign: sign
             };
             return JSON.stringify(blpConfig);
         },
@@ -52,7 +52,7 @@
             $("#blp_bizContent").val(jsonData.bizContent);
             $("#blp_token").val(jsonData.token);
             $("#blp_appKey").val(jsonData.appKey);
-            $("#blp_appSecret").val(jsonData.appSecret);
+            $("#blp_sign").val(jsonData.sign);
         }
     };
 </script>
@@ -80,7 +80,7 @@
     <tr>
         <th style="vertical-align: middle;">应用钥匙：</th>
         <td>
-            <input name="blp_appSecret" type="text" value="" id="blp_appSecret" class="input-normal"/>
+            <input name="blp_sign" type="text" value="" id="blp_sign" class="input-normal"/>
         </td>
     </tr>
     </tbody>

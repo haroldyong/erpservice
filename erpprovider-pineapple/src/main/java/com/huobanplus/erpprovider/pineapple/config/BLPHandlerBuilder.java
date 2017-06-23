@@ -90,7 +90,7 @@ public class BLPHandlerBuilder implements ERPHandlerBuilder {
                     List<ERPSysDataInfo> sysDataInfos = sysDataInfoService.findByErpTypeAndErpUserTypeAndParamNameAndParamVal(providerType, erpUserType, "appkey", paramMap.get("appkey")[0]);
                     ERPDetailConfigEntity erpDetailConfig = detailConfigService.findBySysData(sysDataInfos, providerType, erpUserType);
                     BLPSysData blpSysData = JSON.parseObject(erpDetailConfig.getErpSysData(), BLPSysData.class);
-                    String appSecret = blpSysData.getAppSecret();
+                    String appSecret = blpSysData.getSign();
                     String sign;
                     try {
                         sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, appSecret);
