@@ -192,5 +192,4 @@ public class Order extends BaseInfo {
      */
     private List<OrderItem> orderItems;
 
-
 }
