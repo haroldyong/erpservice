@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  * Created by montage on 2017/6/26.
  */
 @Component
-public class GjbcHandlerBuilder implements ERPHandlerBuilder{
+public class GjbcHandlerBuilder implements ERPHandlerBuilder {
 
     @Autowired
     private GjbcOrderHandler gjbcOrderHandler;
@@ -26,13 +26,13 @@ public class GjbcHandlerBuilder implements ERPHandlerBuilder{
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        if (info.getErpType() == ERPTypeEnum.ProviderType.GJBC){
-            return  new ERPHandler() {
+        if (info.getErpType() == ERPTypeEnum.ProviderType.GJBC) {
+            return new ERPHandler() {
                 @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
-                    if (erpBaseEvent instanceof PushNewOrderEvent){
+                    if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                        return gjbcOrderHandler.sendOrder(pushNewOrderEvent);
+                        return gjbcOrderHandler.pushOrder(pushNewOrderEvent);
                     }
                     return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT);
                 }
