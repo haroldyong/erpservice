@@ -1,7 +1,7 @@
 package com.huobanplus.erpprovider.gjbc.util;
 
 /**
- * 常用工具类0
+ * 常用工具类
  *
  * Created by montage on 2017/6/27.
  */
