@@ -30,7 +30,7 @@
             }
 
             if (token.length == 0) {
-                $.jBox.tip("访问令牌");
+                $.jBox.tip("请输入访问令牌");
                 return null;
             }
             if (bizContent.length == 0) {
