@@ -14,7 +14,7 @@ public interface GjbcOrderHandler {
      * 订单下单
      * @return
      */
-    EventResult sendOrder(PushNewOrderEvent pushNewOrderEvent);
+    EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
 
     /**
      * 推送支付宝支付单到海关
@@ -23,7 +23,7 @@ public interface GjbcOrderHandler {
      * @param gjbcData 系统参数
      * @return
      */
-    EventResult PushOrderAliPay(Order order , GjbcData gjbcData);
+    EventResult PushOrderAliPay(Order order, GjbcData gjbcData);
 
     /**
      * 推送微信支付单到海关
@@ -32,14 +32,14 @@ public interface GjbcOrderHandler {
      * @param gjbcData
      * @return
      */
-    EventResult PushOrderWeiXin(Order order , GjbcData gjbcData);
+    EventResult PushOrderWeiXin(Order order, GjbcData gjbcData);
 
     /**
      * 推送订单到海关
      *
-     * @param order 订单实体类
+     * @param order    订单实体类
      * @param gjbcData 系统参数
      * @return
      */
-    EventResult PushOrderCustom(Order order , GjbcData gjbcData );
+    EventResult PushOrderCustom(Order order, GjbcData gjbcData);
 }

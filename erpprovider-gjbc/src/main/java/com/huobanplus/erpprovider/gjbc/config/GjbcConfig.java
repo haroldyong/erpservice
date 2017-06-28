@@ -20,7 +20,7 @@ public class GjbcConfig {
     private GjbcHandlerBuilder gjbcHandlerBuilder;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         erpRegister.addBuilders(gjbcHandlerBuilder);
     }
 
