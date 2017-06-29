@@ -7,9 +7,9 @@ import com.huobanplus.erpprovider.dtw.util.AESUtil;
 import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
 import com.huobanplus.erpprovider.dtw.util.RSAUtil;
-import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
 import com.huobanplus.erpprovider.gjbc.common.GjbcData;
 import com.huobanplus.erpprovider.gjbc.common.GjbcEnum;
+import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomBody;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomGoodsPurchaser;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomHead;
@@ -19,9 +19,9 @@ import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderHead;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderInfo;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderInfoList;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomSign;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcAllOrderStatus;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcGoodsItemsInfo;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcOrderInfo;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcAllOrderStatus;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.WeiXinCustom;
 import com.huobanplus.erpprovider.gjbc.handler.BaseHandler;
 import com.huobanplus.erpprovider.gjbc.handler.GjbcOrderHandler;
@@ -30,6 +30,8 @@ import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
@@ -71,6 +73,69 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
+        try {
+            ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
+            ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
+            Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+            GjbcData gjbcData = JSON.parseObject(erpInfo.getSysDataJson(), GjbcData.class);
+            Date nowDate = new Date();
+
+            EventResult eventResult = null;
+            GjbcAllOrderStatus gjbcAllOrderStatus = new GjbcAllOrderStatus();
+            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
+            if (orderDetailSyncLog == null) {
+                orderDetailSyncLog = new OrderDetailSyncLog();
+                orderDetailSyncLog.setCreateTime(nowDate);
+                orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+                orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+                orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+                orderDetailSyncLog.setOrderId(order.getOrderId());
+                orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+                orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+                orderDetailSyncLog.setSyncTime(nowDate);
+
+                eventResult = pushFourOrder(order, gjbcData, gjbcAllOrderStatus);
+                if (eventResult.getResultCode() ==  EventResultEnum.ERROR.getResultCode()) {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                }else {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+                }
+                gjbcAllOrderStatus = (GjbcAllOrderStatus)eventResult.getData();
+                orderDetailSyncLog.setOrderSyncStatus(gjbcAllOrderStatus.isOrderSyncStatus());
+                orderDetailSyncLog.setPayOrderSyncStatus(gjbcAllOrderStatus.isPayOrderSyncStatus());
+                orderDetailSyncLog.setCustomOrderSyncStatus(gjbcAllOrderStatus.isCustomOrderSyncStatus());
+                orderDetailSyncLog.setCustomBackStatus(false);
+                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
+                orderDetailSyncLogService.save(orderDetailSyncLog);
+            }else {
+                orderDetailSyncLog.setOrderSyncStatus(gjbcAllOrderStatus.isOrderSyncStatus());
+                orderDetailSyncLog.setPayOrderSyncStatus(gjbcAllOrderStatus.isPayOrderSyncStatus());
+                orderDetailSyncLog.setCustomOrderSyncStatus(gjbcAllOrderStatus.isCustomOrderSyncStatus());
+                orderDetailSyncLog.setCustomBackStatus(gjbcAllOrderStatus.isCustomBackStatus());
+                eventResult = pushFourOrder(order, gjbcData, gjbcAllOrderStatus);
+
+                if (eventResult.getResultCode() ==  EventResultEnum.ERROR.getResultCode()) {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                }else {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+                }
+                gjbcAllOrderStatus = (GjbcAllOrderStatus) eventResult.getData();
+                orderDetailSyncLog.setOrderSyncStatus(gjbcAllOrderStatus.isOrderSyncStatus());
+                orderDetailSyncLog.setPayOrderSyncStatus(gjbcAllOrderStatus.isPayOrderSyncStatus());
+                orderDetailSyncLog.setCustomOrderSyncStatus(gjbcAllOrderStatus.isCustomOrderSyncStatus());
+                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
+                orderDetailSyncLogService.save(orderDetailSyncLog);
+            }
+
+            return eventResult;
+        }catch (Exception e) {
+            log.info("Exception" + e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public EventResult pushOrderPlatform(PushNewOrderEvent pushNewOrderEvent) {
         try {
             Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
@@ -164,6 +229,9 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         }
     }
 
+
+
+
     /**
      * 推送支付单 和 海关推送
      *
@@ -194,6 +262,12 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             }
         }
 
+        //平台推送
+        if (!gjbcAllOrderStatus.isOrderSyncStatus()) {
+
+        }
+
+
         //海关推送
         if (!gjbcAllOrderStatus.isCustomOrderSyncStatus()) {
             EventResult eventResultCustom = PushOrderCustom(order, gjbcData);
@@ -219,8 +293,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             requestMap.put("_input_charset", "utf-8");
             requestMap.put("sign_type", "MD5");
 
-            requestMap.put("order_Id", order.getOrderId());
-            requestMap.put("payNumber", order.getPayNumber());
+            requestMap.put("out_request_no", order.getOrderId());
+            requestMap.put("trade_no", order.getPayNumber());
             requestMap.put("amount", order.getOnlinePayAmount());
             requestMap.put("partner", gjbcData.getAliPartner());
             requestMap.put("merchant_customs_code", gjbcData.getECommerceCode());
