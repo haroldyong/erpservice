@@ -133,7 +133,6 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         gjbcOrderInfo.setSender_address(sendInfo[2]);
         gjbcOrderInfo.setSender_phone(sendInfo[3]);
         gjbcOrderInfo.setSender_country_code(sendInfo[4]);
-//            gjbcOrderInfo.setBuyer_idcard(order.getBuyerPid());
         gjbcOrderInfo.setBuyer_name(order.getShipName());
         gjbcOrderInfo.setBuyer_phone(order.getShipMobile());
         gjbcOrderInfo.setOrder_name(order.getBuyerName());
@@ -143,7 +142,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         gjbcOrderInfo.setCustoms_discount(order.getPmtAmount());
         gjbcOrderInfo.setProvince_code(order.getProvince());
         gjbcOrderInfo.setBuyer_address(order.getShipAddr());
-            /*收件人身份证号*/
+        gjbcOrderInfo.setBuyer_idcard(order.getBuyerPid());
         gjbcOrderInfo.setCurr(Integer.parseInt(order.getCurrency()));
         gjbcOrderInfo.setP_name(gjbcSysData.getPName());
         gjbcOrderInfo.setP_no(order.getPayNumber());
