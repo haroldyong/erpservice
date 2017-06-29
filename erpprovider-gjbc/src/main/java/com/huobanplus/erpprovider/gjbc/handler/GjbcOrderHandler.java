@@ -1,6 +1,7 @@
 package com.huobanplus.erpprovider.gjbc.handler;
 
 import com.huobanplus.erpprovider.gjbc.common.GjbcData;
+import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -10,11 +11,12 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
  */
 public interface GjbcOrderHandler {
 
+    EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
     /**
-     * 订单下单
+     * 推送平台订单
      * @return
      */
-    EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
+    EventResult pushPlatformOrder(Order order, GjbcSysData gjbcSysData);
 
     /**
      * 推送支付宝支付单到海关

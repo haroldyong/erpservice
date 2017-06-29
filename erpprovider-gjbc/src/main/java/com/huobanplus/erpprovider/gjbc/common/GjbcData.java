@@ -8,12 +8,6 @@ import lombok.Data;
 
 @Data
 public class GjbcData {
-    private String seller_name;
-    private String api_key;
-    private String mark;
-    private String confirm;
-    private String Order;
-
     /**
      * 电商企业编码(电商企业在跨境平台备案编码)
      */

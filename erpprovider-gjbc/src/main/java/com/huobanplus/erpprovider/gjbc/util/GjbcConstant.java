@@ -2,7 +2,7 @@ package com.huobanplus.erpprovider.gjbc.util;
 
 /**
  * 常用工具类0
- *
+ * <p>
  * Created by montage on 2017/6/27.
  */
 public class GjbcConstant {
@@ -35,4 +35,8 @@ public class GjbcConstant {
 
     public static final String LOGISTIC_CODE = "WL15041401";
     public static final String LOGISTIC_NAME = "百世物流科技（中国）有限公司";
+    public static final String WEB_NAME = "伙伴商城";
+    public static final String MARK_STATUS = "order";
+    public static final String CONFIRM_STATUS = "2";
+
 }

@@ -7,9 +7,9 @@ import com.huobanplus.erpprovider.dtw.util.AESUtil;
 import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
 import com.huobanplus.erpprovider.dtw.util.RSAUtil;
-import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
 import com.huobanplus.erpprovider.gjbc.common.GjbcData;
 import com.huobanplus.erpprovider.gjbc.common.GjbcEnum;
+import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomBody;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomGoodsPurchaser;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomHead;
@@ -19,9 +19,9 @@ import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderHead;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderInfo;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderInfoList;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomSign;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcAllOrderStatus;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcGoodsItemsInfo;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcOrderInfo;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcAllOrderStatus;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.WeiXinCustom;
 import com.huobanplus.erpprovider.gjbc.handler.BaseHandler;
 import com.huobanplus.erpprovider.gjbc.handler.GjbcOrderHandler;
@@ -35,8 +35,6 @@ import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
-import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
-import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -71,97 +70,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
-        try {
-            Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
-            ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
-            GjbcSysData gjbcSysdata = JSON.parseObject(erpInfo.getSysDataJson(), GjbcSysData.class);
-            ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
-            GjbcOrderInfo gjbcOrderInfo = new GjbcOrderInfo();
-            gjbcOrderInfo.setOrder_sn(order.getOrderId());
-            /*发件人和收件人信息*/
-            String[] senderAndAddresseeInfo = gjbcSysdata.getSenderAndAddresseeInfo().split(",");
-            gjbcOrderInfo.setSender_name(senderAndAddresseeInfo[0]);
-            gjbcOrderInfo.setSender_city(senderAndAddresseeInfo[1]);
-            gjbcOrderInfo.setSender_address(senderAndAddresseeInfo[2]);
-            gjbcOrderInfo.setSender_phone(senderAndAddresseeInfo[3]);
-            gjbcOrderInfo.setSender_country_code(senderAndAddresseeInfo[4]);
-            gjbcOrderInfo.setBuyer_idcard(senderAndAddresseeInfo[5]);
-            gjbcOrderInfo.setBuyer_name(order.getShipName());
-            gjbcOrderInfo.setBuyer_phone(order.getShipMobile());
-            gjbcOrderInfo.setOrder_name(order.getBuyerName());
-            gjbcOrderInfo.setOrder_idcard(order.getBuyerPid());
-            gjbcOrderInfo.setCustoms_discount(order.getPmtAmount());
-            gjbcOrderInfo.setOrder_phone(order.getUserLoginName());
-            gjbcOrderInfo.setProvince_code(order.getProvince());
-            gjbcOrderInfo.setBuyer_address(order.getShipAddr());
-            gjbcOrderInfo.setCurr(Integer.parseInt(order.getCurrency()));
-            gjbcOrderInfo.setP_no(order.getPayNumber());
-            String payTime = order.getPayTime();
-            if (!StringUtils.isEmpty(payTime)) {
-                SimpleDateFormat sdf = new SimpleDateFormat(GjbcConstant.TIME_PATTERN);
-                try {
-                    Date payDate = sdf.parse(payTime);
-                    gjbcOrderInfo.setP_time((int) payDate.getTime());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-            gjbcOrderInfo.setSh_fee(order.getCostFreight());
-            gjbcOrderInfo.setCus_tax(order.getTaxAmount());
-            gjbcOrderInfo.setPweb(gjbcSysdata.getPWeb());
-            gjbcOrderInfo.setWeb_name(gjbcSysdata.getWebName());
-            /*商家备案*/
-            String[] reInfo = gjbcSysdata.getReInfo().split(",");
-            gjbcOrderInfo.setRe_no(reInfo[0]);
-            gjbcOrderInfo.setRe_no_qg(reInfo[1]);
-            gjbcOrderInfo.setRe_name(reInfo[2]);
-            gjbcOrderInfo.setExpress_code(order.getLogiName());
-            gjbcOrderInfo.setOrder_amount(order.getFinalAmount());
-            List<OrderItem> orderItems = order.getOrderItems();
-            GjbcGoodsItemsInfo[] goodsItemsInfos = new GjbcGoodsItemsInfo[orderItems.size()];
-            for (int i = 0; i < orderItems.size(); i++) {
-                GjbcGoodsItemsInfo gjbcGoodsItemsInfo = new GjbcGoodsItemsInfo();
-                gjbcGoodsItemsInfo.setGoods_seq(orderItems.get(i).getGoodId());
-                gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getGoodBn());
-                gjbcGoodsItemsInfo.setGoods_unit(GjbcEnum.UnitEnum.JIAN.getCode());
-                gjbcGoodsItemsInfo.setGoods_size(GjbcEnum.UnitEnum.KG.getCode());
-                gjbcGoodsItemsInfo.setGoods_hg_num(10);
-                gjbcGoodsItemsInfo.setGoods_gweight(orderItems.get(i).getWeight());
-                gjbcGoodsItemsInfo.setGoods_name(orderItems.get(i).getName());
-                gjbcGoodsItemsInfo.setBrand(orderItems.get(i).getProductBn());
-                gjbcGoodsItemsInfo.setGoods_spec(orderItems.get(i).getBrief());
-                gjbcGoodsItemsInfo.setGoods_num(orderItems.get(i).getNum() + "");
-                gjbcGoodsItemsInfo.setGoods_price(orderItems.get(i).getPrice());
-                gjbcGoodsItemsInfo.setYcg_code(GjbcEnum.CountryEnum.CHINA.getCode());
-                gjbcGoodsItemsInfo.setGoods_total(orderItems.get(i).getPrice() * orderItems.get(i).getNum());
-                gjbcGoodsItemsInfo.setGoods_commonid(Integer.parseInt(orderItems.get(i).getGoodBn()));
-                goodsItemsInfos[i] = gjbcGoodsItemsInfo;
-            }
-            gjbcOrderInfo.setOrder_goods(goodsItemsInfos);
-            GjbcOrderInfo[] gjbcOrderInfos = {gjbcOrderInfo};
-            String gjbcOrderInfosJson = JSON.toJSONString(gjbcOrderInfos);
-            Map<String, Object> requestData = null;
-            try {
-                requestData = getSysRequestData(gjbcSysdata);
-                requestData.put("order", com.sun.org.apache.xml.internal.security.utils.Base64.encode(com.sun.org.apache.xml.internal.security.utils.Base64.encode(gjbcOrderInfosJson
-                        .getBytes("utf-8")).getBytes("utf-8")));
-            } catch (UnsupportedEncodingException e) {
-                log.info("Exception：" + e.getMessage());
-                return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
-            }
-            HttpResult httpResult = HttpClientUtil.getInstance().post(gjbcSysdata.getRequestUrl(), requestData);
-            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
-                if ("ok".equals(jsonObject.get("flag"))) {
-                    return EventResult.resultWith(EventResultEnum.SUCCESS);
-                }
-                return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("info"), null);
-            }
-            return null;
-        } catch (Exception e) {
-            log.info("Exception：" + e.getMessage());
-            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
-        }
+        return null;
     }
 
     /**
@@ -209,6 +118,97 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             return EventResult.resultWith(EventResultEnum.SUCCESS, gjbcAllOrderStatus);
         }
         return EventResult.resultWith(EventResultEnum.ERROR, errorMsg.toString(), gjbcAllOrderStatus);
+    }
+
+    @Override
+    public EventResult pushPlatformOrder(Order order, GjbcSysData gjbcSysData) {
+        Map<String, Object> requestMap = new HashMap<>();
+        GjbcOrderInfo gjbcOrderInfo = new GjbcOrderInfo();
+        gjbcOrderInfo.setIs_bc(1);
+        gjbcOrderInfo.setOrder_sn(order.getOrderId());
+            /*发件人信息*/
+        String[] sendInfo = gjbcSysData.getSenderInfo().split(",");
+        gjbcOrderInfo.setSender_name(sendInfo[0]);
+        gjbcOrderInfo.setSender_city(sendInfo[1]);
+        gjbcOrderInfo.setSender_address(sendInfo[2]);
+        gjbcOrderInfo.setSender_phone(sendInfo[3]);
+        gjbcOrderInfo.setSender_country_code(sendInfo[4]);
+//            gjbcOrderInfo.setBuyer_idcard(order.getBuyerPid());
+        gjbcOrderInfo.setBuyer_name(order.getShipName());
+        gjbcOrderInfo.setBuyer_phone(order.getShipMobile());
+        gjbcOrderInfo.setOrder_name(order.getBuyerName());
+        gjbcOrderInfo.setOrder_idcard(order.getBuyerPid());
+        gjbcOrderInfo.setOrder_phone(order.getUserLoginName());
+        gjbcOrderInfo.setCustoms_insured(0);
+        gjbcOrderInfo.setCustoms_discount(order.getPmtAmount());
+        gjbcOrderInfo.setProvince_code(order.getProvince());
+        gjbcOrderInfo.setBuyer_address(order.getShipAddr());
+            /*收件人身份证号*/
+        gjbcOrderInfo.setCurr(Integer.parseInt(order.getCurrency()));
+        gjbcOrderInfo.setP_name(gjbcSysData.getPName());
+        gjbcOrderInfo.setP_no(order.getPayNumber());
+        String payTime = order.getPayTime();
+        if (!StringUtils.isEmpty(payTime)) {
+            SimpleDateFormat sdf = new SimpleDateFormat(GjbcConstant.TIME_PATTERN);
+            try {
+                Date payDate = sdf.parse(payTime);
+                gjbcOrderInfo.setP_time((int) payDate.getTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        gjbcOrderInfo.setSh_fee(order.getCostFreight());
+        gjbcOrderInfo.setCus_tax(order.getTaxAmount());
+        gjbcOrderInfo.setPweb(gjbcSysData.getPWeb());
+        gjbcOrderInfo.setWeb_name(GjbcConstant.WEB_NAME);
+        gjbcOrderInfo.setExpress_code(order.getLogiCode());
+        /*订单总毛重*/
+        /*订单总净重*/
+        gjbcOrderInfo.setOrder_amount(order.getFinalAmount());
+        List<OrderItem> orderItems = order.getOrderItems();
+        GjbcGoodsItemsInfo[] goodsItemsInfos = new GjbcGoodsItemsInfo[orderItems.size()];
+        for (int i = 0; i < orderItems.size(); i++) {
+            GjbcGoodsItemsInfo gjbcGoodsItemsInfo = new GjbcGoodsItemsInfo();
+            gjbcGoodsItemsInfo.setGoods_seq(orderItems.get(i).getGoodId());
+            gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getGoodBn());
+            gjbcGoodsItemsInfo.setGoods_unit(GjbcEnum.UnitEnum.JIAN.getCode());
+            gjbcGoodsItemsInfo.setGoods_size(GjbcEnum.UnitEnum.KG.getCode());
+            gjbcGoodsItemsInfo.setGoods_hg_num(10);
+            gjbcGoodsItemsInfo.setGoods_gweight(orderItems.get(i).getWeight());
+            gjbcGoodsItemsInfo.setGoods_name(orderItems.get(i).getName());
+            gjbcGoodsItemsInfo.setBrand(orderItems.get(i).getProductBn());
+            gjbcGoodsItemsInfo.setGoods_spec(orderItems.get(i).getBrief());
+            gjbcGoodsItemsInfo.setGoods_num(orderItems.get(i).getNum() + "");
+            gjbcGoodsItemsInfo.setGoods_price(orderItems.get(i).getPrice());
+            gjbcGoodsItemsInfo.setYcg_code(GjbcEnum.CountryEnum.CHINA.getCode());
+                /*商品HS编码*/
+            gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum());
+            gjbcGoodsItemsInfo.setGoods_total(orderItems.get(i).getPrice() * orderItems.get(i).getNum());
+            gjbcGoodsItemsInfo.setGoods_commonid(Integer.parseInt(orderItems.get(i).getGoodBn()));
+            goodsItemsInfos[i] = gjbcGoodsItemsInfo;
+        }
+        gjbcOrderInfo.setOrder_goods(goodsItemsInfos);
+        GjbcOrderInfo[] gjbcOrderInfos = {gjbcOrderInfo};
+        String gjbcOrderInfosJson = JSON.toJSONString(gjbcOrderInfos);
+        try {
+            requestMap = getSysRequestData(gjbcSysData);
+            requestMap.put("order", new String(Base64.getEncoder().encode(
+                    new String(Base64.getEncoder().encode(gjbcOrderInfosJson
+                            .getBytes("utf-8")), "utf-8")
+                            .getBytes("utf-8")), "utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            log.info("Exception：" + e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+        HttpResult httpResult = HttpClientUtil.getInstance().post(GjbcConstant.REQUEST_URL, requestMap);
+        if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+            JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
+            if ("ok".equals(jsonObject.get("flag"))) {
+                return EventResult.resultWith(EventResultEnum.SUCCESS);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("info"), null);
+        }
+        return EventResult.resultWith(EventResultEnum.ERROR, "请求服务器错误", null);
     }
 
     @Override
@@ -352,7 +352,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
 
             //海关接口rsa加密
             byte[] bytes = valueAsString.getBytes("utf-8");
-            byte[] privateKeyCode = java.util.Base64.getDecoder().decode(gjbcData.getRsaPrivateKey().getBytes("utf-8"));
+            byte[] privateKeyCode = Base64.getDecoder().decode(gjbcData.getRsaPrivateKey().getBytes("utf-8"));
             byte[] aesKeyCode = Base64.getDecoder().decode(gjbcData.getAesKey().getBytes("utf-8"));
             String sign = new String(Base64.getEncoder().encode(AESUtil.encrypt(bytes, privateKeyCode)), "utf-8");
             String encData = new String(Base64.getEncoder().encode(RSAUtil.sign(bytes, aesKeyCode)), "utf-8");

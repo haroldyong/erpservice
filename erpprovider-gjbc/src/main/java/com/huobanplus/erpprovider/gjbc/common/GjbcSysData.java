@@ -8,14 +8,6 @@ import lombok.Data;
 @Data
 public class GjbcSysData {
     /**
-     * 高捷接口请求地址
-     */
-    private String requestUrl;
-    /**
-     * 海关请求地址
-     */
-    private String requestCustomsUrl;
-    /**
      * 账号名称
      */
     private String name;
@@ -24,29 +16,53 @@ public class GjbcSysData {
      */
     private String key;
     /**
-     * 业务类型
+     * 电商企业编码(电商企业在跨境平台备案编码)
      */
-    private String mark;
+    private String eCommerceCode;
     /**
-     * 下单状态
+     * 电商企业名称
      */
-    private String confirm;
+    private String eCommerceName;
     /**
-     * 请求数据
+     * 海关接口地址
      */
-    private String order;
+    private String customUrl;
     /**
-     * 是否BC订单
+     * 微信公众账号ID
      */
-    private int isBc;
+    private String weiXinAppId;
+
     /**
-     * 发货人和收件人信息 逗号分隔的字符串;发件人姓名,发件人城市,发件人地址,发件人电话,发件人国别,收件人身份证号
+     * 微信 商户号
      */
-    private String senderAndAddresseeInfo;
+    private String weixinMchId;
+
     /**
-     * 保价费
+     * 微信秘钥
      */
-    private double customsInsured;
+    private String weixinKey;
+    /**
+     * 支付宝商户号
+     */
+    private String aliPartner;
+
+    /**
+     * 支付宝key
+     */
+    private String aliKey;
+
+    /**
+     * 海关接口rsa加密公钥
+     */
+    private String rsaPublicKey;
+    /**
+     * 海关接口rsa加密私钥
+     */
+    private String rsaPrivateKey;
+    /**
+     * 海关接口
+     */
+    private String aesKey;
     /**
      * 支付企业名称
      */
@@ -56,11 +72,7 @@ public class GjbcSysData {
      */
     private String pWeb;
     /**
-     * 网址名称
+     * 发货人和收件人信息 逗号分隔的字符串;发件人姓名,发件人城市,发件人地址,发件人电话,发件人国别
      */
-    private String webName;
-    /**
-     * 商家备案信息 逗号分隔的字符串；商家广州备案号，商家全国备案号，商家备案名称
-     */
-    private String reInfo;
+    private String senderInfo;
 }
