@@ -7,7 +7,6 @@ import com.huobanplus.erpprovider.dtw.util.AESUtil;
 import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
 import com.huobanplus.erpprovider.dtw.util.RSAUtil;
-import com.huobanplus.erpprovider.gjbc.common.GjbcData;
 import com.huobanplus.erpprovider.gjbc.common.GjbcEnum;
 import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomBody;
@@ -30,11 +29,15 @@ import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
+import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,26 +73,86 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
-        return null;
+        try {
+            ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
+            ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
+            Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+            GjbcSysData gjbcSysData = JSON.parseObject(erpInfo.getSysDataJson(), GjbcSysData.class);
+            Date nowDate = new Date();
+
+            EventResult eventResult = null;
+            GjbcAllOrderStatus gjbcAllOrderStatus = new GjbcAllOrderStatus();
+            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
+            if (orderDetailSyncLog == null) {
+                orderDetailSyncLog = new OrderDetailSyncLog();
+                orderDetailSyncLog.setCreateTime(nowDate);
+                orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
+                orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
+                orderDetailSyncLog.setProviderType(erpInfo.getErpType());
+                orderDetailSyncLog.setOrderId(order.getOrderId());
+                orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
+                orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
+                orderDetailSyncLog.setSyncTime(nowDate);
+
+                eventResult = pushFourOrder(order, gjbcSysData, gjbcAllOrderStatus);
+                if (eventResult.getResultCode() ==  EventResultEnum.ERROR.getResultCode()) {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                }else {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+                }
+                gjbcAllOrderStatus = (GjbcAllOrderStatus)eventResult.getData();
+                orderDetailSyncLog.setOrderSyncStatus(gjbcAllOrderStatus.isOrderSyncStatus());
+                orderDetailSyncLog.setPayOrderSyncStatus(gjbcAllOrderStatus.isPayOrderSyncStatus());
+                orderDetailSyncLog.setCustomOrderSyncStatus(gjbcAllOrderStatus.isCustomOrderSyncStatus());
+                orderDetailSyncLog.setCustomBackStatus(false);
+                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
+                orderDetailSyncLogService.save(orderDetailSyncLog);
+            }else {
+                orderDetailSyncLog.setOrderSyncStatus(gjbcAllOrderStatus.isOrderSyncStatus());
+                orderDetailSyncLog.setPayOrderSyncStatus(gjbcAllOrderStatus.isPayOrderSyncStatus());
+                orderDetailSyncLog.setCustomOrderSyncStatus(gjbcAllOrderStatus.isCustomOrderSyncStatus());
+                orderDetailSyncLog.setCustomBackStatus(gjbcAllOrderStatus.isCustomBackStatus());
+                eventResult = pushFourOrder(order, gjbcSysData, gjbcAllOrderStatus);
+
+                if (eventResult.getResultCode() ==  EventResultEnum.ERROR.getResultCode()) {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+                }else {
+                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
+                }
+                gjbcAllOrderStatus = (GjbcAllOrderStatus) eventResult.getData();
+                orderDetailSyncLog.setOrderSyncStatus(gjbcAllOrderStatus.isOrderSyncStatus());
+                orderDetailSyncLog.setPayOrderSyncStatus(gjbcAllOrderStatus.isPayOrderSyncStatus());
+                orderDetailSyncLog.setCustomOrderSyncStatus(gjbcAllOrderStatus.isCustomOrderSyncStatus());
+                orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
+                orderDetailSyncLogService.save(orderDetailSyncLog);
+            }
+
+            return eventResult;
+        }catch (Exception e) {
+            log.info("Exception" + e.getMessage());
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
     }
 
+
+
     /**
-     * 推送支付单 和 海关推送
+     * 推送支付单 和 海关 平台订单
      *
-     * @param order
-     * @param gjbcData
-     * @param gjbcAllOrderStatus
+     * @param order 订单
+     * @param gjbcSysData 系统参数
+     * @param gjbcAllOrderStatus 系统订单状态
      */
-    private EventResult pushFourOrder(Order order, GjbcData gjbcData, GjbcAllOrderStatus gjbcAllOrderStatus) {
+    private EventResult pushFourOrder(Order order, GjbcSysData gjbcSysData, GjbcAllOrderStatus gjbcAllOrderStatus) {
         StringBuilder errorMsg = new StringBuilder();
         //支付单推送
         if (!gjbcAllOrderStatus.isPayOrderSyncStatus()) {
             EventResult PayResult = null;
             OrderEnum.PaymentOptions enumTypeOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
             if (enumTypeOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE_WEB || enumTypeOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE || enumTypeOptions == OrderEnum.PaymentOptions.ALIPAY_PC) {
-                PayResult = PushOrderAliPay(order, gjbcData);
+                PayResult = PushOrderAliPay(order, gjbcSysData);
             } else if (enumTypeOptions == OrderEnum.PaymentOptions.WEIXINPAY_V3 || enumTypeOptions == OrderEnum.PaymentOptions.WEIXINPAY || enumTypeOptions == OrderEnum.PaymentOptions.WEIXINPAY_APP) {
-                PayResult = PushOrderWeiXin(order, gjbcData);
+                PayResult = PushOrderWeiXin(order, gjbcSysData);
             } else {
                 PayResult = EventResult.resultWith(EventResultEnum.ERROR, "不支持该支付", null);
             }
@@ -103,9 +166,21 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             }
         }
 
+        //平台推送
+        if (!gjbcAllOrderStatus.isOrderSyncStatus()) {
+            EventResult orderEvent = pushPlatformOrder(order, gjbcSysData);
+            if (orderEvent.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                gjbcAllOrderStatus.setOrderSyncStatus(true);
+            }else {
+                gjbcAllOrderStatus.setOrderSyncStatus(false);
+                errorMsg.append("平台订单");
+                errorMsg.append(orderEvent.getResultMsg()).append("|");
+            }
+        }
+
         //海关推送
         if (!gjbcAllOrderStatus.isCustomOrderSyncStatus()) {
-            EventResult eventResultCustom = PushOrderCustom(order, gjbcData);
+            EventResult eventResultCustom = PushOrderCustom(order, gjbcSysData);
             if (eventResultCustom.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 gjbcAllOrderStatus.setCustomOrderSyncStatus(true);
             } else {
@@ -210,23 +285,24 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         return EventResult.resultWith(EventResultEnum.ERROR, "请求服务器错误", null);
     }
 
+
     @Override
-    public EventResult PushOrderAliPay(Order order, GjbcData gjbcData) {
+    public EventResult PushOrderAliPay(Order order, GjbcSysData gjbcSysData) {
         try {
             Map<String, Object> requestMap = new TreeMap<>();
             requestMap.put("service", "alipay.acquire.customs");
             requestMap.put("_input_charset", "utf-8");
             requestMap.put("sign_type", "MD5");
 
-            requestMap.put("order_Id", order.getOrderId());
-            requestMap.put("payNumber", order.getPayNumber());
+            requestMap.put("out_request_no", order.getOrderId());
+            requestMap.put("trade_no", order.getPayNumber());
             requestMap.put("amount", order.getOnlinePayAmount());
-            requestMap.put("partner", gjbcData.getAliPartner());
-            requestMap.put("merchant_customs_code", gjbcData.getECommerceCode());
-            requestMap.put("merchant_customs_name", gjbcData.getECommerceName());
+            requestMap.put("partner", gjbcSysData.getAliPartner());
+            requestMap.put("merchant_customs_code", gjbcSysData.getECommerceCode());
+            requestMap.put("merchant_customs_name", gjbcSysData.getECommerceName());
             requestMap.put("customs_place", GjbcEnum.CustomerEnum.HANGZHOU.toString());
 
-            String sign = DtwUtil.aliBuildSign(requestMap, gjbcData.getAliKey());
+            String sign = DtwUtil.aliBuildSign(requestMap, gjbcSysData.getAliKey());
             requestMap.put("sign", sign);
 
             HttpResult httpResult = HttpClientUtil.getInstance().get(GjbcConstant.ALI_PAY_URL, requestMap);
@@ -263,15 +339,15 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
 
 
     @Override
-    public EventResult PushOrderWeiXin(Order order, GjbcData gjbcData) {
+    public EventResult PushOrderWeiXin(Order order, GjbcSysData gjbcSysData) {
         try {
             WeiXinCustom weixinCustom = new WeiXinCustom();
-            weixinCustom.setAppid(gjbcData.getWeiXinAppId());
-            weixinCustom.setMchId(gjbcData.getWeixinMchId());
+            weixinCustom.setAppid(gjbcSysData.getWeiXinAppId());
+            weixinCustom.setMchId(gjbcSysData.getWeixinMchId());
             weixinCustom.setOutTradeNo(order.getOrderId());
             weixinCustom.setTransactionId(order.getPayNumber());
             weixinCustom.setCustoms(GjbcEnum.CustomerEnum.HANGZHOU.toString());
-            weixinCustom.setMchCustomsNo(gjbcData.getECommerceCode());
+            weixinCustom.setMchCustomsNo(gjbcSysData.getECommerceCode());
             weixinCustom.setSubOrderNo(order.getOrderId());
             weixinCustom.setFeeType("CNY");
             weixinCustom.setCertType("IDCARD");
@@ -301,7 +377,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             requestMap.put("transportFee", weixinCustom.getTransportFee());
             requestMap.put("ProductFee", weixinCustom.getProductFee());
             requestMap.put("duty", weixinCustom.getDuty());
-            String sign = DtwUtil.weixinBuildSign(requestMap, gjbcData.getWeixinKey());
+            String sign = DtwUtil.weixinBuildSign(requestMap, gjbcSysData.getWeixinKey());
             requestMap.put("sign", sign);
             weixinCustom.setSign(sign);
 
@@ -337,9 +413,9 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
     }
 
     @Override
-    public EventResult PushOrderCustom(Order order, GjbcData gjbcData) {
+    public EventResult PushOrderCustom(Order order, GjbcSysData gjbcSysData) {
         try {
-            CustomOrder customOrder = converToCustomOrder(order, gjbcData);
+            CustomOrder customOrder = converToCustomOrder(order, gjbcSysData);
             if (customOrder == null) {
                 return EventResult.resultWith(EventResultEnum.ERROR, "支付方式暂时不支持", null);
             }
@@ -351,11 +427,11 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
 
             //海关接口rsa加密
             byte[] bytes = valueAsString.getBytes("utf-8");
-            byte[] privateKeyCode = Base64.getDecoder().decode(gjbcData.getRsaPrivateKey().getBytes("utf-8"));
-            byte[] aesKeyCode = Base64.getDecoder().decode(gjbcData.getAesKey().getBytes("utf-8"));
+            byte[] privateKeyCode = java.util.Base64.getDecoder().decode(gjbcSysData.getRsaPrivateKey().getBytes("utf-8"));
+            byte[] aesKeyCode = Base64.getDecoder().decode(gjbcSysData.getAesKey().getBytes("utf-8"));
             String sign = new String(Base64.getEncoder().encode(AESUtil.encrypt(bytes, privateKeyCode)), "utf-8");
             String encData = new String(Base64.getEncoder().encode(RSAUtil.sign(bytes, aesKeyCode)), "utf-8");
-            String result = DtwUtil.requestCustomWebService(gjbcData.getCustomUrl(), encData, "IMPORTORDER", sign, gjbcData.getECommerceCode());
+            String result = DtwUtil.requestCustomWebService(gjbcSysData.getCustomUrl(), encData, "IMPORTORDER", sign, gjbcSysData.getECommerceCode());
             Element rootElement = DocumentHelper.parseText(result).getRootElement();
             Element element = rootElement.element("body").element("list").element("jkfResult").element("chkMark");
 
@@ -378,20 +454,20 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
     }
 
 
-    private CustomOrder converToCustomOrder(Order order, GjbcData gjbcData) {
+    private CustomOrder converToCustomOrder(Order order, GjbcSysData gjbcSysData) {
         CustomHead customHead = new CustomHead();
         customHead.setBusinessType("IMPORTORDER");
 
         CustomSign customSign = new CustomSign();
-        customSign.setCompanyCode(gjbcData.getECommerceCode());
+        customSign.setCompanyCode(gjbcSysData.getECommerceCode());
         customSign.setBusinessNo(order.getOrderId());//业务编号 使用订单编号
         customSign.setBusinessType("IMPORTORDER");
         customSign.setDeclareType("1");// 固定填写1
         customSign.setNote("");
 
         CustomOrderHead customOrderHead = new CustomOrderHead();
-        customOrderHead.setCommerceCode(gjbcData.getECommerceCode());
-        customOrderHead.setCommerceName(gjbcData.getECommerceName());
+        customOrderHead.setCommerceCode(gjbcSysData.getECommerceCode());
+        customOrderHead.setCommerceName(gjbcSysData.getECommerceName());
         customOrderHead.setIeFlag("I");
         customOrderHead.setPayType("03");
         OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
@@ -409,8 +485,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         customOrderHead.setOrderNo(order.getOrderId());
         customOrderHead.setFeeAmount(order.getCostFreight());
         customOrderHead.setInsureAmount(0.0);
-        customOrderHead.setCompanyCode(gjbcData.getECommerceCode());
-        customOrderHead.setCompanyName(gjbcData.getECommerceName());
+        customOrderHead.setCompanyCode(gjbcSysData.getECommerceCode());
+        customOrderHead.setCompanyName(gjbcSysData.getECommerceName());
         customOrderHead.setTradeTime(order.getPayTime());
         customOrderHead.setCurrCode(GjbcEnum.CurrencyEnum.RMB.getCode());
         customOrderHead.setDiscount(Arith.sub(order.getFinalAmount(), order.getOnlinePayAmount()));
@@ -422,7 +498,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         customOrderHead.setTotalCount(order.getItemNum());
         customOrderHead.setSenderCountry(GjbcEnum.CountryEnum.CHINA.getCode());
 
-        String[] split = gjbcData.getSenderInfo().split(",");
+        String[] split = gjbcSysData.getSenderInfo().split(",");
         customOrderHead.setSenderName(split[0]);
         customOrderHead.setPurchaserId(String.valueOf(order.getMemberId()));
         customOrderHead.setLogisCompanyCode(GjbcConstant.LOGISTIC_CODE);
