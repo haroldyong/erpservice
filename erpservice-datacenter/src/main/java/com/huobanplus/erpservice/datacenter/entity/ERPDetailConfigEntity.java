@@ -12,7 +12,14 @@ package com.huobanplus.erpservice.datacenter.entity;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * 每个商户,erp使用者类型和是否正在使用确定一个erp详细设置
@@ -54,5 +61,7 @@ public class ERPDetailConfigEntity {
     private String p11;
     private String p12;
     private String p13;
+    private String p14;
+    private String p15;
 }
 

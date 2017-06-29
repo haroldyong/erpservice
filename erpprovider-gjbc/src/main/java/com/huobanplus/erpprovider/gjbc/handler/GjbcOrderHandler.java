@@ -10,20 +10,16 @@ import com.huobanplus.erpservice.eventhandler.model.EventResult;
  */
 public interface GjbcOrderHandler {
 
-
     /**
-     * 订单推送
-     *
-     * @param pushNewOrderEvent 订单推送事件
+     * 订单下单
      * @return
      */
     EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent);
-
     /**
      * 推送平台订单
      * @return
      */
-    EventResult pushOrderPlatform(PushNewOrderEvent pushNewOrderEvent);
+    EventResult pushPlatformOrder(Order order, GjbcSysData gjbcSysData);
 
     /**
      * 推送支付宝支付单到海关
@@ -51,6 +47,4 @@ public interface GjbcOrderHandler {
      * @return
      */
     EventResult PushOrderCustom(Order order, GjbcData gjbcData);
-
-
 }

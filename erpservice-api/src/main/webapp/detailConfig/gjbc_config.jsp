@@ -10,58 +10,76 @@
 <script type="text/javascript">
     var gjbcConfigHandler = {
         getConfig: function () {
-            var requestUrl = $.trim($("#gjbc_requestUrl").val());
+            var eCommerceCode = $.trim($("#gjbc_eCommerceCode").val());
             var key = $.trim($("#gjbc_key").val());
             var name = $.trim($("#gjbc_name").val());
-            var mark = $.trim($("#gjbc_mark").val());
-            var confirm = $.trim($("#gjbc_confirm").val());
-            var order = $.trim($("#gjbc_order").val());
-            var requestCustomsUrl = $.trim($("#gjbc_requestCustomsUrl").val());
-            var isBc = $.trim($("#is_bc").val());
+            var eCommerceName = $.trim($("#gjbc_eCommerceName").val());
+            var customUrl = $.trim($("#gjbc_customUrl").val());
             var senderName = $.trim($("#sender_name").val());
             var senderCity = $.trim($("#sender_city").val());
             var senderAddress = $.trim($("#sender_address").val());
             var senderPhone = $.trim($("#sender_phone").val());
             var senderCountryCode = $.trim($("#sender_country_code").val());
-            var customsInsured = $.trim($("#customs_insured").val());
-            var buyerIdcard = $.trim($("#buyer_idcard").val());
+            var weiXinAppId = $.trim($("#gjbc_weiXinAppId").val());
+            var weixinMchId = $.trim($("#gjbc_weixinMchId").val());
+            var weixinKey = $.trim($("#gjbc_weixinKey").val());
+            var aliPartner = $.trim($("#gjbc_aliPartner").val());
+            var aliKey = $.trim($("#gjbc_aliKey").val());
+            var rsaPublicKey = $.trim($("#gjbc_rsaPublicKey").val());
+            var rsaPrivateKey = $.trim($("#gjbc_rsaPrivateKey").val());
+            var aesKey = $.trim($("#gjbc_aesKey").val());
             var pName = $.trim($("#p_name").val());
             var pWeb = $.trim($("#pWeb").val());
-            var webName = $.trim($("#web_name").val());
-            var reNo = $.trim($("#re_no").val());
-            var reNoQg = $.trim($("#re_no_qg").val());
-            var reName = $.trim($("#re_name").val());
-            if (requestUrl.length == 0) {
-                $.jBox.tip("请输入高捷接口请求地址");
-                return null;
-            }
-            if (requestCustomsUrl == 0) {
-                $.jBox.tip("请输入海关接口请求地址");
+            if (name.length == 0) {
+                $.jBox.tip("请输入账号名称");
                 return null;
             }
             if (key.length == 0) {
                 $.jBox.tip("请输入验证码");
                 return null;
             }
-            if (name.length == 0) {
-                $.jBox.tip("请输入账号名称");
+            if (eCommerceCode.length == 0) {
+                $.jBox.tip("请输入电商企业编码")
                 return null;
             }
-
-            if (confirm.length == 0) {
-                $.jBox.tip("请输入订单状态");
+            if (eCommerceName.length == 0) {
+                $.jBox.tip("请输入电商企业名称");
                 return null;
             }
-            if (order.length == 0) {
-                $.jBox.tip("请输入请求参数格式")
+            if (customUrl.length == 0) {
+                $.jBox.tip("请输入海关接口地址");
                 return null;
             }
-            if (mark.length == 0) {
-                $.jBox.tip("请输入业务类型");
+            if (weiXinAppId.length == 0) {
+                $.jBox.tip("请输入微信公众账号ID");
                 return null;
             }
-            if (isBc.length == 0) {
-                $.jBox.tip("请输入是否走高捷接口");
+            if (weixinMchId.length == 0) {
+                $.jBox.tip("请输入微信 商户号");
+                return null;
+            }
+            if (weixinKey.length == 0) {
+                $.jBox.tip("请输入微信秘钥");
+                return null;
+            }
+            if (aliPartner.length == 0) {
+                $.jBox.tip("请输入支付宝商户号");
+                return null;
+            }
+            if (aliKey.length == 0) {
+                $.jBox.tip("请输入支付宝key");
+                return null;
+            }
+            if (rsaPublicKey.length == 0) {
+                $.jBox.tip("请输入海关接口rsa加密公钥");
+                return null;
+            }
+            if (rsaPrivateKey.length == 0) {
+                $.jBox.tip("请输入海关接口rsa加密私钥");
+                return null;
+            }
+            if (aesKey.length == 0) {
+                $.jBox.tip("请输入海关接口");
                 return null;
             }
             if (senderName.length == 0) {
@@ -84,14 +102,6 @@
                 $.jBox.tip("请输入发件人国别")
                 return null;
             }
-            if (customsInsured.length == 0) {
-                $.jBox.tip("请输入保价费");
-                return null;
-            }
-            if (buyerIdcard.length == 0) {
-                $.jBox.tip("请输入收件人身份证号")
-                return null;
-            }
             if (pName.length == 0) {
                 $.jBox.tip("请输入支付企业名称");
                 return null;
@@ -100,93 +110,62 @@
                 $.jBox.tip("请输入订单网址");
                 return null;
             }
-            if (webName.length == 0) {
-                $.jBox.tip("请输入网址名称");
-                return null;
-            }
-            if (reNo.length == 0) {
-                $.jBox.tip("请输入商家广州备案号")
-                return null;
-            }
-            if (reNoQg.length == 0) {
-                $.jBox.tip("请输入商家全国备案号");
-                return null;
-            }
-            if (reName.length == 0) {
-                $.jBox.tip("请输入商家备案名称")
-                return null;
-            }
-            var senderAndAddresseeInfo = senderName + "," + senderCity + "," + senderAddress + "," + senderPhone + "," + senderCountryCode + "," + buyerIdcard;
-            var reInfo = reNo + "," + reNoQg + "," + reName;
+            var senderInfo = senderName + "," + senderCity + "," + senderAddress + "," + senderPhone + "," + senderCountryCode;
             var gjbcConfig = {
-                requestUrl: requestUrl,
-                requestCustomsUrl: requestCustomsUrl,
                 key: key,
                 name: name,
-                mark: mark,
-                confirm: confirm,
-                order: order,
-                isBc: isBc,
-                senderAndAddresseeInfo: senderAndAddresseeInfo,
-                customsInsured: customsInsured,
+                eCommerceCode: eCommerceCode,
+                eCommerceName: eCommerceName,
+                customUrl: customUrl,
+                weiXinAppId: weiXinAppId,
+                weixinMchId: weixinMchId,
+                weixinKey: weixinKey,
+                aliPartner: aliPartner,
+                aliKey: aliKey,
+                rsaPublicKey: rsaPublicKey,
+                rsaPrivateKey: rsaPrivateKey,
+                aesKey: aesKey,
                 pName: pName,
                 pWeb: pWeb,
-                webName: webName,
-                reInfo: reInfo,
+                senderInfo: senderInfo
             };
             return JSON.stringify(gjbcConfig);
         },
         setValues: function (jsonData) {
-            $("#gjbc_requestUrl").val(jsonData.requestUrl);
             $("#gjbc_key").val(jsonData.key);
             $("#gjbc_name").val(jsonData.name);
-            $("#gjbc_order").val(jsonData.order);
-            $("#gjbc_confirm").val(jsonData.confirm);
-            $("#gjbc_mark").val(jsonData.mark);
-            $("#gjbc_requestCustomsUrl").val(jsonData.requestCustomsUrl);
-            $("#is_bc").val(jsonData.isBc);
-            var senderAndAddresseeInfo = jsonData.senderAndAddresseeInfo;
-            if (senderAndAddresseeInfo) {
-                var senderAndAddresseeInfoArray = senderAndAddresseeInfo.split(",");
-                $("#sender_name").val(senderAndAddresseeInfoArray[0]);
-                $("#sender_city").val(senderAndAddresseeInfoArray[1]);
-                $("#sender_address").val(senderAndAddresseeInfoArray[2]);
-                $("#sender_phone").val(senderAndAddresseeInfoArray[3]);
-                $("#sender_country_code").val(senderAndAddresseeInfoArray[4]);
-                $("#buyer_idcard").val(senderAndAddresseeInfoArray[5]);
+            $("#gjbc_key").val(jsonData.key);
+            $("#gjbc_name").val(jsonData.name);
+            $("#gjbc_eCommerceCode").val(jsonData.eCommerceCode);
+            $("#gjbc_eCommerceName").val(jsonData.eCommerceName);
+            $("#gjbc_customUrl").val(jsonData.customUrl);
+            $("#gjbc_weiXinAppId").val(jsonData.weiXinAppId);
+            $("#gjbc_weixinMchId").val(jsonData.weixinMchId);
+            $("#gjbc_weixinKey").val(jsonData.weixinKey);
+            $("#gjbc_aliPartner").val(jsonData.aliPartner);
+            $("#gjbc_aliKey").val(jsonData.aliKey);
+            $("#gjbc_rsaPublicKey").val(jsonData.rsaPublicKey);
+            $("#gjbc_rsaPrivateKey").val(jsonData.rsaPrivateKey);
+            $("#gjbc_aesKey").val(jsonData.aesKey);
+            var senderInfo = jsonData.senderInfo;
+            console.log(jsonData.senderInfo);
+            if (senderInfo) {
+                var senderInfoArry = senderInfo.split(",");
+                $("#sender_name").val(senderInfoArry[0]);
+                $("#sender_city").val(senderInfoArry[1]);
+                $("#sender_address").val(senderInfoArry[2]);
+                $("#sender_phone").val(senderInfoArry[3]);
+                $("#sender_country_code").val(senderInfoArry[4]);
             }
-            $("#customs_insured").val(jsonData.customsInsured);
             $("#p_name").val(jsonData.pName);
             $("#pWeb").val(jsonData.pWeb);
-            $("#web_name").val(jsonData.webName);
-
-            var reInfo = jsonData.reInfo;
-            if (reInfo) {
-                var reInfoArry = reInfo.split(",");
-                $("#re_no").val(reInfoArry[0]);
-                $("#re_no_qg").val(reInfoArry[1]);
-                $("#re_name").val(reInfoArry[2]);
-            }
         }
     };
 </script>
 
 
-
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
     <tbody>
-    <tr>
-        <th style="vertical-align: middle;">高捷接口请求地址</th>
-        <td>
-            <input name="gjbc_requestUrl" type="text" value="" id="gjbc_requestUrl" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">海关接口请求地址</th>
-        <td>
-            <input name="gjbc_requestCustomsUrl" type="text" value="" id="gjbc_requestCustomsUrl" class="input-normal"/>
-        </td>
-    </tr>
     <tr>
         <th style="vertical-align: middle;">账号名称：</th>
         <td>
@@ -194,33 +173,88 @@
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">验证码</th>
+        <th style="vertical-align: middle;">验证码(key):</th>
         <td>
             <input name="gjbc_key" type="text" value="" id="gjbc_key" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">业务参数类型：</th>
+        <th style="vertical-align: middle;">电商企业编码(电商企业在跨境平台备案编码)</th>
         <td>
-            <input name="gjbc_mark" type="text" value="" id="gjbc_mark" class="input-normal"/>
+            <input name="gjbc_eCommerceCode" type="text" value="" id="gjbc_eCommerceCode" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">下单状态：</th>
+        <th style="vertical-align: middle;">电商企业名称</th>
         <td>
-            <input name="gjbc_confirm" type="text" value="" id="gjbc_confirm" class="input-normal"/>
+            <input name="gjbc_eCommerceName" type="text" value="" id="gjbc_eCommerceName" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">请求参数（json）：</th>
+        <th style="vertical-align: middle;">海关接口地址</th>
         <td>
-            <input name="gjbc_order" type="text" value="" id="gjbc_order" class="input-normal"/>
+            <input name="gjbc_customUrl" type="text" value="" id="gjbc_customUrl" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">是否走高捷接口(是：1，否：0)：</th>
+        <th style="vertical-align: middle;">微信公众账号ID</th>
         <td>
-            <input name="is_bc" type="text" value="" id="is_bc" class="input-normal"/>
+            <input name="gjbc_weiXinAppId" type="text" value="" id="gjbc_weiXinAppId" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">微信 商户号</th>
+        <td>
+            <input name="gjbc_weixinMchId" type="text" value="" id="gjbc_weixinMchId" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">微信秘钥</th>
+        <td>
+            <input name="gjbc_weixinKey" type="text" value="" id="gjbc_weixinKey" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">支付宝商户号</th>
+        <td>
+            <input name="gjbc_aliPartner" type="text" value="" id="gjbc_aliPartner" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">支付宝key</th>
+        <td>
+            <input name="gjbc_aliKey" type="text" value="" id="gjbc_aliKey" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">海关接口rsa加密公钥</th>
+        <td>
+            <input name="gjbc_rsaPublicKey" type="text" value="" id="gjbc_rsaPublicKey" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">海关接口rsa加密私钥</th>
+        <td>
+            <input name="gjbc_rsaPrivateKey" type="text" value="" id="gjbc_rsaPrivateKey" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">海关接口</th>
+        <td>
+            <input name="gjbc_aesKey" type="text" value="" id="gjbc_aesKey" class="input-normal"/>
+        </td>
+    </tr>
+
+    <tr>
+        <th style="vertical-align: middle;">支付企业名称：</th>
+        <td>
+            <input name="p_name" type="text" value="" id="p_name" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">订单网址：</th>
+        <td>
+            <input name="pWeb" type="text" value="" id="pWeb" class="input-normal"/>
         </td>
     </tr>
     <tr>
@@ -251,54 +285,6 @@
         <th style="vertical-align: middle;">发件人国别：</th>
         <td>
             <input name="sender_country_code" type="text" value="" id="sender_country_code" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">保价费：</th>
-        <td>
-            <input name="customs_insured" type="text" value="" id="customs_insured" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">收件人身份证号：</th>
-        <td>
-            <input name="buyer_idcard" type="text" value="" id="buyer_idcard" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">支付企业名称：</th>
-        <td>
-            <input name="p_name" type="text" value="" id="p_name" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">订单网址：</th>
-        <td>
-            <input name="pWeb" type="text" value="" id="pWeb" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">网址名称：</th>
-        <td>
-            <input name="web_name" type="text" value="" id="web_name" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">商家广州备案号：</th>
-        <td>
-            <input name="re_no" type="text" value="" id="re_no" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">商家全国备案号：</th>
-        <td>
-            <input name="re_no_qg" type="text" value="" id="re_no_qg" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">商家备案名称：</th>
-        <td>
-            <input name="re_name" type="text" value="" id="re_name" class="input-normal"/>
         </td>
     </tr>
     </tbody>
