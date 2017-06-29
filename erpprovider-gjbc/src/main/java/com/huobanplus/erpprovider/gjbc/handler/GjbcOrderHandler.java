@@ -1,6 +1,6 @@
 package com.huobanplus.erpprovider.gjbc.handler;
 
-import com.huobanplus.erpprovider.gjbc.common.GjbcData;
+import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -25,26 +25,26 @@ public interface GjbcOrderHandler {
      * 推送支付宝支付单到海关
      *
      * @param order 订单实体类
-     * @param gjbcData 系统参数
+     * @param gjbcSysData 系统参数
      * @return
      */
-    EventResult PushOrderAliPay(Order order, GjbcData gjbcData);
+    EventResult PushOrderAliPay(Order order, GjbcSysData gjbcSysData);
 
     /**
      * 推送微信支付单到海关
      *
      * @param order
-     * @param gjbcData
+     * @param gjbcSysData
      * @return
      */
-    EventResult PushOrderWeiXin(Order order, GjbcData gjbcData);
+    EventResult PushOrderWeiXin(Order order, GjbcSysData gjbcSysData);
 
     /**
      * 推送订单到海关
      *
      * @param order    订单实体类
-     * @param gjbcData 系统参数
+     * @param gjbcSysData 系统参数
      * @return
      */
-    EventResult PushOrderCustom(Order order, GjbcData gjbcData);
+    EventResult PushOrderCustom(Order order, GjbcSysData gjbcSysData);
 }
