@@ -253,8 +253,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         for (int i = 0; i < orderItems.size(); i++) {
             GjbcGoodsItemsInfo gjbcGoodsItemsInfo = new GjbcGoodsItemsInfo();
             gjbcGoodsItemsInfo.setGoods_seq(orderItems.get(i).getGoodId());
-            /* 商品条形码  */
-            /*gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getProductBn());*/
+                /* 商品条形码  */
+            gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getProductBn());
             gjbcGoodsItemsInfo.setGoods_unit(GjbcEnum.UnitEnum.KG.getCode());
             gjbcGoodsItemsInfo.setGoods_size(GjbcEnum.UnitEnum.JIAN.getCode());
             gjbcGoodsItemsInfo.setGoods_hg_num(orderItems.get(i).getNum());

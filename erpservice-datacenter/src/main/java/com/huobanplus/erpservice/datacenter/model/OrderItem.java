@@ -65,7 +65,7 @@ public class OrderItem extends BaseInfo {
      */
     private int customerId;
     /**
-     * 商品货号
+     * 商品货号(原产国代码（3位）+商品HS编码)
      */
     private String goodBn;
 

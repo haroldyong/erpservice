@@ -91,7 +91,7 @@ public class TestGjbcBase {
         orderItem.setItemId(178770);
         orderItem.setOrderId(mockOrderNo);
         orderItem.setUnionOrderId("2016062455965373");
-        orderItem.setProductBn("381519004711");
+        orderItem.setProductBn("6931987042704");
         orderItem.setName("AUSSIE袋鼠 3分钟奇迹发膜 236ml");
         orderItem.setCost(0.5);
         orderItem.setPrice(itemPirce);
