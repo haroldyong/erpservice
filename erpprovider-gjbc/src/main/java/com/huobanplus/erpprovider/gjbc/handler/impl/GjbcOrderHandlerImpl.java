@@ -215,7 +215,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         gjbcOrderInfo.setCustoms_discount(order.getPmtAmount());
         gjbcOrderInfo.setOrder_uname(order.getUserLoginName());
         gjbcOrderInfo.setProvince_code(order.getProvince());
-        gjbcOrderInfo.setBuyer_address(order.getProvince() + "^^^" + order.getCity() + "^^^" + order.getDistrict());
+        gjbcOrderInfo.setBuyer_address(order.getProvince() + "^^^" + order.getCity() + "^^^" + order.getDistrict() + "^^^" + order.getShipAddr());
         gjbcOrderInfo.setBuyer_idcard(order.getBuyerPid());
         gjbcOrderInfo.setP_name(gjbcSysData.getPName());
         gjbcOrderInfo.setP_no(order.getPayNumber());
@@ -246,7 +246,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         for (int i = 0; i < orderItems.size(); i++) {
             GjbcGoodsItemsInfo gjbcGoodsItemsInfo = new GjbcGoodsItemsInfo();
             gjbcGoodsItemsInfo.setGoods_seq(orderItems.get(i).getGoodId());
-            gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getProductBn());
+            gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getProductBn().substring(3));
             gjbcGoodsItemsInfo.setGoods_unit(GjbcEnum.UnitEnum.KG.getCode());
             gjbcGoodsItemsInfo.setGoods_size(GjbcEnum.UnitEnum.JIAN.getCode());
             gjbcGoodsItemsInfo.setGoods_hg_num(orderItems.get(i).getNum());
@@ -258,9 +258,11 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             gjbcGoodsItemsInfo.setGoods_price(orderItems.get(i).getPrice());
 //            gjbcGoodsItemsInfo.setYcg_code(GjbcEnum.CountryEnum.CHINA.getCode());
             String countryCode = orderItems.get(i).getGoodBn().substring(0, 3);
-
                 /*商品HS编码*/
             gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn().substring(3));
+            String currCode = orderItems.get(i).getProductBn().substring(0, 3);
+            GjbcEnum.CurrencyEnum enumType = EnumHelper.getEnumType(GjbcEnum.CurrencyEnum.class, Integer.parseInt(currCode));
+            gjbcGoodsItemsInfo.setCurr(currCode);
             gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum());
             gjbcGoodsItemsInfo.setGoods_total(orderItems.get(i).getPrice() * orderItems.get(i).getNum());
             /*商品平台货号*/
@@ -497,7 +499,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         customOrderHead.setCompanyCode(gjbcSysData.getECommerceCode());
         customOrderHead.setCompanyName(gjbcSysData.getECommerceName());
         customOrderHead.setTradeTime(order.getPayTime());
-        customOrderHead.setCurrCode(GjbcEnum.CurrencyEnum.CNY.getName());
+        customOrderHead.setCurrCode(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));
         customOrderHead.setDiscount(Arith.sub(order.getFinalAmount(), order.getOnlinePayAmount()));
 
         customOrderHead.setConsigneeEmail(order.getShipEmail());
@@ -530,7 +532,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             customOrderDetail.setUnitPrice(orderItem.getPrice());
             customOrderDetail.setGoodsCount(orderItem.getNum());
             customOrderDetail.setGoodsUnit(GjbcEnum.UnitEnum.JIAN.getCode());
-            customOrderDetail.setCurrency(GjbcEnum.CurrencyEnum.CNY.getName());
+            customOrderDetail.setCurrency(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));
             customOrderDetails.add(customOrderDetail);
         }
 
