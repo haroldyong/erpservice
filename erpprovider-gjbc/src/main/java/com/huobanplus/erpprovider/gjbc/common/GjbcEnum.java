@@ -1,5 +1,7 @@
 package com.huobanplus.erpprovider.gjbc.common;
 
+import com.huobanplus.erpservice.common.ienum.ICommonEnum;
+
 /**
  * Created by hxh on 2017-06-27.
  */
@@ -49,7 +51,7 @@ public interface GjbcEnum {
         }
     }
 
-    enum CurrencyEnum {
+    enum CurrencyEnum implements ICommonEnum{
         HKD(110, "港币"),
         JPY(116, "日本元"),
         MOP(121, "澳门元"),

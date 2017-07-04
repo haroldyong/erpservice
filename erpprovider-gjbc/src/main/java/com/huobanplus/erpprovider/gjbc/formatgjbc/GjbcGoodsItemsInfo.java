@@ -108,5 +108,5 @@ public class GjbcGoodsItemsInfo {
      * 可空，不建议为空
      */
     @JSONField(name = "goods_commonid")
-    private String goods_commonid;
+    private int goods_commonid;
 }

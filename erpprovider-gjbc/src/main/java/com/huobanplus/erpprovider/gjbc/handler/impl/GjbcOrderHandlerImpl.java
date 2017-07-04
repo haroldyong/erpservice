@@ -30,9 +30,11 @@ import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.datacenter.entity.CountryInfo;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
+import com.huobanplus.erpservice.datacenter.repository.CountryInfoRepository;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -54,7 +56,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -70,6 +71,9 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
 
     @Autowired
     private OrderDetailSyncLogService orderDetailSyncLogService;
+
+    @Autowired
+    private CountryInfoRepository countryInfoRepository;
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
@@ -217,8 +221,9 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         gjbcOrderInfo.setCustoms_discount(order.getPmtAmount());
         gjbcOrderInfo.setOrder_uname(order.getUserLoginName());
         gjbcOrderInfo.setProvince_code(order.getProvince());
-        gjbcOrderInfo.setBuyer_address(order.getProvince() + "^^^" + order.getCity() + "^^^" + order.getDistrict());
+        gjbcOrderInfo.setBuyer_address(order.getProvince() + "^^^" + order.getCity() + "^^^" + order.getDistrict()+"^^^"+order.getShipAddr());
         gjbcOrderInfo.setBuyer_idcard(order.getBuyerPid());
+        gjbcOrderInfo.setCurr(GjbcEnum.CurrencyEnum.CNY.getCode());
         gjbcOrderInfo.setP_name(gjbcSysData.getPName());
         gjbcOrderInfo.setP_no(order.getPayNumber());
         String payTime = order.getPayTime();
@@ -248,7 +253,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         for (int i = 0; i < orderItems.size(); i++) {
             GjbcGoodsItemsInfo gjbcGoodsItemsInfo = new GjbcGoodsItemsInfo();
             gjbcGoodsItemsInfo.setGoods_seq(orderItems.get(i).getGoodId());
-            gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getProductBn());
+            /* 商品条形码  */
+            /*gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getProductBn());*/
             gjbcGoodsItemsInfo.setGoods_unit(GjbcEnum.UnitEnum.KG.getCode());
             gjbcGoodsItemsInfo.setGoods_size(GjbcEnum.UnitEnum.JIAN.getCode());
             gjbcGoodsItemsInfo.setGoods_hg_num(orderItems.get(i).getNum());
@@ -259,14 +265,21 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             gjbcGoodsItemsInfo.setGoods_num(String.valueOf(orderItems.get(i).getNum()));
             gjbcGoodsItemsInfo.setGoods_price(orderItems.get(i).getPrice());
 //            gjbcGoodsItemsInfo.setYcg_code(GjbcEnum.CountryEnum.CHINA.getCode());
+                /* 原产国代码 */
             String countryCode = orderItems.get(i).getGoodBn().substring(0, 3);
-
-                /*商品HS编码*/
+            CountryInfo countryInfo = countryInfoRepository.findOne(countryCode);
+            if (countryInfo != null){
+                gjbcGoodsItemsInfo.setYcg_code(countryCode);
+            }else{
+                return EventResult.resultWith(EventResultEnum.ERROR,"原产国代码错误",null);
+            }
+                /* 商品HS编码 */
             gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn().substring(3));
+            gjbcGoodsItemsInfo.setCurr(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));
             gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum());
             gjbcGoodsItemsInfo.setGoods_total(orderItems.get(i).getPrice() * orderItems.get(i).getNum());
             /*商品平台货号*/
-            gjbcGoodsItemsInfo.setGoods_commonid(Integer.parseInt(orderItems.get(i).getGoodBn()));
+            gjbcGoodsItemsInfo.setGoods_commonid(Integer.parseInt(orderItems.get(i).getGoodBn().substring(3)));
             /* 毛重*/
             totalwWight += orderItems.get(i).getNum() * orderItems.get(i).getWeight();
             /* 净重*/
@@ -499,7 +512,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         customOrderHead.setCompanyCode(gjbcSysData.getECommerceCode());
         customOrderHead.setCompanyName(gjbcSysData.getECommerceName());
         customOrderHead.setTradeTime(order.getPayTime());
-        customOrderHead.setCurrCode(GjbcEnum.CurrencyEnum.RMB.getCode());
+        customOrderHead.setCurrCode(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));
         customOrderHead.setDiscount(Arith.sub(order.getFinalAmount(), order.getOnlinePayAmount()));
 
         customOrderHead.setConsigneeEmail(order.getShipEmail());
@@ -527,12 +540,12 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             customOrderDetail.setGoodsOrder(i);
             customOrderDetail.setGoodsName(orderItem.getName());
             customOrderDetail.setGoodsModel(orderItem.getStandard());
-            customOrderDetail.setCodeTs(orderItem.getGoodBn());
+            customOrderDetail.setCodeTs(orderItem.getGoodBn().substring(3));
             customOrderDetail.setOriginCountry(GjbcEnum.CountryEnum.CHINA.getCode());
             customOrderDetail.setUnitPrice(orderItem.getPrice());
             customOrderDetail.setGoodsCount(orderItem.getNum());
             customOrderDetail.setGoodsUnit(GjbcEnum.UnitEnum.JIAN.getCode());
-            customOrderDetail.setCurrency(GjbcEnum.CurrencyEnum.RMB.getCode());
+            customOrderDetail.setCurrency(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));
             customOrderDetails.add(customOrderDetail);
         }
 

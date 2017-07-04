@@ -2,6 +2,7 @@ package com.huobanplus.test.gjbc;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
+import com.huobanplus.erpprovider.gjbc.util.GjbcConstant;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.common.util.StringUtil;
@@ -59,6 +60,8 @@ public class TestGjbcBase {
         mockGjbcSysData.setECommerceCode("3210932722");
         mockGjbcSysData.setAliPartner("2088421965473023");
         mockGjbcSysData.setAliKey("k48u3xqezrpwhpuv8al265p515uhclr5");
+        mockGjbcSysData.setRequestUrl(GjbcConstant.REQUEST_URL);
+
 
         mockGjbcSysData.setWeixinKey("192006250b4c09247ec02edce69f6a2d");
         mockGjbcSysData.setWeixinMchId("1291517501");
@@ -84,11 +87,11 @@ public class TestGjbcBase {
         mockOrderItems = new ArrayList<>();
         OrderItem orderItem = new OrderItem();
         orderItem.setGoodId(1);
-        orderItem.setGoodBn("381519004711");
+        orderItem.setGoodBn("1102104200000");
         orderItem.setItemId(178770);
         orderItem.setOrderId(mockOrderNo);
         orderItem.setUnionOrderId("2016062455965373");
-        orderItem.setProductBn("AUSSIE");
+        orderItem.setProductBn("381519004711");
         orderItem.setName("AUSSIE袋鼠 3分钟奇迹发膜 236ml");
         orderItem.setCost(0.5);
         orderItem.setPrice(itemPirce);
@@ -97,7 +100,9 @@ public class TestGjbcBase {
         orderItem.setStandard("测试");
         orderItem.setCustomerId(296);
         orderItem.setBrief("AUSSIE袋鼠 3分钟奇迹发膜 236ml");
-        orderItem.setHs_code("2104200000");
+        orderItem.setWeight(250.23);
+        orderItem.setSuttleWeight(240.23);
+        orderItem.setBrand("指甲刀");
         mockOrderItems.add(orderItem);
 
         mockOrder = new Order();
@@ -123,9 +128,9 @@ public class TestGjbcBase {
         mockOrder.setShipEmail("");
         mockOrder.setShipMobile("18705153967");
         mockOrder.setCostItem(itemAmount);
+        mockOrder.setCurrency("142");
 //        mockOrder.setOnlinePayAmount();
         mockOrder.setCostFreight(orderCostFreight);
-        mockOrder.setCurrency("CNY");
         mockOrder.setFinalAmount(finalAmount);// 商品费用+税费+运费
 
         mockOrder.setPaymentName("微信");
