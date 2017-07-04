@@ -10,6 +10,7 @@
 <script type="text/javascript">
     var gjbcConfigHandler = {
         getConfig: function () {
+            var requestUrl = $.trim($("#gjbc_requestUrl").val())
             var eCommerceCode = $.trim($("#gjbc_eCommerceCode").val());
             var key = $.trim($("#gjbc_key").val());
             var name = $.trim($("#gjbc_name").val());
@@ -30,6 +31,9 @@
             var aesKey = $.trim($("#gjbc_aesKey").val());
             var pName = $.trim($("#p_name").val());
             var pWeb = $.trim($("#pWeb").val());
+            if (requestUrl.length == 0) {
+                $.jBox.tip("请输入请求地址");
+            }
             if (name.length == 0) {
                 $.jBox.tip("请输入账号名称");
                 return null;
@@ -112,6 +116,7 @@
             }
             var senderInfo = senderName + "," + senderCity + "," + senderAddress + "," + senderPhone + "," + senderCountryCode;
             var gjbcConfig = {
+                requestUrl: requestUrl,
                 key: key,
                 name: name,
                 eCommerceCode: eCommerceCode,
@@ -132,6 +137,7 @@
             return JSON.stringify(gjbcConfig);
         },
         setValues: function (jsonData) {
+            $("#gjbc_requestUrl").val(jsonData.requestUrl);
             $("#gjbc_key").val(jsonData.key);
             $("#gjbc_name").val(jsonData.name);
             $("#gjbc_key").val(jsonData.key);
@@ -148,7 +154,6 @@
             $("#gjbc_rsaPrivateKey").val(jsonData.rsaPrivateKey);
             $("#gjbc_aesKey").val(jsonData.aesKey);
             var senderInfo = jsonData.senderInfo;
-            console.log(jsonData.senderInfo);
             if (senderInfo) {
                 var senderInfoArry = senderInfo.split(",");
                 $("#sender_name").val(senderInfoArry[0]);
@@ -166,6 +171,12 @@
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
     <tbody>
+    <tr>
+        <th style="vertical-align: middle;">请求地址：</th>
+        <td>
+            <input name="gjbc_requestUrl" type="text" value="" id="gjbc_requestUrl" class="input-normal"/>
+        </td>
+    </tr>
     <tr>
         <th style="vertical-align: middle;">账号名称：</th>
         <td>

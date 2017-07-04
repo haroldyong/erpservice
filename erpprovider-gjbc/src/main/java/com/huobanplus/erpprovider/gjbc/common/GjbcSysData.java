@@ -8,6 +8,10 @@ import lombok.Data;
 @Data
 public class GjbcSysData {
     /**
+     * 请求地址
+     */
+    private String requestUrl;
+    /**
      * 账号名称
      */
     private String name;
