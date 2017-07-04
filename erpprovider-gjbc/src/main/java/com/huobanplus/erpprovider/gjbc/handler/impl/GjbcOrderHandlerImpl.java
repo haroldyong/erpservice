@@ -255,7 +255,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             double good_Weight = orderItems.get(i).getWeight() / 1000;
             gjbcGoodsItemsInfo.setGoods_gweight(good_Weight);
             gjbcGoodsItemsInfo.setGoods_name(orderItems.get(i).getName());
-            gjbcGoodsItemsInfo.setBrand(orderItems.get(i).getProductBn());
+            gjbcGoodsItemsInfo.setBrand(orderItems.get(i).getBrand());
             gjbcGoodsItemsInfo.setGoods_spec(orderItems.get(i).getBrief());
             gjbcGoodsItemsInfo.setGoods_num(String.valueOf(orderItems.get(i).getNum()));
             gjbcGoodsItemsInfo.setGoods_price(orderItems.get(i).getPrice());
