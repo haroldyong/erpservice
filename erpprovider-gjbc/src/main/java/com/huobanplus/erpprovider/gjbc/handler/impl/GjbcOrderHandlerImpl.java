@@ -217,7 +217,6 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         gjbcOrderInfo.setProvince_code(order.getProvince());
         gjbcOrderInfo.setBuyer_address(order.getProvince() + "^^^" + order.getCity() + "^^^" + order.getDistrict());
         gjbcOrderInfo.setBuyer_idcard(order.getBuyerPid());
-        gjbcOrderInfo.setCurr(GjbcEnum.CurrencyEnum.CNY.getCode());
         gjbcOrderInfo.setP_name(gjbcSysData.getPName());
         gjbcOrderInfo.setP_no(order.getPayNumber());
         String payTime = order.getPayTime();
@@ -239,10 +238,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         gjbcOrderInfo.setRe_no_qg(GjbcConstant.RECORD_NUMBER);
         gjbcOrderInfo.setRe_name(GjbcConstant.RECORD_NAME);
         gjbcOrderInfo.setExpress_code(order.getLogiCode());
-        /*订单总毛重*/
-        gjbcOrderInfo.setPkg_gweight(10);
-        /*订单总净重*/
-        gjbcOrderInfo.setGoods_nweight(8);
+        double totalwWight = 0;
+        double totalSuttleWeight = 0;
         gjbcOrderInfo.setOrder_amount(order.getFinalAmount());
         List<OrderItem> orderItems = order.getOrderItems();
         GjbcGoodsItemsInfo[] goodsItemsInfos = new GjbcGoodsItemsInfo[orderItems.size()];
@@ -255,19 +252,27 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             gjbcGoodsItemsInfo.setGoods_hg_num(orderItems.get(i).getNum());
             gjbcGoodsItemsInfo.setGoods_gweight(orderItems.get(i).getWeight());
             gjbcGoodsItemsInfo.setGoods_name(orderItems.get(i).getName());
-            gjbcGoodsItemsInfo.setBrand(orderItems.get(i).getProductBn());
+            gjbcGoodsItemsInfo.setBrand(orderItems.get(i).getBrand());
             gjbcGoodsItemsInfo.setGoods_spec(orderItems.get(i).getBrief());
-            gjbcGoodsItemsInfo.setGoods_num(orderItems.get(i).getNum() + "");
+            gjbcGoodsItemsInfo.setGoods_num(String.valueOf(orderItems.get(i).getNum()));
             gjbcGoodsItemsInfo.setGoods_price(orderItems.get(i).getPrice());
-            gjbcGoodsItemsInfo.setYcg_code(GjbcEnum.CountryEnum.CHINA.getCode());
+//            gjbcGoodsItemsInfo.setYcg_code(GjbcEnum.CountryEnum.CHINA.getCode());
+            String countryCode = orderItems.get(i).getGoodBn().substring(0, 3);
+
                 /*商品HS编码*/
-            gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn());
+            gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn().substring(3));
             gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum());
             gjbcGoodsItemsInfo.setGoods_total(orderItems.get(i).getPrice() * orderItems.get(i).getNum());
             /*商品平台货号*/
             gjbcGoodsItemsInfo.setGoods_commonid(Integer.parseInt(orderItems.get(i).getGoodBn()));
+            /* 毛重*/
+            totalwWight += orderItems.get(i).getNum() * orderItems.get(i).getWeight();
+            /* 净重*/
+            totalSuttleWeight += orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight();
             goodsItemsInfos[i] = gjbcGoodsItemsInfo;
         }
+        gjbcOrderInfo.setPkg_gweight(totalwWight / 1000);
+        gjbcOrderInfo.setGoods_nweight(totalSuttleWeight / 1000);
         gjbcOrderInfo.setOrder_goods(goodsItemsInfos);
         String gjbcOrderInfosJson = JSON.toJSONString(gjbcOrderInfo);
         try {
