@@ -8,6 +8,10 @@ import lombok.Data;
 @Data
 public class GjbcSysData {
     /**
+     * 请求地址
+     */
+    private String requestUrl;
+    /**
      * 账号名称
      */
     private String name;
@@ -72,7 +76,7 @@ public class GjbcSysData {
      */
     private String pWeb;
     /**
-     * 发货人和收件人信息 逗号分隔的字符串;发件人姓名,发件人城市,发件人地址,发件人电话,发件人国别
+     * 发货人信息 逗号分隔的字符串;发件人姓名,发件人城市,发件人地址,发件人电话,发件人国别
      */
     private String senderInfo;
 }

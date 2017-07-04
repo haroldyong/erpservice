@@ -1,7 +1,5 @@
 package com.huobanplus.erpprovider.gjbc.common;
 
-import com.huobanplus.erpservice.common.ienum.ICommonEnum;
-
 /**
  * Created by hxh on 2017-06-27.
  */
@@ -19,42 +17,6 @@ public interface GjbcEnum {
         FUJIAN,
         TIANJIN,
         NANSHAGJ
-    }
-
-    enum ExpressEnterpriseCode implements ICommonEnum {
-        SF(1, "顺风"),
-        ST(2, "申通"),
-        BSHT(3, "百世汇通"),
-        YZXB(4, "邮政小包"),
-        YT(5, "圆通"),
-        QF(7, "全峰"),
-        TT(8, "天天");
-
-        private int code;
-        private String name;
-
-        ExpressEnterpriseCode(int code, String name) {
-            this.code = code;
-            this.name = name;
-        }
-
-        @Override
-        public int getCode() {
-            return this.code;
-        }
-
-        public void setCode(int code) {
-            this.code = code;
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
     }
 
     enum CountryEnum {
@@ -88,21 +50,42 @@ public interface GjbcEnum {
     }
 
     enum CurrencyEnum {
-        RMB("142", "人民币");
-
-        private String code;
+        HKD(110, "港币"),
+        JPY(116, "日本元"),
+        MOP(121, "澳门元"),
+        PHP(129, "菲律宾比索"),
+        SGD(132, "新加坡元"),
+        KRW(133, "韩国元"),
+        THB(136, "泰国铢"),
+        CNY(142, "人民币"),
+        EUR(300, "欧元"),
+        DKK(302, "丹麦克朗"),
+        GBP(303, "英镑"),
+        DEM(304, "德国马克"),
+        FRF(305, "法国法郎"),
+        ITL(307, "意大利朗"),
+        ESP(312, "西班牙比塞塔"),
+        ATS(315, "奥地利先令"),
+        FIM(318, "芬兰马克"),
+        NOK(326, "挪威克朗"),
+        SEK(330, "瑞士法郎"),
+        CAD(501, "加拿大元"),
+        USD(502, "美元"),
+        AUD(601, "澳大利亚元"),
+        NZD(609, "新西兰元");
+        private int code;
         private String name;
 
-        CurrencyEnum(String code, String name) {
+        CurrencyEnum(int code, String name) {
             this.code = code;
             this.name = name;
         }
 
-        public String getCode() {
+        public int getCode() {
             return code;
         }
 
-        public void setCode(String code) {
+        public void setCode(int code) {
             this.code = code;
         }
 
