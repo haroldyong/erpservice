@@ -51,7 +51,7 @@ public interface GjbcEnum {
         }
     }
 
-    enum CurrencyEnum implements ICommonEnum {
+    enum CurrencyEnum implements ICommonEnum{
         HKD(110, "港币"),
         JPY(116, "日本元"),
         MOP(121, "澳门元"),
