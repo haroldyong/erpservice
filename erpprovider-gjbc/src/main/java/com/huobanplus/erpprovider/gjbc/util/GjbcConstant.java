@@ -35,6 +35,8 @@ public class GjbcConstant {
 
     public static final String LOGISTIC_CODE = "WL15041401";
     public static final String LOGISTIC_NAME = "百世物流科技（中国）有限公司";
+    public static final String RECORD_NUMBER = "3301964K02";
+    public static final String RECORD_NAME = "杭州火图科技";
     public static final String WEB_NAME = "伙伴商城";
     public static final String MARK_STATUS = "order";
     public static final String CONFIRM_STATUS = "2";

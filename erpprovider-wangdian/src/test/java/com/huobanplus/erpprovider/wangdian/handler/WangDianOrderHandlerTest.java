@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.UnsupportedEncodingException;
-
 /**
  * Created by wuxiongliu on 2016-11-02.
  */
@@ -41,6 +40,7 @@ public class WangDianOrderHandlerTest extends WangDianTestBase {
         pushNewOrderEvent.setErpInfo(mockErpInfo);
 
         EventResult eventResult = wangDianOrderHandler.pushOrder(pushNewOrderEvent);
+
 
         System.out.println("\n**************request result*************");
         System.out.println(eventResult.getResultCode());
