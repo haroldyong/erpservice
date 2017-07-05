@@ -161,7 +161,9 @@ public class EDBOrderHandlerImpl extends BaseHandler implements EDBOrderHandler 
         try {
             Map<String, Object> requestData = getSysRequestData(EDBConstant.GET_ORDER_INFO, sysData);
             //系统参数
-            requestData.put("storage_id", edbOrderSearch.getStorageId());
+            if (!StringUtils.isEmpty(edbOrderSearch.getStorageId())) {
+                requestData.put("storage_id", edbOrderSearch.getStorageId());
+            }
             requestData.put("shopid", edbOrderSearch.getShopId());
             requestData.put("begin_time", edbOrderSearch.getBeginTime());
             requestData.put("end_time", edbOrderSearch.getEndTime());

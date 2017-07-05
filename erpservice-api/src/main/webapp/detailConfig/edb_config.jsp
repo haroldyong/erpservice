@@ -4,7 +4,7 @@
   ~
   ~ (c) Copyright Hangzhou Hot Technology Co., Ltd.
   ~ Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
-  ~ 2013-2016. All rights reserved.
+  ~ 2013-2017. All rights reserved.
   --%>
 
 <%--
@@ -59,10 +59,10 @@
                 $.jBox.tip("请输入店铺编号");
                 return null;
             }
-            if (storageId.length == 0) {
-                $.jBox.tip("请输入仓库编号");
-                return null;
-            }
+//            if (storageId.length == 0) {
+//                $.jBox.tip("请输入仓库编号");
+//                return null;
+//            }
             if (express.length == 0) {
                 $.jBox.tip("请输入快递公司");
                 return null;

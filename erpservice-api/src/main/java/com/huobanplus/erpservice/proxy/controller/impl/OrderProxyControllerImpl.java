@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpservice.proxy.controller.impl;
@@ -138,9 +138,6 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     @RequestMapping("/pushRemark")
     @ResponseBody
     public ApiResult pushRemark(@RequestAttribute ERPInfo erpInfo, @RequestAttribute ERPUserInfo erpUserInfo, String orderId, String remark) {
-
-        log.info("orderId:" + orderId);
-        log.info("remark:" + remark);
         PushRemarkEvent pushRemarkEvent = new PushRemarkEvent();
         pushRemarkEvent.setErpInfo(erpInfo);
         pushRemarkEvent.setErpUserInfo(erpUserInfo);
