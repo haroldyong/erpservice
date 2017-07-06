@@ -76,12 +76,12 @@ public class TestGjbcBase {
         mockGjbcSysData.setPName("京东");
         mockGjbcSysData.setPWeb("www.jd.com");
 
-        double itemPirce = 32;
+        double itemPirce = 32.25;
         int itemNum = 3;
         double itemAmount = itemPirce * itemNum;
         double orderCostFreight = 10;
         double taxAmount = 5;
-        double finalAmount = taxAmount + itemAmount + orderCostFreight;
+        double finalAmount = itemAmount;
 
 
         mockOrderItems = new ArrayList<>();
@@ -102,7 +102,7 @@ public class TestGjbcBase {
         orderItem.setBrief("AUSSIE袋鼠 3分钟奇迹发膜 236ml");
         orderItem.setWeight(250.23);
         orderItem.setSuttleWeight(240.23);
-        orderItem.setBrand("指甲刀");
+        orderItem.setBrand("AUSSIE袋鼠");
         mockOrderItems.add(orderItem);
 
         mockOrder = new Order();
@@ -122,7 +122,7 @@ public class TestGjbcBase {
         mockOrder.setProvince("浙江省");
         mockOrder.setCity("杭州市");
         mockOrder.setDistrict("滨江区");
-        mockOrder.setShipAddr("浙江省^^^杭州市^^^滨江区阡陌路^^^智慧E谷B幢4楼火图科技");
+        mockOrder.setShipAddr("滨江区阡陌路^^^智慧E谷B幢4楼火图科技");
         mockOrder.setShipZip("310000");
         mockOrder.setShipTel("");
         mockOrder.setShipEmail("");
