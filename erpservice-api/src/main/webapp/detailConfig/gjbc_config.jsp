@@ -29,7 +29,6 @@
             var rsaPublicKey = $.trim($("#gjbc_rsaPublicKey").val());
             var rsaPrivateKey = $.trim($("#gjbc_rsaPrivateKey").val());
             var aesKey = $.trim($("#gjbc_aesKey").val());
-            var pName = $.trim($("#p_name").val());
             var pWeb = $.trim($("#pWeb").val());
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入请求地址");
@@ -106,10 +105,6 @@
                 $.jBox.tip("请输入发件人国别")
                 return null;
             }
-            if (pName.length == 0) {
-                $.jBox.tip("请输入支付企业名称");
-                return null;
-            }
             if (pWeb.length == 0) {
                 $.jBox.tip("请输入订单网址");
                 return null;
@@ -130,7 +125,6 @@
                 rsaPublicKey: rsaPublicKey,
                 rsaPrivateKey: rsaPrivateKey,
                 aesKey: aesKey,
-                pName: pName,
                 pWeb: pWeb,
                 senderInfo: senderInfo
             };
@@ -162,7 +156,6 @@
                 $("#sender_phone").val(senderInfoArry[3]);
                 $("#sender_country_code").val(senderInfoArry[4]);
             }
-            $("#p_name").val(jsonData.pName);
             $("#pWeb").val(jsonData.pWeb);
         }
     };
@@ -253,13 +246,6 @@
         <th style="vertical-align: middle;">海关接口</th>
         <td>
             <input name="gjbc_aesKey" type="text" value="" id="gjbc_aesKey" class="input-normal"/>
-        </td>
-    </tr>
-
-    <tr>
-        <th style="vertical-align: middle;">支付企业名称：</th>
-        <td>
-            <input name="p_name" type="text" value="" id="p_name" class="input-normal"/>
         </td>
     </tr>
     <tr>

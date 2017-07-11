@@ -68,10 +68,6 @@ public class GjbcSysData {
      */
     private String aesKey;
     /**
-     * 支付企业名称
-     */
-    private String pName;
-    /**
      * 订单网址
      */
     private String pWeb;

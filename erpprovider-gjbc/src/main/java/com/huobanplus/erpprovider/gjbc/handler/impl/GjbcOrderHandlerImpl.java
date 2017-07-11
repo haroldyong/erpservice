@@ -224,7 +224,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         gjbcOrderInfo.setBuyer_address(order.getProvince() + "^^^" + order.getCity() + "^^^" + order.getDistrict() + "^^^" + order.getShipAddr());
         gjbcOrderInfo.setBuyer_idcard(order.getBuyerPid());
         gjbcOrderInfo.setCurr(GjbcEnum.CurrencyEnum.CNY.getCode());
-        gjbcOrderInfo.setP_name(gjbcSysData.getPName());
+        OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
+        gjbcOrderInfo.setP_name(paymentOptions.getName());
         gjbcOrderInfo.setP_no(order.getPayNumber());
         String payTime = order.getPayTime();
         if (!StringUtils.isEmpty(payTime)) {

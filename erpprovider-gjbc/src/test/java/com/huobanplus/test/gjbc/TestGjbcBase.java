@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * 高捷 测试类
- *
+ * <p>
  * Created by montage on 2017/6/29.
  */
 @ActiveProfiles("test")
@@ -50,7 +50,7 @@ public class TestGjbcBase {
     private int itemNumber = 5;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         mockOrderNo = SerialNo.create();
 
         mockGjbcSysData = new GjbcSysData();
@@ -73,7 +73,6 @@ public class TestGjbcBase {
         mockGjbcSysData.setSenderInfo("吴雄琉,浙江省,杭州市,滨江区,浙江省杭州市滨江区智慧e谷,15067134475");
         mockGjbcSysData.setCustomUrl("");
 
-        mockGjbcSysData.setPName("京东");
         mockGjbcSysData.setPWeb("www.jd.com");
 
         double itemPirce = 32.25;
@@ -132,7 +131,7 @@ public class TestGjbcBase {
 //        mockOrder.setOnlinePayAmount();
         mockOrder.setCostFreight(orderCostFreight);
         mockOrder.setFinalAmount(finalAmount);// 商品费用+税费+运费
-
+        mockOrder.setPayType(1);
         mockOrder.setPaymentName("微信");
         mockOrder.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());//微信支付V3
 
