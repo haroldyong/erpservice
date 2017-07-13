@@ -165,7 +165,7 @@
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
     <tbody>
     <tr>
-        <th style="vertical-align: middle;">请求地址：</th>
+        <th style="vertical-align: middle;">高捷接口请求地址：</th>
         <td>
             <input name="gjbc_requestUrl" type="text" value="" id="gjbc_requestUrl" class="input-normal"/>
         </td>
@@ -183,13 +183,13 @@
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">电商企业编码(电商企业在跨境平台备案编码)</th>
+        <th style="vertical-align: middle;">eCommerceCode(电商企业编码)：</th>
         <td>
             <input name="gjbc_eCommerceCode" type="text" value="" id="gjbc_eCommerceCode" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">电商企业名称</th>
+        <th style="vertical-align: middle;">eCommerceName(电商企业名称)：</th>
         <td>
             <input name="gjbc_eCommerceName" type="text" value="" id="gjbc_eCommerceName" class="input-normal"/>
         </td>
@@ -201,49 +201,49 @@
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">微信公众账号ID</th>
+        <th style="vertical-align: middle;">weiXinAppId(微信公众账号ID)：</th>
         <td>
             <input name="gjbc_weiXinAppId" type="text" value="" id="gjbc_weiXinAppId" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">微信 商户号</th>
+        <th style="vertical-align: middle;">weixinMchId(微信商户号)：</th>
         <td>
             <input name="gjbc_weixinMchId" type="text" value="" id="gjbc_weixinMchId" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">微信秘钥</th>
+        <th style="vertical-align: middle;">weixinKey(微信秘钥)：</th>
         <td>
             <input name="gjbc_weixinKey" type="text" value="" id="gjbc_weixinKey" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">支付宝商户号</th>
+        <th style="vertical-align: middle;">aliPartner(支付宝商户号)：</th>
         <td>
             <input name="gjbc_aliPartner" type="text" value="" id="gjbc_aliPartner" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">支付宝key</th>
+        <th style="vertical-align: middle;">aliKey(支付宝密钥)：</th>
         <td>
             <input name="gjbc_aliKey" type="text" value="" id="gjbc_aliKey" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">海关接口rsa加密公钥</th>
+        <th style="vertical-align: middle;">rsaPublicKey(海关RSA公钥)：</th>
         <td>
             <input name="gjbc_rsaPublicKey" type="text" value="" id="gjbc_rsaPublicKey" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">海关接口rsa加密私钥</th>
+        <th style="vertical-align: middle;">rsaPrivateKey(海关RSA密钥)：</th>
         <td>
             <input name="gjbc_rsaPrivateKey" type="text" value="" id="gjbc_rsaPrivateKey" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">海关接口</th>
+        <th style="vertical-align: middle;">aesKey(海关AES密钥)：</th>
         <td>
             <input name="gjbc_aesKey" type="text" value="" id="gjbc_aesKey" class="input-normal"/>
         </td>
