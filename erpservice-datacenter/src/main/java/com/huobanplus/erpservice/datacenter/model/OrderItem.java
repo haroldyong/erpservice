@@ -31,6 +31,7 @@ public class OrderItem extends BaseInfo {
     private int productId;
     private String productBn;
     private String name;
+    private String brand;
     /**
      * 成本价
      */
@@ -87,6 +88,11 @@ public class OrderItem extends BaseInfo {
      * 商品重量 单位g
      */
     private double weight;
+
+    /**
+     * 净重 单位g
+     */
+    private double suttleWeight;
 
     /**
      * 退款状态（售后状态）{@link}
