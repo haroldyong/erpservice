@@ -39,12 +39,12 @@ public interface GjbcOrderHandler {
      */
     EventResult PushOrderWeiXin(Order order, GjbcSysData gjbcSysData);
 
-    /**
-     * 推送订单到海关
-     *
-     * @param order    订单实体类
-     * @param gjbcSysData 系统参数
-     * @return
-     */
-    EventResult PushOrderCustom(Order order, GjbcSysData gjbcSysData);
+//    /**
+//     * 推送订单到海关
+//     *
+//     * @param order    订单实体类
+//     * @param gjbcSysData 系统参数
+//     * @return
+//     */
+//    EventResult PushOrderCustom(Order order, GjbcSysData gjbcSysData);
 }

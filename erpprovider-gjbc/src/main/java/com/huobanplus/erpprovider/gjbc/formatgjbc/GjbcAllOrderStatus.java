@@ -25,6 +25,6 @@ public class GjbcAllOrderStatus {
      */
     private boolean customBackStatus;
     public boolean isSyncSuccess(){
-        return payOrderSyncStatus&&customOrderSyncStatus&&orderSyncStatus;
+        return payOrderSyncStatus && orderSyncStatus;
     }
 }

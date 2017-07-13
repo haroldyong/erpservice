@@ -27,10 +27,10 @@ public class GjbcSysData {
      * 电商企业名称
      */
     private String eCommerceName;
-    /**
-     * 海关接口地址
-     */
-    private String customUrl;
+//    /**
+//     * 海关接口地址
+//     */
+//    private String customUrl;
     /**
      * 微信公众账号ID
      */
@@ -55,18 +55,18 @@ public class GjbcSysData {
      */
     private String aliKey;
 
-    /**
-     * 海关接口rsa加密公钥
-     */
-    private String rsaPublicKey;
-    /**
-     * 海关接口rsa加密私钥
-     */
-    private String rsaPrivateKey;
-    /**
-     * 海关接口
-     */
-    private String aesKey;
+//    /**
+//     * 海关接口rsa加密公钥
+//     */
+//    private String rsaPublicKey;
+//    /**
+//     * 海关接口rsa加密私钥
+//     */
+//    private String rsaPrivateKey;
+//    /**
+//     * 海关接口
+//     */
+//    private String aesKey;
     /**
      * 订单网址
      */

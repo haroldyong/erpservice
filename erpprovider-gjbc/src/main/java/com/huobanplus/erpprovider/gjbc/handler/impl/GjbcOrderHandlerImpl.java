@@ -3,10 +3,8 @@ package com.huobanplus.erpprovider.gjbc.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.huobanplus.erpprovider.dtw.util.AESUtil;
 import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
-import com.huobanplus.erpprovider.dtw.util.RSAUtil;
 import com.huobanplus.erpprovider.gjbc.common.GjbcEnum;
 import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomBody;
@@ -55,7 +53,6 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -182,17 +179,17 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             }
         }
 
-        //海关推送
-        if (!gjbcAllOrderStatus.isCustomOrderSyncStatus()) {
-            EventResult eventResultCustom = PushOrderCustom(order, gjbcSysData);
-            if (eventResultCustom.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                gjbcAllOrderStatus.setCustomOrderSyncStatus(true);
-            } else {
-                gjbcAllOrderStatus.setCustomOrderSyncStatus(false);
-                errorMsg.append("海关订单");
-                errorMsg.append(eventResultCustom.getResultMsg()).append("|");
-            }
-        }
+//        //海关推送
+//        if (!gjbcAllOrderStatus.isCustomOrderSyncStatus()) {
+//            EventResult eventResultCustom = PushOrderCustom(order, gjbcSysData);
+//            if (eventResultCustom.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+//                gjbcAllOrderStatus.setCustomOrderSyncStatus(true);
+//            } else {
+//                gjbcAllOrderStatus.setCustomOrderSyncStatus(false);
+//                errorMsg.append("海关订单");
+//                errorMsg.append(eventResultCustom.getResultMsg()).append("|");
+//            }
+//        }
         if (gjbcAllOrderStatus.isSyncSuccess()) {
             return EventResult.resultWith(EventResultEnum.SUCCESS, gjbcAllOrderStatus);
         }
@@ -444,46 +441,46 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         }
     }
 
-    @Override
-    public EventResult PushOrderCustom(Order order, GjbcSysData gjbcSysData) {
-        try {
-            CustomOrder customOrder = converToCustomOrder(order, gjbcSysData);
-            if (customOrder == null) {
-                return EventResult.resultWith(EventResultEnum.ERROR, "支付方式暂时不支持", null);
-            }
-            String valueAsString = new XmlMapper().writeValueAsString(customOrder);
-            valueAsString += "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
-            int start = valueAsString.indexOf("<jkfOrderDetail>");
-            int end = valueAsString.lastIndexOf("</jkfOrderDetail>");
-            valueAsString = valueAsString.substring(0, start) + "<jkfOrderDetailList>" + valueAsString.substring(start + 16, end) + "</jkfOrderDetailList>" + valueAsString.substring(end + 17);
-
-            //海关接口rsa加密
-            byte[] bytes = valueAsString.getBytes("utf-8");
-            byte[] privateKeyCode = java.util.Base64.getDecoder().decode(gjbcSysData.getRsaPrivateKey().getBytes("utf-8"));
-            byte[] aesKeyCode = Base64.getDecoder().decode(gjbcSysData.getAesKey().getBytes("utf-8"));
-            String sign = new String(Base64.getEncoder().encode(AESUtil.encrypt(bytes, privateKeyCode)), "utf-8");
-            String encData = new String(Base64.getEncoder().encode(RSAUtil.sign(bytes, aesKeyCode)), "utf-8");
-            String result = DtwUtil.requestCustomWebService(gjbcSysData.getCustomUrl(), encData, "IMPORTORDER", sign, gjbcSysData.getECommerceCode());
-            Element rootElement = DocumentHelper.parseText(result).getRootElement();
-            Element element = rootElement.element("body").element("list").element("jkfResult").element("chkMark");
-
-            //数据无误且成功推送到海关
-            if (element.getText().equals("1")) {
-                log.info("customerOrder push success");
-                return EventResult.resultWith(EventResultEnum.SUCCESS);
-            } else {
-                String xpath = "/mo/body/list/jkfResult/resultList/jkfResultDetail/resultInfo";
-                List<Element> selectNodes = DocumentHelper.parseText(result).selectNodes(xpath);
-                StringBuffer errorMsg = new StringBuffer();
-                selectNodes.stream().forEach(a -> errorMsg.append(a.getText()).append(";"));
-                log.info("customerOrder push failed" + errorMsg);
-                return EventResult.resultWith(EventResultEnum.ERROR, errorMsg.toString(), null);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
-        }
-    }
+//    @Override
+//    public EventResult PushOrderCustom(Order order, GjbcSysData gjbcSysData) {
+//        try {
+//            CustomOrder customOrder = converToCustomOrder(order, gjbcSysData);
+//            if (customOrder == null) {
+//                return EventResult.resultWith(EventResultEnum.ERROR, "支付方式暂时不支持", null);
+//            }
+//            String valueAsString = new XmlMapper().writeValueAsString(customOrder);
+//            valueAsString += "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
+//            int start = valueAsString.indexOf("<jkfOrderDetail>");
+//            int end = valueAsString.lastIndexOf("</jkfOrderDetail>");
+//            valueAsString = valueAsString.substring(0, start) + "<jkfOrderDetailList>" + valueAsString.substring(start + 16, end) + "</jkfOrderDetailList>" + valueAsString.substring(end + 17);
+//
+//            //海关接口rsa加密
+//            byte[] bytes = valueAsString.getBytes("utf-8");
+//            byte[] privateKeyCode = java.util.Base64.getDecoder().decode(gjbcSysData.getRsaPrivateKey().getBytes("utf-8"));
+//            byte[] aesKeyCode = Base64.getDecoder().decode(gjbcSysData.getAesKey().getBytes("utf-8"));
+//            String sign = new String(Base64.getEncoder().encode(AESUtil.encrypt(bytes, privateKeyCode)), "utf-8");
+//            String encData = new String(Base64.getEncoder().encode(RSAUtil.sign(bytes, aesKeyCode)), "utf-8");
+//            String result = DtwUtil.requestCustomWebService(gjbcSysData.getCustomUrl(), encData, "IMPORTORDER", sign, gjbcSysData.getECommerceCode());
+//            Element rootElement = DocumentHelper.parseText(result).getRootElement();
+//            Element element = rootElement.element("body").element("list").element("jkfResult").element("chkMark");
+//
+//            //数据无误且成功推送到海关
+//            if (element.getText().equals("1")) {
+//                log.info("customerOrder push success");
+//                return EventResult.resultWith(EventResultEnum.SUCCESS);
+//            } else {
+//                String xpath = "/mo/body/list/jkfResult/resultList/jkfResultDetail/resultInfo";
+//                List<Element> selectNodes = DocumentHelper.parseText(result).selectNodes(xpath);
+//                StringBuffer errorMsg = new StringBuffer();
+//                selectNodes.stream().forEach(a -> errorMsg.append(a.getText()).append(";"));
+//                log.info("customerOrder push failed" + errorMsg);
+//                return EventResult.resultWith(EventResultEnum.ERROR, errorMsg.toString(), null);
+//            }
+//        } catch (Exception e) {
+//            log.error(e.getMessage());
+//            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+//        }
+//    }
 
 
     private CustomOrder converToCustomOrder(Order order, GjbcSysData gjbcSysData) {

@@ -110,12 +110,12 @@ public class TestGjbcHandler extends TestGjbcBase {
 
     @Test
     public void testPushOrderCustom() {
-        Order order = JSON.parseObject(orderInfoJson, Order.class);
-        for (int i = 0; i < 1; i++) {
-            EventResult eventResult = gjbcOrderHandler.PushOrderCustom(mockOrder, mockGjbcSysData);
-            System.out.println(eventResult.getResultCode());
-            System.out.println(eventResult.getResultMsg());
-        }
+//        Order order = JSON.parseObject(orderInfoJson, Order.class);
+//        for (int i = 0; i < 1; i++) {
+////            EventResult eventResult = gjbcOrderHandler.PushOrderCustom(mockOrder, mockGjbcSysData);
+//            System.out.println(eventResult.getResultCode());
+//            System.out.println(eventResult.getResultMsg());
+//        }
     }
 
 

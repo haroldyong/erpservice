@@ -15,7 +15,6 @@
             var key = $.trim($("#gjbc_key").val());
             var name = $.trim($("#gjbc_name").val());
             var eCommerceName = $.trim($("#gjbc_eCommerceName").val());
-            var customUrl = $.trim($("#gjbc_customUrl").val());
             var senderName = $.trim($("#sender_name").val());
             var senderCity = $.trim($("#sender_city").val());
             var senderAddress = $.trim($("#sender_address").val());
@@ -26,9 +25,6 @@
             var weixinKey = $.trim($("#gjbc_weixinKey").val());
             var aliPartner = $.trim($("#gjbc_aliPartner").val());
             var aliKey = $.trim($("#gjbc_aliKey").val());
-            var rsaPublicKey = $.trim($("#gjbc_rsaPublicKey").val());
-            var rsaPrivateKey = $.trim($("#gjbc_rsaPrivateKey").val());
-            var aesKey = $.trim($("#gjbc_aesKey").val());
             var pWeb = $.trim($("#pWeb").val());
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入请求地址");
@@ -49,10 +45,6 @@
                 $.jBox.tip("请输入电商企业名称");
                 return null;
             }
-            if (customUrl.length == 0) {
-                $.jBox.tip("请输入海关接口地址");
-                return null;
-            }
             if (weiXinAppId.length == 0) {
                 $.jBox.tip("请输入微信公众账号ID");
                 return null;
@@ -71,18 +63,6 @@
             }
             if (aliKey.length == 0) {
                 $.jBox.tip("请输入支付宝key");
-                return null;
-            }
-            if (rsaPublicKey.length == 0) {
-                $.jBox.tip("请输入海关接口rsa加密公钥");
-                return null;
-            }
-            if (rsaPrivateKey.length == 0) {
-                $.jBox.tip("请输入海关接口rsa加密私钥");
-                return null;
-            }
-            if (aesKey.length == 0) {
-                $.jBox.tip("请输入海关接口");
                 return null;
             }
             if (senderName.length == 0) {
@@ -116,15 +96,11 @@
                 name: name,
                 eCommerceCode: eCommerceCode,
                 eCommerceName: eCommerceName,
-                customUrl: customUrl,
                 weiXinAppId: weiXinAppId,
                 weixinMchId: weixinMchId,
                 weixinKey: weixinKey,
                 aliPartner: aliPartner,
                 aliKey: aliKey,
-                rsaPublicKey: rsaPublicKey,
-                rsaPrivateKey: rsaPrivateKey,
-                aesKey: aesKey,
                 pWeb: pWeb,
                 senderInfo: senderInfo
             };
@@ -144,9 +120,6 @@
             $("#gjbc_weixinKey").val(jsonData.weixinKey);
             $("#gjbc_aliPartner").val(jsonData.aliPartner);
             $("#gjbc_aliKey").val(jsonData.aliKey);
-            $("#gjbc_rsaPublicKey").val(jsonData.rsaPublicKey);
-            $("#gjbc_rsaPrivateKey").val(jsonData.rsaPrivateKey);
-            $("#gjbc_aesKey").val(jsonData.aesKey);
             var senderInfo = jsonData.senderInfo;
             if (senderInfo) {
                 var senderInfoArry = senderInfo.split(",");
@@ -195,12 +168,6 @@
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">海关接口地址</th>
-        <td>
-            <input name="gjbc_customUrl" type="text" value="" id="gjbc_customUrl" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
         <th style="vertical-align: middle;">weiXinAppId(微信公众账号ID)：</th>
         <td>
             <input name="gjbc_weiXinAppId" type="text" value="" id="gjbc_weiXinAppId" class="input-normal"/>
@@ -228,24 +195,6 @@
         <th style="vertical-align: middle;">aliKey(支付宝密钥)：</th>
         <td>
             <input name="gjbc_aliKey" type="text" value="" id="gjbc_aliKey" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">rsaPublicKey(海关RSA公钥)：</th>
-        <td>
-            <input name="gjbc_rsaPublicKey" type="text" value="" id="gjbc_rsaPublicKey" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">rsaPrivateKey(海关RSA密钥)：</th>
-        <td>
-            <input name="gjbc_rsaPrivateKey" type="text" value="" id="gjbc_rsaPrivateKey" class="input-normal"/>
-        </td>
-    </tr>
-    <tr>
-        <th style="vertical-align: middle;">aesKey(海关AES密钥)：</th>
-        <td>
-            <input name="gjbc_aesKey" type="text" value="" id="gjbc_aesKey" class="input-normal"/>
         </td>
     </tr>
     <tr>
