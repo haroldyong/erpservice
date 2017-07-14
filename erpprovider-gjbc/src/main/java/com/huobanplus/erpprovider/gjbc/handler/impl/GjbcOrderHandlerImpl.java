@@ -242,6 +242,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         gjbcOrderInfo.setRe_no(GjbcConstant.RECORD_NUMBER);
         gjbcOrderInfo.setRe_no_qg(GjbcConstant.RECORD_NUMBER);
         gjbcOrderInfo.setRe_name(GjbcConstant.RECORD_NAME);
+        gjbcOrderInfo.setWarehouseCode(gjbcSysData.getWarehouseCode());
         gjbcOrderInfo.setExpress_code(order.getLogiCode());
         double totalWight = 0;
         double totalSuttleWeight = 0;

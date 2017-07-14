@@ -25,9 +25,10 @@
             var weixinKey = $.trim($("#gjbc_weixinKey").val());
             var aliPartner = $.trim($("#gjbc_aliPartner").val());
             var aliKey = $.trim($("#gjbc_aliKey").val());
+            var warehouseCode = $.trim($("#warehouse_code").val());
             var pWeb = $.trim($("#pWeb").val());
             if (requestUrl.length == 0) {
-                $.jBox.tip("请输入请求地址");
+                $.jBox.tip("请输入高捷请求地址");
             }
             if (name.length == 0) {
                 $.jBox.tip("请输入账号名称");
@@ -65,6 +66,14 @@
                 $.jBox.tip("请输入支付宝key");
                 return null;
             }
+            if (warehouseCode.length == 0) {
+                $.jBox.tip("请输入仓库代码");
+                return null;
+            }
+            if (pWeb.length == 0) {
+                $.jBox.tip("请输入订单网址");
+                return null;
+            }
             if (senderName.length == 0) {
                 $.jBox.tip("请输入发件人姓名")
                 return null;
@@ -85,10 +94,7 @@
                 $.jBox.tip("请输入发件人国别")
                 return null;
             }
-            if (pWeb.length == 0) {
-                $.jBox.tip("请输入订单网址");
-                return null;
-            }
+
             var senderInfo = senderName + "," + senderCity + "," + senderAddress + "," + senderPhone + "," + senderCountryCode;
             var gjbcConfig = {
                 requestUrl: requestUrl,
@@ -101,6 +107,7 @@
                 weixinKey: weixinKey,
                 aliPartner: aliPartner,
                 aliKey: aliKey,
+                warehouseCode: warehouseCode,
                 pWeb: pWeb,
                 senderInfo: senderInfo
             };
@@ -129,6 +136,7 @@
                 $("#sender_phone").val(senderInfoArry[3]);
                 $("#sender_country_code").val(senderInfoArry[4]);
             }
+            $("#warehouse_code").val(jsonData.warehouseCode);
             $("#pWeb").val(jsonData.pWeb);
         }
     };
@@ -195,6 +203,12 @@
         <th style="vertical-align: middle;">aliKey(支付宝密钥)：</th>
         <td>
             <input name="gjbc_aliKey" type="text" value="" id="gjbc_aliKey" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">仓库代码：</th>
+        <td>
+            <input name="warehouse_code" type="text" value="" id="warehouse_code" class="input-normal"/>
         </td>
     </tr>
     <tr>

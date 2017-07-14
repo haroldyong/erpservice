@@ -202,6 +202,10 @@ public class GjbcOrderInfo {
     @JSONField(name = "order_amount")
     private double order_amount;
     /**
+     * 仓库代码
+     */
+    private String warehouseCode;
+    /**
      * 商品明细
      */
     @JSONField(name = "order_goods")

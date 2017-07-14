@@ -68,6 +68,10 @@ public class GjbcSysData {
 //     */
 //    private String aesKey;
     /**
+     * 仓库代码
+     */
+    private String warehouseCode;
+    /**
      * 订单网址
      */
     private String pWeb;
