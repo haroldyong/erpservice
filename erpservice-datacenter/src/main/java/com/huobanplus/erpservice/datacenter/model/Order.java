@@ -35,7 +35,6 @@ public class Order extends BaseInfo {
     private int orderStatus;
     private int payStatus;
     private int shipStatus;
-    private float weight;
     private String orderName;
     private int itemNum;
     private String lastUpdateTime;
@@ -192,5 +191,13 @@ public class Order extends BaseInfo {
      */
     private List<OrderItem> orderItems;
 
+    /**
+     * 订单毛重 单位g
+     */
+    private float weight;
 
+    /**
+     * 订单净重 单位g
+     */
+    private double suttleWeight;
 }
