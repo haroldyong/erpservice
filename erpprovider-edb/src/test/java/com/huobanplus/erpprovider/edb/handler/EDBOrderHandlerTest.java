@@ -36,20 +36,20 @@ public class EDBOrderHandlerTest extends EDBTestBase {
     @Test
     public void obtainOrderListTest() throws Exception {
         EDBSysData mockEDBSysData = new EDBSysData();
-        mockEDBSysData.setRequestUrl("http://vip3192.edb08.com.cn/rest/index.aspx");
-        mockEDBSysData.setAppKey("57dcd6e6");
-        mockEDBSysData.setAppSecret("c0a96e25382a447382de0f255e0b3677");
-        mockEDBSysData.setToken("6ae2a7b0ef8c43449434b561ee1cf1b7");
-        mockEDBSysData.setDbHost("edb_a67707");
-        mockEDBSysData.setIp("122.224.212.246");
+        mockEDBSysData.setRequestUrl("http://vip502.edb05.com/rest/index.aspx");
+        mockEDBSysData.setAppKey("fd0297ac");
+        mockEDBSysData.setAppSecret("313a62f368104928b44208ae3bc18cc4");
+        mockEDBSysData.setToken("ffb839ad76184e69a3c51eb4ba072b80");
+        mockEDBSysData.setDbHost("edb_a87711");
+        mockEDBSysData.setIp("119.23.60.222");
 //        mockEDBSysData.setStorageIds("5");
-        mockEDBSysData.setShopId("66");
-        mockEDBSysData.setStorageId("7");
-        mockEDBSysData.setExpress("韵达");
+        mockEDBSysData.setShopId("1");
+        mockEDBSysData.setStorageId("2");
+        mockEDBSysData.setExpress("圆通");
 
         EDBOrderSearch edbOrderSearch = new EDBOrderSearch();
-        edbOrderSearch.setBeginTime("2017-04-13 09:00:00");
-        edbOrderSearch.setEndTime("2017-04-13 09:20:00");
+        edbOrderSearch.setBeginTime("2017-07-15 19:40:00");
+        edbOrderSearch.setEndTime("2017-07-15 20:20:00");
         edbOrderSearch.setDateType(EDBEnum.DateType.DELIVER_TIME.getDateType());
         edbOrderSearch.setPageIndex(1);
         edbOrderSearch.setPageSize(EDBConstant.PAGE_SIZE);

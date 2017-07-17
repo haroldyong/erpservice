@@ -299,7 +299,8 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setConsigneeZip(order.getShipZip());//(必填)
         dtwOrder.setWeight(order.getWeight());
         dtwOrder.setLotNo("");
-        dtwOrder.setNetWeight(order.getWeight());
+        dtwOrder.setWeight(order.getWeight() / 1000);
+        dtwOrder.setNetWeight(order.getSuttleWeight() / 1000);
         dtwOrder.setIeFlag(73);//(必填) 73:进口 79:出口
 
         requestMap.put("data", JSON.toJSONString(dtwOrder));
