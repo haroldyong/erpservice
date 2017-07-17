@@ -39,6 +39,7 @@ import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
@@ -298,8 +299,9 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         System.out.println(gjbcOrderInfosJson);
         try {
             requestMap = getSysRequestData(gjbcSysData);
-            String encode = com.sun.org.apache.xml.internal.security.utils.Base64.encode(gjbcOrderInfosJson.getBytes("utf-8"));
-            requestMap.put("order", com.sun.org.apache.xml.internal.security.utils.Base64.encode(encode.getBytes("utf-8")).toString());
+            String encode = Base64.encodeBase64String(gjbcOrderInfosJson.getBytes("utf-8"));
+
+            requestMap.put("order", Base64.encodeBase64String(encode.getBytes("utf-8")));
         } catch (UnsupportedEncodingException e) {
             log.info("Exception：" + e.getMessage());
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
