@@ -28,7 +28,6 @@ import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
-import com.huobanplus.erpservice.datacenter.entity.CountryInfo;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
@@ -268,12 +267,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
 //            gjbcGoodsItemsInfo.setYcg_code(GjbcEnum.CountryEnum.CHINA.getCode());
                 /* 原产国代码 */
             String countryCode = orderItems.get(i).getGoodBn().substring(0, 3);
-            CountryInfo countryInfo = countryInfoRepository.findOne(countryCode);
-            if (countryInfo != null) {
-                gjbcGoodsItemsInfo.setYcg_code(countryCode);
-            } else {
-                return EventResult.resultWith(EventResultEnum.ERROR, "原产国代码错误", null);
-            }
+            gjbcGoodsItemsInfo.setYcg_code(countryCode);
                 /* 商品HS编码 */
             gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn().substring(3));
             gjbcGoodsItemsInfo.setCurr(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));

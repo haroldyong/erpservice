@@ -86,7 +86,7 @@ public class TestGjbcBase {
         mockOrderItems = new ArrayList<>();
         OrderItem orderItem = new OrderItem();
         orderItem.setGoodId(1);
-        orderItem.setGoodBn("1102104200000");
+        orderItem.setGoodBn("0002104200000");
         orderItem.setItemId(178770);
         orderItem.setOrderId(mockOrderNo);
         orderItem.setUnionOrderId("2016062455965373");
