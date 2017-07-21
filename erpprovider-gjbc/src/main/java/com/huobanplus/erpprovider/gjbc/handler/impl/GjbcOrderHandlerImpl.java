@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2017. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.gjbc.handler.impl;
 
 import com.alibaba.fastjson.JSON;
@@ -7,19 +16,7 @@ import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
 import com.huobanplus.erpprovider.gjbc.common.GjbcEnum;
 import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomBody;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomGoodsPurchaser;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomHead;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrder;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderDetail;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderHead;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderInfo;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderInfoList;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomSign;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcAllOrderStatus;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcGoodsItemsInfo;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcOrderInfo;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.WeiXinCustom;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.*;
 import com.huobanplus.erpprovider.gjbc.handler.BaseHandler;
 import com.huobanplus.erpprovider.gjbc.handler.GjbcOrderHandler;
 import com.huobanplus.erpprovider.gjbc.util.GjbcConstant;
@@ -52,11 +49,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by montage on 2017/6/26.
@@ -75,6 +68,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
+        log.info("gjbc start to push order");
         try {
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
