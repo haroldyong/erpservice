@@ -17,6 +17,7 @@ import com.huobanplus.erpservice.common.ienum.ICommonEnum;
 public interface GjbcEnum {
     enum CustomerEnum {
         HANGZHOU,
+        ZONGSHU,
         ZHENGZHOU,
         GUANGZHOU,
         CHONGQING,

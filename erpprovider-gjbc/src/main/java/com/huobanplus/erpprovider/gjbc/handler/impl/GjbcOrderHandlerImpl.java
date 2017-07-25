@@ -204,6 +204,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             GjbcOrderInfo gjbcOrderInfo = new GjbcOrderInfo();
             gjbcOrderInfo.setIs_bc(1);
             gjbcOrderInfo.setOrder_sn(order.getOrderId());
+            gjbcOrderInfo.setOrder_sn(order.getUnionOrderId());
             /*发件人信息*/
             String[] sendInfo = gjbcSysData.getSenderInfo().split(",");
             gjbcOrderInfo.setSender_name(sendInfo[0]);
@@ -254,7 +255,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             GjbcGoodsItemsInfo[] goodsItemsInfos = new GjbcGoodsItemsInfo[orderItems.size()];
             for (int i = 0; i < orderItems.size(); i++) {
                 GjbcGoodsItemsInfo gjbcGoodsItemsInfo = new GjbcGoodsItemsInfo();
-                gjbcGoodsItemsInfo.setGoods_seq(orderItems.get(i).getGoodId());
+                gjbcGoodsItemsInfo.setGoods_seq(i + 1);
                 /* 商品条形码  */
                 gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getProductBn());
                 gjbcGoodsItemsInfo.setGoods_unit(GjbcEnum.UnitEnum.KG.getCode());
@@ -329,13 +330,14 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             requestMap.put("_input_charset", "utf-8");
             requestMap.put("sign_type", "MD5");
 
-            requestMap.put("out_request_no", order.getOrderId());
+//            requestMap.put("out_request_no", order.getOrderId());
+            requestMap.put("out_request_no", order.getUnionOrderId());
             requestMap.put("trade_no", order.getPayNumber());
             requestMap.put("amount", order.getOnlinePayAmount());
             requestMap.put("partner", gjbcSysData.getAliPartner());
             requestMap.put("merchant_customs_code", gjbcSysData.getECommerceCode());
             requestMap.put("merchant_customs_name", gjbcSysData.getECommerceName());
-            requestMap.put("customs_place", GjbcEnum.CustomerEnum.HANGZHOU.toString());
+            requestMap.put("customs_place", GjbcEnum.CustomerEnum.ZONGSHU.toString());
 
             String sign = DtwUtil.aliBuildSign(requestMap, gjbcSysData.getAliKey());
             requestMap.put("sign", sign);
