@@ -25,6 +25,7 @@ import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.ienum.EnumHelper;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
+import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
@@ -43,12 +44,8 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -122,6 +119,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
                 orderDetailSyncLog.setErrorMsg(eventResult.getResultMsg());
                 orderDetailSyncLogService.save(orderDetailSyncLog);
             }
+            log.info("order push all complete");
 
             return eventResult;
         } catch (Exception e) {
@@ -144,7 +142,11 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         if (!gjbcAllOrderStatus.isPayOrderSyncStatus()) {
             EventResult PayResult = null;
             OrderEnum.PaymentOptions enumTypeOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
-            if (enumTypeOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE_WEB || enumTypeOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE || enumTypeOptions == OrderEnum.PaymentOptions.ALIPAY_PC) {
+            if (enumTypeOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE_WEB ||
+                    enumTypeOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE ||
+                    enumTypeOptions == OrderEnum.PaymentOptions.ALIPAY_PC ||
+                    enumTypeOptions == OrderEnum.PaymentOptions.ALIPAY_CROSS_BORDER
+                    ) {
                 PayResult = PushOrderAliPay(order, gjbcSysData);
             } else if (enumTypeOptions == OrderEnum.PaymentOptions.WEIXINPAY_V3 || enumTypeOptions == OrderEnum.PaymentOptions.WEIXINPAY || enumTypeOptions == OrderEnum.PaymentOptions.WEIXINPAY_APP) {
                 PayResult = PushOrderWeiXin(order, gjbcSysData);
@@ -159,7 +161,9 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
                 errorMsg.append("支付单:");
                 errorMsg.append(PayResult.getResultMsg()).append("|");
             }
+            log.info("pay push end====>" + PayResult.getResultMsg());
         }
+
 
         //平台推送
         if (!gjbcAllOrderStatus.isOrderSyncStatus()) {
@@ -171,6 +175,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
                 errorMsg.append("平台订单");
                 errorMsg.append(orderEvent.getResultMsg()).append("|");
             }
+            log.info("platform order push end=====>" + orderEvent.getResultMsg());
         }
 
 //        //海关推送
@@ -192,117 +197,127 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
 
     @Override
     public EventResult pushPlatformOrder(Order order, GjbcSysData gjbcSysData) {
-        Map<String, Object> requestMap = new TreeMap<>();
-        GjbcOrderInfo gjbcOrderInfo = new GjbcOrderInfo();
-        gjbcOrderInfo.setIs_bc(1);
-        gjbcOrderInfo.setOrder_sn(order.getOrderId());
+        try {
+            log.info("push platform order start");
+
+            Map<String, Object> requestMap = new TreeMap<>();
+            GjbcOrderInfo gjbcOrderInfo = new GjbcOrderInfo();
+            gjbcOrderInfo.setIs_bc(1);
+            gjbcOrderInfo.setOrder_sn(order.getOrderId());
             /*发件人信息*/
-        String[] sendInfo = gjbcSysData.getSenderInfo().split(",");
-        gjbcOrderInfo.setSender_name(sendInfo[0]);
-        gjbcOrderInfo.setSender_city(sendInfo[1]);
-        gjbcOrderInfo.setSender_address(sendInfo[2]);
-        gjbcOrderInfo.setSender_phone(sendInfo[3]);
-        gjbcOrderInfo.setSender_country_code(sendInfo[4]);
-        gjbcOrderInfo.setBuyer_name(order.getShipName());
-        gjbcOrderInfo.setBuyer_phone(order.getShipMobile());
-        gjbcOrderInfo.setOrder_name(order.getBuyerName());
-        gjbcOrderInfo.setOrder_idcard(order.getBuyerPid());
-        gjbcOrderInfo.setOrder_phone(order.getUserLoginName());
-        gjbcOrderInfo.setCustoms_insured(0);
-        gjbcOrderInfo.setCustoms_discount(order.getPmtAmount());
-        gjbcOrderInfo.setOrder_uname(order.getUserLoginName());
-        gjbcOrderInfo.setProvince_code(order.getProvince());
-        gjbcOrderInfo.setBuyer_address(order.getProvince() + "^^^" + order.getCity() + "^^^" + order.getDistrict() + "^^^" + order.getShipAddr());
-        gjbcOrderInfo.setBuyer_idcard(order.getBuyerPid());
-        gjbcOrderInfo.setCurr(GjbcEnum.CurrencyEnum.CNY.getCode());
-        OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
-        gjbcOrderInfo.setP_name(paymentOptions.getName());
-        gjbcOrderInfo.setP_no(order.getPayNumber());
-        String payTime = order.getPayTime();
-        if (!StringUtils.isEmpty(payTime)) {
-            SimpleDateFormat sdf = new SimpleDateFormat(GjbcConstant.TIME_PATTERN);
-            try {
-                Date payDate = sdf.parse(payTime);
-                gjbcOrderInfo.setP_time((int) payDate.getTime());
-            } catch (ParseException e) {
-                log.info("Exception：" + e.getMessage());
-                return EventResult.resultWith(EventResultEnum.ERROR, "时间格式转换异常", null);
-            }
-        }
-        gjbcOrderInfo.setSh_fee(order.getCostFreight());
-        gjbcOrderInfo.setCus_tax(order.getTaxAmount());
-        gjbcOrderInfo.setPweb(gjbcSysData.getPWeb());
-        gjbcOrderInfo.setWeb_name(GjbcConstant.WEB_NAME);
-        gjbcOrderInfo.setRe_no(GjbcConstant.RECORD_NUMBER);
-        gjbcOrderInfo.setRe_no_qg(GjbcConstant.RECORD_NUMBER);
-        gjbcOrderInfo.setRe_name(GjbcConstant.RECORD_NAME);
-        gjbcOrderInfo.setWarehouseCode(gjbcSysData.getWarehouseCode());
-        gjbcOrderInfo.setExpress_code(order.getLogiCode());
-        double totalWight = 0;
-        double totalSuttleWeight = 0;
-        double finalAmout = 0;
-        List<OrderItem> orderItems = order.getOrderItems();
-        GjbcGoodsItemsInfo[] goodsItemsInfos = new GjbcGoodsItemsInfo[orderItems.size()];
-        for (int i = 0; i < orderItems.size(); i++) {
-            GjbcGoodsItemsInfo gjbcGoodsItemsInfo = new GjbcGoodsItemsInfo();
-            gjbcGoodsItemsInfo.setGoods_seq(orderItems.get(i).getGoodId());
+            String[] sendInfo = gjbcSysData.getSenderInfo().split(",");
+            gjbcOrderInfo.setSender_name(sendInfo[0]);
+            gjbcOrderInfo.setSender_city(sendInfo[1]);
+            gjbcOrderInfo.setSender_address(sendInfo[2]);
+            gjbcOrderInfo.setSender_phone(sendInfo[3]);
+            gjbcOrderInfo.setSender_country_code("110");
+            gjbcOrderInfo.setBuyer_name(order.getShipName());
+            gjbcOrderInfo.setBuyer_phone(order.getShipMobile());
+            gjbcOrderInfo.setOrder_name(order.getBuyerName());
+            gjbcOrderInfo.setOrder_idcard(order.getBuyerPid());
+            gjbcOrderInfo.setOrder_phone(order.getUserLoginName());
+            gjbcOrderInfo.setCustoms_insured(0);
+            gjbcOrderInfo.setCustoms_discount(order.getPmtAmount());
+            gjbcOrderInfo.setOrder_uname(order.getUserLoginName());
+//            gjbcOrderInfo.setProvince_code(order.getProvince());
+            gjbcOrderInfo.setBuyer_address(order.getProvince() + "^^^" + order.getCity() + "^^^" + order.getDistrict() + "^^^" + order.getShipAddr());
+            gjbcOrderInfo.setBuyer_idcard(order.getBuyerPid());
+            gjbcOrderInfo.setCurr(GjbcEnum.CurrencyEnum.CNY.getCode());
+            OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
+            gjbcOrderInfo.setP_name(paymentOptions.getName());
+            gjbcOrderInfo.setP_no(order.getPayNumber());
+            String payTime = order.getPayTime();
+            gjbcOrderInfo.setP_time(StringUtil.DateFormat(payTime, StringUtil.TIME_PATTERN).getTime());
+//            if (!StringUtils.isEmpty(payTime)) {
+//                SimpleDateFormat sdf = new SimpleDateFormat(GjbcConstant.TIME_PATTERN);
+//                try {
+//                    Date payDate = sdf.parse(payTime);
+//                    gjbcOrderInfo.setP_time((int) payDate.getTime());
+//                } catch (ParseException e) {
+//                    log.info("Exception：" + e.getMessage());
+//                    return EventResult.resultWith(EventResultEnum.ERROR, "时间格式转换异常", null);
+//                }
+//            }
+            gjbcOrderInfo.setSh_fee(order.getCostFreight());
+            gjbcOrderInfo.setCus_tax(order.getTaxAmount());
+            gjbcOrderInfo.setPweb(gjbcSysData.getPWeb());
+            gjbcOrderInfo.setWeb_name(GjbcConstant.WEB_NAME);
+            gjbcOrderInfo.setRe_no(GjbcConstant.RECORD_NUMBER);
+            gjbcOrderInfo.setRe_no_qg(GjbcConstant.RECORD_NUMBER);
+            gjbcOrderInfo.setRe_name(GjbcConstant.RECORD_NAME);
+            gjbcOrderInfo.setWarehouseCode(gjbcSysData.getWarehouseCode());
+            gjbcOrderInfo.setExpress_code(order.getLogiCode());
+            double totalWight = 0;
+            double totalSuttleWeight = 0;
+            double finalAmout = 0;
+            List<OrderItem> orderItems = order.getOrderItems();
+            GjbcGoodsItemsInfo[] goodsItemsInfos = new GjbcGoodsItemsInfo[orderItems.size()];
+            for (int i = 0; i < orderItems.size(); i++) {
+                GjbcGoodsItemsInfo gjbcGoodsItemsInfo = new GjbcGoodsItemsInfo();
+                gjbcGoodsItemsInfo.setGoods_seq(orderItems.get(i).getGoodId());
                 /* 商品条形码  */
-            gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getProductBn());
-            gjbcGoodsItemsInfo.setGoods_unit(GjbcEnum.UnitEnum.KG.getCode());
-            gjbcGoodsItemsInfo.setGoods_size(GjbcEnum.UnitEnum.JIAN.getCode());
-            gjbcGoodsItemsInfo.setGoods_hg_num(orderItems.get(i).getNum());
-            BigDecimal bigWeignt = new BigDecimal(orderItems.get(i).getSuttleWeight() / 1000);
-            gjbcGoodsItemsInfo.setGoods_gweight(bigWeignt.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-            gjbcGoodsItemsInfo.setGoods_name(orderItems.get(i).getName());
-            gjbcGoodsItemsInfo.setBrand(orderItems.get(i).getBrand());
-            gjbcGoodsItemsInfo.setGoods_spec(orderItems.get(i).getBrief());
-            gjbcGoodsItemsInfo.setGoods_num(String.valueOf(orderItems.get(i).getNum()));
-            gjbcGoodsItemsInfo.setGoods_price(orderItems.get(i).getPrice());
+                gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getProductBn());
+                gjbcGoodsItemsInfo.setGoods_unit(GjbcEnum.UnitEnum.KG.getCode());
+                gjbcGoodsItemsInfo.setGoods_size(GjbcEnum.UnitEnum.JIAN.getCode());
+
+                BigDecimal bigWeignt = new BigDecimal(orderItems.get(i).getSuttleWeight() / 1000);
+                gjbcGoodsItemsInfo.setGoods_gweight(bigWeignt.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                gjbcGoodsItemsInfo.setGoods_name(orderItems.get(i).getName());
+                gjbcGoodsItemsInfo.setBrand(orderItems.get(i).getBrand());
+                gjbcGoodsItemsInfo.setGoods_spec(orderItems.get(i).getStandard());
+                gjbcGoodsItemsInfo.setGoods_num(String.valueOf(orderItems.get(i).getNum()));
+                gjbcGoodsItemsInfo.setGoods_price(orderItems.get(i).getPrice());
 //            gjbcGoodsItemsInfo.setYcg_code(GjbcEnum.CountryEnum.CHINA.getCode());
                 /* 原产国代码 */
-            String countryCode = orderItems.get(i).getGoodBn().substring(0, 3);
-            gjbcGoodsItemsInfo.setYcg_code(countryCode);
+                String countryCode = orderItems.get(i).getGoodBn().substring(0, 3);
+                gjbcGoodsItemsInfo.setYcg_code(countryCode);
                 /* 商品HS编码 */
-            gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn().substring(3));
-            gjbcGoodsItemsInfo.setCurr(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));
-            gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum());
-            BigDecimal bigGoodsTotal = new BigDecimal(orderItems.get(i).getPrice() * orderItems.get(i).getNum());
-            finalAmout += bigGoodsTotal.doubleValue();
-            gjbcGoodsItemsInfo.setGoods_total(bigGoodsTotal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn().substring(3));
+                gjbcGoodsItemsInfo.setCurr(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));
+                gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum());
+                BigDecimal bigGoodsTotal = new BigDecimal(orderItems.get(i).getPrice() * orderItems.get(i).getNum());
+                finalAmout += bigGoodsTotal.doubleValue();
+                gjbcGoodsItemsInfo.setGoods_total(bigGoodsTotal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
             /*商品平台货号*/
-            gjbcGoodsItemsInfo.setGoods_commonid(Integer.parseInt(orderItems.get(i).getGoodBn().substring(3)));
+                gjbcGoodsItemsInfo.setGoods_commonid(orderItems.get(i).getProductId());
             /* 毛重*/
-            totalWight += orderItems.get(i).getNum() * orderItems.get(i).getWeight();
+                log.info("毛重====>" + orderItems.get(i).getWeight());
+                totalWight += orderItems.get(i).getNum() * orderItems.get(i).getWeight();
             /* 净重*/
-            totalSuttleWeight += orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight();
-            goodsItemsInfos[i] = gjbcGoodsItemsInfo;
-        }
-        gjbcOrderInfo.setOrder_amount(finalAmout);
-        BigDecimal bigTotalWight = new BigDecimal(totalWight / 1000);
-        gjbcOrderInfo.setPkg_gweight(bigTotalWight.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-        BigDecimal bigTotalSuttleWeight = new BigDecimal(totalSuttleWeight / 1000);
-        gjbcOrderInfo.setGoods_nweight(bigTotalSuttleWeight.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-        gjbcOrderInfo.setOrder_goods(goodsItemsInfos);
-        String gjbcOrderInfosJson = JSON.toJSONString(gjbcOrderInfo);
-        System.out.println(gjbcOrderInfosJson);
-        try {
+                double subSuttleWeight = orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight();
+                gjbcGoodsItemsInfo.setGoods_hg_num(subSuttleWeight);
+                totalSuttleWeight += subSuttleWeight;
+                goodsItemsInfos[i] = gjbcGoodsItemsInfo;
+            }
+            log.info("=============3==============");
+            gjbcOrderInfo.setOrder_amount(finalAmout);
+            BigDecimal bigTotalWight = new BigDecimal(totalWight / 1000);
+            gjbcOrderInfo.setPkg_gweight(bigTotalWight.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            BigDecimal bigTotalSuttleWeight = new BigDecimal(totalSuttleWeight / 1000);
+            gjbcOrderInfo.setGoods_nweight(bigTotalSuttleWeight.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            gjbcOrderInfo.setOrder_goods(goodsItemsInfos);
+            String gjbcOrderInfosJson = JSON.toJSONString(gjbcOrderInfo);
+
             requestMap = getSysRequestData(gjbcSysData);
+            log.info("=============4==============");
             String encode = Base64.encodeBase64String(gjbcOrderInfosJson.getBytes("utf-8"));
 
             requestMap.put("order", Base64.encodeBase64String(encode.getBytes("utf-8")));
-        } catch (UnsupportedEncodingException e) {
-            log.info("Exception：" + e.getMessage());
+            log.info("gjbc requestUrl====>" + gjbcSysData.getRequestUrl());
+            HttpResult httpResult = HttpClientUtil.getInstance().post(gjbcSysData.getRequestUrl(), requestMap);
+            log.info("platform httpResult====>" + httpResult.getHttpContent());
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
+                if ("OK".equals(jsonObject.get("flag"))) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, jsonObject.getString("info"), null);
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("info"), null);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, "请求服务器错误", null);
+        } catch (Exception e) {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
-        HttpResult httpResult = HttpClientUtil.getInstance().post(gjbcSysData.getRequestUrl(), requestMap);
-        if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-            JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
-            if ("OK".equals(jsonObject.get("flag"))) {
-                return EventResult.resultWith(EventResultEnum.SUCCESS, jsonObject.getString("info"), null);
-            }
-            return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("info"), null);
-        }
-        return EventResult.resultWith(EventResultEnum.ERROR, "请求服务器错误", null);
+
     }
 
 
@@ -516,7 +531,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         customOrderHead.setConsignee(order.getShipName());
         customOrderHead.setConsigneeAddress(order.getShipAddr());
         customOrderHead.setTotalCount(order.getItemNum());
-        customOrderHead.setSenderCountry(GjbcEnum.CountryEnum.CHINA.getCode());
+        customOrderHead.setSenderCountry(GjbcEnum.CountryEnum.HONGKANG.getCode());
 
         String[] split = gjbcSysData.getSenderInfo().split(",");
         customOrderHead.setSenderName(split[0]);

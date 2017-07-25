@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2017. All rights reserved.
+ */
+
 package com.huobanplus.test.gjbc.handler;
 
 import com.alibaba.fastjson.JSON;
@@ -7,6 +16,7 @@ import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
 import com.huobanplus.test.gjbc.TestGjbcBase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +36,10 @@ public class TestGjbcHandler extends TestGjbcBase {
     private GjbcOrderHandler gjbcOrderHandler;
 
     private PushNewOrderEvent mockPushNewOrderEvent;
+    @Autowired
+    private HBOrderHandler hbOrderHandler;
 
-    private String orderInfoJson = "{\"orderId\":\"2016082966169442\",\"memberId\":17423,\"userLoginName\":\"15868807873\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":3500.000,\"orderName\":\"??????2(??,42?)(7)(?7)\",\"itemNum\":7,\"lastUpdateTime\":\"2016-08-29 17:09:49\",\"createTime\":\"2016-08-29 17:09:49\",\"shipName\":\"???\",\"shipArea\":\"???/???/???\",\"province\":\"???\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"????????????????????e?\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"15868807873\",\"costItem\":0.700,\"onlinePayAmount\":0.00,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":0.700,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"???\",\"payType\":700,\"customerId\":296,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2016-08-29 17:09:49\",\"unionOrderId\":\"2016082976823811\",\"receiveStatus\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"362322199411050053\",\"buyerName\":\"???\",\"orderItems\":[{\"itemId\":14701,\"orderId\":\"2016082966169442\",\"unionOrderId\":\"2016082976823811\",\"productBn\":\"CSXJ0005\",\"name\":\"吴雄牛\",\"cost\":5.000,\"price\":0.100,\"amount\":0.700,\"num\":7,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":296,\"goodBn\":\"0402210000\",\"standard\":\"??,42?\",\"brief\":null,\"shipStatus\":0}]}";
+    private String orderInfoJson = "{\"orderId\":\"20170721878358972678\",\"memberId\":22713,\"userLoginName\":\"18958045485\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":39.000,\"suttleWeight\":0.00,\"orderName\":\"娇兰小黑裙我的香氛唇膏 2.8g #010(#010)(1)(×1)\",\"itemNum\":1,\"lastUpdateTime\":\"2017-07-21 17:01:56\",\"createTime\":\"2017-07-21 17:01:56\",\"shipName\":\"王剑南\",\"shipArea\":\"浙江省/杭州市/滨江区\",\"province\":\"浙江省\",\"city\":\"杭州市\",\"district\":\"滨江区\",\"shipAddr\":\"浙江省杭州市滨江区阡陌路智慧e谷\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"18958045485\",\"costItem\":189.000,\"onlinePayAmount\":0.00,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":238.800,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"支付宝跨境支付\",\"payType\":12,\"customerId\":3447,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2017-07-21 17:01:56\",\"unionOrderId\":\"20170721192128393740\",\"receiveStatus\":0,\"sourceShop\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"321324198901095211\",\"buyerName\":\"王剑南\",\"payNumber\":\"20170721652737240644\",\"taxAmount\":49.800,\"orderItems\":[{\"itemId\":178277,\"orderId\":\"20170721878358972677\",\"unionOrderId\":\"20170721192128393740\",\"goodId\":21195,\"productId\":22865,\"productBn\":\"3346470421578\",\"name\":\"娇兰小黑裙我的香氛唇膏 2.8g #010(#010)(1)\",\"cost\":0.000,\"price\":189.000,\"amount\":189.000,\"num\":1,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":3447,\"goodBn\":\"3053304100091\",\"standard\":\"#010\",\"brief\":null,\"shipStatus\":0,\"weight\":39.000,\"suttleWeight\":0.00,\"unit\":null,\"refundStatus\":-1,\"brand\":\"无品牌\"}],\"errorMessage\":null,\"payedAmount\":238.800}";
 
     /**
      * 高捷订单推送测试
@@ -38,6 +50,11 @@ public class TestGjbcHandler extends TestGjbcBase {
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultMsg());
         System.out.println(eventResult.getResultCode());
+    }
+
+    @Test
+    public void testPushAliPay() {
+
     }
 
     @Test
@@ -90,7 +107,7 @@ public class TestGjbcHandler extends TestGjbcBase {
     }
 
     @Test
-    public void testPushOrderWeiXin(){
+    public void testPushOrderWeiXin() {
         mockOrder.setPayNumber(SerialNo.create());
         mockOrder.setOrderId(SerialNo.create());
 
