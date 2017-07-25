@@ -11,6 +11,7 @@ package com.huobanplus.erpuser.huobanmall.handler;
 
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
+import com.huobanplus.erpservice.datacenter.model.OrderRemarkUpdateInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
 import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -88,4 +89,13 @@ public interface HBOrderHandler {
      * @return
      */
     EventResult pushAuditedOrderList(List<String> orderIds, ERPUserInfo erpUserInfo);
+
+    /**
+     * 修改订单备注
+     *
+     * @param orderRemarkUpdateInfo
+     * @param erpUserInfo
+     * @return
+     */
+    EventResult orderRemarkUpdate(OrderRemarkUpdateInfo orderRemarkUpdateInfo, ERPUserInfo erpUserInfo);
 }

@@ -119,10 +119,10 @@
                         return nsConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.SAP.getCode()%>:
                         return sapConfigHandler;
-                        <%--case <%=ERPTypeEnum.ProviderType.ISCS.getCode()%>:--%>
-                        <%--return iscsConfigHandler;--%>
-                        <%--case <%=ERPTypeEnum.ProviderType.LGJ.getCode()%>:--%>
-                        <%--return lgjConfigHandler;--%>
+                    <%--case <%=ERPTypeEnum.ProviderType.ISCS.getCode()%>:--%>
+                    <%--return iscsConfigHandler;--%>
+                    <%--case <%=ERPTypeEnum.ProviderType.LGJ.getCode()%>:--%>
+                    <%--return lgjConfigHandler;--%>
                     case <%=ERPTypeEnum.ProviderType.KAOLA.getCode()%>:
                         return kaoLaConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.KJYG.getCode()%>:
@@ -139,6 +139,10 @@
                         return baisonConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.WANGDIANV2.getCode()%>:
                         return wangdianv2ConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.BLP.getCode()%>:
+                        return blpConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.GJBC.getCode()%>:
+                        return gjbcConfigHandler;
                 }
                 return null;
             }
@@ -363,6 +367,12 @@
                                 </div>
                                 <div id="detailConfig_<%=ERPTypeEnum.ProviderType.WANGDIANV2.getCode()%>">
                                     <%@include file="/detailConfig/wangdianv2_config.jsp" %>
+                                </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.BLP.getCode()%>">
+                                    <%@include file="/detailConfig/blp_config.jsp" %>
+                                </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.GJBC.getCode()%>">
+                                    <%@include file="/detailConfig/gjbc_config.jsp" %>
                                 </div>
                             </div>
                         </div>

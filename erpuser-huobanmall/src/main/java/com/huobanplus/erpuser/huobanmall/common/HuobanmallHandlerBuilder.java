@@ -56,7 +56,6 @@ public class HuobanmallHandlerBuilder implements ERPUserHandlerBuilder {
                             batchDeliverEvent.getErpUserInfo());
                 } else if (erpBaseEvent instanceof SyncInventoryEvent) {
                     SyncInventoryEvent syncInventoryEvent = (SyncInventoryEvent) erpBaseEvent;
-
                     return goodHandler.syncProInventory(syncInventoryEvent.getInventoryInfoList(),
                             syncInventoryEvent.getErpUserInfo());
                 } else if (erpBaseEvent instanceof SyncChannelOrderEvent) {
@@ -69,6 +68,9 @@ public class HuobanmallHandlerBuilder implements ERPUserHandlerBuilder {
                 } else if (erpBaseEvent instanceof PushAuditedOrderEvent) {
                     PushAuditedOrderEvent pushAuditedOrderEvent = (PushAuditedOrderEvent) erpBaseEvent;
                     return orderHandler.pushAuditedOrderList(pushAuditedOrderEvent.getOrderIds(), pushAuditedOrderEvent.getErpUserInfo());
+                } else if (erpBaseEvent instanceof OrderRemarkUpdate){
+                    OrderRemarkUpdate orderRemarkUpdate = (OrderRemarkUpdate) erpBaseEvent;
+                    return orderHandler.orderRemarkUpdate(orderRemarkUpdate.getOrderRemarkUpdateInfo(),orderRemarkUpdate.getErpUserInfo());
                 }
                 return null;
             };

@@ -132,7 +132,8 @@ public interface OrderEnum {
         WEIXINPAY_APP(300, "微信APP支付"),
         WEIFUTONG(500, "威富通"),
         HUIJINBAO(600, "汇金宝"),
-        AD_PAYMENT(700, "预付款");
+        AD_PAYMENT(700, "预付款"),
+        ALIPAY_CROSS_BORDER(12, "支付宝跨境支付");
 
         private int code;
         private String name;

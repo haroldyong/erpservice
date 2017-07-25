@@ -94,7 +94,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
                 if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                     orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_SUCCESS);
                 } else {
-                    orderDetailSyncLog.setDetailSyncStatus(OrderSyncStatus.DetailSyncStatus.SYNC_FAILURE);
+
                 }
 
                 dtwAllOrderStatus = (DtwAllOrderStatus) eventResult.getData();

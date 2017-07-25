@@ -91,6 +91,7 @@ public class WangDianTestBase {
         mockOrder.setMemberId(4542);
         mockOrder.setUserLoginName(UUID.randomUUID().toString());
         mockOrder.setConfirm(1);
+        mockOrder.setRemark("");
         mockOrder.setOrderStatus(0);
         mockOrder.setPayStatus(1);
         mockOrder.setShipStatus(0);
