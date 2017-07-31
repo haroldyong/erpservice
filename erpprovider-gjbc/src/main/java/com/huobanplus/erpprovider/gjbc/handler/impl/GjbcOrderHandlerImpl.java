@@ -203,8 +203,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             Map<String, Object> requestMap = new TreeMap<>();
             GjbcOrderInfo gjbcOrderInfo = new GjbcOrderInfo();
             gjbcOrderInfo.setIs_bc(1);
-            gjbcOrderInfo.setOrder_sn(order.getOrderId());
-            gjbcOrderInfo.setOrder_sn(order.getUnionOrderId());
+//            gjbcOrderInfo.setOrder_sn(order.getOrderId());
+            gjbcOrderInfo.setOrder_sn(order.getUnionOrderId()); // TODO: 26/07/2017 测试测试
             /*发件人信息*/
             String[] sendInfo = gjbcSysData.getSenderInfo().split(",");
             gjbcOrderInfo.setSender_name(sendInfo[0]);
@@ -261,8 +261,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
                 gjbcGoodsItemsInfo.setGoods_unit(GjbcEnum.UnitEnum.KG.getCode());
                 gjbcGoodsItemsInfo.setGoods_size(GjbcEnum.UnitEnum.JIAN.getCode());
 
-                BigDecimal bigWeignt = new BigDecimal(orderItems.get(i).getSuttleWeight() / 1000);
-                gjbcGoodsItemsInfo.setGoods_gweight(bigWeignt.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                gjbcGoodsItemsInfo.setGoods_gweight(orderItems.get(i).getSuttleWeight() / 1000);
                 gjbcGoodsItemsInfo.setGoods_name(orderItems.get(i).getName());
                 gjbcGoodsItemsInfo.setBrand(orderItems.get(i).getBrand());
                 gjbcGoodsItemsInfo.setGoods_spec(orderItems.get(i).getStandard());
@@ -286,21 +285,17 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
                 totalWight += orderItems.get(i).getNum() * orderItems.get(i).getWeight();
             /* 净重*/
                 double subSuttleWeight = orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight();
-                gjbcGoodsItemsInfo.setGoods_hg_num(subSuttleWeight);
+                gjbcGoodsItemsInfo.setGoods_hg_num(subSuttleWeight / 1000);
                 totalSuttleWeight += subSuttleWeight;
                 goodsItemsInfos[i] = gjbcGoodsItemsInfo;
             }
-            log.info("=============3==============");
             gjbcOrderInfo.setOrder_amount(finalAmout);
-            BigDecimal bigTotalWight = new BigDecimal(totalWight / 1000);
-            gjbcOrderInfo.setPkg_gweight(bigTotalWight.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-            BigDecimal bigTotalSuttleWeight = new BigDecimal(totalSuttleWeight / 1000);
-            gjbcOrderInfo.setGoods_nweight(bigTotalSuttleWeight.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            gjbcOrderInfo.setPkg_gweight(totalWight / 1000);
+            gjbcOrderInfo.setGoods_nweight(totalSuttleWeight / 1000);
             gjbcOrderInfo.setOrder_goods(goodsItemsInfos);
             String gjbcOrderInfosJson = JSON.toJSONString(gjbcOrderInfo);
 
             requestMap = getSysRequestData(gjbcSysData);
-            log.info("=============4==============");
             String encode = Base64.encodeBase64String(gjbcOrderInfosJson.getBytes("utf-8"));
 
             requestMap.put("order", Base64.encodeBase64String(encode.getBytes("utf-8")));
@@ -338,6 +333,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             requestMap.put("merchant_customs_code", gjbcSysData.getECommerceCode());
             requestMap.put("merchant_customs_name", gjbcSysData.getECommerceName());
             requestMap.put("customs_place", GjbcEnum.CustomerEnum.ZONGSHU.toString());
+//            requestMap.put("")
+
 
             String sign = DtwUtil.aliBuildSign(requestMap, gjbcSysData.getAliKey());
             requestMap.put("sign", sign);
