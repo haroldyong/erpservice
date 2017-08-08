@@ -78,14 +78,14 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
             DtwAllOrderStatus dtwAllOrderStatus = new DtwAllOrderStatus();
             EventResult eventResult = null;
-            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getOrderId());
+            OrderDetailSyncLog orderDetailSyncLog = orderDetailSyncLogService.findByOrderId(order.getUnionOrderId());
             if (orderDetailSyncLog == null) {
                 orderDetailSyncLog = new OrderDetailSyncLog();
                 orderDetailSyncLog.setCreateTime(now);
                 orderDetailSyncLog.setCustomerId(erpUserInfo.getCustomerId());
                 orderDetailSyncLog.setProviderType(erpInfo.getErpType());
                 orderDetailSyncLog.setUserType(erpUserInfo.getErpUserType());
-                orderDetailSyncLog.setOrderId(order.getOrderId());
+                orderDetailSyncLog.setOrderId(order.getUnionOrderId());
                 orderDetailSyncLog.setOrderInfoJson(pushNewOrderEvent.getOrderInfoJson());
                 orderDetailSyncLog.setErpSysData(erpInfo.getSysDataJson());
                 orderDetailSyncLog.setSyncTime(now);
@@ -254,7 +254,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setImportType(DtwEnum.ImportTypeEnum.BAOSHUI.getCode());//进口类型（0一般进口，1保税进口）(必填)
         dtwOrder.setOrderType(2);//订单类型（1：普通订单：与快递已经完成对接，2：综合订单：委托大田与快递公司对接）
 
-        dtwOrder.setMsgid(order.getOrderId());//(必填)
+        dtwOrder.setMsgid(order.getUnionOrderId());//(必填)
         dtwOrder.setPayType(DtwEnum.PaytypeEnum.Other.getCode());
         OrderEnum.PaymentOptions paymentOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
 
@@ -271,7 +271,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         dtwOrder.setPayNumber(order.getPayNumber());//(必填) 支付单号
         dtwOrder.setOrderTotalAmount(order.getFinalAmount());//(必填)
         dtwOrder.setOrderGoodsAmount(order.getCostItem());//(必填)
-        dtwOrder.setOrderNo(order.getOrderId());//(必填)
+        dtwOrder.setOrderNo(order.getUnionOrderId());//(必填)
         dtwOrder.setOrderTaxAmount(order.getTaxAmount());
         dtwOrder.setTotalCount(order.getItemNum());//(必填)
         dtwOrder.setTotalAmount(order.getCostItem());//(必填)
@@ -325,12 +325,12 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         DtwPersonalDelcareInfo dtwPersonalDelcareInfo = new DtwPersonalDelcareInfo();
         dtwPersonalDelcareInfo.setPassKey(dtwSysData.getPassKey());// 必填
-        dtwPersonalDelcareInfo.setMsgid(order.getOrderId());// 必填
+        dtwPersonalDelcareInfo.setMsgid(order.getUnionOrderId());// 必填
         dtwPersonalDelcareInfo.setCompanyName(dtwSysData.getECommerceName());// 必填
         dtwPersonalDelcareInfo.setCompanyCode(dtwSysData.getECommerceCode());// 必填
 //        dtwPersonalDelcareInfo.setPreEntryNumber("");
         dtwPersonalDelcareInfo.setImportType(DtwEnum.ImportTypeEnum.BAOSHUI.getCode());// 2016/7/4 进口类型（0一般进口，1保税进口）
-        dtwPersonalDelcareInfo.setOrderNo(order.getOrderId());// 必填
+        dtwPersonalDelcareInfo.setOrderNo(order.getUnionOrderId());// 必填
         dtwPersonalDelcareInfo.setWayBill("");// 非必填
         dtwPersonalDelcareInfo.setPackNo(order.getItemNum());// 必填
         dtwPersonalDelcareInfo.setGrossWeight(order.getWeight());// 必填
@@ -487,7 +487,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             requestMap.put("sign_type", "MD5");
 
             requestMap.put("partner", dtwSysData.getAliPartner());
-            requestMap.put("out_request_no", order.getOrderId());
+            requestMap.put("out_request_no", order.getUnionOrderId());
             requestMap.put("trade_no", order.getPayNumber());
             requestMap.put("merchant_customs_code", dtwSysData.getECommerceCode());
             requestMap.put("amount", order.getOnlinePayAmount());
@@ -542,12 +542,12 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             WeixinCustom weixinCustom = new WeixinCustom();
             weixinCustom.setAppid(dtwSysData.getWeiXinAppId());
             weixinCustom.setMchId(dtwSysData.getWeixinMchId());
-            weixinCustom.setOutTradeNo(order.getOrderId());
+            weixinCustom.setOutTradeNo(order.getUnionOrderId());
             weixinCustom.setTransactionId(order.getPayNumber());
             weixinCustom.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.toString());
             weixinCustom.setCustoms("HANGZHOU_ZS");
             weixinCustom.setMchCustomsNo(dtwSysData.getECommerceCode());
-            weixinCustom.setSubOrderNo(order.getOrderId());
+            weixinCustom.setSubOrderNo(order.getUnionOrderId());
             weixinCustom.setFeeType("CNY");
             weixinCustom.setCertType("IDCARD");
             weixinCustom.setCertId(order.getBuyerPid());
@@ -686,7 +686,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         CustomSign customSign = new CustomSign();
         customSign.setCompanyCode(dtwSysData.getECommerceCode());
-        customSign.setBusinessNo(order.getOrderId());//业务编号 使用订单编号
+        customSign.setBusinessNo(order.getUnionOrderId());//业务编号 使用订单编号
         customSign.setBusinessType("IMPORTORDER");
         customSign.setDeclareType("1");// 固定填写1
         customSign.setNote("");
@@ -711,7 +711,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
 
         customOrderHead.setPayNumber(order.getPayNumber());
         customOrderHead.setOrderTotalAmount(order.getFinalAmount());
-        customOrderHead.setOrderNo(order.getOrderId());
+        customOrderHead.setOrderNo(order.getUnionOrderId());
         customOrderHead.setFeeAmount(order.getCostFreight());
         customOrderHead.setInsureAmount(0.0);
         customOrderHead.setCompanyCode(dtwSysData.getECommerceCode());

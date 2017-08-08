@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2017. All rights reserved.
+ */
+
 package com.huobanplus.erpprovider.gjbc.util;
 
 /**
@@ -38,6 +47,7 @@ public class GjbcConstant {
     public static final String RECORD_NUMBER = "3301964K02";
     public static final String WEB_NAME = "伙伴商城";
     public static final String MARK_STATUS = "order";
+    public static final String SEL_ADD_ORDER_MARK = "sel_add_order";
     public static final String CONFIRM_STATUS = "2";
     public static final String RECORD_NAME = "杭州伙聚网络技术有限公司";
 

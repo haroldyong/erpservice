@@ -44,7 +44,6 @@ public class ERPDetailConfigRepositoryImpl implements ERPDetailConfigRepositoryC
             index++;
         }
         String sql = "SELECT * FROM ERP_DetailConfig WHERE ISDEFAULT=1 AND ERPTYPE=" + providerType.getCode() + " AND ERPUSERTYPE=" + erpUserType.getCode() + sqlWhere.toString() + " AND CUSTOMERID IN (" + sqlCustomerIn.toString() + ")";
-        log.info("sql----->" + sql);
         ERPDetailConfigEntity detailConfig = jdbcTemplate.queryForObject(sql, ((rs, rowNum) -> {
             ERPDetailConfigEntity detailConfigEntity = new ERPDetailConfigEntity();
             detailConfigEntity.setId(rs.getInt("ID"));

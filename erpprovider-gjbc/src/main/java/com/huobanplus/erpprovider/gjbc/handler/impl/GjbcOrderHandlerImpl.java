@@ -44,6 +44,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -70,6 +71,9 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             ERPInfo erpInfo = pushNewOrderEvent.getErpInfo();
             ERPUserInfo erpUserInfo = pushNewOrderEvent.getErpUserInfo();
             Order order = JSON.parseObject(pushNewOrderEvent.getOrderInfoJson(), Order.class);
+            if (order.getPayStatus() != OrderEnum.PayStatus.PAYED.getCode()) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "只有支付成功的需要推送", null);
+            }
             GjbcSysData gjbcSysData = JSON.parseObject(erpInfo.getSysDataJson(), GjbcSysData.class);
             Date nowDate = new Date();
 
@@ -216,7 +220,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             gjbcOrderInfo.setBuyer_phone(order.getShipMobile());
             gjbcOrderInfo.setOrder_name(order.getBuyerName());
             gjbcOrderInfo.setOrder_idcard(order.getBuyerPid());
-            gjbcOrderInfo.setOrder_phone(order.getUserLoginName());
+            gjbcOrderInfo.setOrder_phone(order.getShipMobile());
             gjbcOrderInfo.setCustoms_insured(0);
             gjbcOrderInfo.setCustoms_discount(order.getPmtAmount());
             gjbcOrderInfo.setOrder_uname(order.getUserLoginName());
@@ -275,6 +279,9 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
                 gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn().substring(3));
                 gjbcGoodsItemsInfo.setCurr(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));
                 gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum());
+                if (!StringUtils.isEmpty(orderItems.get(i).getPackageInfo())) {
+                    gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum() * Integer.valueOf(orderItems.get(i).getPackageInfo()));
+                }
                 BigDecimal bigGoodsTotal = new BigDecimal(orderItems.get(i).getPrice() * orderItems.get(i).getNum());
                 finalAmout += bigGoodsTotal.doubleValue();
                 gjbcGoodsItemsInfo.setGoods_total(bigGoodsTotal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
