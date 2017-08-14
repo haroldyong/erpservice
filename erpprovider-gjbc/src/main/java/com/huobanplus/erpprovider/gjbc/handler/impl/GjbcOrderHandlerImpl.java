@@ -31,7 +31,6 @@ import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
-import com.huobanplus.erpservice.datacenter.repository.CountryInfoRepository;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -69,9 +68,6 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
 
     @Autowired
     private OrderDetailSyncLogService orderDetailSyncLogService;
-
-    @Autowired
-    private CountryInfoRepository countryInfoRepository;
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
