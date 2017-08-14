@@ -207,8 +207,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             Map<String, Object> requestMap = new TreeMap<>();
             GjbcOrderInfo gjbcOrderInfo = new GjbcOrderInfo();
             gjbcOrderInfo.setIs_bc(1);
-//            gjbcOrderInfo.setOrder_sn(order.getOrderId());
-            gjbcOrderInfo.setOrder_sn(order.getUnionOrderId()); // TODO: 26/07/2017 测试测试
+            gjbcOrderInfo.setOrder_sn(order.getOrderId());
+//            gjbcOrderInfo.setOrder_sn(order.getUnionOrderId()); // TODO: 26/07/2017 测试测试
             /*发件人信息*/
             String[] sendInfo = gjbcSysData.getSenderInfo().split(",");
             gjbcOrderInfo.setSender_name(sendInfo[0]);
@@ -332,8 +332,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             requestMap.put("_input_charset", "utf-8");
             requestMap.put("sign_type", "MD5");
 
-//            requestMap.put("out_request_no", order.getOrderId());
-            requestMap.put("out_request_no", order.getUnionOrderId());
+            requestMap.put("out_request_no", order.getOrderId());
+//            requestMap.put("out_request_no", order.getUnionOrderId());
             requestMap.put("trade_no", order.getPayNumber());
             requestMap.put("amount", order.getOnlinePayAmount());
             requestMap.put("partner", gjbcSysData.getAliPartner());
@@ -572,7 +572,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         customGoodsPurchaser.setEmail("");//注册邮箱 非必填
         customGoodsPurchaser.setTelNumber(order.getUserLoginName());
         customGoodsPurchaser.setPaperType("01");
-        customGoodsPurchaser.setPaperNumber(order.getBuyerPid());
+        customGoodsPurchaser.setPaperNumber(order.getBuyerPid().toUpperCase());
         customOrderHead.setOrderTaxAmount(order.getTaxAmount());
         customOrderHead.setOrderGoodsAmount(order.getCostItem());
         customOrderHead.setTotalAmount(order.getCostItem());
@@ -592,12 +592,6 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         customOrder.setBody(customBody);
         customOrder.setHead(customHead);
 
-        System.out.println("\n**************海关订单费用**********************");
-        System.out.println("税费:" + order.getTaxAmount());
-        System.out.println("贷款：" + customOrderHead.getOrderGoodsAmount());
-        System.out.println("成交总价：" + customOrderHead.getTotalAmount());
-        System.out.println("订单总金额:" + customOrderHead.getOrderTotalAmount());
-        System.out.println("\n**************费用**********************");
 
         log.info("\n**************CustomerOrder fee info**********************");
         log.info("tax:" + order.getTaxAmount());
