@@ -491,7 +491,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             requestMap.put("trade_no", order.getPayNumber());
             requestMap.put("merchant_customs_code", dtwSysData.getECommerceCode());
             requestMap.put("amount", order.getOnlinePayAmount());
-            requestMap.put("customs_place", DtwEnum.CustomerEnum.HANGZHOU.toString());
+            requestMap.put("customs_place", DtwEnum.CustomerEnum.ZONGSHU.toString());
             requestMap.put("merchant_customs_name", dtwSysData.getECommerceName());
 //            requestMap.put("is_split", "n");
 //            requestMap.put("sub_out_biz_no", "2015080811223212345453");
@@ -544,7 +544,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
             weixinCustom.setMchId(dtwSysData.getWeixinMchId());
             weixinCustom.setOutTradeNo(order.getUnionOrderId());
             weixinCustom.setTransactionId(order.getPayNumber());
-            weixinCustom.setCustoms(DtwEnum.CustomerEnum.HANGZHOU.toString());
+            weixinCustom.setCustoms(DtwEnum.CustomerEnum.ZONGSHU.toString());
             weixinCustom.setCustoms("HANGZHOU_ZS");
             weixinCustom.setMchCustomsNo(dtwSysData.getECommerceCode());
             weixinCustom.setSubOrderNo(order.getUnionOrderId());

@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
@@ -181,6 +182,18 @@ public class HttpClientUtil {
 
                 }
             });
+            new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        responseFuture.get();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.run();
         } catch (IOException e) {
             HttpResult httpResult = new HttpResult(HttpStatus.SC_EXPECTATION_FAILED, e.getMessage());
             resultConsumer.accept(httpResult);

@@ -23,12 +23,19 @@ import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.nio.reactor.IOReactorException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by wuxiongliu on 2016/6/14.
@@ -113,22 +120,52 @@ public class GYOrderHandlerTest extends GYTestBase {
         orderSearch.setShopCode(mockGySysData.getShopCode());
         orderSearch.setDelivery(1);// 已发货
         String requestData = GYOrderHandlerImpl.getRequestData(mockGySysData, orderSearch, GYConstant.DELIVERY_QUERY);
-
+//
+        final CountDownLatch latch = new CountDownLatch(1);
         HttpClientUtil.getInstance().postAsync(mockGySysData.getRequestUrl(), requestData, httpResult -> {
-            System.out.println(httpResult.toString());
+            System.out.println("http result stauts==>" + httpResult.getHttpStatus());
+            latch.countDown();
         });
-
-        Thread.sleep(100000);
+        latch.await();
+//        gyOrderHandler.deliveryOrderQuery(orderSearch, mockGySysData);
     }
 
     @Test
-    public void testOrderMemoUpdate() {
-//        GYOrderMemo gyOrderMemo = new GYOrderMemo();
-//        gyOrderMemo.setMemo("add memo");
-//        gyOrderMemo.setTid("1234566584511222111");
-//        EventResult eventResult = gyOrderHandler.orderMemoUpdate(gyOrderMemo,mockGySysData);
-//        System.out.println(eventResult.getResultCode());
-//        System.out.println(eventResult.getResultMsg());
+    public void testOrderMemoUpdate() throws IOReactorException, InterruptedException {
+//        ConnectingIOReactor ioReactor = new DefaultConnectingIOReactor();
+//        PoolingNHttpClientConnectionManager cm = new PoolingNHttpClientConnectionManager(ioReactor);
+//        cm.setMaxTotal(100);
+        CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
+        httpAsyncClient.start();
+        String[] urisToGet = {
+                "http://www.chinaso.com/",
+                "http://www.so.com/",
+                "http://www.qq.com/",
+        };
+
+        final CountDownLatch latch = new CountDownLatch(urisToGet.length);
+        for (final String uri : urisToGet) {
+            final HttpGet httpget = new HttpGet(uri);
+            httpAsyncClient.execute(httpget, new FutureCallback<HttpResponse>() {
+
+                public void completed(final HttpResponse response) {
+                    latch.countDown();
+                    System.out.println(httpget.getRequestLine() + "->" + response.getStatusLine());
+                }
+
+                public void failed(final Exception ex) {
+                    latch.countDown();
+                    System.out.println(httpget.getRequestLine() + "->" + ex);
+                }
+
+                public void cancelled() {
+                    latch.countDown();
+                    System.out.println(httpget.getRequestLine() + " cancelled");
+                }
+
+            });
+        }
+        latch.await();
     }
 
     @Test
