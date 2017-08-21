@@ -126,6 +126,8 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
 
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                } else {
+                    log.info("obtionOrderList apiResult===>" + httpResult.getHttpContent());
                 }
                 return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
             }
@@ -280,16 +282,16 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
 
     @Override
     public EventResult orderRemarkUpdate(OrderRemarkUpdateInfo orderRemarkUpdateInfo, ERPUserInfo erpUserInfo) {
-        Map<String,Object> signMap = HBConstant.buildSignMap(orderRemarkUpdateInfo);
-        signMap.put("customerId",erpUserInfo.getCustomerId());
+        Map<String, Object> signMap = HBConstant.buildSignMap(orderRemarkUpdateInfo);
+        signMap.put("customerId", erpUserInfo.getCustomerId());
         signMap.put("erpUserType", erpUserInfo.getErpUserType().getCode());
-        signMap.put("timestamp",new Date().getTime());
+        signMap.put("timestamp", new Date().getTime());
         try {
             String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
-            Map<String,Object> requestMap = new HashMap<>(signMap);
-            requestMap.put("sign",sign);
+            Map<String, Object> requestMap = new HashMap<>(signMap);
+            requestMap.put("sign", sign);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             //TODO 修改订单备注
         }
         return null;
