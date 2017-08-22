@@ -10,7 +10,10 @@
 package com.huobanplus.erpservice.common.httputil;
 
 import com.huobanplus.erpservice.common.util.StringUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -18,9 +21,12 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
@@ -30,11 +36,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.function.Consumer;
 
 /**
  * Created by liual on 2015-11-11.
  */
 public class HttpClientUtil {
+    private static final Log log = LogFactory.getLog(HttpClientUtil.class);
     private static HttpClientUtil httpClientUtil = new HttpClientUtil();
 
     private HttpClientUtil() {
@@ -48,6 +58,14 @@ public class HttpClientUtil {
         return HttpClientBuilder.create()
                 .setDefaultRequestConfig(RequestConfig.custom()
                         .setConnectionRequestTimeout(30000)
+                        .setConnectTimeout(30000)
+                        .setSocketTimeout(30000).build()).build();
+    }
+
+    private CloseableHttpAsyncClient createHttpAsyncClient() {
+        return HttpAsyncClientBuilder.create()
+                .setDefaultRequestConfig(RequestConfig.custom()
+                        .setConnectTimeout(30000)
                         .setConnectTimeout(30000)
                         .setSocketTimeout(30000).build()).build();
     }
@@ -112,6 +130,74 @@ public class HttpClientUtil {
             }
         } catch (IOException e) {
             return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    public void postAsync(String url, Object requestData, Consumer<HttpResult> resultConsumer) throws ClassCastException {
+        try (CloseableHttpAsyncClient httpAsyncClient = createHttpAsyncClient()) {
+            HttpPost httpPost = new HttpPost(url);
+
+            HttpEntity httpEntity;
+
+            if (requestData instanceof Map) {
+                Map<String, Object> requestMap = (Map<String, Object>) requestData;
+                List<NameValuePair> nameValuePairs = new ArrayList<>();
+                requestMap.forEach((key, value) -> {
+                    if (value != null) {
+                        nameValuePairs.add(new BasicNameValuePair(key, String.valueOf(value)));
+                    }
+                });
+                httpEntity = new UrlEncodedFormEntity(nameValuePairs, StringUtil.UTF8);
+            } else if (requestData instanceof String) {
+                httpEntity = new StringEntity((String) requestData, StringUtil.UTF8);
+            } else {
+                throw new ClassCastException();
+            }
+
+            httpPost.setEntity(httpEntity);
+            httpAsyncClient.start();
+
+            Future<HttpResponse> responseFuture = httpAsyncClient.execute(httpPost, new FutureCallback<HttpResponse>() {
+                @Override
+                public void completed(HttpResponse result) {
+                    HttpResult httpResult;
+                    try {
+                        httpResult = new HttpResult(result.getStatusLine().getStatusCode(), EntityUtils.toString(result.getEntity()));
+                    } catch (IOException e) {
+//                        e.printStackTrace();
+                        httpResult = new HttpResult(HttpStatus.SC_EXPECTATION_FAILED, e.getMessage());
+                        log.info("http request completed ioexception===>" + e.getMessage());
+                    }
+                    resultConsumer.accept(httpResult);
+                }
+
+                @Override
+                public void failed(Exception ex) {
+                    HttpResult httpResult = new HttpResult(HttpStatus.SC_EXPECTATION_FAILED, ex.getMessage());
+                    resultConsumer.accept(httpResult);
+                }
+
+                @Override
+                public void cancelled() {
+
+                }
+            });
+            new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        responseFuture.get();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.run();
+        } catch (IOException e) {
+            HttpResult httpResult = new HttpResult(HttpStatus.SC_EXPECTATION_FAILED, e.getMessage());
+            resultConsumer.accept(httpResult);
+//            return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }

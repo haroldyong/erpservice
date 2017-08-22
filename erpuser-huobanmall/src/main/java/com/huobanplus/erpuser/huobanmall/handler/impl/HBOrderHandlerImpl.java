@@ -16,6 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.util.SignBuilder;
+import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.model.*;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -119,13 +120,16 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
 //                ApiResult<OrderListInfo> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<OrderListInfo>>() {
 //                });
-                ApiResult<OrderListInfo> apiResult = gson.fromJson(httpResult.getHttpContent(), new TypeToken<ApiResult<OrderListInfo>>() {
+                String httpContent = StringUtil.filterEmoji(httpResult.getHttpContent());
+                ApiResult<OrderListInfo> apiResult = gson.fromJson(httpContent, new TypeToken<ApiResult<OrderListInfo>>() {
                 }.getType());
 
                 log.info("json cast successfully");
 
                 if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                } else {
+                    log.info("obtionOrderList apiResult===>" + httpResult.getHttpContent());
                 }
                 return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
             }
@@ -280,16 +284,16 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
 
     @Override
     public EventResult orderRemarkUpdate(OrderRemarkUpdateInfo orderRemarkUpdateInfo, ERPUserInfo erpUserInfo) {
-        Map<String,Object> signMap = HBConstant.buildSignMap(orderRemarkUpdateInfo);
-        signMap.put("customerId",erpUserInfo.getCustomerId());
+        Map<String, Object> signMap = HBConstant.buildSignMap(orderRemarkUpdateInfo);
+        signMap.put("customerId", erpUserInfo.getCustomerId());
         signMap.put("erpUserType", erpUserInfo.getErpUserType().getCode());
-        signMap.put("timestamp",new Date().getTime());
+        signMap.put("timestamp", new Date().getTime());
         try {
             String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
-            Map<String,Object> requestMap = new HashMap<>(signMap);
-            requestMap.put("sign",sign);
+            Map<String, Object> requestMap = new HashMap<>(signMap);
+            requestMap.put("sign", sign);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             //TODO 修改订单备注
         }
         return null;

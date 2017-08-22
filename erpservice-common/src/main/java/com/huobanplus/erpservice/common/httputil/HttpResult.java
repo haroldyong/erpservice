@@ -4,19 +4,21 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2015. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpservice.common.httputil;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * Created by liual on 2015-11-11.
  */
 @Data
 @AllArgsConstructor
+@ToString
 public class HttpResult {
     private int httpStatus;
     private String httpContent;

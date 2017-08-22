@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.gy;
@@ -41,11 +41,12 @@ public class GYTestBase {
     @Before
     public void setUp() {
         String requestUrl = "http://v2.api.guanyierp.com/rest/erp_open";
-        String appKey = "112194";
-        String secret = "7d3330562019420da7f3098aa630556b";
-        String sessionKey = "50b24306aacf479a9a5651f0fc7cabc3";
-        String warehouseCode = "hotstock";
-        String shopCode = "huotu";
+        String appKey = "174076";
+        String secret = "f3c982a0d4894323a5c9d9b84ddb5b78";
+        String sessionKey = "4e648c06377345569438eac5f77e7012";
+        String warehouseCode = "CK01";
+        String shopCode = "001";
+        String logiCode = "YTO";
 
         mockGySysData = new GYSysData();
 
@@ -55,6 +56,7 @@ public class GYTestBase {
         mockGySysData.setSecret(secret);
         mockGySysData.setShopCode(shopCode);
         mockGySysData.setWarehouseCode(warehouseCode);
+        mockGySysData.setDefaultLogiCode(logiCode);
 
         mockErpInfo = new ERPInfo();
         mockErpInfo.setSysDataJson(JSON.toJSONString(mockGySysData));

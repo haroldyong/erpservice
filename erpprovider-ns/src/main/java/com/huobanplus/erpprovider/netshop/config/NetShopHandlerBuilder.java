@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.netshop.config;
@@ -30,6 +30,8 @@ import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -46,6 +48,7 @@ import java.util.TreeMap;
  */
 @Component
 public class NetShopHandlerBuilder implements ERPHandlerBuilder {
+    private static final Log log = LogFactory.getLog(NetShopHandlerBuilder.class);
     @Autowired
     private ERPDetailConfigService detailConfigService;
     @Autowired
@@ -160,6 +163,7 @@ public class NetShopHandlerBuilder implements ERPHandlerBuilder {
                             return NSExceptionHandler.handleException(method, EventResultEnum.WRONG_SIGN, "签名错误");
                         }
                     } catch (Exception ex) {
+                        log.info("net shop request exception===>" + ex.getMessage());
                         return NSExceptionHandler.handleException(method, EventResultEnum.ERROR, "服务器错误--" + ex.getMessage());
                     }
                 }

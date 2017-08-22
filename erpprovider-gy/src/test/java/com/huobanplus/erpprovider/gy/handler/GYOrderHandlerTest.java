@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.gy.handler;
@@ -13,21 +13,29 @@ import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.gy.GYTestBase;
 import com.huobanplus.erpprovider.gy.common.GYConstant;
 import com.huobanplus.erpprovider.gy.formatgy.order.*;
+import com.huobanplus.erpprovider.gy.handler.impl.GYOrderHandlerImpl;
 import com.huobanplus.erpprovider.gy.search.GYDeliveryOrderSearch;
-import com.huobanplus.erpprovider.gy.search.GYOrderSearch;
 import com.huobanplus.erpprovider.gy.search.GYRefundOrderSearch;
 import com.huobanplus.erpprovider.gy.search.GYReturnOrderSearch;
+import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.nio.reactor.IOReactorException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by wuxiongliu on 2016/6/14.
@@ -87,8 +95,8 @@ public class GYOrderHandlerTest extends GYTestBase {
         mockOrder.setCostFreight(5);
         mockOrder.setFinalAmount(20.0 * 10);
 
-        mockOrder.setCreateTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
-        mockOrder.setPayTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
+        mockOrder.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
+        mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         mockOrder.setOrderItems(mockOrderItems);
 
 
@@ -103,31 +111,65 @@ public class GYOrderHandlerTest extends GYTestBase {
     }
 
     @Test
-    public void testOrderQuery(){
-        GYOrderSearch gyOrderSearch = new GYOrderSearch();
-        gyOrderSearch.setPageNo(1);
-        gyOrderSearch.setPageSize(GYConstant.PAGE_SIZE);
-        gyOrderSearch.setBeginTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
-        gyOrderSearch.setOrderState(1);
-        gyOrderSearch.setReceiverMobile("18705153967");
-        gyOrderSearch.setPlatformCode("2016wxl");
-        EventResult eventResult = gyOrderHandler.orderQuery(gyOrderSearch,mockGySysData);
-        System.out.println(eventResult.getResultCode());
-        System.out.println(eventResult.getResultMsg());
+    public void testOrderQuery() throws Exception {
+        GYDeliveryOrderSearch orderSearch = new GYDeliveryOrderSearch();
+        orderSearch.setPageNo(1);
+        orderSearch.setPageSize(GYConstant.PAGE_SIZE);
+        orderSearch.setStartDeliveryDate("2017-08-11 14:00:00");
+        orderSearch.setEndDeliveryDate("2017-08-11 17:00:20");
+        orderSearch.setShopCode(mockGySysData.getShopCode());
+        orderSearch.setDelivery(1);// 已发货
+        String requestData = GYOrderHandlerImpl.getRequestData(mockGySysData, orderSearch, GYConstant.DELIVERY_QUERY);
+//
+        final CountDownLatch latch = new CountDownLatch(1);
+        HttpClientUtil.getInstance().postAsync(mockGySysData.getRequestUrl(), requestData, httpResult -> {
+            System.out.println("http result stauts==>" + httpResult.getHttpStatus());
+            latch.countDown();
+        });
+        latch.await();
+//        gyOrderHandler.deliveryOrderQuery(orderSearch, mockGySysData);
     }
 
     @Test
-    public void testOrderMemoUpdate(){
-//        GYOrderMemo gyOrderMemo = new GYOrderMemo();
-//        gyOrderMemo.setMemo("add memo");
-//        gyOrderMemo.setTid("1234566584511222111");
-//        EventResult eventResult = gyOrderHandler.orderMemoUpdate(gyOrderMemo,mockGySysData);
-//        System.out.println(eventResult.getResultCode());
-//        System.out.println(eventResult.getResultMsg());
+    public void testOrderMemoUpdate() throws IOReactorException, InterruptedException {
+//        ConnectingIOReactor ioReactor = new DefaultConnectingIOReactor();
+//        PoolingNHttpClientConnectionManager cm = new PoolingNHttpClientConnectionManager(ioReactor);
+//        cm.setMaxTotal(100);
+        CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
+        httpAsyncClient.start();
+        String[] urisToGet = {
+                "http://www.chinaso.com/",
+                "http://www.so.com/",
+                "http://www.qq.com/",
+        };
+
+        final CountDownLatch latch = new CountDownLatch(urisToGet.length);
+        for (final String uri : urisToGet) {
+            final HttpGet httpget = new HttpGet(uri);
+            httpAsyncClient.execute(httpget, new FutureCallback<HttpResponse>() {
+
+                public void completed(final HttpResponse response) {
+                    latch.countDown();
+                    System.out.println(httpget.getRequestLine() + "->" + response.getStatusLine());
+                }
+
+                public void failed(final Exception ex) {
+                    latch.countDown();
+                    System.out.println(httpget.getRequestLine() + "->" + ex);
+                }
+
+                public void cancelled() {
+                    latch.countDown();
+                    System.out.println(httpget.getRequestLine() + " cancelled");
+                }
+
+            });
+        }
+        latch.await();
     }
 
     @Test
-    public void testOrderRefundStateUpdate(){
+    public void testOrderRefundStateUpdate() {
 //        GYOrderRefundUpdate gyOrderRefundUpdate = new GYOrderRefundUpdate();
 //        gyOrderRefundUpdate.setOid("test1");
 //        gyOrderRefundUpdate.setTid("2016wxl1");
@@ -138,20 +180,20 @@ public class GYOrderHandlerTest extends GYTestBase {
     }
 
     @Test
-    public void testDeliverOrderQuery(){
+    public void testDeliverOrderQuery() {
         GYDeliveryOrderSearch gyDeliveryOrderSearch = new GYDeliveryOrderSearch();
         gyDeliveryOrderSearch.setPageNo(1);
         gyDeliveryOrderSearch.setPageSize(20);
         gyDeliveryOrderSearch.setShopCode("9999");
         gyDeliveryOrderSearch.setOuterCode("2016wxl1");
-        EventResult eventResult = gyOrderHandler.deliveryOrderQuery(gyDeliveryOrderSearch,mockGySysData);
+        EventResult eventResult = gyOrderHandler.deliveryOrderQuery(gyDeliveryOrderSearch, mockGySysData);
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
     }
 
     @Test
-    public void testDeliveryOrderUpdate(){
+    public void testDeliveryOrderUpdate() {
         GYDeliveryOrderUpdate gyDeliveryOrderUpdate = new GYDeliveryOrderUpdate();
         gyDeliveryOrderUpdate.setCode("test");
         gyDeliveryOrderUpdate.setExpressCode("test");
@@ -165,14 +207,14 @@ public class GYOrderHandlerTest extends GYTestBase {
         gyDeliveryStates.add(gyDeliveryState);
 
         gyDeliveryOrderUpdate.setDeliveryStates(gyDeliveryStates);
-        EventResult eventResult = gyOrderHandler.deliveryOrderUpdate(gyDeliveryOrderUpdate,mockGySysData);
+        EventResult eventResult = gyOrderHandler.deliveryOrderUpdate(gyDeliveryOrderUpdate, mockGySysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
 
     }
 
     @Test
-    public void testPushReturnOrder(){
+    public void testPushReturnOrder() {
 //        GYReturnOrder gyReturnOrder = new GYReturnOrder();
 //        gyReturnOrder.setTypeCode("001");
 //        gyReturnOrder.setShopCode("9999");
@@ -194,29 +236,29 @@ public class GYOrderHandlerTest extends GYTestBase {
     }
 
     @Test
-    public void testReturnOrderInStock(){
+    public void testReturnOrderInStock() {
         GYReturnOrderInStock gyReturnOrderInStock = new GYReturnOrderInStock();
         gyReturnOrderInStock.setCode("RGO1020525785");
         gyReturnOrderInStock.setWareHouseCode("tk01");
 
-        EventResult eventResult = gyOrderHandler.returnOrderInStock(gyReturnOrderInStock,mockGySysData);
+        EventResult eventResult = gyOrderHandler.returnOrderInStock(gyReturnOrderInStock, mockGySysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
 
     }
 
     @Test
-    public void testReturnOrderQuery(){
+    public void testReturnOrderQuery() {
         GYReturnOrderSearch gyReturnOrderSearch = new GYReturnOrderSearch();
         gyReturnOrderSearch.setPageNo(1);
         gyReturnOrderSearch.setSkuCode("3872824-ecc4090b639c47f89b453980923afb8e");
-        EventResult eventResult = gyOrderHandler.returnOrderQuery(gyReturnOrderSearch,mockGySysData);
+        EventResult eventResult = gyOrderHandler.returnOrderQuery(gyReturnOrderSearch, mockGySysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
     }
 
     @Test
-    public void testPushRefundOrder(){
+    public void testPushRefundOrder() {
         GYRefundOrder gyRefundOrder = new GYRefundOrder();
         gyRefundOrder.setRefundType(1);
         gyRefundOrder.setShopCode("9999");
@@ -231,7 +273,7 @@ public class GYOrderHandlerTest extends GYTestBase {
         gyRefundOrderItems.add(gyRefundOrderItem);
         gyRefundOrder.setItemDetails(gyRefundOrderItems);
 
-        EventResult eventResult = gyOrderHandler.pushRefundOrder(gyRefundOrder,mockGySysData);
+        EventResult eventResult = gyOrderHandler.pushRefundOrder(gyRefundOrder, mockGySysData);
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
 
@@ -239,10 +281,10 @@ public class GYOrderHandlerTest extends GYTestBase {
 
 
     @Test
-    public void testRefundOrderQuery(){
+    public void testRefundOrderQuery() {
         GYRefundOrderSearch gyRefundOrderSearch = new GYRefundOrderSearch();
         gyRefundOrderSearch.setCode("RMO1020536851");
-        EventResult eventResult = gyOrderHandler.refundOrderQuery(gyRefundOrderSearch,mockGySysData);
+        EventResult eventResult = gyOrderHandler.refundOrderQuery(gyRefundOrderSearch, mockGySysData);
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultCode());
         System.out.println(eventResult.getResultMsg());
