@@ -49,6 +49,12 @@ public class CustomOrderHead {
     private String payCompanyCode;
 
     /**
+     * 对接总署版必填,支付平台在跨境平台备案名称
+     */
+    @JacksonXmlProperty(localName = "payCompanyName")
+    private String payCompanyName;
+
+    /**
      * 支付成功后，支付平台反馈给电商平台的支付单号
      */
     @JacksonXmlProperty(localName = "payNumber")

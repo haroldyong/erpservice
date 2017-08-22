@@ -25,5 +25,10 @@ public class CustomSign {
 
     private String declareType;
 
+    /**
+     * 不填或者填写或01表示杭州版报文， 02 表示企业自行生成总署报文， 03委托电子口岸生成总署报文
+     */
+    private String cebFlag;
+
     private String note;
 }
