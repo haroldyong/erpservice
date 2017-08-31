@@ -143,6 +143,8 @@
                         return blpConfigHandler;
                     case <%=ERPTypeEnum.ProviderType.GJBC.getCode()%>:
                         return gjbcConfigHandler;
+                    case <%=ERPTypeEnum.ProviderType.GJBBC.getCode()%>:
+                        return gjbbcConfigHandler;
                 }
                 return null;
             }
@@ -373,6 +375,9 @@
                                 </div>
                                 <div id="detailConfig_<%=ERPTypeEnum.ProviderType.GJBC.getCode()%>">
                                     <%@include file="/detailConfig/gjbc_config.jsp" %>
+                                </div>
+                                <div id="detailConfig_<%=ERPTypeEnum.ProviderType.GJBBC.getCode()%>">
+                                    <%@include file="/detailConfig/gjbbc_config.jsp" %>
                                 </div>
                             </div>
                         </div>

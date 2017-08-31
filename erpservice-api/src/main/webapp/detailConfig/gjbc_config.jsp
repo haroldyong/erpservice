@@ -38,6 +38,7 @@
             var pWeb = $.trim($("#pWeb").val());
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入高捷请求地址");
+                return null;
             }
             if (name.length == 0) {
                 $.jBox.tip("请输入账号名称");
@@ -75,10 +76,10 @@
                 $.jBox.tip("请输入支付宝key");
                 return null;
             }
-//            if (warehouseCode.length == 0) {
-//                $.jBox.tip("请输入仓库代码");
-//                return null;
-//            }
+            if (warehouseCode.length == 0) {
+                $.jBox.tip("请输入仓库代码");
+                return null;
+            }
             if (pWeb.length == 0) {
                 $.jBox.tip("请输入订单网址");
                 return null;
@@ -126,8 +127,6 @@
             $("#gjbc_requestUrl").val(jsonData.requestUrl);
             $("#gjbc_key").val(jsonData.key);
             $("#gjbc_name").val(jsonData.name);
-            $("#gjbc_key").val(jsonData.key);
-            $("#gjbc_name").val(jsonData.name);
             $("#gjbc_eCommerceCode").val(jsonData.eCommerceCode);
             $("#gjbc_eCommerceName").val(jsonData.eCommerceName);
             $("#gjbc_customUrl").val(jsonData.customUrl);
@@ -138,12 +137,12 @@
             $("#gjbc_aliKey").val(jsonData.aliKey);
             var senderInfo = jsonData.senderInfo;
             if (senderInfo) {
-                var senderInfoArry = senderInfo.split(",");
-                $("#sender_name").val(senderInfoArry[0]);
-                $("#sender_city").val(senderInfoArry[1]);
-                $("#sender_address").val(senderInfoArry[2]);
-                $("#sender_phone").val(senderInfoArry[3]);
-                $("#sender_country_code").val(senderInfoArry[4]);
+                var senderInfoArray = senderInfo.split(",");
+                $("#sender_name").val(senderInfoArray[0]);
+                $("#sender_city").val(senderInfoArray[1]);
+                $("#sender_address").val(senderInfoArray[2]);
+                $("#sender_phone").val(senderInfoArray[3]);
+                $("#sender_country_code").val(senderInfoArray[4]);
             }
             $("#warehouse_code").val(jsonData.warehouseCode);
             $("#pWeb").val(jsonData.pWeb);
