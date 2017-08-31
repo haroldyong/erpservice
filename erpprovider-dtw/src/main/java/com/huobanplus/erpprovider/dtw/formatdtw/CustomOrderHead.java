@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.dtw.formatdtw;
@@ -43,7 +43,7 @@ public class CustomOrderHead {
     private String payType;
 
     /**
-     * 支付平台在跨境平台备案编号
+     * 支付平台在跨境平台备案编号（新增）
      */
     @JacksonXmlProperty(localName = "payCompanyCode")
     private String payCompanyCode;

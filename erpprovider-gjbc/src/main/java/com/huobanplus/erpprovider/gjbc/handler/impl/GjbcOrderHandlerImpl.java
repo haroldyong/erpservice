@@ -340,7 +340,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             requestMap.put("merchant_customs_code", gjbcSysData.getECommerceCode());
             requestMap.put("merchant_customs_name", gjbcSysData.getECommerceName());
             requestMap.put("customs_place", GjbcEnum.CustomerEnum.ZONGSHU.toString());
-//            requestMap.put("")
+            requestMap.put("is_split", "T");
+            requestMap.put("sub_out_biz_no", order.getOrderId());
 
 
             String sign = DtwUtil.aliBuildSign(requestMap, gjbcSysData.getAliKey());

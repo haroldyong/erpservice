@@ -4,7 +4,7 @@
  *
  * (c) Copyright Hangzhou Hot Technology Co., Ltd.
  * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2016. All rights reserved.
+ * 2013-2017. All rights reserved.
  */
 
 package com.huobanplus.erpprovider.dtw.formatdtw;
@@ -27,6 +27,7 @@ public class CustomSign {
 
     /**
      * 不填或者填写或01表示杭州版报文， 02 表示企业自行生成总署报文， 03委托电子口岸生成总署报文
+     * 新增
      */
     private String cebFlag;
 
