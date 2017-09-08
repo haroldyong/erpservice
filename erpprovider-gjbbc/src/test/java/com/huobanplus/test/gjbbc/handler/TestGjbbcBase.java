@@ -129,7 +129,6 @@ public class TestGjbbcBase {
         mockOrder.setBuyerName("王建南");
         mockOrder.setBuyerPid("362322199411050053");
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
-
         mockOrder.setPayNumber(SerialNo.create());
         mockOrder.setTaxAmount(taxAmount);
 

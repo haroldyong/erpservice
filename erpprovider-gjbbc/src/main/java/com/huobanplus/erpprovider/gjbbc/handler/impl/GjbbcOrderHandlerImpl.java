@@ -267,6 +267,12 @@ public class GjbbcOrderHandlerImpl extends BaseHandler implements GjbbcOrderHand
             gjbbcOrderInfo.setCustomsTax(order.getTaxAmount());
             gjbbcOrderInfo.setShippingFee(order.getCostFreight());
             gjbbcOrderInfo.setCustomsDiscout(order.getPmtAmount());
+            gjbbcOrderInfo.setOrderName(order.getBuyerName());
+            gjbbcOrderInfo.setOrderIdNum(order.getBuyerPid());
+            gjbbcOrderInfo.setOrderTel(order.getShipMobile());
+            gjbbcOrderInfo.setOrderAccountNum(order.getOrderName());
+            gjbbcOrderInfo.setRecordNoQg(gjbbcSysData.getECommerceCode());
+            gjbbcOrderInfo.setRecordName(gjbbcSysData.getECommerceName());
             gjbbcOrderInfo.setPayState(2);
             List<OrderItem> orderItems = order.getOrderItems();
             List<GjbbcOrderItem> orderGoods = new ArrayList<>();
