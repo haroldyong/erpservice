@@ -112,6 +112,36 @@ public class GjbbcOrderInfo {
     @JSONField(name = "customs_discount")
     private double customsDiscout;
     /**
+     * 订购人姓名 不为空
+     */
+    @JSONField(name = "order_name")
+    private String orderName;
+    /**
+     * 订购人证件号码
+     */
+    @JSONField(name = "order_idnum")
+    private String orderIdNum;
+    /**
+     * 订购人电话号码
+     */
+    @JSONField(name = "order_tel")
+    private String orderTel;
+    /**
+     * 订购人平台注册号
+     */
+    @JSONField(name = "order_account_num")
+    private String orderAccountNum;
+    /**
+     * 总署海关备案号
+     */
+    @JSONField(name = "record_no_qg")
+    private String recordNoQg;
+    /**
+     * 商家备案名称
+     */
+    @JSONField(name = "record_name")
+    private String recordName;
+    /**
      * 支付单标识 可空 1待提交；2已提交；3已通过；4未通过;5特殊处理
      */
     @JSONField(name = "pay_state")
