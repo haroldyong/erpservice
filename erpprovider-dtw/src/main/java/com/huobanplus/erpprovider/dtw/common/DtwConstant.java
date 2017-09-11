@@ -24,6 +24,8 @@ public class DtwConstant {
 
     public static final String ALI_PAY_CUSTOM_CODE = "ZF14021901";
 
+    public static final String ALI_PAY_CUSTOM_COMPANY = "杭州支付宝有限公司";
+
     public static final String CUSTOM_WEBSERVICE_URL = "http://122.224.230.4:18003/newyorkWS/ws/ReceiveEncryptDeclare?wsdl";
 
     public static final String CUSTOM_WEBSERVICE_URL2 = "http://122.224.230.4:18003/newyorkWS/ws/ReceiveCebDeclare?wsdl";
@@ -57,7 +59,6 @@ public class DtwConstant {
     public static final String LOGISTIC_NAME = "杭州百世网络技术有限公司";
 
     public static final String BUSINESS_TYPE = "IMPORTORDER";
-
 
 
 }

@@ -16,23 +16,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.dtw.common.DtwConstant;
 import com.huobanplus.erpprovider.dtw.common.DtwEnum;
 import com.huobanplus.erpprovider.dtw.common.DtwSysData;
-import com.huobanplus.erpprovider.dtw.formatdtw.CustomBody;
-import com.huobanplus.erpprovider.dtw.formatdtw.CustomGoodsPurchaser;
-import com.huobanplus.erpprovider.dtw.formatdtw.CustomHead;
-import com.huobanplus.erpprovider.dtw.formatdtw.CustomOrder;
-import com.huobanplus.erpprovider.dtw.formatdtw.CustomOrderDetail;
-import com.huobanplus.erpprovider.dtw.formatdtw.CustomOrderHead;
-import com.huobanplus.erpprovider.dtw.formatdtw.CustomOrderInfo;
-import com.huobanplus.erpprovider.dtw.formatdtw.CustomOrderInfoList;
-import com.huobanplus.erpprovider.dtw.formatdtw.CustomSign;
-import com.huobanplus.erpprovider.dtw.formatdtw.DtwAllOrderStatus;
-import com.huobanplus.erpprovider.dtw.formatdtw.DtwGoodsDelcareItem;
-import com.huobanplus.erpprovider.dtw.formatdtw.DtwOrder;
-import com.huobanplus.erpprovider.dtw.formatdtw.DtwOrderItem;
-import com.huobanplus.erpprovider.dtw.formatdtw.DtwPersonalDelcareInfo;
-import com.huobanplus.erpprovider.dtw.formatdtw.DtwStockItem;
-import com.huobanplus.erpprovider.dtw.formatdtw.DtwWayBill;
-import com.huobanplus.erpprovider.dtw.formatdtw.WeixinCustom;
+import com.huobanplus.erpprovider.dtw.formatdtw.*;
 import com.huobanplus.erpprovider.dtw.handler.DtwOrderHandler;
 import com.huobanplus.erpprovider.dtw.search.DtwStockSearch;
 import com.huobanplus.erpprovider.dtw.util.AESUtil;
@@ -66,13 +50,7 @@ import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by wuxiongliu on 2016/5/23.
@@ -712,7 +690,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         customSign.setBusinessType("IMPORTORDER");
         customSign.setDeclareType("1");// 固定填写1
         customSign.setNote("");
-        customSign.setCebFlag("02");
+        customSign.setCebFlag("03");
 
         CustomOrderHead customOrderHead = new CustomOrderHead();
         customOrderHead.setCommerceCode(dtwSysData.getECommerceCode());
@@ -726,6 +704,7 @@ public class DtwOrderHandlerImpl implements DtwOrderHandler {
         if (paymentOptions == OrderEnum.PaymentOptions.ALIPAY_PC || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE
                 || paymentOptions == OrderEnum.PaymentOptions.ALIPAY_MOBILE_WEB) {
             customOrderHead.setPayCompanyCode(DtwConstant.ALI_PAY_CUSTOM_CODE);
+            customOrderHead.setPayCompanyName(DtwConstant.ALI_PAY_CUSTOM_COMPANY);
 
         } else if (paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_V3 || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY
                 || paymentOptions == OrderEnum.PaymentOptions.WEIXINPAY_APP) {

@@ -18,8 +18,8 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
     <!--example com.huobanplus.erpprovider.edb-->
     <!--erp-provider-->
-    <!--<context:component-scan base-package="com.huobanplus.erpprovider.edb"/>-->
-    <!--<context:component-scan base-package="com.huobanplus.erpprovider.netshop"/>-->
+    <context:component-scan base-package="com.huobanplus.erpprovider.edb"/>
+    <context:component-scan base-package="com.huobanplus.erpprovider.netshop"/>
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.sap"/>-->
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.iscs"/>-->
     <!-- <context:component-scan base-package="com.huobanplus.erpprovider.lgj"/>-->
@@ -32,8 +32,8 @@
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.baison"/>-->
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.wangdianv2"/>-->
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.pineapple"/>-->
-    <context:component-scan base-package="com.huobanplus.erpprovider.gjbc"/>
-    <context:component-scan base-package="com.huobanplus.erpprovider.gjbbc"/>
+    <!--<context:component-scan base-package="com.huobanplus.erpprovider.gjbc"/>-->
+    <!--<context:component-scan base-package="com.huobanplus.erpprovider.gjbbc"/>-->
 
     <!--erp-user-->
     <context:component-scan base-package="com.huobanplus.erpuser.huobanmall"/>

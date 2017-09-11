@@ -36,8 +36,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
@@ -157,7 +155,7 @@ public class HttpClientUtil {
             httpPost.setEntity(httpEntity);
             httpAsyncClient.start();
 
-            Future<HttpResponse> responseFuture = httpAsyncClient.execute(httpPost, new FutureCallback<HttpResponse>() {
+            httpAsyncClient.execute(httpPost, new FutureCallback<HttpResponse>() {
                 @Override
                 public void completed(HttpResponse result) {
                     HttpResult httpResult;
@@ -182,22 +180,9 @@ public class HttpClientUtil {
 
                 }
             });
-            new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        responseFuture.get();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.run();
         } catch (IOException e) {
             HttpResult httpResult = new HttpResult(HttpStatus.SC_EXPECTATION_FAILED, e.getMessage());
             resultConsumer.accept(httpResult);
-//            return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }

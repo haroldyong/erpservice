@@ -19,7 +19,6 @@ import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.proxy.utils.OrderProxyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +35,7 @@ public class ScheduledService {
     @Autowired
     private OrderProxyService orderProxyService;
 
-    @Scheduled(cron = "0 */30 * * * ?")
+    //    @Scheduled(cron = "0 */30 * * * ?")
     @Transactional
     public void rePushFailedOrder() {
         //得到所有失败的订单

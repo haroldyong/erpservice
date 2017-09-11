@@ -104,9 +104,11 @@ public class DtwOrderHandlerTest extends DtwTestBase {
 //        }
 
         DtwSysData sysData = new DtwSysData();
-        sysData.setRequestUrl("http://qp.dtw.com.cn:88/api");
-        sysData.setCustomUrl("http://api.kjeport.com/newyorkWS/ws/ReceiveEncryptDeclare?wsdl");
-        sysData.setPassKey("fa69e2f3-5c84-42db-930a-9e1823a05481");
+        sysData.setRequestUrl("http://logistics.dtw.com.cn:8080/QBT/api");
+//        sysData.setCustomUrl("http://api.kjeport.com/newyorkWS/ws/ReceiveEncryptDeclare?wsdl");
+        sysData.setCustomUrl("http://122.224.230.4:18003/newyorkWS/ws/ReceiveEncryptDeclare?wsdl");
+//        sysData.setPassKey("fa69e2f3-5c84-42db-930a-9e1823a05481");
+        sysData.setPassKey("97af559a-40d4-4962-a20c-1cf984640168");
         sysData.setECommerceCode("3210932722");
         sysData.setECommerceName("扬州市新扬达进出口有限公司");
         sysData.setWeiXinAppId("gh_3b938ec78657");
