@@ -262,10 +262,10 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             gjbcGoodsItemsInfo.setGoods_price(orderItems.get(i).getPrice());
 //            gjbcGoodsItemsInfo.setYcg_code(GjbcEnum.CountryEnum.CHINA.getCode());
                 /* 原产国代码 */
-            String countryCode = orderItems.get(i).getForeignBn();
+            String countryCode = orderItems.get(i).getGoodBn().substring(0, 3);
             gjbcGoodsItemsInfo.setYcg_code(countryCode);
                 /* 商品HS编码 */
-            gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn());
+            gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn().substring(3));
             gjbcGoodsItemsInfo.setCurr(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));
             gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum());
             BigDecimal bigGoodsTotal = new BigDecimal(orderItems.get(i).getPrice() * orderItems.get(i).getNum());
