@@ -46,7 +46,11 @@ import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by hxh on 2017-08-15.
@@ -285,7 +289,7 @@ public class GjbbcOrderHandlerImpl extends BaseHandler implements GjbbcOrderHand
             List<GjbbcOrderItem> orderGoods = new ArrayList<>();
             orderItems.forEach(orderItem -> {
                 GjbbcOrderItem gjbbcOrderItem = new GjbbcOrderItem();
-                gjbbcOrderItem.setCustomsGoodsId(Integer.parseInt(orderItem.getProductBn().split("_")[0]));
+                gjbbcOrderItem.setCustomsGoodsId(Integer.parseInt(orderItem.getForeignBn()));
                 gjbbcOrderItem.setGoodsNum(String.valueOf(orderItem.getNum()));
                 gjbbcOrderItem.setGoodsPrice(orderItem.getPrice());
                 gjbbcOrderItem.setTradeCurr("142");
