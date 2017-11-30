@@ -298,7 +298,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             gjbcOrderInfo.setOrder_goods(goodsItemsInfos);
             String gjbcOrderInfosJson = JSON.toJSONString(gjbcOrderInfo);
 
-            requestMap = getSysRequestData(gjbcSysData);
+            requestMap = getSysRequestData(gjbcSysData,"order");
             String encode = Base64.encodeBase64String(gjbcOrderInfosJson.getBytes("utf-8"));
 
             requestMap.put("order", Base64.encodeBase64String(encode.getBytes("utf-8")));
