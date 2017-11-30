@@ -98,5 +98,9 @@ public class OrderItem extends BaseInfo {
      * 退款状态（售后状态）{@link}
      */
     private int refundStatus;
+    /**
+     * 添加参数
+     */
+    private String foreignBn;
 
 }
