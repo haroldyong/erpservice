@@ -1,10 +1,9 @@
-package com.huobanplus.erpprovider.gjbc.config;
+package com.huobanplus.erpprovider.gjbbc.config;
 
-import com.huobanplus.erpprovider.gjbc.handler.GjbcOrderHandler;
+import com.huobanplus.erpprovider.gjbbc.handler.GjbbcOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
@@ -16,24 +15,23 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by montage on 2017/6/26.
+ * Created by hxh on 2017-08-15.
  */
 @Component
-public class GjbcHandlerBuilder implements ERPHandlerBuilder {
+public class GjbbcHandlerBuilder implements ERPHandlerBuilder {
 
     @Autowired
-    private GjbcOrderHandler gjbcOrderHandler;
-
+    private GjbbcOrderHandler gjbbcOrderHandler;
 
     @Override
-    public ERPHandler buildHandler(ERPInfo info) {
-        if (info.getErpType() == ERPTypeEnum.ProviderType.GJBC) {
+    public ERPHandler buildHandler(ERPInfo erpInfo) {
+        if (erpInfo.getErpType() == ERPTypeEnum.ProviderType.GJBBC) {
             return new ERPHandler() {
                 @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
-                        return gjbcOrderHandler.pushOrder(pushNewOrderEvent);
+                        return gjbbcOrderHandler.pushOrder(pushNewOrderEvent);
                     }
                     return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT);
                 }

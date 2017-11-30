@@ -41,7 +41,6 @@ import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
-import com.huobanplus.erpservice.datacenter.repository.CountryInfoRepository;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -76,9 +75,6 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
 
     @Autowired
     private OrderDetailSyncLogService orderDetailSyncLogService;
-
-    @Autowired
-    private CountryInfoRepository countryInfoRepository;
 
     @Override
     public EventResult pushOrder(PushNewOrderEvent pushNewOrderEvent) {
@@ -289,10 +285,10 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
                 gjbcGoodsItemsInfo.setGoods_price(orderItems.get(i).getPrice());
 //            gjbcGoodsItemsInfo.setYcg_code(GjbcEnum.CountryEnum.CHINA.getCode());
                 /* 原产国代码 */
-                String countryCode = orderItems.get(i).getGoodBn().substring(0, 3);
+                String countryCode = orderItems.get(i).getForeignBn();
                 gjbcGoodsItemsInfo.setYcg_code(countryCode);
                 /* 商品HS编码 */
-                gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn().substring(3));
+                gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn());
                 gjbcGoodsItemsInfo.setCurr(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));
                 gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum());
                 if (!StringUtils.isEmpty(orderItems.get(i).getPackageInfo())) {
@@ -318,7 +314,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             gjbcOrderInfo.setOrder_goods(goodsItemsInfos);
             String gjbcOrderInfosJson = JSON.toJSONString(gjbcOrderInfo);
 
-            requestMap = getSysRequestData(gjbcSysData);
+            requestMap = getSysRequestData(gjbcSysData,"order");
             String encode = Base64.encodeBase64String(gjbcOrderInfosJson.getBytes("utf-8"));
 
             requestMap.put("order", Base64.encodeBase64String(encode.getBytes("utf-8")));
