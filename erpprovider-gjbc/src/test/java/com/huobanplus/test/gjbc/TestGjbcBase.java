@@ -11,6 +11,7 @@ package com.huobanplus.test.gjbc;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
+import com.huobanplus.erpprovider.gjbc.util.GjbcConstant;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.common.util.StringUtil;
@@ -63,7 +64,7 @@ public class TestGjbcBase {
 
         mockGjbcSysData = new GjbcSysData();
         mockGjbcSysData.setName("huoju");
-        mockGjbcSysData.setKey("b802c3cd7549da0c05a15cc9aaebfb1c");//a6f0d5db57cc55a5c22c175844665e60
+        mockGjbcSysData.setKey("a6f0d5db57cc55a5c22c175844665e60");//b802c3cd7549da0c05a15cc9aaebfb1c（正式key）
 
         mockGjbcSysData.setECommerceName("扬州市新扬达进出口有限公司");
         mockGjbcSysData.setECommerceCode("3210932722");
