@@ -1,21 +1,38 @@
 package com.huobanplus.test.gjbbc.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.huobanplus.erpprovider.gjbbc.handler.GJBBCProductHandler;
 import com.huobanplus.erpprovider.gjbbc.handler.GjbbcOrderHandler;
+import com.huobanplus.erpprovider.gjbbc.response.GjbbcInventorySearchListResponse;
+import com.huobanplus.erpprovider.gjbbc.search.GjbbcInventorySearch;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hxh on 2017-08-15.
  */
 public class TestGjbbcHandler extends TestGjbbcBase {
+
+    Log log = LogFactory.getLog(TestGjbbcHandler.class);
+
     @Autowired
     private GjbbcOrderHandler gjbbcOrderHandler;
     private PushNewOrderEvent mockPushNewOrderEvent;
 
+
+    @Autowired
+    private GJBBCProductHandler productHandler;
     /**
      * 高捷订单推送测试
      */
@@ -52,6 +69,20 @@ public class TestGjbbcHandler extends TestGjbbcBase {
             System.out.println(result.getData());
             System.out.println(result.getResultMsg());
             System.out.println(result.getResultCode());
+        }
+    }
+
+    @Test
+    public void testGetProductStock() throws Exception {
+        List<String> skus = new ArrayList<>();
+        skus.add("5012368040869");
+        skus.add("5012368040036");
+        GjbbcInventorySearch gjbcInventorySearch = new GjbbcInventorySearch();
+        gjbcInventorySearch.setGoods_barcode(skus.toArray(new String[]{}));
+        EventResult nextEventResult = productHandler.getProductInventoryInfo(mockGjbbcSysData, gjbcInventorySearch);
+        if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            List<GjbbcInventorySearchListResponse> gjbcInventorySearchListResponses = JSON.parseArray(nextEventResult.getData().toString(), GjbbcInventorySearchListResponse.class);
+            Assert.assertEquals(2,gjbcInventorySearchListResponses.size());
         }
     }
 }

@@ -1,13 +1,12 @@
-package com.huobanplus.erpprovider.gjbc.service;
+package com.huobanplus.erpprovider.gjbbc.service;
 
 import com.alibaba.fastjson.JSON;
-import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
-import com.huobanplus.erpprovider.gjbc.handler.GJBCProductHandler;
-import com.huobanplus.erpprovider.gjbc.response.GjbcInventorySearchListResponse;
-import com.huobanplus.erpprovider.gjbc.search.GjbcInventorySearch;
+import com.huobanplus.erpprovider.gjbbc.common.GjbbcSysData;
+import com.huobanplus.erpprovider.gjbbc.handler.GJBBCProductHandler;
+import com.huobanplus.erpprovider.gjbbc.response.GjbbcInventorySearchListResponse;
+import com.huobanplus.erpprovider.gjbbc.search.GjbbcInventorySearch;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
-import com.huobanplus.erpservice.datacenter.model.AllProductListInfo;
 import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.logs.InventorySyncLogService;
@@ -31,11 +30,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by hot on 2017/11/25.
+ * Created by hot on 2017/11/30.
  */
 @Service
-public class GjbcSynInventory {
-    private static final Log log = LogFactory.getLog(GjbcSynInventory.class);
+public class GjbbcSynInventory {
+    private static final Log log = LogFactory.getLog(GjbbcSynInventory.class);
 
     @Autowired
     private ERPDetailConfigService detailConfigService;
@@ -43,7 +42,7 @@ public class GjbcSynInventory {
     private InventorySyncLogService inventorySyncLogService;
 
     @Autowired
-    private GJBCProductHandler productHandler;
+    private GJBBCProductHandler productHandler;
 
     @Autowired
     private HBGoodHandler hbGoodHandler;
@@ -58,15 +57,15 @@ public class GjbcSynInventory {
     @Transactional
     public void SynInventoryFromDB() {
         Date now = new Date();
-        log.info("gjbc inventory sync start");
-        List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.GJBC);
+        log.info("gjbbc inventory sync start");
+        List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.GJBBC);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
             doSync(detailConfig, now);
         }
-        log.info("gjbc inventory sync end");
+        log.info("gjbbc inventory sync end");
     }
 
-    private List<ProInventoryInfo> toProInventoryInfo(List<GjbcInventorySearchListResponse> proStockInfoList) {
+    private List<ProInventoryInfo> toProInventoryInfo(List<GjbbcInventorySearchListResponse> proStockInfoList) {
         List<ProInventoryInfo> proInventoryInfoList = new ArrayList<>();
         proStockInfoList.forEach(proStockInfo -> {
             ProInventoryInfo proInventoryInfo = new ProInventoryInfo();
@@ -84,7 +83,7 @@ public class GjbcSynInventory {
                 ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
                 ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
 
-                GjbcSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), GjbcSysData.class);
+                GjbbcSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), GjbbcSysData.class);
                 List<ProInventoryInfo> failedList = new ArrayList<>(); //失败的列表
 
                 SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
@@ -103,15 +102,15 @@ public class GjbcSynInventory {
                         if (skus != null && skus.size() > 0) {
                             totalCount = skus.size();
 
-                            GjbcInventorySearch gjbcInventorySearch = new GjbcInventorySearch();
-                            gjbcInventorySearch.setGood_barcode(skus.toArray(new String[]{}));
-                            EventResult nextEventResult = productHandler.getProductInventoryInfo(sysData, gjbcInventorySearch);
+                            GjbbcInventorySearch gjbbcInventorySearch = new GjbbcInventorySearch();
+                            gjbbcInventorySearch.setGoods_barcode(skus.toArray(new String[]{}));
+                            EventResult nextEventResult = productHandler.getProductInventoryInfo(sysData, gjbbcInventorySearch);
 
                             if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                List<GjbcInventorySearchListResponse> gjbcInventorySearchListResponses = (List<GjbcInventorySearchListResponse>) nextEventResult.getData();
+                                List<GjbbcInventorySearchListResponse> gjbbcInventorySearchListResponses = (List<GjbbcInventorySearchListResponse>) nextEventResult.getData();
 
 
-                                List<ProInventoryInfo> nextResult = toProInventoryInfo(gjbcInventorySearchListResponses);
+                                List<ProInventoryInfo> nextResult = toProInventoryInfo(gjbbcInventorySearchListResponses);
                                 syncInventoryEvent.setInventoryInfoList(nextResult);
 
                                 EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
@@ -148,5 +147,4 @@ public class GjbcSynInventory {
             log.info("edb customer " + detailConfig.getCustomerId() + " not open sync inventory");
         }
     }
-
 }

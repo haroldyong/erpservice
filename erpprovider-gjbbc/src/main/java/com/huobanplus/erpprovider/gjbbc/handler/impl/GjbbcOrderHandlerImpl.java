@@ -299,7 +299,7 @@ public class GjbbcOrderHandlerImpl extends BaseHandler implements GjbbcOrderHand
             String gjbbcOrderJson = JSON.toJSONString(gjbbcOrderInfo);
             System.out.println(gjbbcOrderJson);
             String encode = Base64.encodeBase64String(gjbbcOrderJson.getBytes("utf-8"));
-            requestMap = getSysRequestData(gjbbcSysData);
+            requestMap = getSysRequestData(gjbbcSysData,"add_orders");
             requestMap.put("order", encode);
             log.info("gjbbc requestUrl====>" + gjbbcSysData.getRequestUrl());
             HttpResult httpResult = HttpClientUtil.getInstance().post(gjbbcSysData.getRequestUrl(), requestMap);

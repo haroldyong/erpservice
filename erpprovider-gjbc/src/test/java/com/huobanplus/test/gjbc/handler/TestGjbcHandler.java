@@ -169,7 +169,7 @@ public class TestGjbcHandler extends TestGjbcBase {
         skus.add("717334151000");
         GjbcInventorySearch gjbcInventorySearch = new GjbcInventorySearch();
         gjbcInventorySearch.setGood_barcode(skus.toArray(new String[]{}));
-        EventResult nextEventResult = productHandler.getProductInventoryInfo(mockErpInfo, mockGjbcSysData, gjbcInventorySearch);
+        EventResult nextEventResult = productHandler.getProductInventoryInfo(mockGjbcSysData, gjbcInventorySearch);
         if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
             List<GjbcInventorySearchListResponse> gjbcInventorySearchListResponses = JSON.parseArray(nextEventResult.getData().toString(), GjbcInventorySearchListResponse.class);
             System.out.println(gjbcInventorySearchListResponses.size());
