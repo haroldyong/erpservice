@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
+import com.huobanplus.erpprovider.gjbc.search.GjbcInventorySearch;
 import com.huobanplus.erpprovider.gjbc.common.GjbcEnum;
 import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
 import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomBody;
@@ -33,6 +34,7 @@ import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
+import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -51,11 +53,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by montage on 2017/6/26.
@@ -288,7 +286,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
         String gjbcOrderInfosJson = JSON.toJSONString(gjbcOrderInfo);
         System.out.println(gjbcOrderInfosJson);
         try {
-            requestMap = getSysRequestData(gjbcSysData);
+            requestMap = getSysRequestData(gjbcSysData,"order");
             String encode = Base64.encodeBase64String(gjbcOrderInfosJson.getBytes("utf-8"));
 
             requestMap.put("order", Base64.encodeBase64String(encode.getBytes("utf-8")));

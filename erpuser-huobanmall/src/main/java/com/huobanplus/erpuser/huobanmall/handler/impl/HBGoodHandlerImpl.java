@@ -14,6 +14,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.util.SignBuilder;
+import com.huobanplus.erpservice.datacenter.model.AllProductListInfo;
 import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
 import com.huobanplus.erpservice.datacenter.model.ProductListInfo;
 import com.huobanplus.erpservice.datacenter.model.ProductSearchInfo;
@@ -83,4 +84,31 @@ public class HBGoodHandlerImpl implements HBGoodHandler {
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
+
+
+    @Override
+    public EventResult obtainAllProductList(ERPUserInfo erpUserInfo)
+    {
+        Map<String, Object> signMap = new TreeMap<>();
+        signMap.put("customerId", erpUserInfo.getCustomerId());
+        signMap.put("timestamp", System.currentTimeMillis());
+        try {
+            String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
+            signMap.put("sign", sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpGood/ObtainAllProductList", signMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                ApiResult<List<String>> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<List<String>>>() {
+                });
+                if (apiResult.getCode() == 200) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            }
+            return EventResult.resultWith(EventResultEnum.SYSTEM_BAD_REQUEST, httpResult.getHttpContent(), null);
+        } catch (IOException e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+
 }

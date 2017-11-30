@@ -2,9 +2,13 @@ package com.huobanplus.test.gjbc.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
+import com.huobanplus.erpprovider.gjbc.handler.GJBCProductHandler;
 import com.huobanplus.erpprovider.gjbc.handler.GjbcOrderHandler;
+import com.huobanplus.erpprovider.gjbc.response.GjbcInventorySearchListResponse;
+import com.huobanplus.erpprovider.gjbc.search.GjbcInventorySearch;
 import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.test.gjbc.TestGjbcBase;
@@ -12,6 +16,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -28,6 +34,10 @@ public class TestGjbcHandler extends TestGjbcBase {
     private PushNewOrderEvent mockPushNewOrderEvent;
 
     private String orderInfoJson = "{\"orderId\":\"2016082966169442\",\"memberId\":17423,\"userLoginName\":\"15868807873\",\"confirm\":1,\"orderStatus\":0,\"payStatus\":1,\"shipStatus\":0,\"weight\":3500.000,\"orderName\":\"??????2(??,42?)(7)(?7)\",\"itemNum\":7,\"lastUpdateTime\":\"2016-08-29 17:09:49\",\"createTime\":\"2016-08-29 17:09:49\",\"shipName\":\"???\",\"shipArea\":\"???/???/???\",\"province\":\"???\",\"city\":\"???\",\"district\":\"???\",\"shipAddr\":\"????????????????????e?\",\"shipZip\":\"\",\"shipTel\":\"\",\"shipEmail\":\"\",\"shipMobile\":\"15868807873\",\"costItem\":0.700,\"onlinePayAmount\":0.00,\"costFreight\":0.000,\"currency\":\"CNY\",\"finalAmount\":0.700,\"pmtAmount\":0.000,\"memo\":\"\",\"remark\":\"\",\"printStatus\":0,\"paymentName\":\"???\",\"payType\":700,\"customerId\":296,\"supplierId\":0,\"logiName\":null,\"logiNo\":null,\"logiCode\":null,\"payTime\":\"2016-08-29 17:09:49\",\"unionOrderId\":\"2016082976823811\",\"receiveStatus\":0,\"isTax\":0,\"taxCompany\":\"\",\"buyerPid\":\"362322199411050053\",\"buyerName\":\"???\",\"orderItems\":[{\"itemId\":14701,\"orderId\":\"2016082966169442\",\"unionOrderId\":\"2016082976823811\",\"productBn\":\"CSXJ0005\",\"name\":\"吴雄牛\",\"cost\":5.000,\"price\":0.100,\"amount\":0.700,\"num\":7,\"sendNum\":0,\"refundNum\":0,\"supplierId\":0,\"customerId\":296,\"goodBn\":\"0402210000\",\"standard\":\"??,42?\",\"brief\":null,\"shipStatus\":0}]}";
+
+
+    @Autowired
+    private GJBCProductHandler productHandler;
 
     /**
      * 高捷订单推送测试
@@ -90,7 +100,7 @@ public class TestGjbcHandler extends TestGjbcBase {
     }
 
     @Test
-    public void testPushOrderWeiXin(){
+    public void testPushOrderWeiXin() {
         mockOrder.setPayNumber(SerialNo.create());
         mockOrder.setOrderId(SerialNo.create());
 
@@ -132,6 +142,20 @@ public class TestGjbcHandler extends TestGjbcBase {
             System.out.println(result.getData());
             System.out.println(result.getResultMsg());
             System.out.println(result.getResultCode());
+        }
+    }
+
+    @Test
+    public void testGetProductStock() throws UnsupportedEncodingException {
+        List<String> skus = new ArrayList<>();
+        skus.add("888066010658");
+        skus.add("717334151000");
+        GjbcInventorySearch gjbcInventorySearch = new GjbcInventorySearch();
+        gjbcInventorySearch.setGood_barcode(skus.toArray(new String[]{}));
+        EventResult nextEventResult = productHandler.getProductInventoryInfo(mockErpInfo, mockGjbcSysData, gjbcInventorySearch);
+        if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            List<GjbcInventorySearchListResponse> gjbcInventorySearchListResponses = JSON.parseArray(nextEventResult.getData().toString(), GjbcInventorySearchListResponse.class);
+            System.out.println(gjbcInventorySearchListResponses.size());
         }
     }
 }

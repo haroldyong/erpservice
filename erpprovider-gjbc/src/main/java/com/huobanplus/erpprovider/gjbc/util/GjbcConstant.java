@@ -19,6 +19,8 @@ public class GjbcConstant {
      */
     public final static String REQUEST_URL = "http://test.goldjet.com.cn/api/index.php?act=order_bc&op=order";
 
+    public  final  static  String TEST_REQUEST_URL ="http://oms.goldjet.com.cn/api/index.php?act=order_bc&op=order";
+
     public static final String ALI_PAY_URL = "https://mapi.alipay.com/gateway.do";
 
     public static final String WEIXIN_PAY_URL = "https://api.mch.weixin.qq.com/cgi-bin/mch/customs/customdeclareorder";
@@ -37,7 +39,6 @@ public class GjbcConstant {
     public static final String LOGISTIC_NAME = "百世物流科技（中国）有限公司";
     public static final String RECORD_NUMBER = "3301964K02";
     public static final String WEB_NAME = "伙伴商城";
-    public static final String MARK_STATUS = "order";
     public static final String CONFIRM_STATUS = "2";
     public static final String RECORD_NAME = "杭州伙聚网络技术有限公司";
 

@@ -2,8 +2,11 @@ package com.huobanplus.erpprovider.gjbc.handler;
 
 import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by montage on 2017/6/26.
@@ -38,6 +41,7 @@ public interface GjbcOrderHandler {
      * @return
      */
     EventResult PushOrderWeiXin(Order order, GjbcSysData gjbcSysData);
+
 
 //    /**
 //     * 推送订单到海关
