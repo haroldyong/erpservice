@@ -29,6 +29,9 @@ public class OrderItem extends BaseInfo {
      * 平台货品id
      */
     private int productId;
+    /**
+     * 商品备案id以"_"区分，"_"之前为商品备案id
+     */
     private String productBn;
     private String name;
     private String brand;
@@ -98,9 +101,13 @@ public class OrderItem extends BaseInfo {
      * 退款状态（售后状态）{@link}
      */
     private int refundStatus;
-    
+
     /**
      * 包装信息
      */
     private String packageInfo;
+    /**
+     * 添加参数
+     */
+    private String foreignBn;
 }
