@@ -16,7 +16,19 @@ import com.huobanplus.erpprovider.dtw.util.Arith;
 import com.huobanplus.erpprovider.dtw.util.DtwUtil;
 import com.huobanplus.erpprovider.gjbc.common.GjbcEnum;
 import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
-import com.huobanplus.erpprovider.gjbc.formatgjbc.*;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomBody;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomGoodsPurchaser;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomHead;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrder;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderDetail;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderHead;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderInfo;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomOrderInfoList;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.CustomSign;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcAllOrderStatus;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcGoodsItemsInfo;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.GjbcOrderInfo;
+import com.huobanplus.erpprovider.gjbc.formatgjbc.WeiXinCustom;
 import com.huobanplus.erpprovider.gjbc.handler.BaseHandler;
 import com.huobanplus.erpprovider.gjbc.handler.GjbcOrderHandler;
 import com.huobanplus.erpprovider.gjbc.util.GjbcConstant;
@@ -47,7 +59,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by montage on 2017/6/26.
@@ -290,15 +306,15 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             /* 毛重*/
                 log.info("毛重====>" + orderItems.get(i).getWeight());
                 totalWight += orderItems.get(i).getNum() * orderItems.get(i).getWeight();
-            /* 净重*/
-                double subSuttleWeight = orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight();
-                gjbcGoodsItemsInfo.setGoods_hg_num(subSuttleWeight / 1000);
-                totalSuttleWeight += subSuttleWeight;
+           /* 净重*/
+                totalSuttleWeight += orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight();
                 goodsItemsInfos[i] = gjbcGoodsItemsInfo;
             }
             gjbcOrderInfo.setOrder_amount(finalAmout);
-            gjbcOrderInfo.setPkg_gweight(totalWight / 1000);
-            gjbcOrderInfo.setGoods_nweight(totalSuttleWeight / 1000);
+            BigDecimal bigTotalWight = new BigDecimal(totalWight / 1000);
+            gjbcOrderInfo.setPkg_gweight(bigTotalWight.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            BigDecimal bigTotalSuttleWeight = new BigDecimal(totalSuttleWeight / 1000);
+            gjbcOrderInfo.setGoods_nweight(bigTotalSuttleWeight.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
             gjbcOrderInfo.setOrder_goods(goodsItemsInfos);
             String gjbcOrderInfosJson = JSON.toJSONString(gjbcOrderInfo);
 
