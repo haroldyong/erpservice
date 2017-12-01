@@ -129,7 +129,7 @@ public class TestGjbcBase {
         mockOrder.setOrderName("跨境商品(蓝色,42码)(10)(×10)");
         mockOrder.setItemNum(12);
         mockOrder.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
-        mockOrder.setShipName("Riven");
+        mockOrder.setShipName("万木庄");
         mockOrder.setShipArea("浙江省/杭州市/滨江区");
         mockOrder.setProvince("浙江省");
         mockOrder.setCity("杭州市");
@@ -148,7 +148,7 @@ public class TestGjbcBase {
         mockOrder.setPaymentName("微信");
         mockOrder.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());//微信支付V3
 
-        mockOrder.setBuyerName("Riven");
+        mockOrder.setBuyerName("万木庄");
         mockOrder.setBuyerPid("362322199411050053");
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
 
