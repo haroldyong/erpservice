@@ -36,6 +36,7 @@
             var aliKey = $.trim($("#gjbc_aliKey").val());
             var warehouseCode = $.trim($("#warehouse_code").val());
             var pWeb = $.trim($("#pWeb").val());
+            var status = $.trim($("#status").val())
             if (requestUrl.length == 0) {
                 $.jBox.tip("请输入高捷请求地址");
                 return null;
@@ -104,6 +105,10 @@
                 $.jBox.tip("请输入发件人国别")
                 return null;
             }
+            if (status.length == 0) {
+                $.jBox.tip("请输入同步库存状态")
+                return null;
+            }
 
             var senderInfo = senderName + "," + senderCity + "," + senderAddress + "," + senderPhone + "," + senderCountryCode;
             var gjbcConfig = {
@@ -119,7 +124,8 @@
                 aliKey: aliKey,
                 warehouseCode: warehouseCode,
                 pWeb: pWeb,
-                senderInfo: senderInfo
+                senderInfo: senderInfo,
+                status: status
             };
             return JSON.stringify(gjbcConfig);
         },
@@ -135,6 +141,7 @@
             $("#gjbc_weixinKey").val(jsonData.weixinKey);
             $("#gjbc_aliPartner").val(jsonData.aliPartner);
             $("#gjbc_aliKey").val(jsonData.aliKey);
+            $("#status").val(jsonData.status);
             var senderInfo = jsonData.senderInfo;
             if (senderInfo) {
                 var senderInfoArray = senderInfo.split(",");
@@ -253,6 +260,12 @@
         <th style="vertical-align: middle;">发件人国别：</th>
         <td>
             <input name="sender_country_code" type="text" value="" id="sender_country_code" class="input-normal"/>
+        </td>
+    </tr>
+    <tr>
+        <th style="vertical-align: middle;">是否同步库存（0：不同步 1：同步 ）：</th>
+        <td>
+            <input name="status" type="text" value="" id="status" class="input-normal"/>
         </td>
     </tr>
     </tbody>
