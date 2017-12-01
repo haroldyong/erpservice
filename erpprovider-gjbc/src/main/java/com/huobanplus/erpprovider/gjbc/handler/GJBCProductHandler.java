@@ -12,5 +12,5 @@ import java.io.UnsupportedEncodingException;
  */
 public interface GJBCProductHandler {
 
-    EventResult getProductInventoryInfo(ERPInfo erpInfo , GjbcSysData sysData, GjbcInventorySearch gjbcInventorySearch) throws UnsupportedEncodingException;
+    EventResult getProductInventoryInfo(GjbcSysData sysData, GjbcInventorySearch gjbcInventorySearch) throws UnsupportedEncodingException;
 }

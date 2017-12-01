@@ -50,12 +50,12 @@ public class TestGjbbcBase {
 
         mockGjbbcSysData = new GjbbcSysData();
         mockGjbbcSysData.setName("huoju");
-        mockGjbbcSysData.setKey("a6f0d5db57cc55a5c22c175844665e60");
+        mockGjbbcSysData.setKey("a6f0d5db57cc55a5c22c175844665e60");//b802c3cd7549da0c05a15cc9aaebfb1c
         mockGjbbcSysData.setECommerceName("杭州伙聚网络技术有限公司");
         mockGjbbcSysData.setECommerceCode("3301964K02");
         mockGjbbcSysData.setAliPartner("2088421965473023");
         mockGjbbcSysData.setAliKey("k48u3xqezrpwhpuv8al265p515uhclr5");
-        mockGjbbcSysData.setRequestUrl("http://test.goldjet.com.cn/api/index.php?act=bbc&op=bbc_order");
+        mockGjbbcSysData.setRequestUrl("http://test.goldjet.com.cn/api/index.php?act=bbc&op=bbc_order");//"http://oms.goldjet.com.cn/api/index.php?act=bbc&op=bbc_order"
 
 
         mockGjbbcSysData.setWeixinKey("192006250b4c09247ec02edce69f6a2d");
