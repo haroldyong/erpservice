@@ -8,6 +8,7 @@ import com.huobanplus.erpprovider.gjbc.search.GjbcInventorySearch;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
+import com.huobanplus.erpservice.datacenter.model.SkusInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.logs.InventorySyncLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
@@ -100,12 +101,18 @@ public class GjbcSynInventory {
                 EventResult productListEventResult = hbGoodHandler.obtainAllProductList(erpUserInfo);
                 if (productListEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                     if (productListEventResult.getData() != null) {
-                        List<String> skus = (List<String>) productListEventResult.getData();
+                        List<SkusInfo> skus = (List<SkusInfo>) productListEventResult.getData();
                         if (skus != null && skus.size() > 0) {
                             totalCount = skus.size();
 
+                            String[] barcodes = new String[totalCount];
+                            int n = 0;
+                            for (SkusInfo skusInfo : skus) {
+                                barcodes[n] = skusInfo.getBn();
+                                n = n + 1;
+                            }
                             GjbcInventorySearch gjbcInventorySearch = new GjbcInventorySearch();
-                            gjbcInventorySearch.setGood_barcode(skus.toArray(new String[]{}));
+                            gjbcInventorySearch.setGood_barcode(barcodes);
                             EventResult nextEventResult = productHandler.getProductInventoryInfo(sysData, gjbcInventorySearch);
 
                             if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -126,6 +133,9 @@ public class GjbcSynInventory {
                             }
                         }
                     }
+                } else {
+
+                    log.info("code:" + productListEventResult.getResultCode());
                 }
 
                 if (failedList.size() > 0) {

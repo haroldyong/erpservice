@@ -8,6 +8,7 @@ import com.huobanplus.erpprovider.gjbbc.search.GjbbcInventorySearch;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
+import com.huobanplus.erpservice.datacenter.model.SkusInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.logs.InventorySyncLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
@@ -93,17 +94,29 @@ public class GjbbcSynInventory {
 
             ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
 
+
+
             int totalCount = 0;
             //从平台获取商品列表
             EventResult productListEventResult = hbGoodHandler.obtainAllProductList(erpUserInfo);
+
             if (productListEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                 if (productListEventResult.getData() != null) {
-                    List<String> skus = (List<String>) productListEventResult.getData();
+                    List<SkusInfo> skus = (List<SkusInfo>) productListEventResult.getData();
                     if (skus != null && skus.size() > 0) {
                         totalCount = skus.size();
 
+                        log.info("start do " + totalCount);
+
+                        String[] barcodes = new String[totalCount];
+                        int n = 0;
+                        for (SkusInfo skusInfo : skus) {
+                            barcodes[n] = skusInfo.getBn();
+                            n = n + 1;
+                        }
+
                         GjbbcInventorySearch gjbbcInventorySearch = new GjbbcInventorySearch();
-                        gjbbcInventorySearch.setGoods_barcode(skus.toArray(new String[]{}));
+                        gjbbcInventorySearch.setGoods_barcode(barcodes);
                         EventResult nextEventResult = productHandler.getProductInventoryInfo(sysData, gjbbcInventorySearch);
 
                         if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
@@ -124,6 +137,8 @@ public class GjbbcSynInventory {
                         }
                     }
                 }
+            } else {
+                log.info("code:" + productListEventResult.getResultCode());
             }
 
             if (failedList.size() > 0) {
