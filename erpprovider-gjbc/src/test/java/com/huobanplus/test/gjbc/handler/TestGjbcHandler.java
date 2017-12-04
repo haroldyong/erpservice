@@ -17,11 +17,17 @@ import com.huobanplus.erpprovider.gjbc.response.GjbcInventorySearchListResponse;
 import com.huobanplus.erpprovider.gjbc.search.GjbcInventorySearch;
 import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.datacenter.model.SkusInfo;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpuser.huobanmall.common.HBConstant;
+import com.huobanplus.erpuser.huobanmall.handler.HBGoodHandler;
 import com.huobanplus.erpuser.huobanmall.handler.HBOrderHandler;
 import com.huobanplus.test.gjbc.TestGjbcBase;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,6 +43,7 @@ import java.util.TreeMap;
 
 public class TestGjbcHandler extends TestGjbcBase {
 
+private Log log = LogFactory.getLog(TestGjbcHandler.class);
 
     @Autowired
     private GjbcOrderHandler gjbcOrderHandler;
@@ -162,17 +169,49 @@ public class TestGjbcHandler extends TestGjbcBase {
         }
     }
 
+    @Autowired
+private HBGoodHandler hbGoodHandler;
+
+
     @Test
     public void testGetProductStock() throws UnsupportedEncodingException {
-        List<String> skus = new ArrayList<>();
-        skus.add("888066010658");
-        skus.add("717334151000");
-        GjbcInventorySearch gjbcInventorySearch = new GjbcInventorySearch();
-        gjbcInventorySearch.setGood_barcode(skus.toArray(new String[]{}));
-        EventResult nextEventResult = productHandler.getProductInventoryInfo(mockGjbcSysData, gjbcInventorySearch);
-        if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-            List<GjbcInventorySearchListResponse> gjbcInventorySearchListResponses = JSON.parseArray(nextEventResult.getData().toString(), GjbcInventorySearchListResponse.class);
-            System.out.println(gjbcInventorySearchListResponses.size());
+//        List<String> skus = new ArrayList<>();
+//        skus.add("888066010658");
+//        skus.add("717334151000");
+//        GjbcInventorySearch gjbcInventorySearch = new GjbcInventorySearch();
+//        gjbcInventorySearch.setGood_barcode(skus.toArray(new String[]{}));
+//        EventResult nextEventResult = productHandler.getProductInventoryInfo(mockGjbcSysData, gjbcInventorySearch);
+//        if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+//            List<GjbcInventorySearchListResponse> gjbcInventorySearchListResponses = JSON.parseArray(nextEventResult.getData().toString(), GjbcInventorySearchListResponse.class);
+//            System.out.println(gjbcInventorySearchListResponses.size());
+//        }
+
+//        HBConstant.REQUEST_URL = "http://mallapi.pdmall.com";
+//        ERPUserInfo erpUserInfo = new ERPUserInfo();
+//        erpUserInfo.setCustomerId(4886);
+//        hbGoodHandler.obtainAllProductList(erpUserInfo);
+
+        List<SkusInfo> skus = new ArrayList<>();
+        SkusInfo skusInfo  =new SkusInfo();
+        skusInfo.setBn("123");
+        skus.add(skusInfo);
+        skusInfo  =new SkusInfo();
+        skusInfo.setBn("234");
+        skus.add(skusInfo);
+
+        String[] items = new String[skus.size()];
+        int n = 0;
+        for (SkusInfo skusInfo1 :skus)
+        {
+            items[n] = skusInfo1.getBn();
+            n +=1;
         }
+
+//       String[] items = skus.toArray(new String[skus.size()]);
+        for (String item: items)
+        {
+            log.info(item);
+        }
+
     }
 }

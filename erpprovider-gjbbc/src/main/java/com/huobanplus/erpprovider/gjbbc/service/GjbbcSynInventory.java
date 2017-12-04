@@ -8,6 +8,7 @@ import com.huobanplus.erpprovider.gjbbc.search.GjbbcInventorySearch;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
+import com.huobanplus.erpservice.datacenter.model.SkusInfo;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.logs.InventorySyncLogService;
 import com.huobanplus.erpservice.eventhandler.ERPRegister;
@@ -53,7 +54,7 @@ public class GjbbcSynInventory {
     /**
      * 对库存进行一次性同步
      */
-    @Scheduled(cron = "0 */30 * * * ?")
+    @Scheduled(cron = "0 */50 * * * ?")
     @Transactional
     public void SynInventoryFromDB() {
         Date now = new Date();
@@ -78,73 +79,84 @@ public class GjbbcSynInventory {
     }
 
     public void doSync(ERPDetailConfigEntity detailConfig, Date now) {
-        if (detailConfig.getErpBaseConfig().getIsSyncInventory() == 1) {
-            try {
-                ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
-                ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
 
-                GjbbcSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), GjbbcSysData.class);
-                List<ProInventoryInfo> failedList = new ArrayList<>(); //失败的列表
+        try {
+            ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
+            ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
 
-                SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
-                syncInventoryEvent.setErpInfo(erpInfo);
-                syncInventoryEvent.setErpUserInfo(erpUserInfo);
+            GjbbcSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), GjbbcSysData.class);
+            List<ProInventoryInfo> failedList = new ArrayList<>(); //失败的列表
 
-
-                ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-
-                int totalCount = 0;
-                //从平台获取商品列表
-                EventResult productListEventResult = hbGoodHandler.obtainAllProductList(erpUserInfo);
-                if (productListEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                    if (productListEventResult.getData() != null) {
-                        List<String> skus = (List<String>) productListEventResult.getData();
-                        if (skus != null && skus.size() > 0) {
-                            totalCount = skus.size();
-
-                            GjbbcInventorySearch gjbbcInventorySearch = new GjbbcInventorySearch();
-                            gjbbcInventorySearch.setGoods_barcode(skus.toArray(new String[]{}));
-                            EventResult nextEventResult = productHandler.getProductInventoryInfo(sysData, gjbbcInventorySearch);
-
-                            if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                List<GjbbcInventorySearchListResponse> gjbbcInventorySearchListResponses = (List<GjbbcInventorySearchListResponse>) nextEventResult.getData();
+            SyncInventoryEvent syncInventoryEvent = new SyncInventoryEvent();
+            syncInventoryEvent.setErpInfo(erpInfo);
+            syncInventoryEvent.setErpUserInfo(erpUserInfo);
 
 
-                                List<ProInventoryInfo> nextResult = toProInventoryInfo(gjbbcInventorySearchListResponses);
-                                syncInventoryEvent.setInventoryInfoList(nextResult);
+            ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
 
-                                EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
 
-                                if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                    failedList.addAll((List<ProInventoryInfo>) nextSyncResult.getData());
-                                } else {
-                                    log.info("库存同步失败--" + nextEventResult.getResultMsg());
-                                    return;
-                                }
+
+            int totalCount = 0;
+            //从平台获取商品列表
+            EventResult productListEventResult = hbGoodHandler.obtainAllProductList(erpUserInfo);
+
+            if (productListEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                if (productListEventResult.getData() != null) {
+                    List<SkusInfo> skus = (List<SkusInfo>) productListEventResult.getData();
+                    if (skus != null && skus.size() > 0) {
+                        totalCount = skus.size();
+
+                        log.info("start do " + totalCount);
+
+                        String[] barcodes = new String[totalCount];
+                        int n = 0;
+                        for (SkusInfo skusInfo : skus) {
+                            barcodes[n] = skusInfo.getBn();
+                            n = n + 1;
+                        }
+
+                        GjbbcInventorySearch gjbbcInventorySearch = new GjbbcInventorySearch();
+                        gjbbcInventorySearch.setGoods_barcode(barcodes);
+                        EventResult nextEventResult = productHandler.getProductInventoryInfo(sysData, gjbbcInventorySearch);
+
+                        if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                            List<GjbbcInventorySearchListResponse> gjbbcInventorySearchListResponses = (List<GjbbcInventorySearchListResponse>) nextEventResult.getData();
+
+
+                            List<ProInventoryInfo> nextResult = toProInventoryInfo(gjbbcInventorySearchListResponses);
+                            syncInventoryEvent.setInventoryInfoList(nextResult);
+
+                            EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
+
+                            if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                                failedList.addAll((List<ProInventoryInfo>) nextSyncResult.getData());
+                            } else {
+                                log.info("库存同步失败--" + nextEventResult.getResultMsg());
+                                return;
                             }
                         }
                     }
                 }
-
-                if (failedList.size() > 0) {
-                    log.info("failedCount--->" + failedList.size());
-                }
-
-                if (totalCount > 0) {
-                    inventorySyncLogService.saveLogAndDetail(
-                            erpUserInfo.getErpUserType(),
-                            erpInfo.getErpType(),
-                            erpUserInfo.getCustomerId(),
-                            totalCount,
-                            failedList,
-                            now
-                    );
-                }
-            } catch (Exception e) {
-                log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "库存同步发生错误--" + e.getMessage());
+            } else {
+                log.info("code:" + productListEventResult.getResultCode());
             }
-        } else {
-            log.info("edb customer " + detailConfig.getCustomerId() + " not open sync inventory");
+
+            if (failedList.size() > 0) {
+                log.info("failedCount--->" + failedList.size());
+            }
+
+            if (totalCount > 0) {
+                inventorySyncLogService.saveLogAndDetail(
+                        erpUserInfo.getErpUserType(),
+                        erpInfo.getErpType(),
+                        erpUserInfo.getCustomerId(),
+                        totalCount,
+                        failedList,
+                        now
+                );
+            }
+        } catch (Exception e) {
+            log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "库存同步发生错误--" + e.getMessage());
         }
     }
 }

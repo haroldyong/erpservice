@@ -36,7 +36,7 @@ public class ScheduledService {
     @Autowired
     private OrderProxyService orderProxyService;
 
-    @Scheduled(cron = "0 */30 * * * ?")
+//    @Scheduled(cron = "0 */30 * * * ?")
     @Transactional
     public void rePushFailedOrder() {
         //得到所有失败的订单

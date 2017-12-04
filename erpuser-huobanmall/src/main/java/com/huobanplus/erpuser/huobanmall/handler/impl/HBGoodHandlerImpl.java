@@ -14,17 +14,17 @@ import com.alibaba.fastjson.TypeReference;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.common.util.SignBuilder;
-import com.huobanplus.erpservice.datacenter.model.AllProductListInfo;
-import com.huobanplus.erpservice.datacenter.model.ProInventoryInfo;
-import com.huobanplus.erpservice.datacenter.model.ProductListInfo;
-import com.huobanplus.erpservice.datacenter.model.ProductSearchInfo;
+import com.huobanplus.erpservice.datacenter.model.*;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpuser.huobanmall.common.ApiResult;
 import com.huobanplus.erpuser.huobanmall.common.HBConstant;
 import com.huobanplus.erpuser.huobanmall.handler.HBGoodHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -38,6 +38,9 @@ import java.util.TreeMap;
  */
 @Service
 public class HBGoodHandlerImpl implements HBGoodHandler {
+
+    private Log log = LogFactory.getLog(HBGoodHandlerImpl.class);
+
     @Override
     public EventResult syncProInventory(List<ProInventoryInfo> proInventoryInfoList, ERPUserInfo erpUserInfo) {
         Map<String, Object> signMap = new TreeMap<>();
@@ -97,15 +100,23 @@ public class HBGoodHandlerImpl implements HBGoodHandler {
             signMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpGood/ObtainAllProductList", signMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                ApiResult<List<String>> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<List<String>>>() {
+                ApiResult<List<SkusInfo>> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<List<SkusInfo>>>() {
                 });
                 if (apiResult.getCode() == 200) {
+                    log.info(apiResult.getData());
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }
+                log.info(apiResult.getMsg());
                 return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
             }
+            else
+            {
+                log.info(httpResult.getHttpStatus());
+            }
+
             return EventResult.resultWith(EventResultEnum.SYSTEM_BAD_REQUEST, httpResult.getHttpContent(), null);
         } catch (IOException e) {
+            log.info(e);
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
