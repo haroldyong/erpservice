@@ -26,6 +26,11 @@ import java.io.Serializable;
 public class ERPUserInfo implements Serializable {
     private static final long serialVersionUID = 52479852258664542L;
 
+//    public ERPUserInfo(ERPTypeEnum.UserType erpUserType, int customerId) {
+//        this.erpUserType = erpUserType;
+//        this.customerId = customerId;
+//    }
+
     /**
      * erp使用者类型
      * <ul>
@@ -39,4 +44,9 @@ public class ERPUserInfo implements Serializable {
      * 商家id
      */
     private int customerId;
+
+    /**
+     * 供应商的customerId
+     */
+//    private Integer customerIdForSuppery;
 }

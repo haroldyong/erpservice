@@ -26,6 +26,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.json.Json;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +55,7 @@ public class GjbbcSynInventory {
     /**
      * 对库存进行一次性同步
      */
-    @Scheduled(cron = "0 */50 * * * ?")
+    @Scheduled(cron = "0 */40 * * * ?")
     @Transactional
     public void SynInventoryFromDB() {
         Date now = new Date();
@@ -67,14 +68,14 @@ public class GjbbcSynInventory {
     }
 
     private List<ProInventoryInfo> toProInventoryInfo(List<GjbbcInventorySearchListResponse> proStockInfoList) {
-        List<ProInventoryInfo> proInventoryInfoList = new ArrayList<>();
+        List<ProInventoryInfo> list = new ArrayList<>();
         proStockInfoList.forEach(proStockInfo -> {
             ProInventoryInfo proInventoryInfo = new ProInventoryInfo();
             proInventoryInfo.setProductBn(proStockInfo.getGoods_barcode());
             proInventoryInfo.setSalableInventory(Integer.parseInt(proStockInfo.getOrder_inventory()));
-            proInventoryInfoList.add(proInventoryInfo);
+            list.add(proInventoryInfo);
         });
-        return proInventoryInfoList;
+        return list;
 
     }
 
@@ -82,6 +83,7 @@ public class GjbbcSynInventory {
 
         try {
             ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
+
             ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
 
             GjbbcSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), GjbbcSysData.class);
@@ -93,7 +95,6 @@ public class GjbbcSynInventory {
 
 
             ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
-
 
 
             int totalCount = 0;
@@ -122,13 +123,18 @@ public class GjbbcSynInventory {
                         if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
                             List<GjbbcInventorySearchListResponse> gjbbcInventorySearchListResponses = (List<GjbbcInventorySearchListResponse>) nextEventResult.getData();
 
+//                            log.info("to syn info:" + JSON.toJSONString(gjbbcInventorySearchListResponses));
 
                             List<ProInventoryInfo> nextResult = toProInventoryInfo(gjbbcInventorySearchListResponses);
+//                            log.info("111");
                             syncInventoryEvent.setInventoryInfoList(nextResult);
 
-                            EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
+//                            log.info("112");
 
+                            EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
+//                            log.info("113");
                             if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+//                                log.info("gjbbc inventory syn do success");
                                 failedList.addAll((List<ProInventoryInfo>) nextSyncResult.getData());
                             } else {
                                 log.info("库存同步失败--" + nextEventResult.getResultMsg());
