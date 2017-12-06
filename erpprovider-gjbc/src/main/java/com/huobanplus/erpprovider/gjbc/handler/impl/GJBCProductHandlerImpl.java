@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
 import com.huobanplus.erpprovider.gjbc.handler.BaseHandler;
 import com.huobanplus.erpprovider.gjbc.handler.GJBCProductHandler;
+import com.huobanplus.erpprovider.gjbc.response.GjbcInventorySearchListResponse;
 import com.huobanplus.erpprovider.gjbc.search.GjbcInventorySearch;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
@@ -40,7 +41,7 @@ public class GJBCProductHandlerImpl extends BaseHandler implements GJBCProductHa
         if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
             JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
             if ("ok".equals(jsonObject.get("sysResponseCode"))) {
-                return EventResult.resultWith(EventResultEnum.SUCCESS, null, jsonObject.getString("inventory"));
+                return EventResult.resultWith(EventResultEnum.SUCCESS, null, JSON.parseArray(jsonObject.getString("inventory"), GjbcInventorySearchListResponse.class));
             }
             return EventResult.resultWith(EventResultEnum.ERROR, "请求服务器错误", null);
         }

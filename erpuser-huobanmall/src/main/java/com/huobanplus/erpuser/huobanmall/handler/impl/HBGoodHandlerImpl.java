@@ -46,20 +46,25 @@ public class HBGoodHandlerImpl implements HBGoodHandler {
         Map<String, Object> signMap = new TreeMap<>();
         signMap.put("inventoryInfoListJson", JSON.toJSONString(proInventoryInfoList));
         signMap.put("customerId", erpUserInfo.getCustomerId());
+        log.info("enter syncProInventory ");
         try {
             String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
             signMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpGood/BatchSyncInventory", signMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                log.info("syncProInventory ok");
                 ApiResult<List<ProInventoryInfo>> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<List<ProInventoryInfo>>>() {
                 });
-                if (apiResult.getCode() == 200)
+                if (apiResult.getCode() == 200) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
+                }
 
                 return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
             }
+            log.info("syncProInventory error");
             return EventResult.resultWith(EventResultEnum.SYSTEM_BAD_REQUEST, httpResult.getHttpContent(), null);
         } catch (IOException e) {
+            log.info(e);
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
@@ -94,6 +99,7 @@ public class HBGoodHandlerImpl implements HBGoodHandler {
     {
         Map<String, Object> signMap = new TreeMap<>();
         signMap.put("customerId", erpUserInfo.getCustomerId());
+        signMap.put("userType",erpUserInfo.getErpUserType().getCode());
         signMap.put("timestamp", System.currentTimeMillis());
         try {
             String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
@@ -103,7 +109,10 @@ public class HBGoodHandlerImpl implements HBGoodHandler {
                 ApiResult<List<SkusInfo>> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<List<SkusInfo>>>() {
                 });
                 if (apiResult.getCode() == 200) {
-                    log.info(apiResult.getData());
+
+//                    log.info(HBConstant.REQUEST_URL + "/ErpGood/ObtainAllProductList/" + erpUserInfo.getCustomerId());
+
+                    //log.info("obtainAllProductList result:" + apiResult.getData());
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }
                 log.info(apiResult.getMsg());
