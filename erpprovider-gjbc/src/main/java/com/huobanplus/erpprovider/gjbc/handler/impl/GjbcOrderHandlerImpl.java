@@ -155,6 +155,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
     private EventResult pushFourOrder(Order order, GjbcSysData gjbcSysData, GjbcAllOrderStatus gjbcAllOrderStatus) {
         StringBuilder errorMsg = new StringBuilder();
         //支付单推送
+        log.info("支付单推送start");
+        log.info("订单支付单状态：" + gjbcAllOrderStatus.isPayOrderSyncStatus());
         if (!gjbcAllOrderStatus.isPayOrderSyncStatus()) {
             EventResult PayResult = null;
             OrderEnum.PaymentOptions enumTypeOptions = EnumHelper.getEnumType(OrderEnum.PaymentOptions.class, order.getPayType());
@@ -179,7 +181,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             }
             log.info("pay push end====>" + PayResult.getResultMsg());
         }
-
+        log.info("支付单推送end");
 
         //平台推送
         if (!gjbcAllOrderStatus.isOrderSyncStatus()) {
@@ -315,7 +317,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
             gjbcOrderInfo.setOrder_goods(goodsItemsInfos);
             String gjbcOrderInfosJson = JSON.toJSONString(gjbcOrderInfo);
 
-            requestMap = getSysRequestData(gjbcSysData,"order");
+            requestMap = getSysRequestData(gjbcSysData, "order");
             String encode = Base64.encodeBase64String(gjbcOrderInfosJson.getBytes("utf-8"));
 
             requestMap.put("order", Base64.encodeBase64String(encode.getBytes("utf-8")));
