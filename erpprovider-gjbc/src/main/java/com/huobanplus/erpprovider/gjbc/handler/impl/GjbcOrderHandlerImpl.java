@@ -342,6 +342,9 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
     @Override
     public EventResult PushOrderAliPay(Order order, GjbcSysData gjbcSysData) {
         try {
+            log.info(JSON.toJSONString(gjbcSysData));
+            log.info("orderNo:" + order.getOrderId());
+
             Map<String, Object> requestMap = new TreeMap<>();
             requestMap.put("service", "alipay.acquire.customs");
             requestMap.put("_input_charset", "utf-8");

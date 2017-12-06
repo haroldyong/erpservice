@@ -26,6 +26,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +55,7 @@ public class GjbcSynInventory {
     /**
      * 对库存进行一次性同步
      */
-    @Scheduled(cron = "0 */30 * * * ?")
+    @Scheduled(cron = "0 */35 * * * ?")
     @Transactional
     public void SynInventoryFromDB() {
         Date now = new Date();
@@ -105,32 +106,26 @@ public class GjbcSynInventory {
                         if (skus != null && skus.size() > 0) {
                             totalCount = skus.size();
 
-                            String[] barcodes = new String[totalCount];
-                            int n = 0;
+                            List<String> listBarcode = new ArrayList<>();
                             for (SkusInfo skusInfo : skus) {
-                                barcodes[n] = skusInfo.getBn();
-                                n = n + 1;
+                                listBarcode.add(skusInfo.getBn());
                             }
-                            GjbcInventorySearch gjbcInventorySearch = new GjbcInventorySearch();
-                            gjbcInventorySearch.setGood_barcode(barcodes);
-                            EventResult nextEventResult = productHandler.getProductInventoryInfo(sysData, gjbcInventorySearch);
-
-                            if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                List<GjbcInventorySearchListResponse> gjbcInventorySearchListResponses = (List<GjbcInventorySearchListResponse>) nextEventResult.getData();
 
 
-                                List<ProInventoryInfo> nextResult = toProInventoryInfo(gjbcInventorySearchListResponses);
-                                syncInventoryEvent.setInventoryInfoList(nextResult);
+                            int pageSize = 20;
+                            int pageCount = totalCount % pageSize == 0 ? totalCount / pageSize : totalCount / pageSize + 1;
 
-                                EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
-
-                                if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-                                    failedList.addAll((List<ProInventoryInfo>) nextSyncResult.getData());
+                            List<String> listSubCode;
+                            for (int i = 0; i < pageCount; i++) {
+                                if (i == pageCount - 1) {
+                                    listSubCode = listBarcode.subList(pageSize * i, totalCount);
                                 } else {
-                                    log.info("库存同步失败--" + nextEventResult.getResultMsg());
-                                    return;
+                                    listSubCode = listBarcode.subList(pageSize * i, pageSize * (i + 1));
                                 }
+
+                                synPage(sysData, failedList, syncInventoryEvent, erpUserHandler, listSubCode.toArray(new String[listSubCode.size()]));
                             }
+
                         }
                     }
                 } else {
@@ -157,6 +152,32 @@ public class GjbcSynInventory {
             log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "库存同步发生错误--" + e.getMessage());
         }
 
+    }
+
+    private boolean synPage(GjbcSysData sysData, List<ProInventoryInfo> failedList, SyncInventoryEvent syncInventoryEvent
+            , ERPUserHandler erpUserHandler, String[] barcodes) throws UnsupportedEncodingException {
+
+        GjbcInventorySearch gjbcInventorySearch = new GjbcInventorySearch();
+        gjbcInventorySearch.setGood_barcode(barcodes);
+        EventResult nextEventResult = productHandler.getProductInventoryInfo(sysData, gjbcInventorySearch);
+
+        if (nextEventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            List<GjbcInventorySearchListResponse> gjbcInventorySearchListResponses = (List<GjbcInventorySearchListResponse>) nextEventResult.getData();
+
+
+            List<ProInventoryInfo> nextResult = toProInventoryInfo(gjbcInventorySearchListResponses);
+            syncInventoryEvent.setInventoryInfoList(nextResult);
+
+            EventResult nextSyncResult = erpUserHandler.handleEvent(syncInventoryEvent);
+
+            if (nextSyncResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+                failedList.addAll((List<ProInventoryInfo>) nextSyncResult.getData());
+            } else {
+                log.info("库存同步失败--" + nextEventResult.getResultMsg());
+                return true;
+            }
+        }
+        return false;
     }
 
 }

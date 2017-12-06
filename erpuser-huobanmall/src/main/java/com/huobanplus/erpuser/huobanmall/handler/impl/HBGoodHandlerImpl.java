@@ -46,22 +46,30 @@ public class HBGoodHandlerImpl implements HBGoodHandler {
         Map<String, Object> signMap = new TreeMap<>();
         signMap.put("inventoryInfoListJson", JSON.toJSONString(proInventoryInfoList));
         signMap.put("customerId", erpUserInfo.getCustomerId());
+        signMap.put("userType",erpUserInfo.getErpUserType());
+
         log.info("enter syncProInventory ");
+//        log.info(JSON.toJSONString(proInventoryInfoList));
         try {
             String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
             signMap.put("sign", sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpGood/BatchSyncInventory", signMap);
+            log.info(httpResult.getHttpStatus());
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                log.info("syncProInventory ok");
+                log.info(httpResult.getHttpContent());
                 ApiResult<List<ProInventoryInfo>> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<List<ProInventoryInfo>>>() {
                 });
+//                log.info("syncProInventory next");
+
                 if (apiResult.getCode() == 200) {
+                    log.info("syncProInventory ok");
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }
 
+                log.info(apiResult.getMsg());
                 return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
             }
-            log.info("syncProInventory error");
+//            log.info("syncProInventory error");
             return EventResult.resultWith(EventResultEnum.SYSTEM_BAD_REQUEST, httpResult.getHttpContent(), null);
         } catch (IOException e) {
             log.info(e);
