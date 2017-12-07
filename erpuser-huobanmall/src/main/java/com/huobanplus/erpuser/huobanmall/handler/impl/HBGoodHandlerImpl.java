@@ -56,17 +56,17 @@ public class HBGoodHandlerImpl implements HBGoodHandler {
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpGood/BatchSyncInventory", signMap);
             log.info(httpResult.getHttpStatus());
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                log.info(httpResult.getHttpContent());
+//                log.info(httpResult.getHttpContent());
                 ApiResult<List<ProInventoryInfo>> apiResult = JSON.parseObject(httpResult.getHttpContent(), new TypeReference<ApiResult<List<ProInventoryInfo>>>() {
                 });
 //                log.info("syncProInventory next");
 
                 if (apiResult.getCode() == 200) {
-                    log.info("syncProInventory ok");
+//                    log.info("syncProInventory ok");
                     return EventResult.resultWith(EventResultEnum.SUCCESS, apiResult.getData());
                 }
 
-                log.info(apiResult.getMsg());
+//                log.info(apiResult.getMsg());
                 return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
             }
 //            log.info("syncProInventory error");
