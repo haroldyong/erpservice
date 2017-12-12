@@ -18,7 +18,7 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
     <!--example com.huobanplus.erpprovider.edb-->
     <!--erp-provider-->
-    <!--<context:component-scan base-package="com.huobanplus.erpprovider.edb"/>-->
+    <context:component-scan base-package="com.huobanplus.erpprovider.edb"/>
     <context:component-scan base-package="com.huobanplus.erpprovider.netshop"/>
     <context:component-scan base-package="com.huobanplus.erpprovider.sap"/>
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.iscs"/>-->
