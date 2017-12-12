@@ -64,7 +64,7 @@ public class TestGjbcBase {
 
         mockGjbcSysData = new GjbcSysData();
         mockGjbcSysData.setName("huoju");
-        mockGjbcSysData.setKey("a6f0d5db57cc55a5c22c175844665e60");//b802c3cd7549da0c05a15cc9aaebfb1c（正式key）
+        mockGjbcSysData.setKey("b802c3cd7549da0c05a15cc9aaebfb1c");//a6f0d5db57cc55a5c22c175844665e60（正式key）
 
         mockGjbcSysData.setECommerceName("扬州市新扬达进出口有限公司");
         mockGjbcSysData.setECommerceCode("3210932722");

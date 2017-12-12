@@ -62,6 +62,7 @@ public class GjbbcSynInventory {
         log.info("gjbbc inventory sync start");
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.GJBBC);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
+//            log.info(detailConfig.getCustomerId());
             doSync(detailConfig, now);
         }
         log.info("gjbbc inventory sync end");

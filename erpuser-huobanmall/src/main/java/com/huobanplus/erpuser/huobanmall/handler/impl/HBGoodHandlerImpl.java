@@ -46,13 +46,16 @@ public class HBGoodHandlerImpl implements HBGoodHandler {
         Map<String, Object> signMap = new TreeMap<>();
         signMap.put("inventoryInfoListJson", JSON.toJSONString(proInventoryInfoList));
         signMap.put("customerId", erpUserInfo.getCustomerId());
-        signMap.put("userType",erpUserInfo.getErpUserType());
+        signMap.put("userType",erpUserInfo.getErpUserType().getCode());
 
         log.info("enter syncProInventory ");
-//        log.info(JSON.toJSONString(proInventoryInfoList));
+//        log.info(JSON.toJSONString(signMap));
         try {
             String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
             signMap.put("sign", sign);
+
+//            log.info(HBConstant.REQUEST_URL + "/ErpGood/BatchSyncInventory");
+
             HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpGood/BatchSyncInventory", signMap);
             log.info(httpResult.getHttpStatus());
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
