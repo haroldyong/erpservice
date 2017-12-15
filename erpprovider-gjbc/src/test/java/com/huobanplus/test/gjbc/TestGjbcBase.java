@@ -11,6 +11,7 @@ package com.huobanplus.test.gjbc;
 
 import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
+import com.huobanplus.erpprovider.gjbc.util.GjbcConstant;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.common.util.StringUtil;
@@ -63,12 +64,13 @@ public class TestGjbcBase {
 
         mockGjbcSysData = new GjbcSysData();
         mockGjbcSysData.setName("huoju");
-        mockGjbcSysData.setKey("b802c3cd7549da0c05a15cc9aaebfb1c");
-        mockGjbcSysData.setECommerceName("杭州伙聚网络技术有限公司");
-        mockGjbcSysData.setECommerceCode("3301964K02");
+        mockGjbcSysData.setKey("b802c3cd7549da0c05a15cc9aaebfb1c");//a6f0d5db57cc55a5c22c175844665e60（正式key）
+
+        mockGjbcSysData.setECommerceName("扬州市新扬达进出口有限公司");
+        mockGjbcSysData.setECommerceCode("3210932722");
         mockGjbcSysData.setAliPartner("2088421965473023");
         mockGjbcSysData.setAliKey("k48u3xqezrpwhpuv8al265p515uhclr5");
-        mockGjbcSysData.setRequestUrl("http://oms.goldjet.com.cn/api/index.php?act=order_bc&op=order");
+        mockGjbcSysData.setRequestUrl(GjbcConstant.TEST_REQUEST_URL);
 
 
         mockGjbcSysData.setWeixinKey("192006250b4c09247ec02edce69f6a2d");
@@ -127,7 +129,7 @@ public class TestGjbcBase {
         mockOrder.setOrderName("跨境商品(蓝色,42码)(10)(×10)");
         mockOrder.setItemNum(12);
         mockOrder.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
-        mockOrder.setShipName("Riven");
+        mockOrder.setShipName("万木庄");
         mockOrder.setShipArea("浙江省/杭州市/滨江区");
         mockOrder.setProvince("浙江省");
         mockOrder.setCity("杭州市");
@@ -146,7 +148,7 @@ public class TestGjbcBase {
         mockOrder.setPaymentName("微信");
         mockOrder.setPayType(OrderEnum.PaymentOptions.WEIXINPAY_V3.getCode());//微信支付V3
 
-        mockOrder.setBuyerName("Riven");
+        mockOrder.setBuyerName("万木庄");
         mockOrder.setBuyerPid("362322199411050053");
         mockOrder.setPayTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
 

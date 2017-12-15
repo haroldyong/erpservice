@@ -37,4 +37,11 @@ public interface HBGoodHandler {
      * @return
      */
     EventResult obtainProductListInfo(ProductSearchInfo productSearchInfos, ERPUserInfo erpUserInfo);
+
+    /**
+     * 获得平台所有货品列表
+     * @param erpUserInfo
+     * @return
+     */
+    EventResult obtainAllProductList(ERPUserInfo erpUserInfo);
 }

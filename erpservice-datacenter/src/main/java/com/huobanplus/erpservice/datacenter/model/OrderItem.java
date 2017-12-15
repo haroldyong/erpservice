@@ -106,4 +106,8 @@ public class OrderItem extends BaseInfo {
      * 包装信息
      */
     private String packageInfo;
+    /**
+     * 添加参数
+     */
+    private String foreignBn;
 }
