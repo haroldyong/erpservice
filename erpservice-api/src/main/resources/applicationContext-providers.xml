@@ -20,20 +20,20 @@
     <!--erp-provider-->
     <context:component-scan base-package="com.huobanplus.erpprovider.edb"/>
     <context:component-scan base-package="com.huobanplus.erpprovider.netshop"/>
-    <!--<context:component-scan base-package="com.huobanplus.erpprovider.sap"/>-->
+    <context:component-scan base-package="com.huobanplus.erpprovider.sap"/>
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.iscs"/>-->
     <!-- <context:component-scan base-package="com.huobanplus.erpprovider.lgj"/>-->
-    <!--<context:component-scan base-package="com.huobanplus.erpprovider.gy"/>-->
+    <context:component-scan base-package="com.huobanplus.erpprovider.gy"/>
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.kaola"/>-->
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.kjyg"/>-->
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.dtw"/>-->
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.sursung"/>-->
-    <!--<context:component-scan base-package="com.huobanplus.erpprovider.wangdian"/>-->
+    <context:component-scan base-package="com.huobanplus.erpprovider.wangdian"/>
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.baison"/>-->
-    <!--<context:component-scan base-package="com.huobanplus.erpprovider.wangdianv2"/>-->
+    <context:component-scan base-package="com.huobanplus.erpprovider.wangdianv2"/>
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.pineapple"/>-->
-    <!--<context:component-scan base-package="com.huobanplus.erpprovider.gjbc"/>-->
-    <!--<context:component-scan base-package="com.huobanplus.erpprovider.gjbbc"/>-->
+    <context:component-scan base-package="com.huobanplus.erpprovider.gjbc"/>
+    <context:component-scan base-package="com.huobanplus.erpprovider.gjbbc"/>
 
     <!--erp-user-->
     <context:component-scan base-package="com.huobanplus.erpuser.huobanmall"/>

@@ -200,4 +200,8 @@ public class Order extends BaseInfo {
      * 订单净重 单位g
      */
     private double suttleWeight;
+    /**
+     * 积分抵用的金额
+     */
+    private double integralAmount;
 }

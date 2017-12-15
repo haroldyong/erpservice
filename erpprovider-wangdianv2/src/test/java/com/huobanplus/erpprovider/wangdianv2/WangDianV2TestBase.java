@@ -81,6 +81,14 @@ public class WangDianV2TestBase {
 //        mockWangDianV2SysData.setShopName("API公共测试");
         mockWangDianV2SysData.setWarehouseNo("HZ161203");
 
+
+        mockWangDianV2SysData.setWangdianv2Sid("beiying2");
+        mockWangDianV2SysData.setAppKey("beiying2-gw2");
+        mockWangDianV2SysData.setAppSecret("87ba29f60ff735308df46f9672852d32");
+        mockWangDianV2SysData.setRequestUrl("http://api.wangdian.cn");
+        mockWangDianV2SysData.setWarehouseNo("HZ170901");
+        mockWangDianV2SysData.setShopNo("HZ170901");
+
         // TODO: 2016-11-07
 
         String orderNo = SerialNo.create();

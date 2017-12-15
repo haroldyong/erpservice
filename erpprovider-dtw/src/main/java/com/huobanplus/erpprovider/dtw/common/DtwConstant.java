@@ -22,9 +22,9 @@ public class DtwConstant {
 
     public static final String WEIXIN_PAY_CUSTOM_CODE = "ZF14120401";
 
-    public static final String ALI_PAY_CUSTOM_CODE = "ZF14021901";
+    public static final String ALI_PAY_CUSTOM_CODE = "312226T001";
 
-    public static final String ALI_PAY_CUSTOM_COMPANY = "杭州支付宝有限公司";
+    public static final String ALI_PAY_CUSTOM_COMPANY = "支付宝（中国）网络技术有限公司";
 
     public static final String CUSTOM_WEBSERVICE_URL = "http://122.224.230.4:18003/newyorkWS/ws/ReceiveEncryptDeclare?wsdl";
 

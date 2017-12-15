@@ -100,7 +100,8 @@ public class SAPOrderHandlerImpl implements SAPOrderHandler {
         sapSaleOrderInfo.setShipAddr(orderInfo.getShipAddr());
         sapSaleOrderInfo.setPmtAmount(orderInfo.getPmtAmount());
         sapSaleOrderInfo.setCostItem(orderInfo.getCostItem());
-        sapSaleOrderInfo.setFinalAmount(orderInfo.getFinalAmount());
+//        sapSaleOrderInfo.setFinalAmount(orderInfo.getFinalAmount());
+        sapSaleOrderInfo.setFinalAmount(orderInfo.getFinalAmount() - orderInfo.getIntegralAmount());
         //sapSaleOrderInfo.setGoodsInfo("产品组");
 //        sapSaleOrderInfo.setMaterialCode("物料编码");
 //        sapSaleOrderInfo.setOrderNum(orderInfo.getItemNum());
