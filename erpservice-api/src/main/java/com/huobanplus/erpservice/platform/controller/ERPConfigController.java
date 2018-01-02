@@ -20,9 +20,12 @@ import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPDetailConfigEntity;
 import com.huobanplus.erpservice.datacenter.entity.ERPSysDataInfo;
+import com.huobanplus.erpservice.datacenter.model.AlipayOrder;
 import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPSysDataInfoService;
+import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpservice.service.AlipayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,6 +52,8 @@ public class ERPConfigController {
     private ERPDetailConfigService detailConfigService;
     @Autowired
     private ERPSysDataInfoService sysDataInfoService;
+    @Autowired
+    private AlipayService alipayService;
 
     @RequestMapping("/erpConfig")
     public String erpConfig(
@@ -190,5 +195,16 @@ public class ERPConfigController {
         }
         request.getSession().setAttribute("resultCode", result);
         return "redirect:erpConfig?erpUserType=" + erpUserType;
+    }
+
+    @RequestMapping("/alipayOrder")
+    public String alipayOrder() {
+        return "push_alipay_order";
+    }
+
+    @RequestMapping("/pushAlipayOrder")
+    @ResponseBody
+    public EventResult alipayPush(AlipayOrder order) {
+        return alipayService.PushOrderAliPay(order);
     }
 }

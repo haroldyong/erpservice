@@ -67,7 +67,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authorizeInterceptor).addPathPatterns("/**/hotApi/rest/**");
         registry.addInterceptor(userAuthorizeInterceptor).addPathPatterns("/**/hotProxy/**");
-        registry.addInterceptor(platformInterceptor).addPathPatterns("/**/erpService/platform/**");
+        registry.addInterceptor(platformInterceptor).addPathPatterns("/**/erpService/platform/**").excludePathPatterns("/**/erpService/platform/alipayOrder","/**/erpService/platform/pushAlipayOrder");
         registry.addInterceptor(sandboxInterceptor).addPathPatterns("/**/erpService/sandbox/rest/**");
     }
 

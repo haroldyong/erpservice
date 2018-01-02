@@ -15,6 +15,7 @@ import com.huobanplus.erpservice.commons.config.WebConfig;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.datacenter.entity.ERPBaseConfigEntity;
 import com.huobanplus.erpservice.datacenter.service.ERPBaseConfigService;
+import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import org.junit.Assert;
 import org.junit.Before;
@@ -84,5 +85,19 @@ public class ERPConfigControllerTest extends SpringWebTest {
     @Test
     public void testSaveConfig() throws Exception {
 
+    }
+
+    @Test
+    public void testAlipayPush() throws Exception {
+        mockMvc.perform(post("/erpService/platform/pushAlipayOrder")
+                .param("orderId", "20161215608041164709")
+                .param("onlinePayAmount", "0.040")
+                .param("aliPartner", "2088421965473023")
+                .param("eCommerceCode", "3210932722")
+                .param("aliKey", "k48u3xqezrpwhpuv8al265p515uhclr5")
+                .param("eCommerceName", "扬州市新扬达进出口有限公司")
+                .param("payNumber", "2016121521001004570220367991"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value(EventResultEnum.SUCCESS.getResultCode()));
     }
 }

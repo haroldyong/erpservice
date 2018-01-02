@@ -20,4 +20,6 @@ public class HotApiConstant {
 
     public static final String SYNC_INVENTORY = "hbpSyncInventory";
     public static final String OBTAIN_GOOD_LIST = "hbpGoodList";
+    public static final String ALI_PAY_URL = "https://mapi.alipay.com/gateway.do";
+    public static final String customer_value = "ZONGSHU";
 }
