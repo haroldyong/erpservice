@@ -278,7 +278,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
                 gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getProductBn());
                 gjbcGoodsItemsInfo.setGoods_unit(GjbcEnum.UnitEnum.KG.getCode());
                 gjbcGoodsItemsInfo.setGoods_size(GjbcEnum.UnitEnum.JIAN.getCode());
-                gjbcGoodsItemsInfo.setGoods_hg_num(orderItems.get(i).getNum());
+                gjbcGoodsItemsInfo.setGoods_hg_num(orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight()/1000);
                 gjbcGoodsItemsInfo.setGoods_gweight(orderItems.get(i).getSuttleWeight() / 1000);
                 gjbcGoodsItemsInfo.setGoods_name(orderItems.get(i).getName());
                 gjbcGoodsItemsInfo.setBrand(orderItems.get(i).getBrand());
@@ -293,19 +293,19 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
                 /* 商品HS编码 */
                 gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn().substring(3));
                 gjbcGoodsItemsInfo.setCurr(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));
-                gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum());
+                gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight()/1000);
                 if (!StringUtils.isEmpty(orderItems.get(i).getPackageInfo())) {
                     gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum() * Integer.valueOf(orderItems.get(i).getPackageInfo()));
                 }
                 BigDecimal bigGoodsTotal = new BigDecimal(orderItems.get(i).getPrice() * orderItems.get(i).getNum());
                 finalAmout += bigGoodsTotal.doubleValue();
                 gjbcGoodsItemsInfo.setGoods_total(bigGoodsTotal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-            /*商品平台货号*/
+                /*商品平台货号*/
                 gjbcGoodsItemsInfo.setGoods_commonid(orderItems.get(i).getProductId());
-            /* 毛重*/
+                /* 毛重*/
                 log.info("毛重====>" + orderItems.get(i).getWeight());
                 totalWight += orderItems.get(i).getNum() * orderItems.get(i).getWeight();
-           /* 净重*/
+                /* 净重*/
                 totalSuttleWeight += orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight();
                 goodsItemsInfos[i] = gjbcGoodsItemsInfo;
             }

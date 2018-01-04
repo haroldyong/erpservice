@@ -33,13 +33,13 @@ public class GjbcGoodsItemsInfo {
     @JSONField(name = "goods_size")
     private String goods_size;
     /**
-     * 商品发定计量单位
+     * 商品法定计量单位
      * BC，是必填，否则可空
      */
     @JSONField(name = "goods_unit")
     private String goods_unit;
     /**
-     * 商品发定计量单位下的商品数量
+     * 商品法定计量单位下的商品数量
      * BC，是必填，否则可空
      */
     @JSONField(name = "goods_hg_num")
