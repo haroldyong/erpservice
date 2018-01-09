@@ -277,8 +277,8 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
                 /* 商品条形码  */
                 gjbcGoodsItemsInfo.setGoods_barcode(orderItems.get(i).getProductBn());
                 gjbcGoodsItemsInfo.setGoods_unit(GjbcEnum.UnitEnum.KG.getCode());
-                gjbcGoodsItemsInfo.setGoods_size(GjbcEnum.UnitEnum.JIAN.getCode());
-                gjbcGoodsItemsInfo.setGoods_hg_num(orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight()/1000);
+                gjbcGoodsItemsInfo.setGoods_size(GjbcEnum.UnitEnum.HE.getCode());
+                gjbcGoodsItemsInfo.setGoods_hg_num(orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight() / 1000);
                 gjbcGoodsItemsInfo.setGoods_gweight(orderItems.get(i).getSuttleWeight() / 1000);
                 gjbcGoodsItemsInfo.setGoods_name(orderItems.get(i).getName());
                 gjbcGoodsItemsInfo.setBrand(orderItems.get(i).getBrand());
@@ -293,7 +293,7 @@ public class GjbcOrderHandlerImpl extends BaseHandler implements GjbcOrderHandle
                 /* 商品HS编码 */
                 gjbcGoodsItemsInfo.setHs_code(orderItems.get(i).getGoodBn().substring(3));
                 gjbcGoodsItemsInfo.setCurr(String.valueOf(GjbcEnum.CurrencyEnum.CNY.getCode()));
-                gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight()/1000);
+                gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum() * orderItems.get(i).getSuttleWeight() / 1000);
                 if (!StringUtils.isEmpty(orderItems.get(i).getPackageInfo())) {
                     gjbcGoodsItemsInfo.setGoods_hg_num2(orderItems.get(i).getNum() * Integer.valueOf(orderItems.get(i).getPackageInfo()));
                 }
