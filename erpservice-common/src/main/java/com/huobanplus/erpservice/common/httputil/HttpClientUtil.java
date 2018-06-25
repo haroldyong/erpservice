@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.common.httputil;
 
+import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -87,6 +88,7 @@ public class HttpClientUtil {
             }
 
         } catch (IOException e) {
+//            log.error(url + JSON.toJSONString(requestMap), e);
             return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 

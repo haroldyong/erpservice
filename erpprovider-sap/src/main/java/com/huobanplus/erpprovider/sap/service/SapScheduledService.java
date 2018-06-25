@@ -44,7 +44,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -83,11 +87,13 @@ public class SapScheduledService {
         List<ERPDetailConfigEntity> detailConfigs = detailConfigService.findByErpTypeAndDefault(ERPTypeEnum.ProviderType.SAP);
         for (ERPDetailConfigEntity detailConfig : detailConfigs) {
             if (detailConfig.getErpBaseConfig().getIsSyncDelivery() == 1) {
-                log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync order ship");
+                log.info(detailConfig.getErpUserType().getName() + detailConfig.getCustomerId() + "start to sync SAP syncOrderShip");
                 try {
                     SAPSysData sysData = JSON.parseObject(detailConfig.getErpSysData(), SAPSysData.class);
                     ERPInfo erpInfo = new ERPInfo(detailConfig.getErpType(), detailConfig.getErpSysData());
                     ERPUserInfo erpUserInfo = new ERPUserInfo(detailConfig.getErpUserType(), detailConfig.getCustomerId());
+                   // log.info(JSON.toJSONString(sysData));
+                    //log.info(JSON.toJSONString(erpUserInfo));
 
                     List<LogiInfo> results = new ArrayList<>();
                     //获取订单信息]
@@ -98,24 +104,30 @@ public class SapScheduledService {
                         log.error("SAP中没有ZWS_DATA_IMPORT方法");
                         return;
                     }
+                    log.info("start execute SAP call");
                     jCoFunction.execute(jCoDestination);
+                    log.info("end execute SAP call");
 
                     JCoTable jCoTable = jCoFunction.getTableParameterList().getTable("ZTABLE");
 
                     for (int i = 0; i < jCoTable.getNumRows(); i++) {
                         LogiInfo logiInfo = new LogiInfo();
+
                         jCoTable.setRow(i);
-                        logiInfo.setZVBELN(jCoTable.getString("ZVBELN"));
-                        logiInfo.setYVBELN(jCoTable.getString("YVBELN"));
-                        logiInfo.setZOrder(jCoTable.getString("ZORDER"));
-                        logiInfo.setZType(jCoTable.getString("ZTYPE"));
-                        logiInfo.setZWMOrder(jCoTable.getString("ZWMORDER"));
-                        logiInfo.setZWMLogiName("圆通");
-                        results.add(logiInfo);
+                        String orderNo = jCoTable.getString("ZORDER");
+                        if (checkOrderNo(orderNo)) {
+                            logiInfo.setZVBELN(jCoTable.getString("ZVBELN"));
+                            logiInfo.setYVBELN(jCoTable.getString("YVBELN"));
+                            logiInfo.setZOrder(jCoTable.getString("ZORDER"));
+                            logiInfo.setZType(jCoTable.getString("ZTYPE"));
+                            logiInfo.setZWMOrder(jCoTable.getString("ZWMORDER"));
+                            logiInfo.setZWMLogiName("圆通");
+                            results.add(logiInfo);
+                        }
                     }
                     //     String resultMsg = jCoFunction.getExportParameterList().getString("MESS");
 
-                    log.info("本次获取" + results.size() + "条订单数据");
+                    log.info("SAP syncOrderShip  本次获取" + results.size() + "条订单数据");
 
                     //推送物流信息
                     if (results.size() > 0) {
@@ -146,13 +158,22 @@ public class SapScheduledService {
                         //回写已经取过并且物流信息同步成功的订单
                         JCoTable ztable = jCoFunctionIn.getTableParameterList().getTable("ZTABLE");
                         for (OrderDeliveryInfo successOrder : successOrders) {
-                            LogiInfo info = results.stream().filter(p -> p.getZOrder().equals(successOrder.getOrderId())).findFirst().get();
-                            ztable.appendRow();
-                            ztable.setValue("ZVBELN", info.getZVBELN());
-                            ztable.setValue("YVBELN", info.getYVBELN());
-                            ztable.setValue("ZORDER", info.getZOrder());
-                            ztable.setValue("ZTYPE", "X");
-                            ztable.setValue("ZWMORDER", info.getZWMOrder());
+                            LogiInfo info = null;
+                            for (LogiInfo logiInfo : results) {
+                                if (logiInfo.getZOrder().equals(successOrder.getOrderId())) {
+                                    info = logiInfo;
+                                    break;
+                                }
+                            }
+
+                            if (info != null) {
+                                ztable.appendRow();
+                                ztable.setValue("ZVBELN", info.getZVBELN());
+                                ztable.setValue("YVBELN", info.getYVBELN());
+                                ztable.setValue("ZORDER", info.getZOrder());
+                                ztable.setValue("ZTYPE", "X");
+                                ztable.setValue("ZWMORDER", info.getZWMOrder());
+                            }
                         }
                         jCoFunctionIn.execute(jCoDestination);
                         jCoFunctionIn.getExportParameterList().getString("MESS");
@@ -208,6 +229,8 @@ public class SapScheduledService {
             } else {
                 log.info("sap customer " + detailConfig.getCustomerId() + " not open sync delivery");
             }
+
+            log.info(detailConfig.getCustomerId() + " SAP syncOrderShip end");
         }
         log.info("sap ship sync end");
     }
@@ -221,6 +244,28 @@ public class SapScheduledService {
             deliveryInfo.setLogiCode("yuantong");
             orderDeliveryInfoList.add(deliveryInfo);
         }
+    }
+
+    /**
+     * 3个月之内的有效
+     *
+     * @param orderNo
+     * @return
+     */
+    private boolean checkOrderNo(String orderNo) {
+        if (!StringUtils.isEmpty(orderNo) && orderNo.startsWith("20") && orderNo.length() > 8) {
+            if (convert(orderNo.substring(0, 8)).isAfter(LocalDateTime.now().plusMonths(-1)) &&
+                    convert(orderNo.substring(0, 8)).isBefore(LocalDateTime.now())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public LocalDateTime convert(String date) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate localDate = LocalDate.parse(date, dateTimeFormatter);
+        return localDate.atStartOfDay();
     }
 
     /**

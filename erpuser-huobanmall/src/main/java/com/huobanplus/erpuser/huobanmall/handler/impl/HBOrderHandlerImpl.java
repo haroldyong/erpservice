@@ -219,6 +219,7 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
             }
             return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
         } catch (Exception e) {
+//            log.error(JSON.toJSONString(orderDeliveryInfoList), e);
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }

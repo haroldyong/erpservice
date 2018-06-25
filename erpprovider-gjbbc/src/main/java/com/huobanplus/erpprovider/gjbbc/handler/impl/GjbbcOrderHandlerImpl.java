@@ -254,6 +254,8 @@ public class GjbbcOrderHandlerImpl extends BaseHandler implements GjbbcOrderHand
     public EventResult pushPlatformOrder(Order order, GjbbcSysData gjbbcSysData) {
         try {
             log.info("push platform order start");
+            log.info(JSON.toJSONString(gjbbcSysData));
+            log.info(JSON.toJSONString(order));
             Map<String, Object> requestMap = new TreeMap<>();
             GjbbcOrderInfo gjbbcOrderInfo = new GjbbcOrderInfo();
             gjbbcOrderInfo.setOrderSn(order.getOrderId());
@@ -299,7 +301,7 @@ public class GjbbcOrderHandlerImpl extends BaseHandler implements GjbbcOrderHand
             String gjbbcOrderJson = JSON.toJSONString(gjbbcOrderInfo);
             System.out.println(gjbbcOrderJson);
             String encode = Base64.encodeBase64String(gjbbcOrderJson.getBytes("utf-8"));
-            requestMap = getSysRequestData(gjbbcSysData,"add_orders");
+            requestMap = getSysRequestData(gjbbcSysData, "add_orders");
             requestMap.put("order", encode);
             log.info("gjbbc requestUrl====>" + gjbbcSysData.getRequestUrl());
             HttpResult httpResult = HttpClientUtil.getInstance().post(gjbbcSysData.getRequestUrl(), requestMap);
@@ -313,6 +315,7 @@ public class GjbbcOrderHandlerImpl extends BaseHandler implements GjbbcOrderHand
             }
             return EventResult.resultWith(EventResultEnum.ERROR, "请求服务器错误", null);
         } catch (Exception e) {
+            log.error(e);
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
