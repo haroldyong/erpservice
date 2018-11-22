@@ -45,12 +45,17 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by hxh on 2017-08-15.
@@ -120,6 +125,143 @@ public class GjbbcOrderHandlerImpl extends BaseHandler implements GjbbcOrderHand
             return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
         }
     }
+
+
+
+    /**
+     * 推送到海关 （目前海关和高捷分开推送）
+     * 创建海关的订单文件 xml格式
+     *
+     * @param order
+     * @param gjbcSysData
+     * @return
+     */
+    private EventResult PushOrderToCustomHouse(Order order, GjbbcSysData  gjbcSysData) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+        log.info("start write house order " + order.getOrderId());
+
+        StringBuilder result = new StringBuilder();
+        result.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<ceb:CEB311Message guid=\"C91A2358-904C-549C-10E1-A0BE12F38D7A\" version=\"1.0\"  xmlns:ceb=\"http://www.chinaport.gov.cn/ceb\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
+
+        result.append("<ceb:Order>");
+
+        result.append("<ceb:OrderHead>");
+        result.append("<ceb:guid>78811C98-EF68-221A-178C-1F91870AEED8</ceb:guid>");
+        result.append("<ceb:appType>2</ceb:appType>");
+        result.append("<ceb:appTime>" + LocalDateTime.now().format(dateTimeFormatter) + "</ceb:appTime>");
+        result.append("<ceb:appStatus>2</ceb:appStatus>");
+        result.append("<ceb:orderType>I</ceb:orderType>");
+        result.append("<ceb:orderNo>" + order.getOrderId() + "</ceb:orderNo>");
+        result.append("<ceb:ebpCode>" + gjbcSysData.getECommerceCode() + "</ceb:ebpCode>");
+        result.append("<ceb:ebpName>" + gjbcSysData.getECommerceName() + "</ceb:ebpName>");
+        result.append("<ceb:ebcCode>" + gjbcSysData.getECommerceCode() + "</ceb:ebcCode>");
+        result.append("<ceb:ebcName>" + gjbcSysData.getECommerceName() + "</ceb:ebcName>");
+        result.append("<ceb:goodsValue>" + order.getCostItem() + "</ceb:goodsValue>");//实际成交价格
+        result.append("<ceb:freight>" + order.getCostFreight() + "</ceb:freight>");//运费
+        result.append("<ceb:discount>" + order.getPmtAmount() + "</ceb:discount>");
+        result.append("<ceb:taxTotal>" + order.getTaxAmount() + "</ceb:taxTotal>");
+        result.append("<ceb:acturalPaid>" + order.getOnlinePayAmount() + "</ceb:acturalPaid>");//总支付金额
+        result.append("<ceb:currency>142</ceb:currency>");
+        result.append("<ceb:buyerRegNo>" + order.getUserLoginName() + "</ceb:buyerRegNo>");
+        result.append("<ceb:buyerName>" + order.getBuyerName() + "</ceb:buyerName>");
+        result.append("<ceb:buyerTelephone>"+order.getShipMobile()+"</ceb:buyerTelephone>");
+        result.append("<ceb:buyerIdType>1</ceb:buyerIdType>");
+        result.append("<ceb:buyerIdNumber>" + order.getBuyerPid() + "</ceb:buyerIdNumber>");
+        result.append("<ceb:consignee>" + order.getBuyerName() + "</ceb:consignee>");
+        result.append("<ceb:consigneeTelephone>" + order.getShipMobile() + "</ceb:consigneeTelephone>");
+        result.append("<ceb:consigneeAddress>" + order.getShipAddr() + "</ceb:consigneeAddress>");
+        result.append("</ceb:OrderHead>");
+
+
+        int n = 1;
+        for (OrderItem item : order.getOrderItems()) {
+            result.append("<ceb:OrderList>");
+            result.append("<ceb:gnum>" + n + "</ceb:gnum>");
+            result.append("<ceb:itemNo>AF001-00"+n+"</ceb:itemNo>");
+            result.append("<ceb:itemName>" + item.getName() + "</ceb:itemName>");
+            result.append("<ceb:gmodel>"+item.getStandard()+"</ceb:gmodel>");
+            result.append("<ceb:itemDescribe>v</ceb:itemDescribe>");
+            result.append("<ceb:barCode>" + item.getProductBn() + "</ceb:barCode>");
+            result.append("<ceb:unit>140</ceb:unit>");
+            result.append("<ceb:qty>" + item.getNum() + "</ceb:qty>");
+            result.append("<ceb:price>" + item.getPrice() + "</ceb:price>");
+            result.append("<ceb:totalPrice>" + item.getAmount() + "</ceb:totalPrice>");
+            result.append("<ceb:currency>142</ceb:currency>");
+            result.append("<ceb:country>" + item.getGoodBn().substring(0, 3) + "</ceb:country>");
+            result.append("</ceb:OrderList>");
+            n++;
+        }
+
+        result.append("</ceb:Order>");
+
+
+        result.append("<ceb:BaseTransfer>");
+        result.append("<ceb:copCode>" + gjbcSysData.getECommerceCode() + "</ceb:copCode>");
+        result.append("<ceb:copName>" + gjbcSysData.getECommerceName() + "</ceb:copName>");
+        result.append("<ceb:dxpMode>DXP</ceb:dxpMode>");
+        result.append("<ceb:dxpId>DXPENT0000015178</ceb:dxpId>");
+        result.append("</ceb:BaseTransfer>");
+
+        result.append("</ceb:CEB311Message>");
+
+
+        String path = "/var/ftp/pub/d/"+ LocalDateTime.now().format(dateTimeFormatter) + UUID.randomUUID().toString() + ".xml";
+        try {
+            write(path, result.toString());
+            log.info("finished write house order " + order.getOrderId());
+            return EventResult.resultWith(EventResultEnum.SUCCESS);
+        } catch (IOException e) {
+            log.error(e);
+            return EventResult.resultWith(EventResultEnum.ERROR);
+        }
+
+
+    }
+
+    public String getSpec(String PName)
+    {
+//        String ProductName = "";
+        String productSpec = "";
+//        if (!StringUtils.isEmpty(PName)) ProductName = PName;
+
+        String expressionHtml = "^((\\d+)\\)$";
+        String expressionSpec = "^(([^\\)]+)\\)$";
+
+        Pattern pattern = Pattern.compile(expressionHtml);
+        Matcher matcher = pattern.matcher(PName);
+        String ProductName_Spec = matcher.replaceAll("");
+
+//        pattern = Pattern.compile(expressionSpec);
+//        matcher = pattern.matcher(ProductName_Spec);
+//        ProductName = matcher.replaceAll("");
+
+
+        pattern = Pattern.compile(expressionSpec);
+        matcher = pattern.matcher(ProductName_Spec);
+        if (matcher.find()) {
+            productSpec = matcher.group(1);
+        }
+
+        return productSpec;
+    }
+
+
+    private void write(String pathName, String text) throws IOException {
+        File file = new File(pathName);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+
+        FileOutputStream fos = new FileOutputStream(pathName);
+        OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+        osw.write(text);
+        osw.flush();
+        osw.close();
+        fos.close();
+    }
+
 
     @Override
     public EventResult PushOrderAliPay(Order order, GjbbcSysData gjbbcSysData) {
@@ -340,6 +482,12 @@ public class GjbbcOrderHandlerImpl extends BaseHandler implements GjbbcOrderHand
                     enumTypeOptions == OrderEnum.PaymentOptions.ALIPAY_CROSS_BORDER
                     ) {
                 PayResult = PushOrderAliPay(order, gjbbcSysData);
+                EventResult PayResult1 = PushOrderToCustomHouse(order, gjbbcSysData);
+                if (PayResult1.getResultCode() != EventResultEnum.SUCCESS.getResultCode()) {
+                    PayResult = PayResult1;
+                }
+
+
             } else if (enumTypeOptions == OrderEnum.PaymentOptions.WEIXINPAY_V3 || enumTypeOptions == OrderEnum.PaymentOptions.WEIXINPAY || enumTypeOptions == OrderEnum.PaymentOptions.WEIXINPAY_APP) {
                 PayResult = PushOrderWeiXin(order, gjbbcSysData);
             } else {

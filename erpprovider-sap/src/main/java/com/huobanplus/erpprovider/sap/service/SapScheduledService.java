@@ -254,7 +254,7 @@ public class SapScheduledService {
      */
     private boolean checkOrderNo(String orderNo) {
         if (!StringUtils.isEmpty(orderNo) && orderNo.startsWith("20") && orderNo.length() > 8) {
-            if (convert(orderNo.substring(0, 8)).isAfter(LocalDateTime.now().plusMonths(-1)) &&
+            if (convert(orderNo.substring(0, 8)).isAfter(LocalDateTime.now().plusMonths(-2)) &&
                     convert(orderNo.substring(0, 8)).isBefore(LocalDateTime.now())) {
                 return true;
             }
