@@ -42,6 +42,7 @@
         <module>erpprovider-pineapple</module>
         <module>erpprovider-gjbc</module>
         <module>erpprovider-gjbbc</module>
+        <module>erpprovider-lz</module>
         <!--<module>erpprovider-efast</module>-->
     </modules>
 

@@ -39,6 +39,7 @@
     <context:component-scan base-package="com.huobanplus.erpuser.huobanmall"/>
     <context:component-scan base-package="com.huobanplus.erpuser.hotsupplier"/>
 
+    <context:component-scan base-package="com.huobanplus.erpprovider.lz"/>
     <task:executor id="executor" pool-size="5"></task:executor>
     <task:scheduler id="scheduler" pool-size="40"></task:scheduler>
 </beans>
