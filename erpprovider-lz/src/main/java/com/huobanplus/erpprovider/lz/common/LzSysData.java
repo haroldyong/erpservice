@@ -80,4 +80,14 @@ public class LzSysData {
      * 是否需要同步库存（1：需要 0：不需要）
      */
     private Integer status;
+
+    private Integer merchantId;
+    /**
+     * WMS服务商分配
+     */
+    private String wmsId;
+    /**
+     * WMS服务商分配
+     */
+    private String storageId;
 }
