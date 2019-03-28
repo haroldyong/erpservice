@@ -63,7 +63,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
                 return EventResult.resultWith(EventResultEnum.ERROR, "数据签名错误", null);
             }
             Map<String, String> headerMap = getCommonHeaderParameter(sysData, sign);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl(), headerMap, jsonStr);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl() + "/wms/declCancel", headerMap, jsonStr);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
                 if ("true".equalsIgnoreCase(jsonObject.getString("success"))) {
@@ -130,7 +130,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
         /**
          * 商户号
          */
-        headerMap.put("merchantid", lzSysData.getMerchantId().toString());
+        headerMap.put("merchantid", lzSysData.getMerchantId());
         /**
          * 签名
          */

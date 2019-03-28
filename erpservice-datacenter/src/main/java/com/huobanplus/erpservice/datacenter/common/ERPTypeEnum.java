@@ -32,7 +32,9 @@ public interface ERPTypeEnum {
         WANGDIANV2(13, "旺店通V2"),
         BLP(14,"菠萝派"),
         GJBC(15, "高捷跨境"),
-        GJBBC(16, "高捷跨境BBC");
+        GJBBC(16, "高捷跨境BBC"),
+        LZ(17, "联众跨境WMS")
+        ;
 
         private int code;
         private String name;
