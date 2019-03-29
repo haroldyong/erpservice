@@ -94,6 +94,63 @@ public class HttpClientUtil {
 
     }
 
+    /**
+     * post请求
+     *
+     * @param url        接口地址
+     * @param headerMap  head参数
+     * @param requestMap 业务参数
+     * @return
+     * @author guomw
+     */
+    public HttpResult post(String url, Map<String, String> headerMap, Map<String, Object> requestMap) {
+        try (CloseableHttpClient httpClient = createHttpClient()) {
+
+            List<NameValuePair> nameValuePairs = new ArrayList<>();
+            HttpPost httpPost = new HttpPost(url);
+            headerMap.forEach(httpPost::addHeader);
+
+            requestMap.forEach((key, value) -> {
+                if (value != null) {
+                    nameValuePairs.add(new BasicNameValuePair(key, String.valueOf(value)));
+                }
+            });
+            HttpEntity httpEntity = new UrlEncodedFormEntity(nameValuePairs, StringUtil.UTF8);
+            httpPost.setEntity(httpEntity);
+            try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                return new HttpResult(response.getStatusLine().getStatusCode(), EntityUtils.toString(response.getEntity()));
+            }
+
+        } catch (IOException e) {
+            return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+
+    }
+
+    /**
+     * post请求
+     *
+     * @param url         接口地址
+     * @param headerMap   head参数
+     * @param requestData 业务参数
+     * @return
+     * @author guomw
+     */
+    public HttpResult post(String url, Map<String, String> headerMap, String requestData) {
+        try (CloseableHttpClient httpClient = createHttpClient()) {
+            StringEntity stringEntity = new StringEntity(requestData, "utf-8");
+            HttpPost httpPost = new HttpPost(url);
+            headerMap.forEach(httpPost::addHeader);
+            httpPost.setEntity(stringEntity);
+            try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                return new HttpResult(response.getStatusLine().getStatusCode(), EntityUtils.toString(response.getEntity()));
+            }
+        } catch (IOException e) {
+            return new HttpResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+
+    }
+
     public HttpResult post(String url, String requestData) {
         try (CloseableHttpClient httpClient = createHttpClient()) {
             StringEntity stringEntity = new StringEntity(requestData, "utf-8");

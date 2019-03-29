@@ -13,10 +13,6 @@ public class LzSysData {
      */
     private String name;
     /**
-     * 验证码
-     */
-    private String key;
-    /**
      * 电商企业编码(电商企业在跨境平台备案编码)
      */
     private String eCommerceCode;
@@ -24,10 +20,11 @@ public class LzSysData {
      * 电商企业名称
      */
     private String eCommerceName;
-//    /**
-//     * 海关接口地址
-//     */
-//    private String customUrl;
+    /**
+     * 微信支付企业名称
+     */
+    private String wxPaymentCompanyName;
+
     /**
      * 微信公众账号ID
      */
@@ -42,6 +39,12 @@ public class LzSysData {
      * 微信秘钥
      */
     private String weixinKey;
+
+    /**
+     * 支付宝支付企业名称
+     */
+    private String aliPaymentCompanyName;
+
     /**
      * 支付宝商户号
      */
@@ -64,20 +67,22 @@ public class LzSysData {
 //     * 海关接口
 //     */
 //    private String aesKey;
-    /**
-     * 仓库代码
-     */
-    private String warehouseCode;
-    /**
-     * 订单网址
-     */
-    private String pWeb;
-    /**
-     * 发货人信息 逗号分隔的字符串;发件人姓名,发件人城市,发件人地址,发件人电话,发件人国别
-     */
-    private String senderInfo;
+
+
     /**
      * 是否需要同步库存（1：需要 0：不需要）
      */
     private Integer status;
+
+    /**
+     * WMS服务商分配
+     */
+    private String wmsId;
+    /**
+     * WMS服务商分配
+     */
+    private String storageId;
+
+
+    private String merchantId;
 }
