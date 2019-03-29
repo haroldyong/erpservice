@@ -11,31 +11,22 @@ import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.ienum.OrderSyncStatus;
 import com.huobanplus.erpservice.datacenter.entity.logs.OrderDetailSyncLog;
 import com.huobanplus.erpprovider.lz.util.RSA;
-import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
-import com.huobanplus.erpservice.common.httputil.HttpResult;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.datacenter.model.OrderRefundStatusInfo;
-import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRefundStatusUpdate;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.apache.commons.codec.binary.Base64;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -47,7 +38,6 @@ import java.util.Map;
 @SuppressWarnings("Duplicates")
 @Component
 public class LzOrderHandlerImpl implements LzOrderHandler {
-    private static final Log log = LogFactory.getLog(LzOrderHandlerImpl.class);
 
     private Log log = LogFactory.getLog(LzOrderHandlerImpl.class);
 
@@ -347,7 +337,9 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
 //            lzOrderInfo.setTransport_order_id();
 //            lzOrderInfo.setLogis_company_id();
 
-            lzOrderInfo.setReceiver_id(RSA(order.getBuyerPid()));
+            PrivateKey privateKey1 = RSA.getPrivateKey(RSA.SIGN_ALGORITHMS);
+            String cardId = RSA.sign(privateKey1, order.getBuyerPid(), "utf-8");
+            lzOrderInfo.setReceiver_id(cardId);
             lzOrderInfo.setReceiver_zip(order.getShipZip());
             lzOrderInfo.setReceiver_province(order.getProvince());
             lzOrderInfo.setReceiver_city(order.getCity());
@@ -363,12 +355,19 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
 
             //支付相关
             LzOrderPayInfo lzOrderPayInfo = new LzOrderPayInfo();
-            lzOrderPayInfo.setPayment_id();
-            //TODO config "支付宝(中国)网络技术有限公司"
-            lzOrderPayInfo.setPayment_company_name();
-            lzOrderPayInfo.setPay_amount();
+            lzOrderPayInfo.setPayment_id(order.getPayNumber());
+            //"支付宝(中国)网络技术有限公司"
+            if (order.getPayType() == 1 || order.getPayType() == 11 || order.getPayType() == 7 || order.getPayType() == 12) {
+                lzOrderPayInfo.setPayment_company_name(lzSysData.getAliPaymentCompanyName());
+            }
+            if (order.getPayType() == 2 || order.getPayType() == 9 || order.getPayType() == 300) {
+                lzOrderPayInfo.setPayment_company_name(lzSysData.getWxPaymentCompanyName());
+            }
+
+            lzOrderPayInfo.setPay_amount(toFen(order.getFinalAmount()).intValue());
             lzOrderPayInfo.setPay_currency_code("142");
-            lzOrderPayInfo.setPlatform_id();
+            lzOrderPayInfo.setPlatform_id(lzSysData.getECommerceCode());
+            lzOrderPayInfo.setPlatform_name(lzSysData.getECommerceName());
             lzOrderInfo.setPay_info(lzOrderPayInfo);
 
             //税费
@@ -377,14 +376,14 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             //推送费用
             LzOrderFeeInfo lzOrderFeeInfo = new LzOrderFeeInfo();
             lzOrderFeeInfo.setTax(String.valueOf(tax));
-            lzOrderFeeInfo.setFreight(String.valueOf(toFen(order.getCostFreight()));
+            lzOrderFeeInfo.setFreight(String.valueOf(toFen(order.getCostFreight())));
             lzOrderFeeInfo.setInsurance("0");
             lzOrderFeeInfo.setDeduction_amount(String.valueOf(toFen(order.getPmtAmount())));
             lzOrderInfo.setFee_info(lzOrderFeeInfo);
 
 //            lzOrderInfo.setInvoice_flags();
 //            lzOrderInfo.setMain_goods_name();
-            lzOrderInfo.setMerchant_id();
+//            lzOrderInfo.setMerchant_id(lzSysData.getMerchantId());
 
 
             //订单金额
@@ -416,28 +415,26 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             lzOrderInfo.setOrder_items(lzOrderItems);
 
 
+            String jsonStr = JSON.toJSONString(lzOrderInfo);
 
-
-            String gjbcOrderInfosJson = JSON.toJSONString(lzOrderInfo);
-//TODO 请求方式
-            Map<String, Object> requestMap = getSysRequestData(lzSysData, "order");
-            String encode = Base64.encodeBase64String(gjbcOrderInfosJson.getBytes("utf-8"));
-
-            requestMap.put("order", Base64.encodeBase64String(encode.getBytes("utf-8")));
-            log.info("gjbc requestUrl====>" + lzSysData.getRequestUrl());
-            HttpResult httpResult = HttpClientUtil.getInstance().post(lzSysData.getRequestUrl(), requestMap);
-            log.info("platform httpResult====>" + httpResult.getHttpContent());
+            PrivateKey privateKey = RSA.getPrivateKey(RSA.SIGN_ALGORITHMS);
+            String sign = RSA.sign(privateKey, jsonStr, "utf-8");
+            if (StringUtils.isBlank(sign)) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "数据签名错误", null);
+            }
+            Map<String, String> headerMap = getCommonHeaderParameter(lzSysData, sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(lzSysData.getRequestUrl() + "/wms/declpush", headerMap, jsonStr);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
-                if ("OK".equals(jsonObject.get("flag"))) {
+                if ("true".equalsIgnoreCase(jsonObject.getString("success"))) {
                     return EventResult.resultWith(EventResultEnum.SUCCESS, jsonObject.getString("info"), null);
                 }
-                return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("info"), null);
+                return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);
             }
-            return EventResult.resultWith(EventResultEnum.ERROR, "请求服务器错误", null);
         } catch (Exception e) {
-            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+            log.error(e);
         }
+        return EventResult.resultWith(EventResultEnum.ERROR, "请求服务器错误", null);
     }
 
     /**

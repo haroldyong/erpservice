@@ -23,15 +23,13 @@ public class LzOrderPayInfo {
     @JSONField(name = "platform_domain")
     private String    platform_domain;
     /**
-     * 电商平台编号
+     * 电商平台编号 海关编号
      */
-    @JsonIgnore
     @JSONField(name = "platform_id")
     private String    platform_id;
     /**
-     * 		电商平台名称
+     * 		电商平台 海关名称
      */
-    @JsonIgnore
     @JSONField(name = "platform_name")
     private String    platform_name;
     /**
@@ -51,9 +49,5 @@ public class LzOrderPayInfo {
     @JSONField(name = "pay_rmb_amount")
     private String     pay_rmb_amount;
 
-    /**
-     * 支付企业海关注册编号
-     */
-    @JSONField(name = "platform_id")
-    private String platform_id;
+
 }
