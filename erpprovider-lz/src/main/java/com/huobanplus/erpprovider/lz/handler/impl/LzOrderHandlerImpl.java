@@ -7,21 +7,18 @@ import com.huobanplus.erpprovider.lz.handler.LzOrderHandler;
 import com.huobanplus.erpprovider.lz.util.RSA;
 import com.huobanplus.erpservice.common.httputil.HttpClientUtil;
 import com.huobanplus.erpservice.common.httputil.HttpResult;
-import com.huobanplus.erpservice.common.util.RequestUtils;
 import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderRefundStatusInfo;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRefundStatusUpdate;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,41 +74,6 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
         }
         return EventResult.resultWith(EventResultEnum.ERROR, "请求服务器错误", null);
     }
-
-    /**
-     * 用户订单出库回调接口(WMS服务商 -> 电商平台（货主）)
-     *
-     * @param request
-     * @return
-     */
-    @Override
-    public EventResult orderDeliveryCallback(HttpServletRequest request) {
-        //TODO:
-        String orderId = request.getParameter("order_id");
-        if (org.springframework.util.StringUtils.isEmpty(orderId)) {
-            return EventResult.resultWith(EventResultEnum.BAD_REQUEST_PARAM, "未传入有效的orderId", null);
-        }
-        //订单状态 10：WMS接收订单成功 50：打单 100：分拣 200：打包 300：发货 400：分拣缺货 500：海关扣留
-        Integer orderStatus = RequestUtils.getIntHeader(request, "order_status");
-        int weight = 0;
-        if (orderStatus.equals(300)) {
-            //包裹重量 发货（300）时必填 单位：克
-            weight = RequestUtils.getIntHeader(request, "weight");
-            String logiName = request.getParameter("transport_service_code");
-            if (org.springframework.util.StringUtils.isEmpty(logiName)) {
-                //物流公司编码 仓配一体发货（300）时必填
-                return EventResult.resultWith(EventResultEnum.BAD_REQUEST_PARAM, "未传入快递公司名称", null);
-            }
-            String logiNo = request.getParameter("transport_order_id");
-            if (org.springframework.util.StringUtils.isEmpty(logiNo)) {
-                //物流单号 仓配一体发货（300）时必填
-                return EventResult.resultWith(EventResultEnum.BAD_REQUEST_PARAM, "未传入快递单号", null);
-            }
-        }
-
-        return null;
-    }
-
 
     /**
      * 获取公共Header参数

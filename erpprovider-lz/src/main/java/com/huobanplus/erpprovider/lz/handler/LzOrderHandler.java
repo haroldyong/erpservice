@@ -5,6 +5,7 @@ import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRefundStatusUpdate;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
+import com.huobanplus.erpuser.huobanmall.common.ApiResult;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,12 +31,5 @@ public interface LzOrderHandler {
      * @return
      */
     EventResult pushRefund(OrderRefundStatusUpdate orderRefundStatusUpdate);
-
-    /**
-     * 用户订单出库回调地址（WMS服务商 -> 电商平台（货主））
-     *@param request
-     * @return
-     */
-    EventResult orderDeliveryCallback(HttpServletRequest request);
 
 }
