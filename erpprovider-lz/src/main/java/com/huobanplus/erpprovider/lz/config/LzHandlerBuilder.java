@@ -4,8 +4,7 @@ import com.huobanplus.erpprovider.lz.handler.LzOrderHandler;
 import com.huobanplus.erpservice.datacenter.common.ERPTypeEnum;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.ERPBaseEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
-import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.*;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandler;
 import com.huobanplus.erpservice.eventhandler.handler.ERPHandlerBuilder;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -23,13 +22,23 @@ public class LzHandlerBuilder implements ERPHandlerBuilder {
 
     @Override
     public ERPHandler buildHandler(ERPInfo info) {
-        if (info.getErpType() == ERPTypeEnum.ProviderType.GJBC) {
+        if (info.getErpType() == ERPTypeEnum.ProviderType.LZ) {
             return new ERPHandler() {
                 @Override
                 public EventResult handleEvent(ERPBaseEvent erpBaseEvent) {
                     if (erpBaseEvent instanceof PushNewOrderEvent) {
                         PushNewOrderEvent pushNewOrderEvent = (PushNewOrderEvent) erpBaseEvent;
                         return lzOrderHandler.pushOrder(pushNewOrderEvent);
+                    }
+
+                    if (erpBaseEvent instanceof OrderRefundStatusUpdate) {
+                        OrderRefundStatusUpdate orderRefundStatusUpdate = (OrderRefundStatusUpdate) erpBaseEvent;
+                        return lzOrderHandler.pushRefund(orderRefundStatusUpdate);
+                    }
+
+                    if (erpBaseEvent instanceof GetTrackingInfoEvent) {
+                        GetTrackingInfoEvent getTrackingInfoEvent = (GetTrackingInfoEvent) erpBaseEvent;
+                        return lzOrderHandler.tracking(getTrackingInfoEvent);
                     }
                     return EventResult.resultWith(EventResultEnum.UNSUPPORT_EVENT);
                 }

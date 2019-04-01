@@ -10,6 +10,8 @@
 package com.huobanplus.erpservice.common.util;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -20,6 +22,8 @@ import java.util.Map;
  * Created by liual on 2015-10-19.
  */
 public class SignBuilder {
+
+    private static Log log = LogFactory.getLog(SignBuilder.class);
     /**
      * 创建一个sign签名
      * 忽略值为空的
@@ -43,6 +47,7 @@ public class SignBuilder {
             }
         }
         stringBuilder.append(suffix);
+        log.info(stringBuilder.toString());
         return DigestUtils.md5Hex(stringBuilder.toString().getBytes("utf-8"));
     }
 

@@ -18,7 +18,7 @@ public class LzConstant {
      */
     public final static String REQUEST_URL = "http://test.goldjet.com.cn/api/index.php?act=order_bc&op=order";
 
-    public  final  static  String TEST_REQUEST_URL ="http://oms.goldjet.com.cn/api/index.php?act=order_bc&op=order";//http://test.goldjet.com.cn/api/index.php?act=order_bc&op=order
+    public  final  static  String TEST_REQUEST_URL ="http://223.223.199.22:8889";//http://test.goldjet.com.cn/api/index.php?act=order_bc&op=order
 
     public static final String ALI_PAY_URL = "https://mapi.alipay.com/gateway.do";
 

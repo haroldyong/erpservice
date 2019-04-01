@@ -16,6 +16,7 @@ import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.datacenter.model.OrderRefundStatusInfo;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.GetTrackingInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRefundStatusUpdate;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
@@ -337,9 +338,12 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
 //            lzOrderInfo.setTransport_order_id();
 //            lzOrderInfo.setLogis_company_id();
 
-            PrivateKey privateKey1 = RSA.getPrivateKey(RSA.SIGN_ALGORITHMS);
-            String cardId = RSA.sign(privateKey1, order.getBuyerPid(), "utf-8");
-            lzOrderInfo.setReceiver_id(cardId);
+            //TODO 上线加密
+//            PrivateKey privateKey1 = RSA.getPrivateKey(RSA.SIGN_ALGORITHMS);
+//            String cardId = RSA.sign(privateKey1, order.getBuyerPid(), "utf-8");
+//            lzOrderInfo.setReceiver_id(cardId);
+
+            lzOrderInfo.setReceiver_id(order.getBuyerPid());
             lzOrderInfo.setReceiver_zip(order.getShipZip());
             lzOrderInfo.setReceiver_province(order.getProvince());
             lzOrderInfo.setReceiver_city(order.getCity());
@@ -370,12 +374,10 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             lzOrderPayInfo.setPlatform_name(lzSysData.getECommerceName());
             lzOrderInfo.setPay_info(lzOrderPayInfo);
 
-            //税费
-            BigDecimal tax = new BigDecimal(order.getTaxAmount()).multiply(new BigDecimal(100));
 
             //推送费用
             LzOrderFeeInfo lzOrderFeeInfo = new LzOrderFeeInfo();
-            lzOrderFeeInfo.setTax(String.valueOf(tax));
+            lzOrderFeeInfo.setTax(String.valueOf(order.getTaxAmount()));
             lzOrderFeeInfo.setFreight(String.valueOf(toFen(order.getCostFreight())));
             lzOrderFeeInfo.setInsurance("0");
             lzOrderFeeInfo.setDeduction_amount(String.valueOf(toFen(order.getPmtAmount())));
@@ -410,20 +412,24 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             lzOrderInfo.setTotal_count(num);
             lzOrderInfo.setOrder_goods_amount(toFen(finalAmout));
             lzOrderInfo.setOrder_total_amount(toFen(order.getFinalAmount()));
-            lzOrderInfo.setOrder_tax_amount(tax);
-            lzOrderInfo.setNet_weight((int) order.getSuttleWeight());
+            lzOrderInfo.setOrder_tax_amount(new BigDecimal(order.getTaxAmount()));
+            lzOrderInfo.setNet_weight(new BigDecimal(order.getSuttleWeight()).divide(new BigDecimal(1000)).intValue());
             lzOrderInfo.setOrder_items(lzOrderItems);
 
 
             String jsonStr = JSON.toJSONString(lzOrderInfo);
-
+//            String sign = "";
+//TODO
             PrivateKey privateKey = RSA.getPrivateKey(RSA.SIGN_ALGORITHMS);
             String sign = RSA.sign(privateKey, jsonStr, "utf-8");
             if (StringUtils.isBlank(sign)) {
                 return EventResult.resultWith(EventResultEnum.ERROR, "数据签名错误", null);
             }
+
             Map<String, String> headerMap = getCommonHeaderParameter(lzSysData, sign);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(lzSysData.getRequestUrl() + "/wms/declpush", headerMap, jsonStr);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(lzSysData.getRequestUrl() + "/wms/declPush", headerMap, jsonStr);
+            System.out.println(httpResult.getHttpContent());
+
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
                 if ("true".equalsIgnoreCase(jsonObject.getString("success"))) {
@@ -444,7 +450,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
      * @return
      */
     private BigDecimal toFen(double money) {
-        return new BigDecimal(money).multiply(new BigDecimal(100));
+        return new BigDecimal(money);
     }
 
     /**
@@ -463,11 +469,12 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             requestMap.put("order_id", info.getOrderId());
             String jsonStr = JSON.toJSONString(requestMap);
 
-            PrivateKey privateKey = RSA.getPrivateKey(RSA.SIGN_ALGORITHMS);
-            String sign = RSA.sign(privateKey, jsonStr, "utf-8");
-            if (StringUtils.isBlank(sign)) {
-                return EventResult.resultWith(EventResultEnum.ERROR, "数据签名错误", null);
-            }
+            String sign = "";
+//            PrivateKey privateKey = RSA.getPrivateKey(RSA.SIGN_ALGORITHMS);
+//            String sign = RSA.sign(privateKey, jsonStr, "utf-8");
+//            if (StringUtils.isBlank(sign)) {
+//                return EventResult.resultWith(EventResultEnum.ERROR, "数据签名错误", null);
+//            }
             Map<String, String> headerMap = getCommonHeaderParameter(sysData, sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl() + "/wms/declCancel", headerMap, jsonStr);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
@@ -507,5 +514,38 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
          */
         headerMap.put("sign", sign);
         return headerMap;
+    }
+
+
+    @Override
+    public EventResult tracking(GetTrackingInfoEvent getTrackingInfoEvent) {
+        try {
+            LzSysData lzSysData = JSON.parseObject(getTrackingInfoEvent.getErpInfo().getSysDataJson(), LzSysData.class);
+
+            Map<String, Object> requestMap = new HashMap<>();
+            requestMap.put("order_no", getTrackingInfoEvent.getGetTrackingInfo().getOrderId());
+            String jsonStr = JSON.toJSONString(requestMap);
+
+            String sign = "";
+//            PrivateKey privateKey = RSA.getPrivateKey(RSA.SIGN_ALGORITHMS);
+//            String sign = RSA.sign(privateKey, jsonStr, "utf-8");
+//            if (StringUtils.isBlank(sign)) {
+//                return EventResult.resultWith(EventResultEnum.ERROR, "数据签名错误", null);
+//            }
+
+
+            Map<String, String> headerMap = getCommonHeaderParameter(lzSysData, sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(lzSysData.getRequestUrl() + "/wms/logistics/tracking", headerMap, jsonStr);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
+                if ("true".equalsIgnoreCase(jsonObject.getString("success"))) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, jsonObject.getString("info"), null);
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);
+            }
+        } catch (Exception e) {
+            log.error(e);
+        }
+        return EventResult.resultWith(EventResultEnum.ERROR, "请求服务器错误", null);
     }
 }

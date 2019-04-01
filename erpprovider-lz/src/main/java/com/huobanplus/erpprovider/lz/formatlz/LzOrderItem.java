@@ -14,7 +14,7 @@ public class LzOrderItem {
   /**
    * (不超过100个字符) 	否	海关备案料号 商品编码
    */
-  @JSONField(name = "product_no")
+  @JSONField(name = "bar_code")
     private String product_no;
   /**
    * 数量

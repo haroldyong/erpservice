@@ -1,17 +1,9 @@
-/*
- * 版权所有:杭州火图科技有限公司
- * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
- *
- * (c) Copyright Hangzhou Hot Technology Co., Ltd.
- * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
- * 2013-2017. All rights reserved.
- */
-
-package com.huobanplus.test.gjbc;
+package com.huobanplus.erpprovider.lz;
 
 import com.alibaba.fastjson.JSON;
-import com.huobanplus.erpprovider.gjbc.common.GjbcSysData;
-import com.huobanplus.erpprovider.gjbc.util.GjbcConstant;
+import com.huobanplus.erpprovider.lz.Config.TestLzConfig;
+import com.huobanplus.erpprovider.lz.common.LzSysData;
+import com.huobanplus.erpprovider.lz.util.LzConstant;
 import com.huobanplus.erpservice.common.ienum.OrderEnum;
 import com.huobanplus.erpservice.common.util.SerialNo;
 import com.huobanplus.erpservice.common.util.StringUtil;
@@ -20,7 +12,6 @@ import com.huobanplus.erpservice.datacenter.model.Order;
 import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.eventhandler.model.ERPInfo;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
-import com.huobanplus.test.gjbc.config.TestGjbcConfig;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ActiveProfiles;
@@ -32,21 +23,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * 高捷 测试类
- * <p>
- * Created by montage on 2017/6/29.
- */
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {TestGjbcConfig.class})
+@ContextConfiguration(classes = {TestLzConfig.class})
 @Transactional
-public class TestGjbcBase {
-
-
+public class TestLzBase {
     protected Order mockOrder;
 
-    protected GjbcSysData mockGjbcSysData;
+    protected LzSysData mockLzSysData;
 
     protected List<OrderItem> mockOrderItems;
 
@@ -60,31 +44,23 @@ public class TestGjbcBase {
 
     @Before
     public void setUp() {
-        mockOrderNo = SerialNo.create();
+//        mockOrderNo = SerialNo.create();
+        mockOrderNo = "20190330140437177910";
 
-        mockGjbcSysData = new GjbcSysData();
-        mockGjbcSysData.setName("huoju");
-        mockGjbcSysData.setKey("b802c3cd7549da0c05a15cc9aaebfb1c");//a6f0d5db57cc55a5c22c175844665e60（正式key）
+        mockLzSysData = new LzSysData();
+        mockLzSysData.setName("huoju");
+//        mockLzSysData.setKey("b802c3cd7549da0c05a15cc9aaebfb1c");//a6f0d5db57cc55a5c22c175844665e60（正式key）
 
-        mockGjbcSysData.setECommerceName("扬州市新扬达进出口有限公司");
-        mockGjbcSysData.setECommerceCode("3210932722");
-        mockGjbcSysData.setAliPartner("2088421965473023");
-        mockGjbcSysData.setAliKey("k48u3xqezrpwhpuv8al265p515uhclr5");
-        mockGjbcSysData.setRequestUrl(GjbcConstant.TEST_REQUEST_URL);
+        mockLzSysData.setECommerceName("扬州市新扬达进出口有限公司");
+        mockLzSysData.setECommerceCode("3210932722");
+        mockLzSysData.setAliPartner("2088421965473023");
+        mockLzSysData.setAliKey("k48u3xqezrpwhpuv8al265p515uhclr5");
+        mockLzSysData.setRequestUrl(LzConstant.TEST_REQUEST_URL);
 
 
-        mockGjbcSysData.setWeixinKey("192006250b4c09247ec02edce69f6a2d");
-        mockGjbcSysData.setWeixinMchId("1291517501");
-        mockGjbcSysData.setWeiXinAppId("wx5c8085c6edf32b7d");
-        mockGjbcSysData.setWarehouseCode("HT_HKGJ");
-        mockGjbcSysData.setPWeb("http://cosytest.51flashmall.com");
-        mockGjbcSysData.setSenderInfo("王剑南,杭州市,杭州市滨江区阡陌路482号,15958039934,中国");
-
-//        mockGjbcSysData.setRsaPublicKey("MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJFlixAXFom5VY6TZEveQ8KmiCbfBdj8zxg52WUEzX5VNaxqce2XU7N4rTZm4WFJjLgwJmMQK5VazIo46mr5bo8CAwEAAQ==");
-//        mockGjbcSysData.setRsaPrivateKey("MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAkWWLEBcWiblVjpNkS95DwqaIJt8F2PzPGDnZZQTNflU1rGpx7ZdTs3itNmbhYUmMuDAmYxArlVrMijjqavlujwIDAQABAkBkq7tCs8m+KF4N7w3V3hpqryW8TFVfLYQy0PMuF8o0urUZ07S0AoOTvlmKTKRThn4rE4/oh7m3p3SJ5jyJpTAxAiEA+QUyLngSN5M95r+Mj/2DyXMb2LnblhkiDOJlWdzPWUkCIQCVeNAX89Q92xBNsixn2o7U/hv0GBC9xRrXYGkN0SYhFwIhAOFUSFIwKBvNyoeP8HsipSuWUy5LD13EpEEQYzFrUtyxAiBSOFyvcE6ln+T9+C55Cj5bZ1RVFw/Oc6fqJXxkP1IsDQIgIZBDSR1DOMweY3XPD4+8+o1koFNlgNjq2uCvB7t42Ms=");
-//        mockGjbcSysData.setAesKey("02oTDtoGk+2XpY0WOglyog==");
-        mockGjbcSysData.setSenderInfo("吴雄琉,杭州市,浙江省杭州市滨江区智慧e谷,15067134475,中国");
-//        mockGjbcSysData.setCustomUrl("");
+        mockLzSysData.setWeixinKey("192006250b4c09247ec02edce69f6a2d");
+        mockLzSysData.setWeixinMchId("1291517501");
+        mockLzSysData.setWeiXinAppId("wx5c8085c6edf32b7d");
 
 
         double itemPirce = 32.25;
@@ -102,7 +78,7 @@ public class TestGjbcBase {
         orderItem.setItemId(178770);
         orderItem.setOrderId(mockOrderNo);
         orderItem.setUnionOrderId("2016062455965373");
-        orderItem.setProductBn("6931987042704");
+        orderItem.setProductBn("4901005510808");
         orderItem.setName("AUSSIE袋鼠 3分钟奇迹发膜 236ml");
         orderItem.setCost(0.5);
         orderItem.setPrice(itemPirce);
@@ -157,7 +133,7 @@ public class TestGjbcBase {
         mockOrder.setOrderItems(mockOrderItems);
         mockErpInfo = new ERPInfo();
         mockErpInfo.setErpType(ERPTypeEnum.ProviderType.GJBC);
-        mockErpInfo.setSysDataJson(JSON.toJSONString(mockGjbcSysData));
+        mockErpInfo.setSysDataJson(JSON.toJSONString(mockLzSysData));
 
         mockErpUserInfo = new ERPUserInfo();
         mockErpUserInfo.setErpUserType(ERPTypeEnum.UserType.HUOBAN_MALL);

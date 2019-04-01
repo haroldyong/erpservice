@@ -2,6 +2,7 @@ package com.huobanplus.erpprovider.lz.handler;
 
 import com.huobanplus.erpprovider.lz.common.LzSysData;
 import com.huobanplus.erpservice.datacenter.model.Order;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.GetTrackingInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRefundStatusUpdate;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
@@ -32,4 +33,10 @@ public interface LzOrderHandler {
      */
     EventResult pushRefund(OrderRefundStatusUpdate orderRefundStatusUpdate);
 
+    /**
+     * 获取物流轨迹查询
+     * @param getTrackingInfoEvent
+     * @return
+     */
+    EventResult tracking(GetTrackingInfoEvent getTrackingInfoEvent);
 }

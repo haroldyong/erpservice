@@ -32,8 +32,8 @@
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.baison"/>-->
     <context:component-scan base-package="com.huobanplus.erpprovider.wangdianv2"/>
     <!--<context:component-scan base-package="com.huobanplus.erpprovider.pineapple"/>-->
-    <context:component-scan base-package="com.huobanplus.erpprovider.gjbc"/>
-    <context:component-scan base-package="com.huobanplus.erpprovider.gjbbc"/>
+    <!--<context:component-scan base-package="com.huobanplus.erpprovider.gjbc"/>-->
+    <!--<context:component-scan base-package="com.huobanplus.erpprovider.gjbbc"/>-->
 
     <!--erp-user-->
     <context:component-scan base-package="com.huobanplus.erpuser.huobanmall"/>

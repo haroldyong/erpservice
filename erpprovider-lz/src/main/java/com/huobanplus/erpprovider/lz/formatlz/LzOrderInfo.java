@@ -223,7 +223,7 @@ public class LzOrderInfo {
     @JSONField(name = "pay_info")
     private LzOrderPayInfo pay_info;
     /**
-     * 净重（ 理论重量） 单位：克
+     * 净重（ 理论重量） 单位：千克
      */
     @JSONField(name = "net_weight")
     private int net_weight;
