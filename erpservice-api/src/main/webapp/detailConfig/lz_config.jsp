@@ -81,7 +81,7 @@
                 return null;
             }
             if (aliPaymentCompanyName.length == 0) {
-                $.jBox.tip("请输入微信支付企业名称");
+                $.jBox.tip("请输入支付宝支付企业名称");
                 return null;
             }
             if (aliPartner.length == 0) {
