@@ -419,7 +419,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
 
             String jsonStr = JSON.toJSONString(lzOrderInfo);
 //            String sign = "";
-//TODO
+
             PrivateKey privateKey = RSA.getPrivateKey(RSA.PRIVATE_KEY);
             String sign = RSA.sign(privateKey, jsonStr, "utf-8");
             if (StringUtils.isBlank(sign)) {
@@ -433,7 +433,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
                 if ("true".equalsIgnoreCase(jsonObject.getString("success"))) {
-                    return EventResult.resultWith(EventResultEnum.SUCCESS, jsonObject.getString("info"), null);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS,"", null);
                 }
                 return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);
             }
@@ -479,7 +479,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
                 if ("true".equalsIgnoreCase(jsonObject.getString("success"))) {
-                    return EventResult.resultWith(EventResultEnum.SUCCESS, jsonObject.getString("info"), null);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, "", null);
                 }
                 return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);
             }
@@ -525,12 +525,11 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             requestMap.put("order_no", getTrackingInfoEvent.getGetTrackingInfo().getOrderId());
             String jsonStr = JSON.toJSONString(requestMap);
 
-            String sign = "";
-//            PrivateKey privateKey = RSA.getPrivateKey(RSA.SIGN_ALGORITHMS);
-//            String sign = RSA.sign(privateKey, jsonStr, "utf-8");
-//            if (StringUtils.isBlank(sign)) {
-//                return EventResult.resultWith(EventResultEnum.ERROR, "数据签名错误", null);
-//            }
+            PrivateKey privateKey = RSA.getPrivateKey(RSA.PRIVATE_KEY);
+            String sign = RSA.sign(privateKey, jsonStr, "utf-8");
+            if (StringUtils.isBlank(sign)) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "数据签名错误", null);
+            }
 
 
             Map<String, String> headerMap = getCommonHeaderParameter(lzSysData, sign);
@@ -538,7 +537,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
                 if ("true".equalsIgnoreCase(jsonObject.getString("success"))) {
-                    return EventResult.resultWith(EventResultEnum.SUCCESS, jsonObject.getString("info"), null);
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, jsonObject.getString("data"), null);
                 }
                 return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);
             }

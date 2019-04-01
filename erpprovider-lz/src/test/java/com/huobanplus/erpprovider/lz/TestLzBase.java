@@ -45,7 +45,7 @@ public class TestLzBase {
     @Before
     public void setUp() {
 //        mockOrderNo = SerialNo.create();
-        mockOrderNo = "20190330140437177910";
+        mockOrderNo = "20190330161919036581";
 
         mockLzSysData = new LzSysData();
         mockLzSysData.setName("huoju");
