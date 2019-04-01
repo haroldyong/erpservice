@@ -420,7 +420,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             String jsonStr = JSON.toJSONString(lzOrderInfo);
 //            String sign = "";
 //TODO
-            PrivateKey privateKey = RSA.getPrivateKey(RSA.SIGN_ALGORITHMS);
+            PrivateKey privateKey = RSA.getPrivateKey(RSA.PRIVATE_KEY);
             String sign = RSA.sign(privateKey, jsonStr, "utf-8");
             if (StringUtils.isBlank(sign)) {
                 return EventResult.resultWith(EventResultEnum.ERROR, "数据签名错误", null);
@@ -469,12 +469,11 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             requestMap.put("order_id", info.getOrderId());
             String jsonStr = JSON.toJSONString(requestMap);
 
-            String sign = "";
-//            PrivateKey privateKey = RSA.getPrivateKey(RSA.SIGN_ALGORITHMS);
-//            String sign = RSA.sign(privateKey, jsonStr, "utf-8");
-//            if (StringUtils.isBlank(sign)) {
-//                return EventResult.resultWith(EventResultEnum.ERROR, "数据签名错误", null);
-//            }
+            PrivateKey privateKey = RSA.getPrivateKey(RSA.PRIVATE_KEY);
+            String sign = RSA.sign(privateKey, jsonStr, "utf-8");
+            if (StringUtils.isBlank(sign)) {
+                return EventResult.resultWith(EventResultEnum.ERROR, "数据签名错误", null);
+            }
             Map<String, String> headerMap = getCommonHeaderParameter(sysData, sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl() + "/wms/declCancel", headerMap, jsonStr);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {

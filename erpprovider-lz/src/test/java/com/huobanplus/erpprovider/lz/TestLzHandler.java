@@ -1,6 +1,7 @@
 package com.huobanplus.erpprovider.lz;
 
 import com.huobanplus.erpprovider.lz.handler.LzOrderHandler;
+import com.huobanplus.erpprovider.lz.util.RSA;
 import com.huobanplus.erpservice.datacenter.model.GetTrackingInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderRefundStatusInfo;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.GetTrackingInfoEvent;
@@ -55,5 +56,14 @@ public class TestLzHandler extends  TestLzBase {
         System.out.println(eventResult.getData());
         System.out.println(eventResult.getResultMsg());
         System.out.println(eventResult.getResultCode());
+    }
+
+
+    @Test
+    public void getRASPublicKey(){
+        String[] pair= RSA.genRSAKeyPair();
+        System.out.println("私钥:"+pair[0]);
+        System.out.println("公钥:"+pair[1]);
+
     }
 }
