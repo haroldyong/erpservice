@@ -9,11 +9,7 @@
 
 package com.huobanplus.erpuser.huobanmall.handler;
 
-import com.huobanplus.erpservice.datacenter.model.Order;
-import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
-import com.huobanplus.erpservice.datacenter.model.OrderRemarkUpdateInfo;
-import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
-import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
+import com.huobanplus.erpservice.datacenter.model.*;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 
@@ -31,6 +27,14 @@ public interface HBOrderHandler {
      * @return
      */
     EventResult deliverInfo(OrderDeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo);
+
+    /**
+     * 取消订单
+     * @param cancelOrderInfo
+     * @param erpUserInfo
+     * @return
+     */
+    EventResult cancelOrder(CancelOrderInfo cancelOrderInfo, ERPUserInfo erpUserInfo);
 
     /**
      * 退货通知

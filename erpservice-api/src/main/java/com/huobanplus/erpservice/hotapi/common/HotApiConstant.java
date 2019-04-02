@@ -17,6 +17,7 @@ public class HotApiConstant {
     public static final String RETURN_INFO = "hbpReturnInfo";
     public static final String OBTAIN_ORDER_LIST = "hbpOrderList";
     public static final String OBTAIN_ORDER_DETAIL = "hbpOrderDetail";
+    public static final String Cancel_Order = "hbpCancelOrder";
 
     public static final String SYNC_INVENTORY = "hbpSyncInventory";
     public static final String OBTAIN_GOOD_LIST = "hbpGoodList";

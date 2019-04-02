@@ -74,6 +74,29 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
     }
 
     @Override
+    public EventResult cancelOrder(CancelOrderInfo cancelOrderInfo, ERPUserInfo erpUserInfo) {
+        Map<String, Object> signMap = HBConstant.buildSignMap(cancelOrderInfo);
+        signMap.put("timestamp", String.valueOf(new Date().getTime()));
+        try {
+            String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
+            Map<String, Object> requestMap = new HashMap<>(signMap);
+
+            requestMap.put("sign", sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/cancelOrder", requestMap);
+            if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                ApiResult apiResult = JSON.parseObject(httpResult.getHttpContent(), ApiResult.class);
+                if (apiResult.getCode() == 200) {
+                    return EventResult.resultWith(EventResultEnum.SUCCESS);
+                }
+                return EventResult.resultWith(EventResultEnum.ERROR, apiResult.getMsg(), null);
+            }
+            return EventResult.resultWith(EventResultEnum.ERROR, httpResult.getHttpContent(), null);
+        } catch (IOException e) {
+            return EventResult.resultWith(EventResultEnum.ERROR, e.getMessage(), null);
+        }
+    }
+
+    @Override
     @SuppressWarnings("Duplicates")
     public EventResult returnInfo(ReturnInfo returnInfo, ERPUserInfo erpUserInfo) {
         Map<String, Object> signMap = HBConstant.buildSignMap(returnInfo);

@@ -40,6 +40,7 @@ public interface HotApiController {
      * <li>hbpReturnInfo:退货通知</li>
      * <li>hbpOrderList:获得订单列表</li>
      * <li>hbpOrderDetail：获得订单详情</li>
+     * <li>hbpCancelOrder：取消订单</li>
      * </ul>
      *
      * @param eventType

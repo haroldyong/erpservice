@@ -41,7 +41,7 @@ public class HotApiControllerImpl implements HotApiController {
     @ResponseBody
     public ApiResult orderIndex(String eventType, @RequestAttribute ERPUserInfo erpUserInfo, HttpServletRequest request) {
         try {
-            log.info("enter erp orderIndex");
+            log.info("enter erp orderIndex " + eventType);
             switch (eventType) {
                 case HotApiConstant.DELIVERY_INFO:
                     return orderHandler.deliveryInfo(request, erpUserInfo);
@@ -51,6 +51,8 @@ public class HotApiControllerImpl implements HotApiController {
                     return orderHandler.obtainOrderDetail(request, erpUserInfo);
                 case HotApiConstant.OBTAIN_ORDER_LIST:
                     return orderHandler.obtainOrderList(request, erpUserInfo);
+                case HotApiConstant.Cancel_Order:
+                    return orderHandler.cancelOrder(request, erpUserInfo);
             }
             return ApiResult.resultWith(ResultCode.EVENT_NOT_SUPPORT, "不被支持的事件方法", null);
         } catch (Exception e) {

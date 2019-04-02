@@ -12,6 +12,7 @@ package com.huobanplus.erpservice.hotapi.handler.impl;
 import com.huobanplus.erpservice.common.util.StringUtil;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.commons.bean.ResultCode;
+import com.huobanplus.erpservice.datacenter.model.CancelOrderInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderSearchInfo;
 import com.huobanplus.erpservice.datacenter.model.ReturnInfo;
@@ -19,6 +20,7 @@ import com.huobanplus.erpservice.eventhandler.ERPRegister;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.pull.GetOrderDetailListEvent;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.PushCancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushDeliveryInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushReturnInfoEvent;
 import com.huobanplus.erpservice.eventhandler.model.ERPUserInfo;
@@ -183,6 +185,88 @@ public class OrderHandlerImpl implements OrderHandler {
             return ApiResult.resultWith(ResultCode.SUCCESS, eventResult.getData());
         }
 
+        return ApiResult.resultWith(ResultCode.ERPUSER_BAD_REQUEST, eventResult.getResultMsg(), null);
+    }
+
+    @Override
+    public ApiResult cancelOrder(HttpServletRequest request, ERPUserInfo erpUserInfo) {
+        String orderId = request.getParameter("orderId");
+        if (StringUtils.isEmpty(orderId)) {
+            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "未传入有效的orderId", null);
+        }
+
+        //总署给的清单编号
+        String invtNo = request.getParameter("invtNo");
+        if (StringUtils.isEmpty(invtNo)) {
+            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "未传入有效的invtNo", null);
+        }
+
+        if (StringUtils.isEmpty(request.getParameter("customsStatus"))) {
+            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "未传入有效的customsStatus", null);
+        }
+        //海关总署清关状态码
+        int customsStatus = Integer.parseInt(request.getParameter("customsStatus"));
+        if (customsStatus == 399 || customsStatus == 500 || customsStatus == 800) {
+            //成功不推商城
+            return ApiResult.resultWith(ResultCode.SUCCESS);
+        }
+
+        String customsStatusName = "";
+        if (customsStatus == 0)
+            customsStatusName = "异常回执";
+        else if (customsStatus == 1)
+            customsStatusName = "电子口岸已暂存";
+        else if (customsStatus == 2)
+            customsStatusName = "电子口岸申报中";
+        else if (customsStatus == 3)
+            customsStatusName = "发往海关成功";
+        else if (customsStatus == 4)
+            customsStatusName = "发往海关失败";
+        else if (customsStatus == 100)
+            customsStatusName = "海关退单";
+        else if (customsStatus == 120)
+            customsStatusName = "海关入库";
+        else if (customsStatus == 300)
+            customsStatusName = "人工审核";
+        else if (customsStatus == 399)
+            customsStatusName = "海关审结";
+        else if (customsStatus == 500)
+            customsStatusName = "查验";
+        else if (customsStatus == 501)
+            customsStatusName = "扣留移送通关";
+        else if (customsStatus == 502)
+            customsStatusName = "扣留移送缉私";
+        else if (customsStatus == 503)
+            customsStatusName = "扣留移送法规";
+        else if (customsStatus == 599)
+            customsStatusName = "其他扣留";
+        else if (customsStatus == 700)
+            customsStatusName = "退运";
+        else if (customsStatus == 800)
+            customsStatusName = "放行";
+        else if (customsStatus == 899)
+            customsStatusName = "结关";
+        else if (customsStatus == 900)
+            customsStatusName = "撤单失败";
+        else if (customsStatus == 901)
+            customsStatusName = "撤单成功";
+
+
+        ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
+        if (erpUserHandler == null) {
+            return ApiResult.resultWith(ResultCode.NO_SUCH_ERPHANDLER);
+        }
+        PushCancelOrderEvent pushCancelOrderEvent = new PushCancelOrderEvent();
+        CancelOrderInfo orderInfo = new CancelOrderInfo();
+        orderInfo.setOrderId(orderId);
+        String reason = "清单编号:" + invtNo + " 状态:" + customsStatusName;
+        orderInfo.setReason(reason);
+
+        pushCancelOrderEvent.setCancelOrderInfo(orderInfo);
+        EventResult eventResult = erpUserHandler.handleEvent(pushCancelOrderEvent);
+        if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
+            return ApiResult.resultWith(ResultCode.SUCCESS);
+        }
         return ApiResult.resultWith(ResultCode.ERPUSER_BAD_REQUEST, eventResult.getResultMsg(), null);
     }
 }

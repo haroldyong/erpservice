@@ -43,6 +43,8 @@ public class HuobanmallHandlerBuilder implements ERPUserHandlerBuilder {
                     return orderHandler.obtainOrderList(((GetOrderDetailListEvent) erpBaseEvent).getOrderSearchInfo(), info);
                 } else if (erpBaseEvent instanceof PushDeliveryInfoEvent) {
                     return orderHandler.deliverInfo(((PushDeliveryInfoEvent) erpBaseEvent).getDeliveryInfo(), info);
+                } else if (erpBaseEvent instanceof PushCancelOrderEvent) {
+                    return orderHandler.cancelOrder(((PushCancelOrderEvent) erpBaseEvent).getCancelOrderInfo(), info);
                 } else if (erpBaseEvent instanceof GetOrderDetailEvent) {
                     return orderHandler.obtainOrderDetail(((GetOrderDetailEvent) erpBaseEvent).getOrderId(), info);
                 } else if (erpBaseEvent instanceof PushReturnInfoEvent) {
@@ -68,9 +70,9 @@ public class HuobanmallHandlerBuilder implements ERPUserHandlerBuilder {
                 } else if (erpBaseEvent instanceof PushAuditedOrderEvent) {
                     PushAuditedOrderEvent pushAuditedOrderEvent = (PushAuditedOrderEvent) erpBaseEvent;
                     return orderHandler.pushAuditedOrderList(pushAuditedOrderEvent.getOrderIds(), pushAuditedOrderEvent.getErpUserInfo());
-                } else if (erpBaseEvent instanceof OrderRemarkUpdate){
+                } else if (erpBaseEvent instanceof OrderRemarkUpdate) {
                     OrderRemarkUpdate orderRemarkUpdate = (OrderRemarkUpdate) erpBaseEvent;
-                    return orderHandler.orderRemarkUpdate(orderRemarkUpdate.getOrderRemarkUpdateInfo(),orderRemarkUpdate.getErpUserInfo());
+                    return orderHandler.orderRemarkUpdate(orderRemarkUpdate.getOrderRemarkUpdateInfo(), orderRemarkUpdate.getErpUserInfo());
                 }
                 return null;
             };
