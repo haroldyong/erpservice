@@ -11,6 +11,7 @@ package com.huobanplus.erpservice.proxy.controller;
 
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
+import com.huobanplus.erpservice.datacenter.model.GetTrackingInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderRefundStatusInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderRemarkUpdateInfo;
@@ -156,4 +157,11 @@ public interface OrderProxyController {
                          String orderId, String remark);
 
 
+
+    @RequestMapping(value = "/tracking")
+    @ResponseBody
+    public ApiResult tracking(@RequestAttribute ERPInfo erpInfo,
+                              @RequestAttribute ERPUserInfo erpUserInfo,
+                              GetTrackingInfo getTrackingInfo
+    ) throws Exception;
 }

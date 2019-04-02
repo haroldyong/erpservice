@@ -45,7 +45,7 @@ public class OrderProxyService {
         EventResult eventResult = erpHandler.handleEvent(erpBaseEvent);
         ApiResult apiResult;
         if (eventResult.getResultCode() == EventResultEnum.SUCCESS.getResultCode()) {
-            apiResult = ApiResult.resultWith(ResultCode.SUCCESS);
+            apiResult = ApiResult.resultWith(ResultCode.SUCCESS,eventResult.getData());
         } else {
             apiResult = ApiResult.resultWith(ResultCode.ERP_BAD_REQUEST, eventResult.getResultMsg(), null);
         }

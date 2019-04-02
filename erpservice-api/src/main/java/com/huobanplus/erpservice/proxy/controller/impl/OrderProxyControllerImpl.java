@@ -11,6 +11,7 @@ package com.huobanplus.erpservice.proxy.controller.impl;
 
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
+import com.huobanplus.erpservice.datacenter.model.GetTrackingInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderDeliveryInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderRefundStatusInfo;
 import com.huobanplus.erpservice.datacenter.model.OrderRemarkUpdateInfo;
@@ -30,6 +31,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Created by liual on 2015-10-19.
+ *
+ *   商城发起，推送到erp系统
  */
 @Controller
 @RequestMapping(value = "/hotProxy/order", method = RequestMethod.POST)
@@ -53,6 +56,21 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
         pushNewOrderEvent.setErpUserInfo(erpUserInfo);
 
         return orderProxyService.handleEvent(pushNewOrderEvent);
+    }
+
+    @Override
+    @RequestMapping(value = "/tracking")
+    @ResponseBody
+    public ApiResult tracking(@RequestAttribute ERPInfo erpInfo,
+            @RequestAttribute ERPUserInfo erpUserInfo,
+                              GetTrackingInfo getTrackingInfo
+    ) throws Exception {
+        GetTrackingInfoEvent getTrackingInfoEvent = new GetTrackingInfoEvent();
+        getTrackingInfoEvent.setErpInfo(erpInfo);
+        getTrackingInfoEvent.setGetTrackingInfo(getTrackingInfo);
+        getTrackingInfoEvent.setErpUserInfo(erpUserInfo);
+
+        return orderProxyService.handleEvent(getTrackingInfoEvent);
     }
 
     @Override
