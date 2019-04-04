@@ -22,8 +22,8 @@
             var requestUrl = $.trim($("#lz_requestUrl").val())
             var eCommerceCode = $.trim($("#lz_eCommerceCode").val());
             var name = $.trim($("#lz_name").val());
-            var wmsid = $.trim($("#lz_wmsCode").val());
-            var storageid = $.trim($("#lz_storageCode").val());
+            var wmsId = $.trim($("#lz_wmsId").val());
+            var storageId = $.trim($("#lz_storageId").val());
             var eCommerceName = $.trim($("#lz_eCommerceName").val());
             var weiXinPaymentCompanyName = $.trim($("#lz_wx_payment_company_name").val());
             var weiXinAppId = $.trim($("#lz_weiXinAppId").val());
@@ -54,12 +54,12 @@
                 $.jBox.tip("请输入电商企业名称");
                 return null;
             }
-            if (wmsid.length == 0) {
-                $.jBox.tip("请输入wmsid");
+            if (wmsId.length == 0) {
+                $.jBox.tip("请输入wmsId");
                 return null;
             }
-            if (storageid.length == 0) {
-                $.jBox.tip("请输入storageid");
+            if (storageId.length == 0) {
+                $.jBox.tip("请输入storageId");
                 return null;
             }
 
@@ -107,8 +107,8 @@
                 aliPartner: aliPartner,
                 aliKey: aliKey,
                 status: status,
-                wmsId: wmsid,
-                storageId: storageid,
+                wmsId: wmsId,
+                storageId: storageId,
                 wxPaymentCompanyName: weiXinPaymentCompanyName,
                 aliPaymentCompanyName: aliPaymentCompanyName,
                 merchantId: merchantId
@@ -126,8 +126,8 @@
             $("#lz_aliPartner").val(jsonData.aliPartner);
             $("#lz_aliKey").val(jsonData.aliKey);
             $("#lz_status").val(jsonData.status);
-            $("#lz_wmsCode").val(jsonData.wmsid);
-            $("#lz_storageCode").val(jsonData.storageid);
+            $("#lz_wmsId").val(jsonData.wmsId);
+            $("#lz_storageId").val(jsonData.storageId);
             $("#lz_wx_payment_company_name").val(jsonData.wxPaymentCompanyName);
             $("#lz_ali_payment_company_name").val(jsonData.aliPaymentCompanyName);
             $("#lz_merchantId").val(jsonData.merchantId);
@@ -157,15 +157,15 @@
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">wmsid(WMS服务商分配)：</th>
+        <th style="vertical-align: middle;">wmsId(WMS服务商分配)：</th>
         <td>
-            <input name="lz_wmsCode" type="text" value="" id="lz_wmsCode" class="input-normal"/>
+            <input name="lz_wmsId" type="text" value="" id="lz_wmsId" class="input-normal"/>
         </td>
     </tr>
     <tr>
-        <th style="vertical-align: middle;">storageid(WMS服务商分配)：</th>
+        <th style="vertical-align: middle;">storageId(WMS服务商分配)：</th>
         <td>
-            <input name="lz_storageCode" type="text" value="" id="lz_storageCode" class="input-normal"/>
+            <input name="lz_storageId" type="text" value="" id="lz_storageId" class="input-normal"/>
         </td>
     </tr>
 

@@ -26,6 +26,8 @@ import com.huobanplus.erpservice.datacenter.service.ERPDetailConfigService;
 import com.huobanplus.erpservice.datacenter.service.ERPSysDataInfoService;
 import com.huobanplus.erpservice.eventhandler.model.EventResult;
 import com.huobanplus.erpservice.service.AlipayService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,6 +48,9 @@ import java.util.Map;
 @Controller
 @RequestMapping("/erpService/platform")
 public class ERPConfigController {
+
+    Log log = LogFactory.getLog(ERPConfigController.class);
+
     @Autowired
     private ERPBaseConfigService baseConfigService;
     @Autowired
@@ -138,6 +143,9 @@ public class ERPConfigController {
             HttpServletRequest request,
             Model model
     ) {
+        log.info("enter saveConfig");
+        log.info(sysDataJson);
+
         String result;
         try {
             ERPTypeEnum.ProviderType providerType = EnumHelper.getEnumType(ERPTypeEnum.ProviderType.class, erpType);
@@ -191,6 +199,7 @@ public class ERPConfigController {
 
             result = "success";
         } catch (Exception e) {
+            log.error(e);
             result = "error";
         }
         request.getSession().setAttribute("resultCode", result);
