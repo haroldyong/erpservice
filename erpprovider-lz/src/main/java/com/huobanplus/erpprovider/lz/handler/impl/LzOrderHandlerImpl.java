@@ -323,7 +323,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             log.info("push lz platform order start");
 
             LzOrderInfo lzOrderInfo = new LzOrderInfo();
-            lzOrderInfo.setOrder_id(order.getOrderId());
+            lzOrderInfo.setOrder_id(order.getUnionOrderId());
             lzOrderInfo.setPayment_id(order.getPayNumber());
             lzOrderInfo.setPurchaser_acount(order.getUserLoginName());
             lzOrderInfo.setBuyer_name(order.getBuyerName());
