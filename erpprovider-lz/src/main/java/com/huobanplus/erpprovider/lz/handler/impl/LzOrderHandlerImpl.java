@@ -419,6 +419,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
 
 
             String jsonStr = JSON.toJSONString(lzOrderInfo);
+            log.info(jsonStr);
 //            String sign = "";
 
             PrivateKey privateKey = RSA.getPrivateKey(RSA.PRIVATE_KEY);
@@ -429,7 +430,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
 
             Map<String, String> headerMap = getCommonHeaderParameter(lzSysData, sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(lzSysData.getRequestUrl() + "/wms/declPush", headerMap, jsonStr);
-            System.out.println(httpResult.getHttpContent());
+            log.info(httpResult.getHttpContent());
 
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
