@@ -165,6 +165,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             log.info("platform order push end=====>" + orderEvent.getResultMsg());
         }
 
+        lzAllOrderStatus.setPayOrderSyncStatus(true);
 
         if (lzAllOrderStatus.isSyncSuccess()) {
             return EventResult.resultWith(EventResultEnum.SUCCESS, lzAllOrderStatus);
