@@ -520,6 +520,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
 
     @Override
     public EventResult tracking(GetTrackingInfoEvent getTrackingInfoEvent) {
+        log.info("enter tracking");
         try {
             LzSysData lzSysData = JSON.parseObject(getTrackingInfoEvent.getErpInfo().getSysDataJson(), LzSysData.class);
 
@@ -537,8 +538,10 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             Map<String, String> headerMap = getCommonHeaderParameter(lzSysData, sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(lzSysData.getRequestUrl() + "/wms/logistics/tracking", headerMap, jsonStr);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
+                log.info(httpResult.getHttpContent());
                 JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
                 if ("true".equalsIgnoreCase(jsonObject.getString("success"))) {
+                    log.info(jsonObject.getString("data"));
                     return EventResult.resultWith(EventResultEnum.SUCCESS, jsonObject.getString("data"), null);
                 }
                 return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);
