@@ -538,11 +538,11 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             Map<String, String> headerMap = getCommonHeaderParameter(lzSysData, sign);
             HttpResult httpResult = HttpClientUtil.getInstance().post(lzSysData.getRequestUrl() + "/wms/logistics/tracking", headerMap, jsonStr);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
-                log.info(httpResult.getHttpContent());
+//                log.info("tracking response:" + httpResult.getHttpContent());
                 JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
                 if ("true".equalsIgnoreCase(jsonObject.getString("success"))) {
-                    log.info(jsonObject.getString("data"));
-                    return EventResult.resultWith(EventResultEnum.SUCCESS, jsonObject.getString("data"), null);
+                  //  log.info("tracking set data:" + jsonObject.getString("data"));
+                    return EventResult.resultWith(EventResultEnum.SUCCESS, "", jsonObject.getString("data"));
                 }
                 return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);
             }

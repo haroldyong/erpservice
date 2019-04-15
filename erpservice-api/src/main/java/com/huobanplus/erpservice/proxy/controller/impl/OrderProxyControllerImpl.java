@@ -9,6 +9,7 @@
 
 package com.huobanplus.erpservice.proxy.controller.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.huobanplus.erpservice.commons.annotation.RequestAttribute;
 import com.huobanplus.erpservice.commons.bean.ApiResult;
 import com.huobanplus.erpservice.datacenter.model.GetTrackingInfo;
@@ -29,10 +30,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.json.Json;
+
 /**
  * Created by liual on 2015-10-19.
- *
- *   商城发起，推送到erp系统
+ * <p>
+ * 商城发起，推送到erp系统
  */
 @Controller
 @RequestMapping(value = "/hotProxy/order", method = RequestMethod.POST)
@@ -62,14 +65,15 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     @RequestMapping(value = "/tracking")
     @ResponseBody
     public ApiResult tracking(@RequestAttribute ERPInfo erpInfo,
-            @RequestAttribute ERPUserInfo erpUserInfo,
+                              @RequestAttribute ERPUserInfo erpUserInfo,
                               GetTrackingInfo getTrackingInfo
     ) throws Exception {
         GetTrackingInfoEvent getTrackingInfoEvent = new GetTrackingInfoEvent();
         getTrackingInfoEvent.setErpInfo(erpInfo);
         getTrackingInfoEvent.setGetTrackingInfo(getTrackingInfo);
         getTrackingInfoEvent.setErpUserInfo(erpUserInfo);
-
+        log.info("enter tracking");
+        log.info("start to do:" + JSON.toJSONString(getTrackingInfo));
         return orderProxyService.handleEvent(getTrackingInfoEvent);
     }
 
