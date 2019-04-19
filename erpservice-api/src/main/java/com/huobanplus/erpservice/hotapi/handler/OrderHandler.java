@@ -92,7 +92,7 @@ public interface OrderHandler {
     ApiResult obtainOrderDetail(HttpServletRequest request, ERPUserInfo erpUserInfo);
 
     /**
-     * 取消订单
+     * 清关
      * @param request
      * @param erpUserInfo
      * @return

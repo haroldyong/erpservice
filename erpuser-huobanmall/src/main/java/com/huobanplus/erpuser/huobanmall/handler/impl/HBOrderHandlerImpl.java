@@ -75,14 +75,16 @@ public class HBOrderHandlerImpl implements HBOrderHandler {
 
     @Override
     public EventResult cancelOrder(CancelOrderInfo cancelOrderInfo, ERPUserInfo erpUserInfo) {
-        Map<String, Object> signMap = HBConstant.buildSignMap(cancelOrderInfo);
+        log.info("push to mall:" + JSON.toJSONString(cancelOrderInfo));
+        Map<String, Object> signMap = new HashMap<>();
+        signMap.put("jsonInfo", JSON.toJSONString(cancelOrderInfo));
         signMap.put("timestamp", String.valueOf(new Date().getTime()));
         try {
             String sign = SignBuilder.buildSignIgnoreEmpty(signMap, null, HBConstant.SECRET_KEY);
             Map<String, Object> requestMap = new HashMap<>(signMap);
 
             requestMap.put("sign", sign);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/cancelOrder", requestMap);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(HBConstant.REQUEST_URL + "/ErpOrderApi/CutomClearance", requestMap);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 ApiResult apiResult = JSON.parseObject(httpResult.getHttpContent(), ApiResult.class);
                 if (apiResult.getCode() == 200) {

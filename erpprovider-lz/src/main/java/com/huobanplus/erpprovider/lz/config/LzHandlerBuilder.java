@@ -31,9 +31,9 @@ public class LzHandlerBuilder implements ERPHandlerBuilder {
                         return lzOrderHandler.pushOrder(pushNewOrderEvent);
                     }
 
-                    if (erpBaseEvent instanceof OrderRefundStatusUpdate) {
-                        OrderRefundStatusUpdate orderRefundStatusUpdate = (OrderRefundStatusUpdate) erpBaseEvent;
-                        return lzOrderHandler.pushRefund(orderRefundStatusUpdate);
+                    if (erpBaseEvent instanceof CancelOrderEvent) {
+                        CancelOrderEvent cancelOrderEvent = (CancelOrderEvent) erpBaseEvent;
+                        return lzOrderHandler.cancelOrder(cancelOrderEvent);
                     }
 
                     if (erpBaseEvent instanceof GetTrackingInfoEvent) {

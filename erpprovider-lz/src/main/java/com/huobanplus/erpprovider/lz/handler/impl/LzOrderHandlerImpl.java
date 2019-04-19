@@ -16,6 +16,7 @@ import com.huobanplus.erpservice.datacenter.model.OrderItem;
 import com.huobanplus.erpservice.datacenter.service.logs.OrderDetailSyncLogService;
 import com.huobanplus.erpservice.eventhandler.common.EventResultEnum;
 import com.huobanplus.erpservice.datacenter.model.OrderRefundStatusInfo;
+import com.huobanplus.erpservice.eventhandler.erpevent.push.CancelOrderEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.GetTrackingInfoEvent;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.OrderRefundStatusUpdate;
 import com.huobanplus.erpservice.eventhandler.erpevent.push.PushNewOrderEvent;
@@ -456,19 +457,22 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
     }
 
     /**
-     * 申请售后
+     * 取消订单
      *
-     * @param orderRefundStatusUpdate
+     * @param cancelOrderEvent
      * @return
      * @anthor guomw
      */
     @Override
-    public EventResult pushRefund(OrderRefundStatusUpdate orderRefundStatusUpdate) {
+    public EventResult cancelOrder(CancelOrderEvent cancelOrderEvent) {
+        log.info("start cancelOrder " + cancelOrderEvent.getOrderId());
         try {
-            LzSysData sysData = JSON.parseObject(orderRefundStatusUpdate.getErpInfo().getSysDataJson(), LzSysData.class);
+            ERPInfo erpInfo = cancelOrderEvent.getErpInfo();
+//            ERPUserInfo erpUserInfo = cancelOrderEvent.getErpUserInfo();
+            LzSysData lzSysData = JSON.parseObject(erpInfo.getSysDataJson(), LzSysData.class);
+
             Map<String, Object> requestMap = new HashMap<>();
-            OrderRefundStatusInfo info = orderRefundStatusUpdate.getOrderRefundStatusInfo();
-            requestMap.put("order_id", info.getOrderId());
+            requestMap.put("order_id", cancelOrderEvent.getOrderId());
             String jsonStr = JSON.toJSONString(requestMap);
 
             PrivateKey privateKey = RSA.getPrivateKey(RSA.PRIVATE_KEY);
@@ -476,8 +480,8 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             if (StringUtils.isBlank(sign)) {
                 return EventResult.resultWith(EventResultEnum.ERROR, "数据签名错误", null);
             }
-            Map<String, String> headerMap = getCommonHeaderParameter(sysData, sign);
-            HttpResult httpResult = HttpClientUtil.getInstance().post(sysData.getRequestUrl() + "/wms/declCancel", headerMap, jsonStr);
+            Map<String, String> headerMap = getCommonHeaderParameter(lzSysData, sign);
+            HttpResult httpResult = HttpClientUtil.getInstance().post(lzSysData.getRequestUrl() + "/wms/declCancel", headerMap, jsonStr);
             if (httpResult.getHttpStatus() == HttpStatus.SC_OK) {
                 JSONObject jsonObject = JSON.parseObject(httpResult.getHttpContent());
                 if ("true".equalsIgnoreCase(jsonObject.getString("success"))) {
@@ -486,7 +490,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
                 return EventResult.resultWith(EventResultEnum.ERROR, jsonObject.getString("error_msg"), null);
             }
         } catch (Exception e) {
-            String info = "LzOrderHandler pushRefund failed: " + JSON.toJSONString(orderRefundStatusUpdate) + " | " + e.getMessage();
+            String info = "LzOrderHandler cancelOrder failed: " + cancelOrderEvent.getOrderId() + " | " + e.getMessage();
             log.error(info, e);
         }
         return EventResult.resultWith(EventResultEnum.ERROR, "请求服务器错误", null);
@@ -525,7 +529,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             LzSysData lzSysData = JSON.parseObject(getTrackingInfoEvent.getErpInfo().getSysDataJson(), LzSysData.class);
 
             Map<String, Object> requestMap = new HashMap<>();
-            requestMap.put("order_no", getTrackingInfoEvent.getGetTrackingInfo().getOrderId());
+            requestMap.put("order_no", getTrackingInfoEvent.getGetTrackingInfo().getOrderId().replace("\\r\\n","").trim());
             String jsonStr = JSON.toJSONString(requestMap);
 
             PrivateKey privateKey = RSA.getPrivateKey(RSA.PRIVATE_KEY);

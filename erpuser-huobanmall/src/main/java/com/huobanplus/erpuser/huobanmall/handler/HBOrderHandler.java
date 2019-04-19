@@ -29,7 +29,7 @@ public interface HBOrderHandler {
     EventResult deliverInfo(OrderDeliveryInfo deliveryInfo, ERPUserInfo erpUserInfo);
 
     /**
-     * 取消订单
+     * 清关
      * @param cancelOrderInfo
      * @param erpUserInfo
      * @return

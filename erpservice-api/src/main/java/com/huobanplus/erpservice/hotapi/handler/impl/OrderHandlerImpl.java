@@ -172,6 +172,8 @@ public class OrderHandlerImpl implements OrderHandler {
         if (StringUtils.isEmpty(orderId)) {
             return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "未传入有效的orderId", null);
         }
+
+
         GetOrderDetailEvent getOrderDetailEvent = new GetOrderDetailEvent();
         getOrderDetailEvent.setErpUserInfo(erpUserInfo);
         getOrderDetailEvent.setOrderId(orderId);
@@ -196,60 +198,60 @@ public class OrderHandlerImpl implements OrderHandler {
         }
 
         //总署给的清单编号
-        String invtNo = request.getParameter("invtNo");
-        if (StringUtils.isEmpty(invtNo)) {
-            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "未传入有效的invtNo", null);
-        }
-
-        if (StringUtils.isEmpty(request.getParameter("customsStatus"))) {
-            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "未传入有效的customsStatus", null);
-        }
+//        String invtNo = request.getParameter("invtNo");
+//        if (StringUtils.isEmpty(invtNo)) {
+//            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "未传入有效的invtNo", null);
+//        }
+//
+//        if (StringUtils.isEmpty(request.getParameter("customsStatus"))) {
+//            return ApiResult.resultWith(ResultCode.BAD_REQUEST_PARAM, "未传入有效的customsStatus", null);
+//        }
         //海关总署清关状态码
-        int customsStatus = Integer.parseInt(request.getParameter("customsStatus"));
-        if (customsStatus == 399 || customsStatus == 500 || customsStatus == 800) {
-            //成功不推商城
-            return ApiResult.resultWith(ResultCode.SUCCESS);
-        }
-
-        String customsStatusName = "";
-        if (customsStatus == 0)
-            customsStatusName = "异常回执";
-        else if (customsStatus == 1)
-            customsStatusName = "电子口岸已暂存";
-        else if (customsStatus == 2)
-            customsStatusName = "电子口岸申报中";
-        else if (customsStatus == 3)
-            customsStatusName = "发往海关成功";
-        else if (customsStatus == 4)
-            customsStatusName = "发往海关失败";
-        else if (customsStatus == 100)
-            customsStatusName = "海关退单";
-        else if (customsStatus == 120)
-            customsStatusName = "海关入库";
-        else if (customsStatus == 300)
-            customsStatusName = "人工审核";
-        else if (customsStatus == 399)
-            customsStatusName = "海关审结";
-        else if (customsStatus == 500)
-            customsStatusName = "查验";
-        else if (customsStatus == 501)
-            customsStatusName = "扣留移送通关";
-        else if (customsStatus == 502)
-            customsStatusName = "扣留移送缉私";
-        else if (customsStatus == 503)
-            customsStatusName = "扣留移送法规";
-        else if (customsStatus == 599)
-            customsStatusName = "其他扣留";
-        else if (customsStatus == 700)
-            customsStatusName = "退运";
-        else if (customsStatus == 800)
-            customsStatusName = "放行";
-        else if (customsStatus == 899)
-            customsStatusName = "结关";
-        else if (customsStatus == 900)
-            customsStatusName = "撤单失败";
-        else if (customsStatus == 901)
-            customsStatusName = "撤单成功";
+//        int customsStatus = Integer.parseInt(request.getParameter("customsStatus"));
+//        if (customsStatus == 399 || customsStatus == 500 || customsStatus == 800) {
+//            //成功不推商城
+//            return ApiResult.resultWith(ResultCode.SUCCESS);
+//        }
+//
+//        String customsStatusName = "";
+//        if (customsStatus == 0)
+//            customsStatusName = "异常回执";
+//        else if (customsStatus == 1)
+//            customsStatusName = "电子口岸已暂存";
+//        else if (customsStatus == 2)
+//            customsStatusName = "电子口岸申报中";
+//        else if (customsStatus == 3)
+//            customsStatusName = "发往海关成功";
+//        else if (customsStatus == 4)
+//            customsStatusName = "发往海关失败";
+//        else if (customsStatus == 100)
+//            customsStatusName = "海关退单";
+//        else if (customsStatus == 120)
+//            customsStatusName = "海关入库";
+//        else if (customsStatus == 300)
+//            customsStatusName = "人工审核";
+//        else if (customsStatus == 399)
+//            customsStatusName = "海关审结";
+//        else if (customsStatus == 500)
+//            customsStatusName = "查验";
+//        else if (customsStatus == 501)
+//            customsStatusName = "扣留移送通关";
+//        else if (customsStatus == 502)
+//            customsStatusName = "扣留移送缉私";
+//        else if (customsStatus == 503)
+//            customsStatusName = "扣留移送法规";
+//        else if (customsStatus == 599)
+//            customsStatusName = "其他扣留";
+//        else if (customsStatus == 700)
+//            customsStatusName = "退运";
+//        else if (customsStatus == 800)
+//            customsStatusName = "放行";
+//        else if (customsStatus == 899)
+//            customsStatusName = "结关";
+//        else if (customsStatus == 900)
+//            customsStatusName = "撤单失败";
+//        else if (customsStatus == 901)
+//            customsStatusName = "撤单成功";
 
 
         ERPUserHandler erpUserHandler = erpRegister.getERPUserHandler(erpUserInfo);
@@ -259,8 +261,15 @@ public class OrderHandlerImpl implements OrderHandler {
         PushCancelOrderEvent pushCancelOrderEvent = new PushCancelOrderEvent();
         CancelOrderInfo orderInfo = new CancelOrderInfo();
         orderInfo.setOrderId(orderId);
-        String reason = "清单编号:" + invtNo + " 状态:" + customsStatusName;
-        orderInfo.setReason(reason);
+        orderInfo.setInvtNo(request.getParameter("invtNo"));
+        if (!StringUtils.isEmpty(request.getParameter("customsStatus")))
+            orderInfo.setCustomsStatus(Integer.parseInt(request.getParameter("customsStatus")));
+        if (!StringUtils.isEmpty(Integer.parseInt(request.getParameter("nationStatus"))))
+            orderInfo.setNationStatus(Integer.parseInt(request.getParameter("nationStatus")));
+        orderInfo.setReturnTime(request.getParameter("returnTime"));
+        orderInfo.setCustomsRemark(request.getParameter("customsRemark"));
+        orderInfo.setNationRemark(request.getParameter("nationRemark"));
+
 
         pushCancelOrderEvent.setCancelOrderInfo(orderInfo);
         EventResult eventResult = erpUserHandler.handleEvent(pushCancelOrderEvent);

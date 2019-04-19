@@ -79,6 +79,9 @@ public class TestLzHandler extends TestLzBase {
         else{
 
         }
+
+        String order = "20190404898460951704_8549_350\\r\\n";
+        System.out.println(order.replace("\\r\\n","").trim()+"abc");
     }
 
 }

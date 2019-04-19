@@ -135,6 +135,7 @@ public class OrderProxyControllerImpl extends ProxyBaseController implements Ord
     @RequestMapping("/cancelOrder")
     @ResponseBody
     public ApiResult cancelOrder(@RequestAttribute ERPInfo erpInfo, @RequestAttribute ERPUserInfo erpUserInfo, String orderId) {
+        log.info("enter cancelOrder " + orderId);
         CancelOrderEvent cancelOrderEvent = new CancelOrderEvent();
         cancelOrderEvent.setErpInfo(erpInfo);
         cancelOrderEvent.setErpUserInfo(erpUserInfo);
