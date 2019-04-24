@@ -39,10 +39,10 @@ public class TestLzHandler extends TestLzBase {
         orderRefundStatusUpdate.setErpInfo(mockErpInfo);
         orderRefundStatusUpdate.setErpUserInfo(mockErpUserInfo);
 
-        EventResult eventResult = lzOrderHandler.pushRefund(orderRefundStatusUpdate);
-        System.out.println(eventResult.getData());
-        System.out.println(eventResult.getResultMsg());
-        System.out.println(eventResult.getResultCode());
+//        EventResult eventResult = lzOrderHandler.pushRefund(orderRefundStatusUpdate);
+//        System.out.println(eventResult.getData());
+//        System.out.println(eventResult.getResultMsg());
+//        System.out.println(eventResult.getResultCode());
     }
 
     @Test

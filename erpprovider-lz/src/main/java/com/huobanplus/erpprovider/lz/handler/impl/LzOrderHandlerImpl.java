@@ -414,7 +414,7 @@ public class LzOrderHandlerImpl implements LzOrderHandler {
             lzOrderInfo.setTotal_count(num);
             lzOrderInfo.setOrder_goods_amount(toFen(finalAmout));
             lzOrderInfo.setOrder_total_amount(toFen(order.getFinalAmount()));
-            lzOrderInfo.setOrder_tax_amount(lzOrderInfo.getOrder_goods_amount().multiply(new BigDecimal("0.112")));
+            lzOrderInfo.setOrder_tax_amount(lzOrderInfo.getOrder_goods_amount().multiply(new BigDecimal("0.091")));
             lzOrderInfo.setNet_weight(new BigDecimal(order.getSuttleWeight()).divide(new BigDecimal(1000)).intValue());
             lzOrderInfo.setOrder_items(lzOrderItems);
 
